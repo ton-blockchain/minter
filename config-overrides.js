@@ -3,7 +3,7 @@ const { removeModuleScopePlugin, override, babelInclude } = require("customize-c
 const path = require('path');
 
 module.exports = function override(config) {
-  config.module.rules[1].oneOf[3].include = [config.module.rules[1].oneOf[3].include, path.resolve('../jetton-deployer-lib/lib')]
+  config.module.rules[1].oneOf[3].include = [config.module.rules[1].oneOf[3].include, path.resolve('../jetton-deployer-lib')]
 
   const fallback = config.resolve.fallback || {};
 

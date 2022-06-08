@@ -14,6 +14,7 @@ import {
   EnvProfiles,
   Environments,
   ContractDeployer,
+  WalletService,
 } from "tonstarter-contracts";
 import { atom, useRecoilValue } from "recoil";
 import { Address, TonClient, toNano } from "ton";
@@ -162,6 +163,7 @@ function MyComp() {
       new ContractDeployer(),
       adapterId,
       session,
+      new WalletService()
     );
   }
 

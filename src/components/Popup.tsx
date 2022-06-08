@@ -27,7 +27,8 @@ export function Popup({
       PaperProps ={{
         style: {
           maxWidth:'calc(100% - 50px)',
-          width: 'fit-content'
+          width: 'fit-content',
+          padding: '30px'
         }
       }}
       BackdropProps={{

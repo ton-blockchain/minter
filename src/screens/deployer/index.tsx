@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 import {
@@ -51,7 +51,7 @@ function Deployer() {
     clearErrors,
   } = useForm({ mode: "onSubmit", reValidateMode: "onChange" });
 
-  const myFile: any = useRef(null);
+  // const myFile: any = useRef(null);
   const { toggleConnectPopup } = useMainStore();
   const { session, address, adapterId } = useConnectionStore();
   const [deployProgress, setDeployProgress] = useState<DeployProgressState>(
@@ -98,9 +98,7 @@ function Deployer() {
       await dep.createJetton(
         {
           owner: Address.parse(address),
-          mintToOwner: false,
           onProgress,
-          jettonIconImageData: myFile.current,
           jettonName: data.name,
           jettonSymbol: data.symbol,
           amountToMint: toNano(data.mintAmount),

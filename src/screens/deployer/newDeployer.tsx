@@ -1,12 +1,5 @@
 import { useRef, useState } from "react";
-import {
-  List,
-  ListItemText,
-  ListItem,
-  Card,
-  CardContent,
-} from "@mui/material";
-import {  useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
 import {
   JettonDeployState,
@@ -14,277 +7,166 @@ import {
   EnvProfiles,
   Environments,
   ContractDeployer,
-  IPFSWebUploader,
+  delay,
 } from "tonstarter-contracts";
-import { atom, useRecoilValue } from "recoil";
+
 import { Address, TonClient, toNano } from "ton";
 import useConnectionStore from "store/connection-store/useConnectionStore";
 import Input from "components/Input";
 import { formSpec } from "./data";
 import { styled } from "@mui/styles";
+import useMainStore from "store/main-store/useMainStore";
+import BaseButton from "components/BaseButton";
+import HeroImg from "assets/hero.svg";
+import { DeployProgressState, FormState } from "./types";
+import DeployStatus from "./DeployStatus";
+import { Box } from "@mui/system";
 
-const StyledForm = styled('form')({
-    display: 'flex',
-    flexDirection:'column',
-    gap: '40px'
-})
+const StyledForm = styled("form")({
+  display: "flex",
+  flexDirection: "column",
+  gap: "40px",
+});
 
-
-function DeployerScreen2() {
-  return (
-    <>
-      <MyComp />
-      <div className="App">
-        <div style={{ display: "flex", flexDirection: "row", gap: 50 }}>
-          <FormDeployStatus />
-        </div>
-      </div>
-    </>
-  );
-}
-
-const deployStateAtom = atom({
-  key: "deployState2",
-  default: {
-    state: JettonDeployState.NOT_STARTED,
-    contractAddress: null,
-    jWalletAddress: null,
-    jWalletBalance: null,
+const StyledTop = styled(Box)({
+  display: "flex",
+  alignItems: "center",
+  gap: "70px",
+  justifyContent: "center",
+  marginBottom: "50px",
+  " & img": {
+    width: "400px",
+  },
+  "& h1": {
+    fontSize: "40px",
   },
 });
 
-function FormDeployStatus() {
-  const state = useRecoilValue(deployStateAtom);
-
-  return (
-    <div>
-      <List
-        sx={{
-          width: "100%",
-          maxWidth: 360,
-          bgcolor: "background.paper",
-        }}
-      >
-        <ListItem>
-          <ListItemText
-            primary="Contract Address"
-            secondary={state.contractAddress}
-          />
-        </ListItem>
-        <ListItem>
-          <ListItemText
-            primary="JWallet Address"
-            secondary={state.jWalletAddress}
-          />
-        </ListItem>
-        <ListItem>
-          <ListItemText
-            primary="JWallet Balance"
-            secondary={state.jWalletBalance}
-          />
-        </ListItem>
-        <ListItem>
-          <Card>
-            <CardContent>
-              <div>Raw content</div>
-              <br />
-              {/* <code>{JSON.stringify({koko: 1})}</code> */}
-              {/* <Skeleton variant="rectangular" width={210} height={118} /> */}
-            </CardContent>
-          </Card>
-        </ListItem>
-      </List>
-    </div>
-  );
-}
-
-
-
-function MyComp() {
+function Deployer() {
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+    setValue,
+    clearErrors,
+  } = useForm({ mode: "onSubmit", reValidateMode: "onChange" });
 
   const myFile: any = useRef(null);
-  const [jettonState, setJettonState] = useState({
-    state: JettonDeployState.NOT_STARTED,
-    contractAddress: null,
-    jWalletAddress: null,
-  });
+  const { toggleConnectPopup } = useMainStore();
   const { session, address, adapterId } = useConnectionStore();
-  const [jettonParams, setJettonParams] = useState({
-    name: "MyJetton",
-    symbol: "JET",
-    mintAmount: 100,
-    mintToOwner: true,
-  });
-  const [jettonData, setJettonData] = useState("");
+  const [deployProgress, setDeployProgress] = useState<DeployProgressState>(
+    {} as DeployProgressState
+  );
+  const [showProgressModal, setShowProgressModal] = useState(false);
+  const [deployInProgress, setDeployInProgress] = useState(false);
+  const [error, setError] = useState<null | string>(null);
 
-  async function deployContract() {
+  const onProgress = async (
+    depState: JettonDeployState,
+    err?: Error,
+    extra?: string
+  ) => {
+    setDeployProgress((oldState) => ({
+      ...oldState,
+      state: depState,
+      contractAddress:
+        depState === JettonDeployState.VERIFY_MINT
+          ? extra
+          : oldState.contractAddress,
+    }));
+  };
+
+  async function onSubmit(data: any) {
     //@ts-ignore
-    const ton = window.ton as any;
-    const result = await ton.send("ton_requestWallets");
-
-    if (result.length === 0) throw new Error("NO WALLET");
-
+    const client = new TonClient({
+      endpoint: EnvProfiles[Environments.MAINNET].rpcApi,
+    });
     const dep = new JettonDeployController(
       // @ts-ignore
-      new TonClient({
-        endpoint: EnvProfiles[Environments.MAINNET].rpcApi,
-      })
+      client
     );
     if (!address) {
       return;
     }
 
-    await dep.createJetton(
-      {
-        owner: Address.parse(address), // TODO from state. this could come from chrome ext
-        mintToOwner: false,
-        //@ts-ignore
-        onProgress: (depState, err, extra) =>
-          // @ts-ignore
-          setJettonState((oldState) => ({
-            // @ts-ignore
-            ...oldState,
-            state: depState,
-            contractAddress:
-              depState === JettonDeployState.VERIFY_MINT
-                ? extra
-                : oldState.contractAddress,
-          })),
-        jettonIconImageData: myFile.current,
-        jettonName: jettonParams.name,
-        jettonSymbol: jettonParams.symbol,
-        amountToMint: toNano(jettonParams.mintAmount),
-      },
-      new ContractDeployer(),
-      adapterId,
-      session,
-      new IPFSWebUploader()
-    );
+    setShowProgressModal(true);
+    setDeployInProgress(true);
+    setError(null);
+    setDeployProgress({} as DeployProgressState);
+
+    try {
+      await dep.createJetton(
+        {
+          owner: Address.parse(address),
+          mintToOwner: false,
+          onProgress,
+          jettonIconImageData: myFile.current,
+          jettonName: data.name,
+          jettonSymbol: data.symbol,
+          amountToMint: toNano(data.mintAmount),
+        },
+        new ContractDeployer(),
+        adapterId,
+        session
+      );
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      }
+    } finally {
+      setDeployInProgress(false);
+    }
   }
 
-  function handleChange(e: any, k: string) {
-    setJettonParams((o) => ({ ...o, [k]: e.target.value }));
-  }
+  const connect = () => {
+    toggleConnectPopup(true);
+  };
 
-  const onSubmit = (data: any) => {
-    console.log(data);
+  const onExampleClick = (name: string, value: string | number) => {
+    setValue(name, value);
   };
 
   return (
-    <div className="App">
+    <div className="deployer">
+      <DeployStatus
+        deployInProgress={deployInProgress}
+        open={showProgressModal}
+        onClose={() => setShowProgressModal(false)}
+        deployProgress={deployProgress}
+        error={error}
+      />
+      <StyledTop>
+        <img src={HeroImg} />
+        <h1>
+          Smart-Contract <br /> Deployer
+        </h1>
+      </StyledTop>
       <StyledForm onSubmit={handleSubmit(onSubmit)}>
         {formSpec.map((spec, index) => {
           return (
             <Input
+              clearErrors={clearErrors}
+              required={true}
               key={index}
-              errorText=""
+              errorText="input required"
               error={errors[spec.name]}
               name={spec.name}
               control={control}
               label={spec.label}
               defaultValue={spec.default}
+              onExamleClick={onExampleClick}
             />
           );
         })}
 
-        <button>submit</button>
+        {address ? (
+          <BaseButton type="submit">Deploy contract</BaseButton>
+        ) : (
+          <BaseButton onClick={connect}>connect wallet</BaseButton>
+        )}
       </StyledForm>
-      <header className="App-header">
-        <div style={{ textAlign: "left" }}>
-          <form>
-            <div>
-              Name{" "}
-              <input
-                type="text"
-                value={jettonParams.name}
-                onChange={(e) => {
-                  handleChange(e, "name");
-                }}
-              />
-            </div>
-            <div>
-              Symbol{" "}
-              <input
-                type="text"
-                value={jettonParams.symbol}
-                onChange={(e) => {
-                  handleChange(e, "symbol");
-                }}
-              />
-            </div>
-            <div>
-              Amount to mint{" "}
-              <input
-                type="number"
-                value={jettonParams.mintAmount}
-                onChange={(e) => {
-                  handleChange(e, "mintAmount");
-                }}
-              />
-            </div>
-            <div>
-              Mint to owner <input type="checkbox" defaultChecked disabled />
-            </div>
-            <div>
-              <input
-                type="file"
-                onChange={(e) => {
-                  myFile.current = e.target.files![0];
-                }}
-              />
-            </div>
-          </form>
-        </div>
-        <br />
-        <div>Jetton: {JettonDeployState[jettonState.state]}</div>
-        <div>{jettonState.contractAddress}</div>
-        <div>
-          <button onClick={deployContract}>Deploy contract</button>
-        </div>
-
-        <br />
-        <br />
-        <div>
-          <button
-            disabled={jettonState.state !== JettonDeployState.DONE}
-            onClick={async () => {
-              // TODO acquire env from state
-              const dep = new JettonDeployController(
-                // @ts-ignore
-                new TonClient({
-                  endpoint: EnvProfiles[Environments.MAINNET].rpcApi,
-                }) // TODO!
-              );
-
-              // TODO acquire wallet address from state
-              const details = await dep.getJettonDetails(
-                Address.parse(jettonState.contractAddress!),
-                Address.parse(
-                  "kQDBQnDNDtDoiX9np244sZmDcEyIYmMcH1RiIxh59SRpKZsb"
-                )
-              );
-
-              setJettonData(JSON.stringify(details, null, 3));
-            }}
-          >
-            Get jetton details
-          </button>
-          <div>
-            <textarea
-              style={{ width: 600, height: 400 }}
-              value={jettonData}
-              readOnly
-            ></textarea>
-          </div>
-        </div>
-      </header>
     </div>
   );
 }
 
-export { DeployerScreen2 };
+export { Deployer };

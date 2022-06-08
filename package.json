@@ -6,6 +6,7 @@
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
     "@mui/icons-material": "^5.8.2",
+    "@mui/lab": "^5.0.0-alpha.85",
     "@mui/material": "^5.8.2",
     "@mui/styles": "^5.8.0",
     "@testing-library/jest-dom": "^5.16.4",
@@ -25,7 +26,7 @@
     "react-scripts": "5.0.1",
     "recoil": "^0.7.3-alpha.2",
     "ton": "^11.13.0",
-    "tonstarter-contracts": "file:../jetton-deployer-lib",
+    "tonstarter-contracts": "file:../jetton-deployer-contracts",
     "typescript": "^4.7.2",
     "web-vitals": "^2.1.4"
   },

@@ -1,22 +1,28 @@
-import { Route, Routes } from "react-router-dom";
-import { ConnectScreen, DeployerScreen } from "./screens";
-import "./App.css";
-import { ROUTES } from "consts";
 import Navbar from "components/Navbar";
 import useIsConnected from "hooks/useIsConnected";
-import { DeployerScreen2 } from "screens/deployer/newDeployer";
+import { Deployer } from "screens/deployer/newDeployer";
+import Connect from "components/connect";
+import { styled } from "@mui/styles";
+import { Box } from "@mui/system";
+
+const StyledApp = styled(Box)({
+  maxWidth: "960px",
+  width: "calc(100% - 50px)",
+  marginLeft:'auto',
+  marginRight:'auto',
+  paddingTop: '40px',
+  paddingBottom:'100px'
+});
 
 function App() {
   useIsConnected();
 
   return (
-    <div>
-      <Navbar />
-      <Routes>
-        <Route path={ROUTES.deployer} element={<DeployerScreen2 />} />
-        <Route path={ROUTES.connect} element={<ConnectScreen />} />
-      </Routes>
-    </div>
+    <StyledApp>
+      {/* <Navbar /> */}
+      <Deployer />
+      <Connect />
+    </StyledApp>
   );
 }
 

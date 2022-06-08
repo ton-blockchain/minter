@@ -1,3 +1,5 @@
+import { JettonDeployState } from "tonstarter-contracts";
+
 const formSpec = [
   {
     name: "name",
@@ -20,7 +22,7 @@ const formSpec = [
     placeholder: "Initial supply of token. usually 0?",
     type: "number",
     disabled: true,
-    default: 0,
+    default: 21000000,
   },
   {
     name: "mintAmount",
@@ -36,7 +38,7 @@ const formSpec = [
     placeholder: "Not yet supported",
     type: "number",
     disabled: true,
-    default: 0,
+    default: 1000,
   },
   {
     name: "decimals",
@@ -65,4 +67,17 @@ const formSpec = [
   },
 ];
 
-export { formSpec };
+
+const deployStateText = {
+  [JettonDeployState.ALREADY_DEPLOYED] : 'Jetton already deployed',
+  [JettonDeployState.AWAITING_JWALLET_DEPLOY]: "Waiting jetton wallet for deploy",
+  [JettonDeployState.AWAITING_MINTER_DEPLOY]: 'Waitning minter for deploy',
+  [JettonDeployState.BALANCE_CHECK] :'Checking wallet balance',
+  [JettonDeployState.DONE]:"Deploy finished",
+  [JettonDeployState.NOT_STARTED] : 'Not started',
+  [JettonDeployState.UPLOAD_IMAGE] : 'Uploading image',
+  [JettonDeployState.UPLOAD_METADATA] : 'uploading metadata',
+  [JettonDeployState.VERIFY_MINT] : 'Verifying mit',
+}
+
+export { formSpec, deployStateText };

@@ -1,8 +1,5 @@
 var Buffer = require("buffer/").Buffer;
 global.Buffer = Buffer;
-
-console.log(global);
-
 /* eslint-disable import/first */
 import React from "react";
 import ReactDOM from "react-dom/client";
@@ -11,6 +8,14 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter as Router } from "react-router-dom";
 import { RecoilRoot } from "recoil";
+import CssBaseline from "@mui/material/CssBaseline";
+import { ThemeProvider } from '@mui/material/styles';
+import { ThemeProvider as MakeStylesProvider } from '@mui/styles';
+import theme from "theme";
+
+
+
+
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -18,9 +23,14 @@ const root = ReactDOM.createRoot(
 root.render(
   // <React.StrictMode>
   <RecoilRoot>
-    <Router>
-      <App />
-    </Router>
+    <ThemeProvider theme={theme}>
+    <MakeStylesProvider theme={theme}>
+      <CssBaseline />
+      <Router>
+        <App />
+      </Router>
+    </MakeStylesProvider>
+    </ThemeProvider>
   </RecoilRoot>
   // </React.StrictMode>
 );

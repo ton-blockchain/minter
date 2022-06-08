@@ -1,9 +1,9 @@
 import { Box, styled } from "@mui/system";
-import { APP_NAME, ROUTES } from "consts";
+import { APP_NAME } from "consts";
 import { useEffect } from "react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import useConnectionStore from "store/connection-store/useConnectionStore";
+import useMainStore from "store/main-store/useMainStore";
 import { adapters, createWalletSession } from "tonstarter-contracts";
 import { Adapters } from "tonstarter-contracts/lib/wallets/types";
 import AdaptersList from "./AdaptersList";
@@ -19,14 +19,14 @@ const StyledContainer = styled(Box)({
 
 
 const DesktopFlow = () => {
-  const navigate = useNavigate();
   const [showQr, setShowQr] = useState(false);
   const { address, onWalletConnect, onSessionCreated, resetState, sessionLink } =
     useConnectionStore();
+    const {toggleConnectPopup} = useMainStore()
 
   useEffect(() => {
     if (address) {
-      navigate(ROUTES.deployer);
+      toggleConnectPopup(false)
     }
   }, [address]);
 

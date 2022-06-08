@@ -17,7 +17,6 @@ import {
   EnvProfiles,
   Environments,
   ContractDeployer,
-  IPFSWebUploader,
 } from "tonstarter-contracts";
 import { atom, useRecoilState, useRecoilValue } from "recoil";
 import { Address, TonClient, toNano } from "ton";
@@ -334,7 +333,6 @@ function MyComp() {
       new ContractDeployer(),
       adapterId,
       session,
-      new IPFSWebUploader()
     );
   }
 

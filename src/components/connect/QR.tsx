@@ -9,19 +9,16 @@ const StyledContainer = styled(Box)({
   flexDirection: "column",
   alignItems: "center",
   padding: "20px",
-  position: "absolute",
-  left: "50%",
-  top: "50%",
-  transform: "translate(-50%, -50%)",
   background: "white",
+  width: "260px",
+  height: "300px",
 });
 
 const StyledQrBox = styled(Box)({
-  width: "260px",
-  height: "300px",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
+ 
+  width:'100%',
+  height:'100%'
+
 });
 
 interface Props {

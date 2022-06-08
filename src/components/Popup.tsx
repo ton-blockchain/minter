@@ -24,6 +24,12 @@ export function Popup({
       fullWidth
       onClose={onClose}
       open={open}
+      PaperProps ={{
+        style: {
+          maxWidth:'calc(100% - 50px)',
+          width: 'fit-content'
+        }
+      }}
       BackdropProps={{
         style: {
           backgroundColor,

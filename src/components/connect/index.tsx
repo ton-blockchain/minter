@@ -7,7 +7,7 @@ function Connect() {
   const { showConnectModal, toggleConnectPopup } = useMainStore();
   return (
     <Popup open={showConnectModal} onClose={() => toggleConnectPopup(false)}>
-      <div style={{ position: "relative", width: "300px", height: "300px" }}>
+      <div style={{ position: "relative", width: "330px", padding: '20px'}}>
         <DesktopFlow />
       </div>
     </Popup>

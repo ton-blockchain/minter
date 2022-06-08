@@ -2,6 +2,7 @@
   "name": "web",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://ton-defi-org.github.io/jetton-deployer-web",
   "dependencies": {
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",

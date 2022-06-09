@@ -3,7 +3,7 @@ import { Popup } from "components/Popup";
 import { deployStateText } from "./data";
 import { DeployProgressState } from "./types";
 import CircularProgress from "@mui/material/CircularProgress";
-import { JettonDeployState } from "tonstarter-contracts";
+import { JettonDeployState } from "jetton-deployer-contracts";
 import { styled } from "@mui/styles";
 import { useEffect, useRef } from "react";
 

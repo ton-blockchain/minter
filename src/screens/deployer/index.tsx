@@ -7,8 +7,7 @@ import {
   EnvProfiles,
   Environments,
   ContractDeployer,
-  WalletService,
-} from "tonstarter-contracts";
+} from "jetton-deployer-contracts";
 
 import { Address, TonClient, toNano } from "ton";
 import useConnectionStore from "store/connection-store/useConnectionStore";
@@ -95,19 +94,19 @@ function Deployer() {
     setDeployProgress({} as DeployProgressState);
 
     try {
-      await dep.createJetton(
-        {
-          owner: Address.parse(address),
-          onProgress,
-          jettonName: data.name,
-          jettonSymbol: data.symbol,
-          amountToMint: toNano(data.mintAmount),
-        },
-        new ContractDeployer(),
-        adapterId,
-        session,
-        new WalletService()
-      );
+      // await dep.createJetton(
+      //   {
+      //     owner: Address.parse(address),
+      //     onProgress,
+      //     jettonName: data.name,
+      //     jettonSymbol: data.symbol,
+      //     amountToMint: toNano(data.mintAmount),
+      //   },
+      //   new ContractDeployer(),
+      //   adapterId,
+      //   session,
+      //   new WalletService()
+      // );
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);

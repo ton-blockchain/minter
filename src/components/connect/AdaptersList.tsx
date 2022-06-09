@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import { useTheme, Theme } from "@mui/material/styles";
 import { styled } from "@mui/system";
-import { Adapter, Adapters } from "tonstarter-contracts/lib/wallets/types";
+import { Adapter, Adapters } from "jetton-deployer-contracts/lib/wallets/types";
 import TonhubImg from "assets/tonhub.png";
 import ChromeExtImg from "assets/chrome.svg";
 
@@ -93,6 +93,7 @@ function AdaptersList({ onClose, select, open, adapters }: Props) {
       <StyledList>
         {adapters.map((adapter) => {
           const {type} = adapter
+          // @ts-ignore
           const {  icon, name, description } = adapterConfig[type];
           
           return (

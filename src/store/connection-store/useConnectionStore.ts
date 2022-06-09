@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useRecoilState, useResetRecoilState } from "recoil";
-import { Adapters, Wallet } from "tonstarter-contracts/lib/wallets/types";
+import { Adapters, Wallet } from "jetton-deployer-contracts/lib/wallets/types";
 import { ConnectionStateAtom, connectionStateAtom } from ".";
 
 const getSessionlink = (session?: any) => {

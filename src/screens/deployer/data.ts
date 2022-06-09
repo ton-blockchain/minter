@@ -1,4 +1,4 @@
-import { JettonDeployState } from "tonstarter-contracts";
+import { JettonDeployState } from "jetton-deployer-contracts";
 
 const formSpec = [
   {

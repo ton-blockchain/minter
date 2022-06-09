@@ -1,5 +1,5 @@
 import { atom, selector } from "recoil";
-import { Wallet } from "tonstarter-contracts/lib/wallets/types";
+import { Wallet } from "jetton-deployer-contracts/lib/wallets/types";
 
 export interface ConnectionStateAtom {
   address: string | null;

@@ -5,7 +5,6 @@ import { ROUTES } from "consts";
 import { useNavigate } from "react-router-dom";
 import { useRecoilValue, useResetRecoilState } from "recoil";
 import { connectionStateAtom } from "store/connection-store";
-import { killSession } from "tonstarter-contracts";
 
 function Navbar() {
   const navigate = useNavigate();
@@ -15,7 +14,7 @@ function Navbar() {
   const disconnect = () => {
     resetConnection();
     navigate(ROUTES.connect);
-    killSession()
+    // killSession() // TODO add this functionality
   };
 
   return (

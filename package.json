@@ -17,7 +17,9 @@
     "@types/node": "^16.11.36",
     "@types/react": "^18.0.9",
     "@types/react-dom": "^18.0.5",
+    "bn.js": "^5.2.1",
     "buffer": "^6.0.3",
+    "jetton-deployer-contracts": "file:../jetton-deployer-contracts",
     "react": "^18.1.0",
     "react-app-rewire-typescript": "^2.0.2",
     "react-dom": "^18.1.0",
@@ -27,7 +29,6 @@
     "react-scripts": "5.0.1",
     "recoil": "^0.7.3-alpha.2",
     "ton": "^11.13.0",
-    "tonstarter-contracts": "file:../jetton-deployer-contracts",
     "typescript": "^4.7.2",
     "web-vitals": "^2.1.4"
   },

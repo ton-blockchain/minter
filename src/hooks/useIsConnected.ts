@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import useConnectionStore from "store/connection-store/useConnectionStore";
-import { restoreSession } from "tonstarter-contracts";
+// import { restoreSession } from "jetton-deployer-contracts";
 
 function useIsConnected() {
   const { onConnectionRestored } = useConnectionStore();
@@ -8,11 +8,11 @@ function useIsConnected() {
   useEffect(() => {
     const restore = async () => {
       try {
-        const result = await restoreSession();
+        // const result = await restoreSession();
 
-        if (result) {
-          onConnectionRestored(result.wallet, result.adapterId, result.session);
-        }
+        // if (result) {
+        //   onConnectionRestored(result.wallet, result.adapterId, result.session);
+        // }
       } catch (error) {
         
         

@@ -4,8 +4,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import useConnectionStore from "store/connection-store/useConnectionStore";
 import useMainStore from "store/main-store/useMainStore";
-import { adapters, createWalletSession } from "tonstarter-contracts";
-import { Adapters } from "tonstarter-contracts/lib/wallets/types";
+import { Adapters } from "jetton-deployer-contracts/lib/wallets/types";
 import AdaptersList from "./AdaptersList";
 import QR from "./QR";
 
@@ -31,22 +30,22 @@ const DesktopFlow = () => {
   }, [address]);
 
   const onSelect = async (adapter: Adapters) => {
-    try {
-      const _session = await createWalletSession(
-        adapter,
-        APP_NAME,
-        onWalletConnect
-      );
+    // try {
+    //   const _session = await createWalletSession(
+    //     adapter,
+    //     APP_NAME,
+    //     onWalletConnect
+    //   );
       
-      onSessionCreated(_session, adapter);
+    //   onSessionCreated(_session, adapter);
 
-      if (adapter === Adapters.TON_HUB) {
-        setShowQr(true);
-      }
-    } catch (error) {
-      resetState();
-      setShowQr(false);
-    }
+    //   if (adapter === Adapters.TON_HUB) {
+    //     setShowQr(true);
+    //   }
+    // } catch (error) {
+    //   resetState();
+    //   setShowQr(false);
+    // }
   };
 
   const cancel = () => {
@@ -56,12 +55,12 @@ const DesktopFlow = () => {
 
   return (
     <StyledContainer>
-      <AdaptersList
+      {/* <AdaptersList
         adapters={adapters}
         onClose={() => {}}
         open={!showQr}
         select={onSelect}
-      />
+      /> */}
       <QR open={showQr} link={sessionLink} onClose={cancel} />
     </StyledContainer>
   );

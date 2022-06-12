@@ -1,5 +1,5 @@
 import { atom } from "recoil";
-import { JettonDeployState } from "tonstarter-contracts";
+import { JettonDeployState } from "@ton-defi.org/jetton-deployer-contracts";
 
 
 

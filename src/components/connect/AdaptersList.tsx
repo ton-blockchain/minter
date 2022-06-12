@@ -1,10 +1,4 @@
-import {
-  ListItem,
-  List,
-  ListItemButton,
-  Box,
-  Typography,
-} from "@mui/material";
+import { ListItem, List, ListItemButton, Box, Typography } from "@mui/material";
 import { useTheme, Theme } from "@mui/material/styles";
 import { styled } from "@mui/system";
 import TonhubImg from "assets/tonhub.png";
@@ -29,47 +23,44 @@ const StyledContainer = styled(Box)({
 const StyledConnectModalTitle = styled(Box)({
   paddingLeft: "10px",
 });
-const StyledIcon = styled('img')({
-  width:'40px',
-  height:'40px',
-  objectFit:'cover',
-  marginRight:'24px'
-})
+const StyledIcon = styled("img")({
+  width: "40px",
+  height: "40px",
+  objectFit: "cover",
+  marginRight: "24px",
+});
 
-const StyledListItemRight = styled(Box)(
-  ({ theme }: { theme: Theme }) => ({
-    '& h5':{
-      color: theme.palette.secondary.main,
-      fontSize:'18px',
-      fontWeight:'500',
-      marginBottom:'5px'
-    },
-    '& p':{
-      color: theme.palette.secondary.main,
-      fontSize:'14px',
-      opacity: '0.7'
-
-    }
-   
-
-  })
-);
+const StyledListItemRight = styled(Box)(({ theme }: { theme: Theme }) => ({
+  "& h5": {
+    color: theme.palette.secondary.main,
+    fontSize: "18px",
+    fontWeight: "500",
+    marginBottom: "5px",
+  },
+  "& p": {
+    color: theme.palette.secondary.main,
+    fontSize: "14px",
+    opacity: "0.7",
+  },
+}));
 
 interface Props {
-  select: (adapter: Adapters) => void;
+  // todo sy any
+  select: (adapter: string) => void;
   open: boolean;
   onClose: () => void;
-  adapters: Adapter[];
+  adapters: { type: string }[];
 }
 
 const adapterConfig = {
-  "tonhub": { // TODO sy
+  tonhub: {
+    // TODO sy
     name: "Tonhub",
     icon: TonhubImg,
     mobileCompatible: true,
     description: "A mobile wallet in your pocket",
   },
-  "ton_wallet": {
+  ton_wallet: {
     name: "Google Chrome Plugin",
     icon: ChromeExtImg,
     mobileCompatible: false,
@@ -91,14 +82,15 @@ function AdaptersList({ onClose, select, open, adapters }: Props) {
       </StyledConnectModalTitle>
       <StyledList>
         {adapters.map((adapter) => {
-          const {type} = adapter
-          const {  icon, name, description } = adapterConfig[type];
-          
+          const { type } = adapter;
+          // @ts-ignore todo sy
+          const { icon, name, description } = adapterConfig[type];
+
           return (
             <StyledListItem disablePadding key={type}>
               <StyledListItemButton onClick={() => select(type)}>
                 <StyledIcon src={icon} />
-                <StyledListItemRight theme={theme} >
+                <StyledListItemRight theme={theme}>
                   <Typography variant="h5">{name}</Typography>
                   <Typography>{description}</Typography>
                 </StyledListItemRight>

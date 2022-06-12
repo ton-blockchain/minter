@@ -5,7 +5,7 @@ import { ROUTES } from "consts";
 import { useNavigate } from "react-router-dom";
 import { useRecoilValue, useResetRecoilState } from "recoil";
 import { connectionStateAtom } from "store/connection-store";
-import { killSession } from "tonstarter-contracts";
+// import { killSession } from "tonstarter-contracts"; todo sy add logout to lib
 
 function Navbar() {
   const navigate = useNavigate();
@@ -15,7 +15,7 @@ function Navbar() {
   const disconnect = () => {
     resetConnection();
     navigate(ROUTES.connect);
-    killSession()
+    // killSession() todo sy
   };
 
   return (

@@ -1,4 +1,4 @@
-import { JettonDeployState } from "tonstarter-contracts";
+import { JettonDeployState } from "@ton-defi.org/jetton-deployer-contracts";
 
 const formSpec = [
   {
@@ -67,17 +67,17 @@ const formSpec = [
   },
 ];
 
-
 const deployStateText = {
-  [JettonDeployState.ALREADY_DEPLOYED] : 'Jetton already deployed',
-  [JettonDeployState.AWAITING_JWALLET_DEPLOY]: "Waiting jetton wallet for deploy",
-  [JettonDeployState.AWAITING_MINTER_DEPLOY]: 'Waitning minter for deploy',
-  [JettonDeployState.BALANCE_CHECK] :'Checking wallet balance',
-  [JettonDeployState.DONE]:"Deploy finished",
-  [JettonDeployState.NOT_STARTED] : 'Not started',
-  [JettonDeployState.UPLOAD_IMAGE] : 'Uploading image',
-  [JettonDeployState.UPLOAD_METADATA] : 'uploading metadata',
-  [JettonDeployState.VERIFY_MINT] : 'Verifying mit',
-}
+  [JettonDeployState.ALREADY_DEPLOYED]: "Jetton already deployed",
+  [JettonDeployState.AWAITING_JWALLET_DEPLOY]:
+    "Waiting jetton wallet for deploy",
+  [JettonDeployState.AWAITING_MINTER_DEPLOY]: "Waitning minter for deploy",
+  [JettonDeployState.BALANCE_CHECK]: "Checking wallet balance",
+  [JettonDeployState.DONE]: "Deploy finished",
+  [JettonDeployState.NOT_STARTED]: "Not started",
+  [JettonDeployState.UPLOAD_IMAGE]: "Uploading image",
+  [JettonDeployState.UPLOAD_METADATA]: "uploading metadata",
+  [JettonDeployState.VERIFY_MINT]: "Verifying mit",
+};
 
 export { formSpec, deployStateText };

@@ -1,5 +1,5 @@
 import { atom, selector } from "recoil";
-import { Wallet } from "tonstarter-contracts/lib/wallets/types";
+import { Wallet } from "@ton-defi.org/ton-connection";
 
 export interface ConnectionStateAtom {
   address: string | null;

@@ -1,13 +1,13 @@
 import { useMemo } from "react";
 import { useRecoilState, useResetRecoilState } from "recoil";
-import { Adapters, Wallet } from "tonstarter-contracts/lib/wallets/types";
+import { Wallet } from "@ton-defi.org/ton-connection";
 import { ConnectionStateAtom, connectionStateAtom } from ".";
 
 const getSessionlink = (session?: any) => {
   if (!session || typeof session === "boolean") {
     return "";
   }
-  
+
   return session.link
     .replace("ton-test://", "https://test.tonhub.com/")
     .replace("ton://", "https://tonhub.com/");
@@ -34,7 +34,8 @@ function useConnectionStore() {
     }));
   };
 
-  const onSessionCreated = (_session: any, adapter: Adapters) => {
+  // todo sy
+  const onSessionCreated = (_session: any, adapter: string) => {
     setConnectionState((prevState) => ({
       ...prevState,
       session: _session,
@@ -42,18 +43,21 @@ function useConnectionStore() {
     }));
   };
 
-  const onConnectionRestored = (wallet: Wallet, adapterId: Adapters, session: any) => {
+  const onConnectionRestored = (
+    wallet: Wallet,
+    adapterId: string, // todo sy
+    session: any
+  ) => {
     setConnectionState((prevState) => ({
       ...prevState,
       session,
       adapterId,
       wallet,
-      address: wallet.address
+      address: wallet.address,
     }));
   };
 
   const sessionLink = useMemo(() => getSessionlink(session), [session]);
-  
 
   return {
     ...connectionState,
@@ -62,7 +66,7 @@ function useConnectionStore() {
     resetState,
     onSessionCreated,
     sessionLink,
-    onConnectionRestored
+    onConnectionRestored,
   };
 }
 

@@ -1,4 +1,4 @@
-import { JettonDeployState } from "tonstarter-contracts";
+import { JettonDeployState } from "@ton-defi.org/jetton-deployer-contracts";
 
 export interface DeployProgressState {
   state: JettonDeployState;

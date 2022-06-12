@@ -6,7 +6,10 @@ import useConnectionStore from "store/connection-store/useConnectionStore";
 import useMainStore from "store/main-store/useMainStore";
 import AdaptersList from "./AdaptersList";
 import QR from "./QR";
-import { TonConnection } from '@ton-defi.org/ton-connection';
+import { getTonCon } from "./my-ton-con-service";
+
+// todo sy
+const adapters = [{ type: "tonhub" }, { type: "ton_wallet" }];
 
 const StyledContainer = styled(Box)({
   display: "flex",
@@ -15,33 +18,33 @@ const StyledContainer = styled(Box)({
   background: "white",
 });
 
-
-
 const DesktopFlow = () => {
   const [showQr, setShowQr] = useState(false);
-  const { address, onWalletConnect, onSessionCreated, resetState, sessionLink } =
-    useConnectionStore();
-    const {toggleConnectPopup} = useMainStore()
+  const {
+    address,
+    onWalletConnect,
+    onSessionCreated,
+    resetState,
+    sessionLink,
+  } = useConnectionStore();
+  const { toggleConnectPopup } = useMainStore();
 
   useEffect(() => {
     if (address) {
-      toggleConnectPopup(false)
+      toggleConnectPopup(false);
     }
   }, [address]);
 
-  const onSelect = async (adapter: Adapters) => {
+  // TODO sy string
+  const onSelect = async (adapter: string) => {
     try {
-      const _session = await createWalletSession(
-        adapter,
-        APP_NAME,
-        onWalletConnect
-      );
-      
-      onSessionCreated(_session, adapter);
+      const con = getTonCon(adapter, setShowQr.bind(this, true));
+      const wallet = await con.connect();
 
-      if (adapter === Adapters.TON_HUB) {
-        setShowQr(true);
-      }
+      onWalletConnect(wallet);
+
+      // persist chosen adapter? todo sy
+
     } catch (error) {
       resetState();
       setShowQr(false);

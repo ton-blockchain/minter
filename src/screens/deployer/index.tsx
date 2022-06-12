@@ -1,15 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
-import {
-  JettonDeployState,
-  JettonDeployController,
-  EnvProfiles,
-  Environments,
-  ContractDeployer,
-  WalletService,
-} from "tonstarter-contracts";
-
 import { Address, TonClient, toNano } from "ton";
 import useConnectionStore from "store/connection-store/useConnectionStore";
 import Input from "components/Input";
@@ -21,6 +12,14 @@ import HeroImg from "assets/hero.svg";
 import { DeployProgressState } from "./types";
 import DeployStatus from "./DeployStatus";
 import { Box } from "@mui/system";
+import { getTonCon } from '../../components/connect/my-ton-con-service';
+import {
+  JettonDeployState,
+  EnvProfiles,
+  Environments,
+  JettonDeployController,
+  ContractDeployer,
+} from "@ton-defi.org/jetton-deployer-contracts";
 
 const StyledForm = styled("form")({
   display: "flex",
@@ -77,14 +76,11 @@ function Deployer() {
   };
 
   async function onSubmit(data: any) {
-    //@ts-ignore
-    const client = new TonClient({
-      endpoint: EnvProfiles[Environments.MAINNET].rpcApi,
-    });
-    const dep = new JettonDeployController(
-      // @ts-ignore
-      client
-    );
+    //@ts-ignore env todo sy
+    // const client = new TonClient({
+    //   endpoint: EnvProfiles[Environments.MAINNET].rpcApi,
+    // });
+    const dep = new JettonDeployController();
     if (!address) {
       return;
     }
@@ -103,10 +99,7 @@ function Deployer() {
           jettonSymbol: data.symbol,
           amountToMint: toNano(data.mintAmount),
         },
-        new ContractDeployer(),
-        adapterId,
-        session,
-        new WalletService()
+        getTonCon(adapterId, ()=>{}) // todo sy
       );
     } catch (err) {
       if (err instanceof Error) {
@@ -135,10 +128,8 @@ function Deployer() {
         error={error}
       />
       <StyledTop>
-        <img alt='' src={HeroImg} />
-        <h1>
-          Jetton deployer
-        </h1>
+        <img alt="" src={HeroImg} />
+        <h1>Jetton deployer</h1>
       </StyledTop>
       <StyledForm onSubmit={handleSubmit(onSubmit)}>
         {formSpec.map((spec, index) => {

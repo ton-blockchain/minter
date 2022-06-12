@@ -1,11 +1,9 @@
-import { List, ListItem, ListItemText, Card, CardContent, Box } from "@mui/material";
+import { Box } from "@mui/material";
 import { Popup } from "components/Popup";
-import { deployStateText } from "./data";
 import { DeployProgressState } from "./types";
 import CircularProgress from "@mui/material/CircularProgress";
-import { JettonDeployState } from "tonstarter-contracts";
 import { styled } from "@mui/styles";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 
 interface Props {
   open: boolean;
@@ -36,11 +34,11 @@ const Content = ({ deployProgress, deployInProgress, error }: ContentProps) => {
   const aleadyDeployedRef = useRef(false)
 
 
-    useEffect(() => {
-      if(deployProgress.state === JettonDeployState.ALREADY_DEPLOYED){
-        aleadyDeployedRef.current = true
-      }
-    }, [deployProgress.state])
+    // TODO sy useEffect(() => {
+    //   if(deployProgress.state === JettonDeployState.ALREADY_DEPLOYED){
+    //     aleadyDeployedRef.current = true
+    //   }
+    // }, [deployProgress.state])
     
 
     

@@ -27,7 +27,8 @@ const StyledContainer = styled(Box)({
   flexDirection:'column',
   alignItems:'center',
   minHeight: '200px',
-  justifyContent:'center'
+  justifyContent:'center',
+  width:'600px'
   
 })
 

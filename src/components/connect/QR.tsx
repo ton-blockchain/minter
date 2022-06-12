@@ -11,13 +11,16 @@ const StyledContainer = styled(Box)({
   padding: "20px",
   background: "white",
   width: "260px",
-  height: "300px",
+  height: "260px",
 });
 
 const StyledQrBox = styled(Box)({
  
   width:'100%',
-  height:'100%'
+  height:'100%',
+  display: 'flex',
+  alignItems:'center',
+  justifyContent:'center'
 
 });
 
@@ -32,13 +35,14 @@ function QR({ onClose, link, open }: Props) {
     return null;
   }
   
+  
   return (
     <StyledContainer>
       <StyledQrBox>
         {link ? (
           <Fade in={true}>
             <Box>
-              <QRCode  style={{ width: "100%", height: "100%" }} value={link} />
+              <QRCode   value={link} />
             </Box>
           </Fade>
         ) : (

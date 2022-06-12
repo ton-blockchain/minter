@@ -137,7 +137,7 @@ function Deployer() {
       <StyledTop>
         <img alt='' src={HeroImg} />
         <h1>
-          Smart-Contract <br /> Deployer
+          Jetton deployer
         </h1>
       </StyledTop>
       <StyledForm onSubmit={handleSubmit(onSubmit)}>

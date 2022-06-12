@@ -35,6 +35,7 @@ function Input({ required, defaultValue, control, error, errorText, label, name,
 
   const onClick = () => {
     onExamleClick(name, defaultValue)
+    clearErrors(name);
   }
 
   const onFocus = () => {

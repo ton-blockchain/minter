@@ -7,7 +7,6 @@ import {
 } from "@mui/material";
 import { useTheme, Theme } from "@mui/material/styles";
 import { styled } from "@mui/system";
-import { Adapter, Adapters } from "tonstarter-contracts/lib/wallets/types";
 import TonhubImg from "assets/tonhub.png";
 import ChromeExtImg from "assets/chrome.svg";
 
@@ -64,13 +63,13 @@ interface Props {
 }
 
 const adapterConfig = {
-  [Adapters.TON_HUB]: {
+  "tonhub": { // TODO sy
     name: "Tonhub",
     icon: TonhubImg,
     mobileCompatible: true,
     description: "A mobile wallet in your pocket",
   },
-  [Adapters.TON_WALLET]: {
+  "ton_wallet": {
     name: "Google Chrome Plugin",
     icon: ChromeExtImg,
     mobileCompatible: false,

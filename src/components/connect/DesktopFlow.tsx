@@ -4,10 +4,9 @@ import { useEffect } from "react";
 import { useState } from "react";
 import useConnectionStore from "store/connection-store/useConnectionStore";
 import useMainStore from "store/main-store/useMainStore";
-import { adapters, createWalletSession } from "tonstarter-contracts";
-import { Adapters } from "tonstarter-contracts/lib/wallets/types";
 import AdaptersList from "./AdaptersList";
 import QR from "./QR";
+import { TonConnection } from '@ton-defi.org/ton-connection';
 
 const StyledContainer = styled(Box)({
   display: "flex",

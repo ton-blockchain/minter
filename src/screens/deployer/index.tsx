@@ -15,11 +15,8 @@ import { Box } from "@mui/system";
 import { getTonCon } from '../../components/connect/my-ton-con-service';
 import {
   JettonDeployState,
-  EnvProfiles,
-  Environments,
   JettonDeployController,
-  ContractDeployer,
-} from "@ton-defi.org/jetton-deployer-contracts";
+} from "lib/deploy-controller";
 
 const StyledForm = styled("form")({
   display: "flex",

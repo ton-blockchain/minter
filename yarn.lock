@@ -2065,20 +2065,6 @@
   dependencies:
     "@babel/runtime" "^7.12.5"
 
-"@ton-defi.org/jetton-deployer-contracts@^0.0.2":
-  version "0.0.2"
-  resolved "https://registry.npmjs.org/@ton-defi.org/jetton-deployer-contracts/-/jetton-deployer-contracts-0.0.2.tgz"
-  integrity sha512-9UHGC62EepY8tfy5zHmrgjIA4CW3L514bd52RFmwX09F/vIAVUO4wqiBCemdPi9qZuQjv+cB858el8Q8OLTCAw==
-  dependencies:
-    "@aws-crypto/sha256-js" "^2.0.1"
-    "@ton-defi.org/ton-connection" "^0.0.2"
-    axios-request-throttle "^1.0.0"
-    dotenv "^16.0.0"
-    ton "^11.15.0"
-    ton-contracts "^3.1.0"
-    ton-crypto "^3.1.0"
-    ton-x "^0.6.0"
-
 "@ton-defi.org/ton-connection@^0.0.2":
   version "0.0.2"
   resolved "https://registry.npmjs.org/@ton-defi.org/ton-connection/-/ton-connection-0.0.2.tgz"

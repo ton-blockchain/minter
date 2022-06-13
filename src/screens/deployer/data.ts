@@ -1,4 +1,4 @@
-import { JettonDeployState } from "@ton-defi.org/jetton-deployer-contracts";
+import { JettonDeployState } from "lib/deploy-controller";
 
 const formSpec = [
   {

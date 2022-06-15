@@ -45,20 +45,12 @@ const formSpec = [
     label: "Initial supply",
     placeholder: "Initial supply of token. usually 0?",
     type: "number",
-    default: 100,
-    required: true,
-    example: true
-  },
-  {
-    name: "totalSupply",
-    label: "Total supply",
-    placeholder: "Not yet supported",
-    type: "number",
+    default: '0',
+    example: false,
     disabled: true,
-    default: 100,
-    required: false,
-    example: true
+
   },
+
   {
     name: "tokenImage",
     label: "Jetton image",

@@ -2,6 +2,7 @@
   "name": "web",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://ton-defi-org.github.io/jetton-deployer-webclient/",
   "dependencies": {
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
@@ -20,6 +21,7 @@
     "buffer": "^6.0.3",
     "react": "^18.1.0",
     "react-app-rewire-typescript": "^2.0.2",
+    "react-device-detect": "^2.2.2",
     "react-dom": "^18.1.0",
     "react-hook-form": "^7.31.3",
     "react-qr-code": "^2.0.7",

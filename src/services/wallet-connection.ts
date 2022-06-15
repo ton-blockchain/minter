@@ -27,7 +27,8 @@ class WalletConnection {
   public static async connect(
     providerId: Providers,
     onLinkReady: (link: string) => void,
-    isTestnet: boolean
+    isTestnet: boolean,
+    onTransactionLinkReady?: (link: string) => void,
   ) {
     let prov;
 
@@ -37,6 +38,7 @@ class WalletConnection {
           onSessionLinkReady: onLinkReady,
           isSandbox: isTestnet,
           persistenceProvider: localStorage,
+          onTransactionLinkReady
         });
         break;
       case Providers.EXTENSION:

@@ -1,14 +1,11 @@
 import { atom } from "recoil";
-import { JettonDeployState } from "tonstarter-contracts";
+import { JettonDeployState } from "lib/deploy-controller";
 
 
 
 
 interface DeployStoreState {
-  state: JettonDeployState,
-  contractAddress?: null | string,
-  jWalletAddress?: null | string,
-  jWalletBalance?: null | string,
+ 
 }
 
 

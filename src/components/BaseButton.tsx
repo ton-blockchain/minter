@@ -22,6 +22,9 @@ const StyledBox = styled(Box)({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
+  "& .MuiCircularProgress-root":{
+    color:'white'
+  }
 });
 
 function BaseButton({

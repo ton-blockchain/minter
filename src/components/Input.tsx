@@ -16,51 +16,73 @@ interface Props {
   type?: any;
   required?: boolean;
   clearErrors: any;
+  disabled?: boolean;
+  validate?: (val: string) => boolean;
 }
 
 const StyledInput = styled(TextField)({
   "& input": {
-   paddingTop: '13px',
-   paddingBottom: '13px',
-  
+    paddingTop: "13px",
+    paddingBottom: "13px",
   },
   "& button": {
-    fontSize:'12px',
-    
-  }
-})
+    fontSize: "12px",
+  },
+});
 
-function Input({ required, defaultValue, control, error, errorText, label, name, onExamleClick, type= 'string', clearErrors }: Props) {
-  const ref = useRef<any>()
+function Input({
+  validate,
+  required,
+  defaultValue,
+  control,
+  error,
+  errorText,
+  label,
+  name,
+  onExamleClick,
+  type = "string",
+  clearErrors,
+  disabled,
+}: Props) {
+  const ref = useRef<any>();
 
   const onClick = () => {
-    onExamleClick(name, defaultValue)
+    onExamleClick(name, defaultValue);
     clearErrors(name);
-  }
+  };
 
   const onFocus = () => {
     clearErrors(name);
-  }
-  
+  };
+
   return (
     <Controller
-    
       name={name}
       control={control}
-      
+      defaultValue={disabled ? defaultValue : ''}
       rules={{
         required,
+        validate: validate,
+        
       }}
-      
       render={({ field: { onChange, value } }) => (
         <FormControl>
-          <StyledInput ref={ref} value={value || ''}
-          onFocus={onFocus}
-          onChange={onChange} label={label}
-          type={type}
-           InputProps={{endAdornment: <BaseButton onClick={onClick}>example</BaseButton> }}
+          <StyledInput
+            ref={ref}
+            value={value || ""}
+            onFocus={onFocus}
+            onChange={onChange}
+            label={label}
+            type={type}
+            disabled={disabled}
+          
+            InputProps={{
+              endAdornment: !disabled ? (
+                <BaseButton onClick={onClick}>example</BaseButton>
+              ) : null,
+            }}
           />
-          {error && errorText&& <FormHelperText>{errorText}</FormHelperText>}
+          {error && errorText && <FormHelperText>{errorText}</FormHelperText>}
         </FormControl>
       )}
     />

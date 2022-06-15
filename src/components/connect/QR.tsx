@@ -26,7 +26,7 @@ const StyledQrBox = styled(Box)({
 
 interface Props {
   onClose: () => void;
-  link?: string;
+  link: string | null;
   open: boolean;
 }
 

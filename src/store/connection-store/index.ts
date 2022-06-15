@@ -1,10 +1,9 @@
 import { atom, selector } from "recoil";
-import { Wallet } from "tonstarter-contracts/lib/wallets/types";
+import { Wallet } from "@ton-defi.org/ton-connection";
 
 export interface ConnectionStateAtom {
   address: string | null;
   wallet: Wallet | null;
-  session: any;
   adapterId: any;
   isConnecting: boolean;
   isRestoring: boolean;
@@ -15,7 +14,6 @@ const connectionStateAtom = atom<ConnectionStateAtom>({
   default: {
     address: null,
     wallet: null,
-    session: null,
     adapterId: null,
     isConnecting: true,
     isRestoring: true,

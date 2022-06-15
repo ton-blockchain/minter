@@ -1,4 +1,4 @@
-import { JettonDeployState } from "tonstarter-contracts";
+import { JettonDeployState } from "lib/deploy-controller";
 
 export interface DeployProgressState {
   state: JettonDeployState;
@@ -9,11 +9,8 @@ export interface DeployProgressState {
 
 export interface FormState {
   name: string;
-  symbol: string;
-  initialSupply: string;
-  mintAmount: string;
-  maxSupply: string;
   decimals: string;
-  mintToOwner: string;
-  gasFee: string;
+  initialSupply: string;
+  totalSupply: string;
+  tokenImage: string;
 }

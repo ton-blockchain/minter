@@ -20,6 +20,7 @@ export function Popup({
 }: Props) {
   return (
     <Dialog
+      
       className={`${className} ${blur && "popup-filter"}`}
       fullWidth
       onClose={onClose}

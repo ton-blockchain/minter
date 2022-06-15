@@ -1,16 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-
-import {
-  JettonDeployState,
-  JettonDeployController,
-  EnvProfiles,
-  Environments,
-  ContractDeployer,
-  WalletService,
-} from "tonstarter-contracts";
-
-import { Address, TonClient, toNano } from "ton";
+import { Address, toNano } from "ton";
 import useConnectionStore from "store/connection-store/useConnectionStore";
 import Input from "components/Input";
 import { formSpec } from "./data";
@@ -18,9 +8,13 @@ import { styled } from "@mui/styles";
 import useMainStore from "store/main-store/useMainStore";
 import BaseButton from "components/BaseButton";
 import HeroImg from "assets/hero.svg";
-import { DeployProgressState } from "./types";
-import DeployStatus from "./DeployStatus";
 import { Box } from "@mui/system";
+import { jettonDeployController } from "lib/deploy-controller";
+import WalletConnection from "services/wallet-connection";
+import { createDeployParams } from "lib/utils";
+import { ContractDeployer } from "lib/contract-deployer";
+import { Alert, Snackbar, Typography } from "@mui/material";
+import JetonDetailsModal from "./JetonDetailsModal";
 
 const StyledForm = styled("form")({
   display: "flex",
@@ -42,6 +36,14 @@ const StyledTop = styled(Box)({
   },
 });
 
+const StyledWarning = styled(Box)({
+  textAlign: "center",
+  "& p": {
+    fontSize: "20px",
+    fontWeight: 500,
+  },
+});
+
 function Deployer() {
   const {
     control,
@@ -49,121 +51,123 @@ function Deployer() {
     formState: { errors },
     setValue,
     clearErrors,
+    reset,
   } = useForm({ mode: "onSubmit", reValidateMode: "onChange" });
 
-  // const myFile: any = useRef(null);
   const { toggleConnectPopup } = useMainStore();
-  const { session, address, adapterId } = useConnectionStore();
-  const [deployProgress, setDeployProgress] = useState<DeployProgressState>(
-    {} as DeployProgressState
-  );
-  const [showProgressModal, setShowProgressModal] = useState(false);
-  const [deployInProgress, setDeployInProgress] = useState(false);
+  const { address } = useConnectionStore();
+
   const [error, setError] = useState<null | string>(null);
-
-  const onProgress = async (
-    depState: JettonDeployState,
-    err?: Error,
-    extra?: string
-  ) => {
-    setDeployProgress((oldState) => ({
-      ...oldState,
-      state: depState,
-      contractAddress:
-        depState === JettonDeployState.VERIFY_MINT
-          ? extra
-          : oldState.contractAddress,
-    }));
-  };
-
-  async function onSubmit(data: any) {
-    //@ts-ignore
-    const client = new TonClient({
-      endpoint: EnvProfiles[Environments.MAINNET].rpcApi,
-    });
-    const dep = new JettonDeployController(
-      // @ts-ignore
-      client
-    );
-    if (!address) {
-      return;
-    }
-
-    setShowProgressModal(true);
-    setDeployInProgress(true);
-    setError(null);
-    setDeployProgress({} as DeployProgressState);
-
-    try {
-      await dep.createJetton(
-        {
-          owner: Address.parse(address),
-          onProgress,
-          jettonName: data.name,
-          jettonSymbol: data.symbol,
-          amountToMint: toNano(data.mintAmount),
-        },
-        new ContractDeployer(),
-        adapterId,
-        session,
-        new WalletService()
-      );
-    } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
-      }
-    } finally {
-      setDeployInProgress(false);
-    }
-  }
-
-  const connect = () => {
-    toggleConnectPopup(true);
-  };
+  const [isLoading, setIsLoading] = useState(false);
+  // const [contractAddress, setContractAddress] = useState<Address | null>(Address.parse('EQAkB7IMqZvzE070sYNKD0dWG4pN_WpfaDOr13Uw377AaA24'))
+  const [contractAddress, setContractAddress] = useState<Address | null>(null);
 
   const onExampleClick = (name: string, value: string | number) => {
     setValue(name, value);
   };
 
+  async function deployContract(data: any) {
+    const connection = WalletConnection.getConnection();
+
+    if (!address || !connection) {
+      throw new Error("Wallet not connected");
+    }
+    const params = {
+      owner: Address.parse(address),
+      jettonName: data.name,
+      jettonSymbol: data.symbol,
+      amountToMint: toNano(data.mintAmount),
+      imageUri: data.tokenImage,
+    };
+    setIsLoading(true);
+    const deployParams = createDeployParams(params);
+    const _contractAddress = new ContractDeployer().addressForContract(
+      deployParams
+    );
+
+    const isDeployed = await WalletConnection.isContractDeployed(
+      _contractAddress
+    );
+      
+
+    if (isDeployed) {
+      setError('Contract already deployed')
+      setIsLoading(false);
+      return;
+    }
+    try {
+      const result = await jettonDeployController.createJetton(
+        params,
+        connection
+      );
+      setContractAddress(result);
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  const onCloseJettonDetailsModal = () => {
+    reset();
+    setContractAddress(null);
+  };
+
   return (
     <div className="deployer">
-      <DeployStatus
-        deployInProgress={deployInProgress}
-        open={showProgressModal}
-        onClose={() => setShowProgressModal(false)}
-        deployProgress={deployProgress}
-        error={error}
-      />
       <StyledTop>
-        <img alt='' src={HeroImg} />
-        <h1>
-          Jetton deployer
-        </h1>
+        <img alt="" src={HeroImg} />
+        <h1>Jetton deployer</h1>
       </StyledTop>
-      <StyledForm onSubmit={handleSubmit(onSubmit)}>
+      <StyledForm onSubmit={handleSubmit(deployContract)}>
         {formSpec.map((spec, index) => {
           return (
             <Input
+              required={spec.required}
               clearErrors={clearErrors}
-              required={true}
               key={index}
               errorText="input required"
               error={errors[spec.name]}
               name={spec.name}
               control={control}
               label={spec.label}
-              defaultValue={spec.default}
+              defaultValue={spec.default || ""}
               onExamleClick={onExampleClick}
+              disabled={spec.disabled}
+              // validate={spec.validate}
             />
           );
         })}
-
-        {address ? (
-          <BaseButton type="submit">Deploy contract</BaseButton>
+        {!address ? (
+          <BaseButton onClick={() => toggleConnectPopup(true)}>
+            connect wallet
+          </BaseButton>
         ) : (
-          <BaseButton onClick={connect}>connect wallet</BaseButton>
+          <BaseButton loading={isLoading} type="submit">
+            Deloy
+          </BaseButton>
         )}
+       
       </StyledForm>
+      <Snackbar
+        open={!!error}
+        autoHideDuration={5000}
+        onClose={() => setError(null)}
+      >
+        <Alert severity="warning" sx={{ width: "100%" }}>
+          {error}
+        </Alert>
+      </Snackbar>
+      {contractAddress && address && (
+        <JetonDetailsModal
+          address={Address.parse(address)}
+          contractAddress={contractAddress}
+          onClose={onCloseJettonDetailsModal}
+          open={true}
+        />
+      )}
     </div>
   );
 }

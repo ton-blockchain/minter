@@ -1,68 +1,44 @@
-import { useMemo } from "react";
 import { useRecoilState, useResetRecoilState } from "recoil";
-import { Adapters, Wallet } from "tonstarter-contracts/lib/wallets/types";
-import { ConnectionStateAtom, connectionStateAtom } from ".";
-
-const getSessionlink = (session?: any) => {
-  if (!session || typeof session === "boolean") {
-    return "";
-  }
-  
-  return session.link
-    .replace("ton-test://", "https://test.tonhub.com/")
-    .replace("ton://", "https://tonhub.com/");
-};
+import { connectionStateAtom } from ".";
+import { Providers } from "lib/env-profiles";
+import WalletConnection from "services/wallet-connection";
+import { LOCAL_STORAGE_PROVIDER } from "consts";
 
 function useConnectionStore() {
   const [connectionState, setConnectionState] =
     useRecoilState(connectionStateAtom);
   const resetState = useResetRecoilState(connectionStateAtom);
-  const { session } = connectionState;
 
-  const setPropertyValue = (name: keyof ConnectionStateAtom, value: any) => {
+  const connect = async (
+    provider: Providers,
+    onSessionLink?: (value: string) => void
+  ) => {
+    const wallet = await WalletConnection.connect(
+      provider,
+      onSessionLink ? onSessionLink : () => {},
+      false
+    );
+    localStorage.setItem(LOCAL_STORAGE_PROVIDER, provider);
     setConnectionState((prevState) => ({
       ...prevState,
-      [name]: value,
-    }));
-  };
-
-  const onWalletConnect = (_wallet: Wallet) => {
-    setConnectionState((prevState) => ({
-      ...prevState,
-      address: _wallet.address,
-      wallet: _wallet,
-    }));
-  };
-
-  const onSessionCreated = (_session: any, adapter: Adapters) => {
-    setConnectionState((prevState) => ({
-      ...prevState,
-      session: _session,
-      adapterId: adapter,
-    }));
-  };
-
-  const onConnectionRestored = (wallet: Wallet, adapterId: Adapters, session: any) => {
-    setConnectionState((prevState) => ({
-      ...prevState,
-      session,
-      adapterId,
+      address: wallet.address,
       wallet,
-      address: wallet.address
     }));
   };
 
-  const sessionLink = useMemo(() => getSessionlink(session), [session]);
+
+  const disconnect = () => {
+    resetState()
+    localStorage.removeItem(LOCAL_STORAGE_PROVIDER)
+  }
+
   
 
   return {
     ...connectionState,
-    setPropertyValue,
-    onWalletConnect,
-    resetState,
-    onSessionCreated,
-    sessionLink,
-    onConnectionRestored
+    disconnect,
+    connect,
+    resetState
   };
 }
 

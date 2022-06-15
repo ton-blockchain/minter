@@ -1,15 +1,23 @@
-
+import { styled } from "@mui/styles";
+import { Box } from "@mui/system";
 import useMainStore from "store/main-store/useMainStore";
 import { Popup } from "../Popup";
 import DesktopFlow from "./DesktopFlow";
+
+
+const SyledContainer = styled(Box)({
+  position: "relative",
+  width: 330,
+  padding: 20,
+});
 
 function Connect() {
   const { showConnectModal, toggleConnectPopup } = useMainStore();
   return (
     <Popup open={showConnectModal} onClose={() => toggleConnectPopup(false)}>
-      <div style={{ position: "relative", width: "330px", padding: '20px'}}>
+      <SyledContainer>
         <DesktopFlow />
-      </div>
+      </SyledContainer>
     </Popup>
   );
 }

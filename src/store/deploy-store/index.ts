@@ -5,10 +5,7 @@ import { JettonDeployState } from "lib/deploy-controller";
 
 
 interface DeployStoreState {
-  state: JettonDeployState,
-  contractAddress?: null | string,
-  jWalletAddress?: null | string,
-  jWalletBalance?: null | string,
+ 
 }
 
 

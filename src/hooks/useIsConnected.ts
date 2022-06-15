@@ -1,23 +1,16 @@
+import { LOCAL_STORAGE_PROVIDER } from "consts";
+import { Providers } from "lib/env-profiles";
 import { useEffect } from "react";
 import useConnectionStore from "store/connection-store/useConnectionStore";
 
 function useIsConnected() {
-  const { onConnectionRestored } = useConnectionStore();
+  const { connect } = useConnectionStore();
 
   useEffect(() => {
-    const restore = async () => {
-      try {
-        // todo sy const result = await restoreSession();
-
-        // if (result) {
-        //   onConnectionRestored(result.wallet, result.adapterId, result.session);
-        // }
-      } catch (error) {
-        
-        
-      }
-    };
-    restore();
+    const provider = localStorage.getItem(LOCAL_STORAGE_PROVIDER);
+    if (provider) {
+      connect(provider as Providers);
+    }
   }, []);
 }
 

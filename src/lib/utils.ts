@@ -1,5 +1,7 @@
 import BN from "bn.js";
 import { Address, Cell, TonClient, Wallet } from "ton";
+import { JettonDeployParams, JETTON_DEPLOY_GAS } from "./deploy-controller";
+import { initData, JettonMetaDataKeys, JETTON_MINTER_CODE, mintBody } from "./jetton-minter";
 
 export async function sleep(time: number) {
   return new Promise((resolve) => {
@@ -43,4 +45,23 @@ export function parseGetMethodCall(stack: any[]) {
         throw new Error("unknown type");
     }
   });
+}
+
+
+
+export const createDeployParams = (params: JettonDeployParams ) => {
+  const metadata: { [s in JettonMetaDataKeys]?: string } = {
+    name: params.jettonName,
+    symbol: params.jettonSymbol,
+    description: params.jettonDescripton,
+    image: params.imageUri,
+  };
+
+  return  {
+    code: JETTON_MINTER_CODE,
+    data: initData(params.owner, metadata),
+    deployer: params.owner,
+    value: JETTON_DEPLOY_GAS,
+    message: mintBody(params.owner, params.amountToMint),
+  };
 }

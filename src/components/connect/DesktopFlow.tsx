@@ -1,15 +1,11 @@
 import { Box, styled } from "@mui/system";
-import { APP_NAME } from "consts";
-import { useEffect } from "react";
 import { useState } from "react";
 import useConnectionStore from "store/connection-store/useConnectionStore";
 import useMainStore from "store/main-store/useMainStore";
 import AdaptersList from "./AdaptersList";
 import QR from "./QR";
-import { getTonCon } from "./my-ton-con-service";
+import { providers, Providers } from "lib/env-profiles";
 
-// todo sy
-const adapters = [{ type: "tonhub" }, { type: "ton_wallet" }];
 
 const StyledContainer = styled(Box)({
   display: "flex",
@@ -20,38 +16,27 @@ const StyledContainer = styled(Box)({
 
 const DesktopFlow = () => {
   const [showQr, setShowQr] = useState(false);
-  const {
-    address,
-    onWalletConnect,
-    onSessionCreated,
-    resetState,
-    sessionLink,
-  } = useConnectionStore();
+  const { connect, resetState } = useConnectionStore();
   const { toggleConnectPopup } = useMainStore();
+  const [sessionLink, setSessionLink] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (address) {
-      toggleConnectPopup(false);
-    }
-  }, [address]);
-
-  // TODO sy string
-  const onSelect = async (adapter: string) => {
+  const onSelect = async (provider: Providers) => {
+    const onSessionLinkCreated = (value: string) => setSessionLink(value);
     try {
-      const con = getTonCon(adapter, setShowQr.bind(this, true));
-      const wallet = await con.connect();
-
-      onWalletConnect(wallet);
-
-      // persist chosen adapter? todo sy
-
+      if (provider === Providers.TON_HUB) {
+        setShowQr(true);
+      }
+      await connect(provider, onSessionLinkCreated);
+      toggleConnectPopup(false);
     } catch (error) {
       resetState();
+    } finally {
       setShowQr(false);
+      setSessionLink(null);
     }
   };
 
-  const cancel = () => {
+  const onCancel = () => {
     setShowQr(false);
     resetState();
   };
@@ -59,12 +44,12 @@ const DesktopFlow = () => {
   return (
     <StyledContainer>
       <AdaptersList
-        adapters={adapters}
+        adapters={providers}
         onClose={() => {}}
         open={!showQr}
         select={onSelect}
       />
-      <QR open={showQr} link={sessionLink} onClose={cancel} />
+      <QR open={showQr} link={sessionLink} onClose={onCancel} />
     </StyledContainer>
   );
 };

@@ -3,6 +3,7 @@ import { useTheme, Theme } from "@mui/material/styles";
 import { styled } from "@mui/system";
 import TonhubImg from "assets/tonhub.png";
 import ChromeExtImg from "assets/chrome.svg";
+import { Providers } from "lib/env-profiles";
 
 const StyledListItem = styled(ListItem)({
   background: "white",
@@ -46,21 +47,21 @@ const StyledListItemRight = styled(Box)(({ theme }: { theme: Theme }) => ({
 
 interface Props {
   // todo sy any
-  select: (adapter: string) => void;
+  select: (adapter: Providers) => void;
   open: boolean;
   onClose: () => void;
-  adapters: { type: string }[];
+  adapters: { type: Providers }[];
 }
 
 const adapterConfig = {
-  tonhub: {
+  [Providers.TON_HUB]: {
     // TODO sy
     name: "Tonhub",
     icon: TonhubImg,
     mobileCompatible: true,
     description: "A mobile wallet in your pocket",
   },
-  ton_wallet: {
+  [Providers.EXTENSION]: {
     name: "Google Chrome Plugin",
     icon: ChromeExtImg,
     mobileCompatible: false,

@@ -6,22 +6,21 @@ import useConnectionStore from "store/connection-store/useConnectionStore";
 import useMainStore from "store/main-store/useMainStore";
 import BaseButton from "./BaseButton";
 
-
 const StyledChip = styled(Chip)({
   width: 200,
-  "& .MuiChip-label":{
-    color:'white',
-  }
-})
+  "& .MuiChip-label": {
+    color: "white",
+  },
+});
 
 const StyledToolbar = styled(Toolbar)({
-  display:'flex',
-  justifyContent:'flex-end',
-  width:'100%',
+  display: "flex",
+  justifyContent: "flex-end",
+  width: "100%",
   maxWidth: 960,
-  marginLeft:'auto',
-  marginRight:'auto'
-})
+  marginLeft: "auto",
+  marginRight: "auto",
+});
 
 function Navbar() {
   const { disconnect, address, connect } = useConnectionStore();
@@ -29,10 +28,14 @@ function Navbar() {
   return (
     <AppBar component="nav">
       <StyledToolbar>
-       
         <Box sx={{ display: { xs: "none", sm: "block" } }}>
           {address ? (
-            <StyledChip label={address} />
+            <Box>
+              <StyledChip label={address} />
+              <span style={{marginLeft: 12, cursor: 'pointer'}} onClick={() => disconnect()}>
+                Disconnect
+              </span>
+            </Box>
           ) : (
             <BaseButton onClick={() => toggleConnectPopup(true)}>
               Connect

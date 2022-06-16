@@ -4,6 +4,7 @@ import { styled } from "@mui/system";
 import TonhubImg from "assets/tonhub.png";
 import ChromeExtImg from "assets/chrome.svg";
 import { Providers } from "lib/env-profiles";
+import { isMobile } from "react-device-detect";
 
 const StyledListItem = styled(ListItem)({
   background: "white",
@@ -61,12 +62,12 @@ const adapterConfig = {
     mobileCompatible: true,
     description: "A mobile wallet in your pocket",
   },
-  [Providers.EXTENSION]: {
+  [Providers.EXTENSION] : {
     name: "Google Chrome Plugin",
     icon: ChromeExtImg,
     mobileCompatible: false,
     description: "TON Wallet Plugin for Google Chrome",
-  },
+  }
 };
 
 function AdaptersList({ onClose, select, open, adapters }: Props) {
@@ -82,7 +83,7 @@ function AdaptersList({ onClose, select, open, adapters }: Props) {
         {/* <Title onClose={onClose} text="Select Wallet" /> */}
       </StyledConnectModalTitle>
       <StyledList>
-        {adapters.map((adapter) => {
+        {adapters.filter(a => !isMobile || adapterConfig[a.type].mobileCompatible).map((adapter) => {
           const { type } = adapter;
           // @ts-ignore todo sy
           const { icon, name, description } = adapterConfig[type];

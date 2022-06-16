@@ -5,7 +5,7 @@ import useMainStore from "store/main-store/useMainStore";
 import AdaptersList from "./AdaptersList";
 import QR from "./QR";
 import { providers, Providers } from "lib/env-profiles";
-
+import { isMobile } from "react-device-detect";
 
 const StyledContainer = styled(Box)({
   display: "flex",
@@ -21,10 +21,10 @@ const DesktopFlow = () => {
   const [sessionLink, setSessionLink] = useState<string | null>(null);
 
   const onSelect = async (provider: Providers) => {
-    const onSessionLinkCreated = (value: string) => setSessionLink(value);
+    const onSessionLinkCreated = (value: string) => isMobile ? window.open(value) : setSessionLink(value);
     try {
       if (provider === Providers.TON_HUB) {
-        setShowQr(true);
+        !isMobile && setShowQr(true);
       }
       await connect(provider, onSessionLinkCreated);
       toggleConnectPopup(false);

@@ -13,7 +13,7 @@ import { jettonDeployController } from "lib/deploy-controller";
 import WalletConnection from "services/wallet-connection";
 import { createDeployParams } from "lib/utils";
 import { ContractDeployer } from "lib/contract-deployer";
-import { Alert, Snackbar, Typography } from "@mui/material";
+import { Alert, Snackbar } from "@mui/material";
 import JetonDetailsModal from "./JetonDetailsModal";
 import useMediaQuery from '@mui/material/useMediaQuery';
 
@@ -148,7 +148,7 @@ function Deployer() {
           </BaseButton>
         ) : (
           <BaseButton loading={isLoading} type="submit">
-            Deloy
+            Deploy
           </BaseButton>
         )}
        

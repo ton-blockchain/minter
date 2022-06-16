@@ -10,7 +10,7 @@ const formSpec = [
     placeholder: "Choose a name for your token",
     type: "text",
     default: "MyJetton",
-    required: false,
+    required: true,
   },
   {
     name: "symbol",
@@ -19,7 +19,7 @@ const formSpec = [
     type: "text",
     inputStyle: { textTransform: "uppercase" },
     default: "JET",
-    required: false,
+    required: true,
   },
   {
     name: "decimals",

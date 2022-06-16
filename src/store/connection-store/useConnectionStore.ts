@@ -13,15 +13,15 @@ function useConnectionStore() {
   const onTxUrlReady = (value: string) => {
     window.open(value);
   };
-
-  const connect = async (
+  
+    const connect = async (
     provider: Providers,
     onSessionLink?: (value: string) => void
   ) => {
     const wallet = await WalletConnection.connect(
       provider,
       onSessionLink ? onSessionLink : () => {},
-      false,
+      window.location.search.includes("sandbox"),
       isMobile ? onTxUrlReady : undefined
     );
     localStorage.setItem(LOCAL_STORAGE_PROVIDER, provider);

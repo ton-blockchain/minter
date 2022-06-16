@@ -101,7 +101,9 @@ function JetonDetailsModal({ open, onClose, contractAddress, address }: Props) {
       if (mounted.current) {
         setJettonDetails(res);
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error(error)
+    }
   };
 
   const textLoaderHeight = 30;

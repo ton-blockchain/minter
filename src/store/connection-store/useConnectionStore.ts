@@ -14,7 +14,8 @@ function useConnectionStore() {
   const { isSandbox } = useContext(EnvContext);
 
   const onTxUrlReady = (value: string) => {
-    window.open(value);
+    // @ts-ignore
+    window.location = value;
   };
 
   const connect = async (

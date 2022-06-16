@@ -29,7 +29,7 @@ export function Popup({
         style: {
           maxWidth:'calc(100% - 50px)',
           width: 'fit-content',
-          padding: '30px'
+          // padding: '30px'
         }
       }}
       BackdropProps={{

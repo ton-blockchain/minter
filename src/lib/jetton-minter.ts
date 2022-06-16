@@ -34,7 +34,6 @@ const sha256 = (str: string) => {
   return Buffer.from(sha.digestSync());
 };
 
-// TODO: support for vals over 1024 bytes (otherwise it'll fail here)
 export function buildOnChainData(data: {
   [s: string]: string | undefined;
 }): Cell {

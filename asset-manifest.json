@@ -1,18 +1,19 @@
 {
   "files": {
     "main.css": "/jetton-deployer-webclient/static/css/main.e6c13ad2.css",
-    "main.js": "/jetton-deployer-webclient/static/js/main.555a50fc.js",
+    "main.js": "/jetton-deployer-webclient/static/js/main.600770ce.js",
     "static/js/787.d1d4a2c2.chunk.js": "/jetton-deployer-webclient/static/js/787.d1d4a2c2.chunk.js",
     "static/media/tonhub.png": "/jetton-deployer-webclient/static/media/tonhub.a222cde6645afb15181c.png",
     "static/media/hero.svg": "/jetton-deployer-webclient/static/media/hero.c22282acea064355f0baaa88c232a5cb.svg",
     "static/media/chrome.svg": "/jetton-deployer-webclient/static/media/chrome.167f7ab746641de40862642e809305c6.svg",
     "index.html": "/jetton-deployer-webclient/index.html",
+    "static/media/github-mark.svg": "/jetton-deployer-webclient/static/media/github-mark.04be58c17b3d5e9744424d414240dd85.svg",
     "main.e6c13ad2.css.map": "/jetton-deployer-webclient/static/css/main.e6c13ad2.css.map",
-    "main.555a50fc.js.map": "/jetton-deployer-webclient/static/js/main.555a50fc.js.map",
+    "main.600770ce.js.map": "/jetton-deployer-webclient/static/js/main.600770ce.js.map",
     "787.d1d4a2c2.chunk.js.map": "/jetton-deployer-webclient/static/js/787.d1d4a2c2.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.e6c13ad2.css",
-    "static/js/main.555a50fc.js"
+    "static/js/main.600770ce.js"
   ]
 }

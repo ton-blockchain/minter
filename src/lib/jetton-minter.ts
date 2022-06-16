@@ -1,11 +1,5 @@
 import BN from "bn.js";
-import {
-  Cell,
-  beginCell,
-  Address,
-  toNano,
-  beginDict,
-} from "ton";
+import { Cell, beginCell, Address, toNano, beginDict, Slice } from "ton";
 
 import walletHex from "./contracts/jetton-wallet-bitcode.json";
 import minterHex from "./contracts/jetton-minter-bitcode.json";
@@ -52,15 +46,28 @@ export function buildOnChainData(data: {
       throw new Error(`Unsupported onchain key: ${k}`);
     if (v === undefined) return;
 
-    dict.storeCell(
-      sha256(k),
-      beginCell()
-        .storeUint8(SNAKE_PREFIX)
-        .storeBuffer(
-          Buffer.from(v, jettonOnChainMetadataSpec[k as JettonMetaDataKeys])
-        ) // TODO imageUri is supposed to be saved ascii
-        .endCell()
+    let bufferToStore = Buffer.from(
+      v,
+      jettonOnChainMetadataSpec[k as JettonMetaDataKeys]
     );
+
+    const CELL_MAX_SIZE_BYTES = 750 / 8; // TODO figure out this number
+
+    const rootCell = new Cell();
+    let currentCell = rootCell;
+
+    while (bufferToStore.length > 0) {
+      currentCell.bits.writeUint8(SNAKE_PREFIX);
+      currentCell.bits.writeBuffer(bufferToStore.slice(0, CELL_MAX_SIZE_BYTES));
+      bufferToStore = bufferToStore.slice(CELL_MAX_SIZE_BYTES);
+      if (bufferToStore.length > 0) {
+        let newCell = new Cell();
+        currentCell.refs.push(newCell);
+        currentCell = newCell;
+      }
+    }
+
+    dict.storeCell(sha256(k), rootCell);
   });
 
   return beginCell()
@@ -84,10 +91,22 @@ export function parseOnChainData(contentCell: Cell): {
     throw new Error("Expected onchain content marker");
 
   const dict = contentSlice.readDict(KEYLEN, (s) => {
-    const valSlice = s.toCell().beginParse();
-    if (valSlice.readUint(8).toNumber() !== SNAKE_PREFIX)
-      throw new Error("Only snake format is supported");
-    return valSlice.readRemainingBytes();
+    let buffer = Buffer.from("");
+
+    const sliceToVal = (s: Slice, v: Buffer) => {
+      s.toCell().beginParse();
+      if (s.readUint(8).toNumber() !== SNAKE_PREFIX)
+        throw new Error("Only snake format is supported");
+
+      v = Buffer.concat([v, s.readRemainingBytes()]);
+      if (s.remainingRefs === 1) {
+        v = sliceToVal(s.readRef(), v)
+      } 
+
+      return v;
+    };
+
+    return sliceToVal(s, buffer);
   });
 
   const res: { [s in JettonMetaDataKeys]?: string } = {};

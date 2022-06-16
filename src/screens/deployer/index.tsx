@@ -15,7 +15,7 @@ import { createDeployParams } from "lib/utils";
 import { ContractDeployer } from "lib/contract-deployer";
 import { Alert, Snackbar } from "@mui/material";
 import JetonDetailsModal from "./JetonDetailsModal";
-import useMediaQuery from '@mui/material/useMediaQuery';
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 const StyledForm = styled("form")({
   display: "flex",
@@ -62,7 +62,7 @@ function Deployer() {
   const [isLoading, setIsLoading] = useState(false);
   // const [contractAddress, setContractAddress] = useState<Address | null>(Address.parse('EQAkB7IMqZvzE070sYNKD0dWG4pN_WpfaDOr13Uw377AaA24'))
   const [contractAddress, setContractAddress] = useState<Address | null>(null);
-  const matches = useMediaQuery('(max-width:600px)');
+  const matches = useMediaQuery("(max-width:600px)");
 
   const onExampleClick = (name: string, value: string | number) => {
     setValue(name, value);
@@ -90,14 +90,14 @@ function Deployer() {
     const isDeployed = await WalletConnection.isContractDeployed(
       _contractAddress
     );
-      
 
     if (isDeployed) {
-      setError('Contract already deployed')
-      setIsLoading(false);
-      return;
+      setError("Contract already deployed");
+      // setIsLoading(false);
+      // return;
     }
     try {
+      setContractAddress(null);
       const result = await jettonDeployController.createJetton(
         params,
         connection
@@ -120,8 +120,8 @@ function Deployer() {
   return (
     <div className="deployer">
       <StyledTop>
-       {!matches &&  <img alt="" src={HeroImg} />}
-        <h1 style={{fontSize:matches ? 20 : 40 }}>Jetton deployer</h1>
+        {!matches && <img alt="" src={HeroImg} />}
+        <h1 style={{ fontSize: matches ? 20 : 40 }}>Jetton deployer</h1>
       </StyledTop>
       <StyledForm onSubmit={handleSubmit(deployContract)}>
         {formSpec.map((spec, index) => {
@@ -151,7 +151,6 @@ function Deployer() {
             Deploy
           </BaseButton>
         )}
-       
       </StyledForm>
       <Snackbar
         open={!!error}

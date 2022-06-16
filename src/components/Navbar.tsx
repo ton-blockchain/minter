@@ -2,6 +2,8 @@ import { AppBar, Button, Chip, IconButton, Toolbar } from "@mui/material";
 import { Typography } from "@mui/material";
 import { styled } from "@mui/styles";
 import { Box } from "@mui/system";
+import { EnvContext } from "App";
+import { useContext } from "react";
 import useConnectionStore from "store/connection-store/useConnectionStore";
 import useMainStore from "store/main-store/useMainStore";
 import BaseButton from "./BaseButton";
@@ -25,10 +27,12 @@ const StyledToolbar = styled(Toolbar)({
 function Navbar() {
   const { disconnect, address, connect } = useConnectionStore();
   const { toggleConnectPopup } = useMainStore();
+  const { isSandbox } = useContext(EnvContext);
+  
   return (
-    <AppBar component="nav">
+    <AppBar component="nav" sx={isSandbox ? {"background": "orange"} : {}}>
       <StyledToolbar>
-        <Box sx={{ display: { xs: "none", sm: "block" } }}>
+        <Box sx={{ display: {  sm: "block" } }}>
           {address ? (
             <Box>
               <StyledChip label={address} />

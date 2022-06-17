@@ -35,7 +35,7 @@ function Navbar() {
             <StyledChip label={address} />
           ) : (
             <BaseButton onClick={() => toggleConnectPopup(true)}>
-              Connect
+              Connect Wallet
             </BaseButton>
           )}
         </Box>

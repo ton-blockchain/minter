@@ -13,7 +13,7 @@ import { jettonDeployController } from "lib/deploy-controller";
 import WalletConnection from "services/wallet-connection";
 import { createDeployParams } from "lib/utils";
 import { ContractDeployer } from "lib/contract-deployer";
-import { Alert, Snackbar, Typography } from "@mui/material";
+import { Alert, Snackbar, Typography, Link } from "@mui/material";
 import JetonDetailsModal from "./JetonDetailsModal";
 import useMediaQuery from '@mui/material/useMediaQuery';
 
@@ -121,9 +121,15 @@ function Deployer() {
     <div className="deployer">
       <StyledTop>
        {!matches &&  <img alt="" src={HeroImg} />}
-        <h1 style={{fontSize:matches ? 20 : 40 }}>Jetton deployer</h1>
+        <h1 style={{fontSize:matches ? 20 : 40 }}>Jetton Deployer</h1>
       </StyledTop>
       <StyledForm onSubmit={handleSubmit(deployContract)}>
+
+      <Typography variant="body2" gutterBottom>
+        Jetton is the fungible <Link href="https://github.com/ton-blockchain/TIPs/issues/74">token standard</Link> for <Link href="https://ton.org">TON blockchain</Link>. This educational tool allows you to deploy your own Jetton to mainnet in one click. You will need at least 0.25 TON for deployment fees.
+        Never deploy code that you've never seen before! This deployer is fully open source with all smart contract code <Link href="https://github.com/ton-defi-org/jetton-deployer-contracts">available here</Link>. The HTML form is also <Link href="https://github.com/ton-defi-org/jetton-deployer-webclient">open source</Link> and served from <Link href="https://ton-defi-org.github.io/jetton-deployer-webclient">GitHub Pages</Link>.
+      </Typography>
+
         {formSpec.map((spec, index) => {
           return (
             <Input
@@ -144,7 +150,7 @@ function Deployer() {
         })}
         {!address ? (
           <BaseButton onClick={() => toggleConnectPopup(true)}>
-            connect wallet
+            Connect Wallet
           </BaseButton>
         ) : (
           <BaseButton loading={isLoading} type="submit">

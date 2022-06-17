@@ -1,6 +1,6 @@
 import { AppBar, Button, Chip, IconButton, Toolbar } from "@mui/material";
 import { Typography } from "@mui/material";
-import { styled } from "@mui/styles";
+import { styled } from "@mui/material";
 import { Box } from "@mui/system";
 import useConnectionStore from "store/connection-store/useConnectionStore";
 import useMainStore from "store/main-store/useMainStore";

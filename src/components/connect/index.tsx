@@ -1,4 +1,4 @@
-import { styled } from "@mui/styles";
+import { styled } from "@mui/material";
 import { Box } from "@mui/system";
 import useMainStore from "store/main-store/useMainStore";
 import { Popup } from "../Popup";

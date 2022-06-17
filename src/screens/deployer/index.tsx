@@ -4,7 +4,7 @@ import { Address, toNano } from "ton";
 import useConnectionStore from "store/connection-store/useConnectionStore";
 import Input from "components/Input";
 import { formSpec } from "./data";
-import { styled } from "@mui/styles";
+import { styled } from "@mui/material";
 import useMainStore from "store/main-store/useMainStore";
 import BaseButton from "components/BaseButton";
 import HeroImg from "assets/hero.svg";

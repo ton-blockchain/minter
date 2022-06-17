@@ -1,7 +1,7 @@
 import { Button, FormControl, TextField } from "@mui/material";
 import FormHelperText from "@mui/material/FormHelperText";
 import { Control, Controller } from "react-hook-form";
-import { styled } from "@mui/styles";
+import { styled } from "@mui/material";
 import { useRef } from "react";
 import BaseButton from "./BaseButton";
 

@@ -41,9 +41,16 @@ const formSpec = [
 
   },
   {
+    name: "description",
+    label: "Description",
+    placeholder: "Jetton description",
+    type: "string",
+    default: "My jetton description",
+  },
+  {
     name: "initialSupply",
     label: "Initial supply",
-    placeholder: "Initial supply of token. usually 0?",
+    placeholder: "Initial supply of token. usually 0",
     type: "number",
     default: '0',
     example: false,
@@ -53,7 +60,7 @@ const formSpec = [
 
   {
     name: "tokenImage",
-    label: "Jetton image",
+    label: "Jetton logo URI",
     placeholder: "Image of the jetton",
     type: "string",
     required: false,

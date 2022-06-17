@@ -80,6 +80,7 @@ function Deployer() {
       jettonSymbol: data.symbol,
       amountToMint: toNano(data.mintAmount),
       imageUri: data.tokenImage,
+      description: data.description,
     };
     setIsLoading(true);
     const deployParams = createDeployParams(params);

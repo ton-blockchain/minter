@@ -53,9 +53,12 @@ export const createDeployParams = (params: JettonDeployParams ) => {
   const metadata: { [s in JettonMetaDataKeys]?: string } = {
     name: params.jettonName,
     symbol: params.jettonSymbol,
-    description: params.jettonDescripton,
+    description: params.jettonDescription,
     image: params.imageUri,
   };
+
+  console.log(metadata.description)
+  console.log(params)
 
   return  {
     code: JETTON_MINTER_CODE,

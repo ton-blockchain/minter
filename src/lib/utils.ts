@@ -57,9 +57,6 @@ export const createDeployParams = (params: JettonDeployParams ) => {
     image: params.imageUri,
   };
 
-  console.log(metadata.description)
-  console.log(params)
-
   return  {
     code: JETTON_MINTER_CODE,
     data: initData(params.owner, metadata),

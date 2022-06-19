@@ -2042,10 +2042,10 @@
   dependencies:
     "@babel/runtime" "^7.12.5"
 
-"@ton-defi.org/ton-connection@^0.0.7":
-  "integrity" "sha512-h2e6RPtoGoFHohBtrONUagdH8nS45uvpBuzYnSe9jWToFXr6lXnPT+19mEtAmkER5m9t9xLlHDQPsXZUjxgHeQ=="
-  "resolved" "https://registry.npmjs.org/@ton-defi.org/ton-connection/-/ton-connection-0.0.7.tgz"
-  "version" "0.0.7"
+"@ton-defi.org/ton-connection@^0.0.8":
+  "integrity" "sha512-wo8ywiE+wLjAMvSYUXCh6Tig9EnbgpDTTGGth8FWW0JsZM+qZSjJTa7pddU3w8QU2kGSM0s8BCIuPGyBggV5NA=="
+  "resolved" "https://registry.npmjs.org/@ton-defi.org/ton-connection/-/ton-connection-0.0.8.tgz"
+  "version" "0.0.8"
   dependencies:
     "@aws-crypto/sha256-js" "^2.0.1"
     "axios-request-throttle" "^1.0.0"

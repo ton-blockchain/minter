@@ -4,14 +4,18 @@ import { Providers } from "lib/env-profiles";
 import WalletConnection from "services/wallet-connection";
 import { LOCAL_STORAGE_PROVIDER } from "consts";
 import { isMobile } from "react-device-detect";
+import { useContext } from "react";
+import { EnvContext } from "../../App";
 
 function useConnectionStore() {
   const [connectionState, setConnectionState] =
     useRecoilState(connectionStateAtom);
   const resetState = useResetRecoilState(connectionStateAtom);
+  const { isSandbox } = useContext(EnvContext);
 
   const onTxUrlReady = (value: string) => {
-    window.open(value);
+    // @ts-ignore
+    window.location = value;
   };
 
   const connect = async (
@@ -21,7 +25,7 @@ function useConnectionStore() {
     const wallet = await WalletConnection.connect(
       provider,
       onSessionLink ? onSessionLink : () => {},
-      false,
+      isSandbox,
       isMobile ? onTxUrlReady : undefined
     );
     localStorage.setItem(LOCAL_STORAGE_PROVIDER, provider);

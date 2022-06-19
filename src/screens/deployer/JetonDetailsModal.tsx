@@ -1,11 +1,12 @@
-import { Box, Skeleton, Typography } from "@mui/material";
+import { Avatar, Box, Link, Skeleton, Typography } from "@mui/material";
 import { Popup } from "components/Popup";
-import { styled } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
+import { styled } from "@mui/styles";
+import { useContext, useEffect, useRef, useState } from "react";
 import WalletConnection from "services/wallet-connection";
 import { Address } from "ton";
 import { jettonDeployController } from "lib/deploy-controller";
 import BaseButton from "components/BaseButton";
+import { EnvContext } from "../../App";
 
 const StyledContainer = styled(Box)({
   display: "flex",
@@ -46,11 +47,11 @@ const StyledButton = styled(Box)({
 });
 
 const StyledImagePlaceholder = styled(Box)({
-  width:'100%',
-  height: '100%',
-  background:'black',
-  opacity: 0.4
-})
+  width: "100%",
+  height: "100%",
+  background: "black",
+  opacity: 0.4,
+});
 
 const StyledTextSections = styled(Box)({
   width: "calc(100% - 200px)",
@@ -71,6 +72,13 @@ function JetonDetailsModal({ open, onClose, contractAddress, address }: Props) {
   const [jettonDetails, setJettonDetails] = useState<any>({});
   const mounted = useRef(false);
   const { jetton, wallet } = jettonDetails;
+  const { isSandbox } = useContext(EnvContext);
+
+  const toScannerUrl = (address: string) =>
+    isSandbox
+      ? `https://sandbox.tonwhales.com/explorer/address/${address}`
+      : `https://tonscan.org/jetton/${address}`;
+
   useEffect(() => {
     mounted.current = true;
     getJettonDetails();
@@ -93,22 +101,27 @@ function JetonDetailsModal({ open, onClose, contractAddress, address }: Props) {
       if (mounted.current) {
         setJettonDetails(res);
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const textLoaderHeight = 30;
 
   return (
-    <Popup open={open} onClose={onClose}>
+    <div style={{ marginTop: 10 }}>
       <StyledContainer>
         <StyledFlex>
           <StyledImage>
             {!jetton ? (
               <Skeleton variant="rectangular" width="100%" height="100%" />
+            ) : jetton.image ? (
+              <Avatar
+                sx={{ width: "100%", height: "100%" }}
+                src={jetton.image}
+              />
             ) : (
-              jetton.image ? <img src={jetton.image} /> : 
               <StyledImagePlaceholder />
-
             )}
           </StyledImage>
           <StyledTextSections>
@@ -143,8 +156,13 @@ function JetonDetailsModal({ open, onClose, contractAddress, address }: Props) {
             <StyledSection>
               {jetton ? (
                 <>
-                  <Typography variant="h5">Jetton contract address:</Typography>
-                  <Typography>{jetton.contractAddress}</Typography>
+                  <Typography variant="h5">Jetton minter address:</Typography>
+                  <Link
+                    target="_blank"
+                    href={toScannerUrl(jetton.contractAddress)}
+                  >
+                    <Typography>{jetton.contractAddress}</Typography>
+                  </Link>
                 </>
               ) : (
                 <Skeleton
@@ -157,8 +175,13 @@ function JetonDetailsModal({ open, onClose, contractAddress, address }: Props) {
             <StyledSection>
               {wallet ? (
                 <>
-                  <Typography variant="h5">ownerJWallet address:</Typography>
-                  <Typography>{wallet.ownerJWallet}</Typography>
+                  <Typography variant="h5">Jetton wallet address:</Typography>
+                  <Link
+                    target="_blank"
+                    href={toScannerUrl(wallet.ownerJWallet)}
+                  >
+                    <Typography>{wallet.ownerJWallet}</Typography>
+                  </Link>
                 </>
               ) : (
                 <Skeleton
@@ -170,11 +193,8 @@ function JetonDetailsModal({ open, onClose, contractAddress, address }: Props) {
             </StyledSection>
           </StyledTextSections>
         </StyledFlex>
-        <StyledButton>
-          <BaseButton onClick={onClose}>Close</BaseButton>
-        </StyledButton>
       </StyledContainer>
-    </Popup>
+    </div>
   );
 }
 

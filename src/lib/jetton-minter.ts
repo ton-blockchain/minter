@@ -1,11 +1,5 @@
 import BN from "bn.js";
-import {
-  Cell,
-  beginCell,
-  Address,
-  toNano,
-  beginDict,
-} from "ton";
+import { Cell, beginCell, Address, toNano, beginDict, Slice } from "ton";
 
 import walletHex from "./contracts/jetton-wallet-bitcode.json";
 import minterHex from "./contracts/jetton-minter-bitcode.json";
@@ -40,7 +34,6 @@ const sha256 = (str: string) => {
   return Buffer.from(sha.digestSync());
 };
 
-// TODO: support for vals over 1024 bytes (otherwise it'll fail here)
 export function buildOnChainData(data: {
   [s: string]: string | undefined;
 }): Cell {
@@ -50,17 +43,30 @@ export function buildOnChainData(data: {
   Object.entries(data).forEach(([k, v]: [string, string | undefined]) => {
     if (!jettonOnChainMetadataSpec[k as JettonMetaDataKeys])
       throw new Error(`Unsupported onchain key: ${k}`);
-    if (v === undefined) return;
+    if (v === undefined || v === "") return;
 
-    dict.storeCell(
-      sha256(k),
-      beginCell()
-        .storeUint8(SNAKE_PREFIX)
-        .storeBuffer(
-          Buffer.from(v, jettonOnChainMetadataSpec[k as JettonMetaDataKeys])
-        ) // TODO imageUri is supposed to be saved ascii
-        .endCell()
+    let bufferToStore = Buffer.from(
+      v,
+      jettonOnChainMetadataSpec[k as JettonMetaDataKeys]
     );
+
+    const CELL_MAX_SIZE_BYTES = 750 / 8; // TODO figure out this number
+
+    const rootCell = new Cell();
+    let currentCell = rootCell;
+
+    while (bufferToStore.length > 0) {
+      currentCell.bits.writeUint8(SNAKE_PREFIX);
+      currentCell.bits.writeBuffer(bufferToStore.slice(0, CELL_MAX_SIZE_BYTES));
+      bufferToStore = bufferToStore.slice(CELL_MAX_SIZE_BYTES);
+      if (bufferToStore.length > 0) {
+        let newCell = new Cell();
+        currentCell.refs.push(newCell);
+        currentCell = newCell;
+      }
+    }
+
+    dict.storeCell(sha256(k), rootCell);
   });
 
   return beginCell()
@@ -84,10 +90,22 @@ export function parseOnChainData(contentCell: Cell): {
     throw new Error("Expected onchain content marker");
 
   const dict = contentSlice.readDict(KEYLEN, (s) => {
-    const valSlice = s.toCell().beginParse();
-    if (valSlice.readUint(8).toNumber() !== SNAKE_PREFIX)
-      throw new Error("Only snake format is supported");
-    return valSlice.readRemainingBytes();
+    let buffer = Buffer.from("");
+
+    const sliceToVal = (s: Slice, v: Buffer) => {
+      s.toCell().beginParse();
+      if (s.readUint(8).toNumber() !== SNAKE_PREFIX)
+        throw new Error("Only snake format is supported");
+
+      v = Buffer.concat([v, s.readRemainingBytes()]);
+      if (s.remainingRefs === 1) {
+        v = sliceToVal(s.readRef(), v)
+      } 
+
+      return v;
+    };
+
+    return sliceToVal(s, buffer);
   });
 
   const res: { [s in JettonMetaDataKeys]?: string } = {};

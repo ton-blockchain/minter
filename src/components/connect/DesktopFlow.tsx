@@ -5,7 +5,9 @@ import useMainStore from "store/main-store/useMainStore";
 import AdaptersList from "./AdaptersList";
 import QR from "./QR";
 import { providers, Providers } from "lib/env-profiles";
-
+import { isMobile } from "react-device-detect";
+import { Button } from "@mui/material";
+import BaseButton from "components/BaseButton";
 
 const StyledContainer = styled(Box)({
   display: "flex",
@@ -21,10 +23,17 @@ const DesktopFlow = () => {
   const [sessionLink, setSessionLink] = useState<string | null>(null);
 
   const onSelect = async (provider: Providers) => {
-    const onSessionLinkCreated = (value: string) => setSessionLink(value);
+    const onSessionLinkCreated = (value: string) => {
+      if (isMobile) {
+        // @ts-ignore
+        window.location = value;
+      } else {
+        return setSessionLink(value);
+      }
+    };
     try {
       if (provider === Providers.TON_HUB) {
-        setShowQr(true);
+        !isMobile && setShowQr(true);
       }
       await connect(provider, onSessionLinkCreated);
       toggleConnectPopup(false);
@@ -43,13 +52,14 @@ const DesktopFlow = () => {
 
   return (
     <StyledContainer>
-      <AdaptersList
+      {!sessionLink && <AdaptersList
         adapters={providers}
         onClose={() => {}}
         open={!showQr}
         select={onSelect}
-      />
-      <QR open={showQr} link={sessionLink} onClose={onCancel} />
+      />}
+      {showQr && <QR open={showQr} link={sessionLink} onClose={onCancel} />}
+      {!showQr && sessionLink && <BaseButton onClick={()=>{window.open(sessionLink)}}>Connect to tonhub</BaseButton>}
     </StyledContainer>
   );
 };

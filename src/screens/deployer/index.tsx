@@ -79,10 +79,11 @@ function Deployer() {
       jettonSymbol: data.symbol,
       amountToMint: toNano(data.mintAmount),
       imageUri: data.tokenImage,
-      description: data.description,
+      jettonDescription: data.description,
     };
     setIsLoading(true);
     const deployParams = createDeployParams(params);
+    console.log(deployParams)
     const _contractAddress = new ContractDeployer().addressForContract(
       deployParams
     );

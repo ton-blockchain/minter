@@ -33,7 +33,7 @@ export enum JettonDeployState {
 export interface JettonDeployParams {
   jettonName: string;
   jettonSymbol: string;
-  jettonDescripton?: string;
+  jettonDescription?: string;
   owner: Address;
   imageUri?: string;
   amountToMint: BN;

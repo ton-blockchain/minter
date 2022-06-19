@@ -1,6 +1,6 @@
 import { Avatar, Box, Link, Skeleton, Typography } from "@mui/material";
 import { Popup } from "components/Popup";
-import { styled } from "@mui/styles";
+import { styled } from "@mui/material";
 import { useContext, useEffect, useRef, useState } from "react";
 import WalletConnection from "services/wallet-connection";
 import { Address } from "ton";

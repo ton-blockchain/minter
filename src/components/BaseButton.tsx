@@ -1,7 +1,7 @@
 import { Button } from "@mui/material";
 import React, { ReactNode } from "react";
 import LoadingButton from "@mui/lab/LoadingButton";
-import { styled } from "@mui/styles";
+import { styled } from "@mui/material";
 import { Box } from "@mui/system";
 
 interface Props {

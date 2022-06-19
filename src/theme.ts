@@ -1,7 +1,7 @@
 import { Theme } from '@mui/material/styles';
 import { createTheme } from '@mui/material/styles';
 
-declare module '@mui/styles' {
+declare module '@mui/material' {
   interface DefaultTheme extends Theme {}
 }
 

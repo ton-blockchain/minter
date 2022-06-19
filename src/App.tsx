@@ -1,7 +1,7 @@
 import useIsConnected from "hooks/useIsConnected";
 import { Deployer } from "screens/deployer";
 import Connect from "components/connect";
-import { styled } from "@mui/styles";
+import { styled } from "@mui/material";
 import { Box } from "@mui/system";
 import Navbar from "components/Navbar";
 import React from "react";

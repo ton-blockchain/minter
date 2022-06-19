@@ -102,14 +102,14 @@ function JetonDetailsModal({ open, onClose, contractAddress, address }: Props) {
         setJettonDetails(res);
       }
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
   };
 
   const textLoaderHeight = 30;
 
   return (
-    <div style={{marginTop: 10}}>
+    <div style={{ marginTop: 10 }}>
       <StyledContainer>
         <StyledFlex>
           <StyledImage>

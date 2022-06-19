@@ -1,6 +1,6 @@
 import { AppBar, Button, Chip, IconButton, Link, Toolbar } from "@mui/material";
 import { Typography } from "@mui/material";
-import { styled } from "@mui/styles";
+import { styled } from "@mui/material";
 import { Box } from "@mui/system";
 import { EnvContext } from "App";
 import { useContext } from "react";
@@ -46,7 +46,7 @@ function Navbar() {
             </Box>
           ) : (
             <BaseButton onClick={() => toggleConnectPopup(true)}>
-              Connect
+              Connect Wallet
             </BaseButton>
           )}
         </Box>

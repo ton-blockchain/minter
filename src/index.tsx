@@ -10,7 +10,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { RecoilRoot } from "recoil";
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider } from '@mui/material/styles';
-import { ThemeProvider as MakeStylesProvider } from '@mui/styles';
+import { ThemeProvider as MakeStylesProvider } from '@mui/material';
 import theme from "theme";
 
 

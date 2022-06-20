@@ -10,7 +10,8 @@ import {
   parseGetMethodCall,
   waitForContractDeploy,
 } from "./utils";
-import { TonConnection } from "@ton-defi.org/ton-connection";
+import { cellToAddress, TonConnection } from "@ton-defi.org/ton-connection";
+import { zeroAddress } from "./utils";
 import {
   initData,
   mintBody,
@@ -129,8 +130,8 @@ class JettonDeployController {
     // @ts-ignore
     await tonConnection.requestTransaction({
       to: contractAddress,
-      value: toNano(0.01), // TODO assuming this is wrong
-      message: changeAdminBody(Address.parse("0:0")),
+      value: toNano(0.01),
+      message: changeAdminBody(zeroAddress()),
     });
   }
 
@@ -139,53 +140,37 @@ class JettonDeployController {
     owner: Address,
     tonConnection: TonConnection
   ) {
-    const jettonDataRes = await tonConnection._tonClient.callGetMethod(
+    const minter = await tonConnection.makeGetCall(
       contractAddr,
-      "get_jetton_data"
+      "get_jetton_data",
+      [],
+      ([_, __, adminCell, contentCell]) => ({
+        ...parseOnChainData(contentCell as unknown as Cell),
+        admin: cellToAddress(adminCell),
+      })
     );
 
-    const contentCell = parseGetMethodCall(jettonDataRes.stack)[3] as Cell;
-    const dict = parseOnChainData(contentCell);
-
-    const jwalletAdressRes = await tonConnection._tonClient.callGetMethod(
+    const jWalletAddress = await tonConnection.makeGetCall(
       contractAddr,
       "get_wallet_address",
-      [
-        [
-          "tvm.Slice",
-          beginCell()
-            .storeAddress(owner)
-            .endCell()
-            .toBoc({ idx: false })
-            .toString("base64"),
-        ],
-      ]
+      [beginCell().storeAddress(owner).endCell()],
+      ([addressCell]) => cellToAddress(addressCell)
     );
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const ownerJWalletAddr = (
-      parseGetMethodCall(jwalletAdressRes.stack)[0] as Cell
-    )
-      .beginParse()
-      .readAddress()!;
 
-    const jwalletDataRes = await tonConnection._tonClient.callGetMethod(
-      ownerJWalletAddr,
-      "get_wallet_data"
+    const jettonWallet = await tonConnection.makeGetCall(
+      jWalletAddress,
+      "get_wallet_data",
+      [],
+      ([amount, jWalletAddressCell, jettonMasterAddressCell]) => ({
+        balance: (amount as unknown as BN).toString(),
+        jWalletAddress: cellToAddress(jWalletAddressCell),
+        jettonMasterAddress: cellToAddress(jettonMasterAddressCell),
+      })
     );
 
     return {
-      jetton: {
-        ...dict,
-        contractAddress: contractAddr.toFriendly(),
-        admin: (parseGetMethodCall(jettonDataRes.stack)[2] as Cell).beginParse().readAddress()?.toFriendly(),
-      },
-      wallet: {
-        jettonAmount: (
-          parseGetMethodCall(jwalletDataRes.stack)[0] as BN
-        ).toString(),
-        ownerJWallet: ownerJWalletAddr.toFriendly(),
-        owner: owner.toFriendly(),
-      },
+      minter,
+      jettonWallet,
     };
   }
 }

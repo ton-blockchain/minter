@@ -83,7 +83,7 @@ function Deployer() {
     };
     setIsLoading(true);
     const deployParams = createDeployParams(params);
-    console.log(deployParams)
+    console.log(deployParams);
     const _contractAddress = new ContractDeployer().addressForContract(
       deployParams
     );
@@ -197,6 +197,32 @@ function Deployer() {
           onClose={onCloseJettonDetailsModal}
           open={true}
         />
+      )}
+      {contractAddress && address && (
+        <BaseButton
+          onClick={async () => {
+            await jettonDeployController.burnAdmin(
+              contractAddress,
+              WalletConnection.getConnection()
+            );
+          }}
+        >
+          Burn admin
+        </BaseButton>
+      )}
+      {contractAddress && address && (
+        <BaseButton
+          onClick={async () => {
+            const deets = await jettonDeployController.getJettonDetails(
+              contractAddress,
+              Address.parse(address),
+              WalletConnection.getConnection()
+            );
+            console.log(JSON.stringify(deets, null, 3));
+          }}
+        >
+          Deets Temp
+        </BaseButton>
       )}
     </div>
   );

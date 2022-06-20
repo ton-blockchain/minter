@@ -12,6 +12,7 @@ export const JETTON_WALLET_CODE = Cell.fromBoc(walletHex.hex)[0];
 export const JETTON_MINTER_CODE = Cell.fromBoc(minterHex.hex)[0]; // code cell from build output
 
 enum OPS {
+  ChangeAdmin = 3,
   Mint = 21,
   InternalTransfer = 0x178d4519,
   Transfer = 0xf8a7ea5,
@@ -99,8 +100,8 @@ export function parseOnChainData(contentCell: Cell): {
 
       v = Buffer.concat([v, s.readRemainingBytes()]);
       if (s.remainingRefs === 1) {
-        v = sliceToVal(s.readRef(), v)
-      } 
+        v = sliceToVal(s.readRef(), v);
+      }
 
       return v;
     };
@@ -134,7 +135,7 @@ export function initData(
 
 export function mintBody(owner: Address, jettonValue: BN): Cell {
   return beginCell()
-    .storeUint(OPS.Mint, 32) // opcode (reference TODO)
+    .storeUint(OPS.Mint, 32)
     .storeUint(0, 64) // queryid
     .storeAddress(owner)
     .storeCoins(toNano(0.2)) // gas fee
@@ -150,5 +151,13 @@ export function mintBody(owner: Address, jettonValue: BN): Cell {
         .storeBit(false) // forward_payload in this slice, not separate cell
         .endCell()
     )
+    .endCell();
+}
+
+export function changeAdminBody(newAdmin: Address): Cell {
+  return beginCell()
+    .storeUint(OPS.ChangeAdmin, 32)
+    .storeUint(0, 64) // queryid
+    .storeAddress(newAdmin)
     .endCell();
 }

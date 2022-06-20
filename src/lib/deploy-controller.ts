@@ -5,7 +5,11 @@ import { ContractDeployer } from "./contract-deployer";
 // TODO temporary
 import axios from "axios";
 import axiosThrottle from "axios-request-throttle";
-import { createDeployParams, parseGetMethodCall, waitForContractDeploy } from "./utils";
+import {
+  createDeployParams,
+  parseGetMethodCall,
+  waitForContractDeploy,
+} from "./utils";
 import { TonConnection } from "@ton-defi.org/ton-connection";
 import {
   initData,
@@ -13,6 +17,7 @@ import {
   JETTON_MINTER_CODE,
   parseOnChainData,
   JettonMetaDataKeys,
+  changeAdminBody,
 } from "./jetton-minter";
 axiosThrottle.use(axios, { requestsPerSecond: 0.9 }); // required since toncenter jsonRPC limits to 1 req/sec without API key
 
@@ -40,20 +45,17 @@ export interface JettonDeployParams {
 }
 
 class JettonDeployController {
-
   async createJetton(
     params: JettonDeployParams,
     tonConnection: TonConnection
   ): Promise<Address> {
     const contractDeployer = new ContractDeployer();
 
-
-
     // params.onProgress?.(JettonDeployState.BALANCE_CHECK);
     const balance = await tonConnection._tonClient.getBalance(params.owner);
     if (balance.lt(JETTON_DEPLOY_GAS))
       throw new Error("Not enough balance in deployer wallet");
-    const deployParams = createDeployParams(params)
+    const deployParams = createDeployParams(params);
     const contractAddr = contractDeployer.addressForContract(deployParams);
 
     if (await tonConnection._tonClient.isContractDeployed(contractAddr)) {
@@ -123,6 +125,15 @@ class JettonDeployController {
     return contractAddr;
   }
 
+  async burnAdmin(contractAddress: Address, tonConnection: TonConnection) {
+    // @ts-ignore
+    await tonConnection.requestTransaction({
+      to: contractAddress,
+      value: toNano(0.01), // TODO assuming this is wrong
+      message: changeAdminBody(Address.parse("0:0")),
+    });
+  }
+
   async getJettonDetails(
     contractAddr: Address,
     owner: Address,
@@ -163,7 +174,11 @@ class JettonDeployController {
     );
 
     return {
-      jetton: { ...dict, contractAddress: contractAddr.toFriendly() },
+      jetton: {
+        ...dict,
+        contractAddress: contractAddr.toFriendly(),
+        admin: (parseGetMethodCall(jettonDataRes.stack)[2] as Cell).beginParse().readAddress()?.toFriendly(),
+      },
       wallet: {
         jettonAmount: (
           parseGetMethodCall(jwalletDataRes.stack)[0] as BN

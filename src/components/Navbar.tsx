@@ -1,14 +1,20 @@
-import { AppBar, Button, Chip, IconButton, Link, Toolbar } from "@mui/material";
-import { Typography } from "@mui/material";
+import {
+  AppBar,
+  Chip,
+  ClickAwayListener,
+  IconButton,
+  Toolbar,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { styled } from "@mui/material";
 import { Box } from "@mui/system";
 import { EnvContext } from "App";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import useConnectionStore from "store/connection-store/useConnectionStore";
-import useMainStore from "store/main-store/useMainStore";
-import BaseButton from "./BaseButton";
 import githubIcon from "../github-mark.svg";
-
+import { APP_GRID, JETTON_DEPLOYER_CONTRACTS_GITHUB } from "consts";
+import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 const StyledChip = styled(Chip)({
   width: 200,
   "& .MuiChip-label": {
@@ -18,48 +24,87 @@ const StyledChip = styled(Chip)({
 
 const StyledToolbar = styled(Toolbar)({
   display: "flex",
-  justifyContent: "flex-end",
+  justifyContent: "space-between",
   width: "100%",
-  maxWidth: 960,
-  marginLeft: "auto",
-  marginRight: "auto",
 });
 
+const StyledLeftSide = styled(Box)({});
+
+const StyledRightSide = styled(Box)({
+  display:'flex',
+  alignItems:'center',
+  gap:10
+});
+
+const StyledAppBar = styled(AppBar)(
+  ({ isSandBox }: { isSandBox: boolean }) => ({
+    maxWidth: APP_GRID,
+    background: isSandBox ? "orange" : "",
+    left: "50%",
+    transform: "translate(-50%)",
+  })
+);
+
 function Navbar() {
-  const { disconnect, address, connect } = useConnectionStore();
-  const { toggleConnectPopup } = useMainStore();
+  const { disconnect, address } = useConnectionStore();
   const { isSandbox } = useContext(EnvContext);
 
   return (
-    <AppBar component="nav" sx={isSandbox ? { background: "orange" } : {}}>
+    <StyledAppBar isSandBox={isSandbox}>
       <StyledToolbar>
-        <Box sx={{ display: { sm: "block" } }}>
-          {address ? (
-            <Box>
-              <StyledChip label={address} />
-              <span
-                style={{ marginLeft: 12, cursor: "pointer" }}
-                onClick={() => disconnect()}
-              >
-                Disconnect
-              </span>
-            </Box>
-          ) : (
-            <BaseButton onClick={() => toggleConnectPopup(true)}>
-              Connect Wallet
-            </BaseButton>
+        <StyledLeftSide>
+          <Typography>Jetton Deployer</Typography>
+        </StyledLeftSide>
+        <StyledRightSide>
+          {address && (
+            <ConnectedSection address={address} disconnect={disconnect} />
           )}
-        </Box>
-        <Link
-          href="https://github.com/ton-defi-org/jetton-deployer-contracts"
-          target="_blank"
-          sx={{marginLeft: 2}}
-        >
-          <img src={githubIcon} />
-        </Link>
+          <IconButton href={JETTON_DEPLOYER_CONTRACTS_GITHUB} target="_blank">
+            <img src={githubIcon} />
+          </IconButton>
+        </StyledRightSide>
       </StyledToolbar>
-    </AppBar>
+    </StyledAppBar>
   );
 }
+
+interface ConnectedSectionProps {
+  address: string;
+  disconnect: () => void;
+}
+
+
+const StyledConnectionSection = styled(Box)({
+  position:'relative',
+  display:'flex',
+  alignItems:'center',
+  gap: 10
+});
+
+const ConnectedSection = ({ address, disconnect }: ConnectedSectionProps) => {
+  return (
+   
+      <StyledConnectionSection>
+        <Tooltip title='Disconnect'>
+        <IconButton onClick={disconnect}>
+        <PowerSettingsNewIcon />
+        </IconButton>
+        </Tooltip>
+        <Tooltip title={address}>
+        <StyledChip
+          label={address}
+        />
+        </Tooltip>
+        {/* {showDisconnectButton && (
+          <ClickAwayListener onClickAway={() => setShowDisconnectButton(false)}>
+            <StyledDisconnectButton>
+            <BaseButton>Disconnect</BaseButton>
+          </StyledDisconnectButton>
+          </ClickAwayListener>
+        )} */}
+      </StyledConnectionSection>
+   
+  );
+};
 
 export default Navbar;

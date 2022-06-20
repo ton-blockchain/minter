@@ -19,7 +19,7 @@ const StyledListItemButton = styled(ListItemButton)({
 });
 
 const StyledContainer = styled(Box)({
-  width: "300px",
+  width: "100%",
 });
 
 const StyledConnectModalTitle = styled(Box)({

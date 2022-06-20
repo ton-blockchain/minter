@@ -4,7 +4,7 @@ import { Address, toNano } from "ton";
 import useConnectionStore from "store/connection-store/useConnectionStore";
 import Input from "components/Input";
 import { formSpec } from "./data";
-import { Link, styled, Typography, Alert, Snackbar } from "@mui/material";
+import { styled, Alert, Snackbar } from "@mui/material";
 import useMainStore from "store/main-store/useMainStore";
 import BaseButton from "components/BaseButton";
 import HeroImg from "assets/hero.svg";
@@ -15,6 +15,8 @@ import { createDeployParams } from "lib/utils";
 import { ContractDeployer } from "lib/contract-deployer";
 import JetonDetailsModal from "./JetonDetailsModal";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import Description from "./Description";
+import Screen from "components/Screen";
 
 const StyledForm = styled("form")({
   display: "flex",
@@ -36,15 +38,8 @@ const StyledTop = styled(Box)({
   },
 });
 
-const StyledWarning = styled(Box)({
-  textAlign: "center",
-  "& p": {
-    fontSize: "20px",
-    fontWeight: 500,
-  },
-});
 
-function Deployer() {
+function DeployerScreen() {
   const {
     control,
     handleSubmit,
@@ -59,8 +54,8 @@ function Deployer() {
 
   const [error, setError] = useState<null | string>(null);
   const [isLoading, setIsLoading] = useState(false);
-  // const [contractAddress, setContractAddress] = useState<Address | null>(Address.parse('EQAkB7IMqZvzE070sYNKD0dWG4pN_WpfaDOr13Uw377AaA24'))
-  const [contractAddress, setContractAddress] = useState<Address | null>(null);
+  const [contractAddress, setContractAddress] = useState<Address | null>(Address.parse('EQAkB7IMqZvzE070sYNKD0dWG4pN_WpfaDOr13Uw377AaA24'))
+  // const [contractAddress, setContractAddress] = useState<Address | null>(null);
   const matches = useMediaQuery("(max-width:600px)");
 
   const onExampleClick = (name: string, value: string | number) => {
@@ -83,7 +78,7 @@ function Deployer() {
     };
     setIsLoading(true);
     const deployParams = createDeployParams(params);
-    console.log(deployParams)
+    console.log(deployParams);
     const _contractAddress = new ContractDeployer().addressForContract(
       deployParams
     );
@@ -94,8 +89,6 @@ function Deployer() {
 
     if (isDeployed) {
       setError("Contract already deployed");
-      // setIsLoading(false);
-      // return;
     }
     try {
       setContractAddress(null);
@@ -119,39 +112,13 @@ function Deployer() {
   };
 
   return (
-    <div className="deployer">
+    <Screen id="deployer">
       <StyledTop>
         {!matches && <img alt="" src={HeroImg} />}
         <h1 style={{ fontSize: matches ? 20 : 40 }}>Jetton Deployer</h1>
       </StyledTop>
       <StyledForm onSubmit={handleSubmit(deployContract)}>
-        <Typography variant="body2" gutterBottom>
-          Jetton is the fungible{" "}
-          <Link href="https://github.com/ton-blockchain/TIPs/issues/74">
-            token standard
-          </Link>{" "}
-          for <Link href="https://ton.org">TON blockchain</Link>. This
-          educational tool allows you to deploy your own Jetton to mainnet in
-          one click. You will need at least 0.25 TON for deployment fees. Never
-          deploy code that you've never seen before! This deployer is fully open
-          source with all smart contract code{" "}
-          <Link href="https://github.com/ton-defi-org/jetton-deployer-contracts">
-            available here
-          </Link>
-          . The HTML form is also{" "}
-          <Link href="https://github.com/ton-defi-org/jetton-deployer-webclient">
-            open source
-          </Link>{" "}
-          and served from{" "}
-          <Link href="https://ton-defi-org.github.io/jetton-deployer-webclient">
-            GitHub Pages
-          </Link>
-          . Is this deployer safe? Yes! read{" "}
-          <Link href="https://github.com/ton-defi-org/jetton-deployer-contracts#protect-yourself-and-your-users">
-            this
-          </Link>{" "}
-          to understand why.
-        </Typography>
+        <Description />
 
         {formSpec.map((spec, index) => {
           return (
@@ -198,8 +165,8 @@ function Deployer() {
           open={true}
         />
       )}
-    </div>
+    </Screen>
   );
 }
 
-export { Deployer };
+export { DeployerScreen };

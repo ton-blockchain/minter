@@ -10,13 +10,22 @@ interface Props {
   disabled?: boolean;
   onClick?: () => void;
   type?: "button" | "submit" | "reset";
+  fontSize?: number;
+  minWidth?: number;
 }
 
-const StyledButton = styled(LoadingButton)({
+interface StyledButtonProps{
+  fontSize: number;
+  minWidth?: number;
+}
+
+const StyledButton = styled(LoadingButton)(({fontSize, minWidth}:StyledButtonProps) => ({
   width: "fit-content",
   marginLeft: "auto",
   marginRight: "auto",
-});
+  fontSize: fontSize,
+  minWidth: minWidth || 'unset'
+}));
 
 const StyledBox = styled(Box)({
   display: "flex",
@@ -33,10 +42,14 @@ function BaseButton({
   disabled,
   onClick,
   type = "button",
+  fontSize = 16,
+  minWidth
 }: Props) {
   return (
     <StyledBox>
       <StyledButton
+        fontSize={fontSize}
+        minWidth={minWidth}
         type={type}
         onClick={onClick ? onClick : () => {}}
         variant="contained"

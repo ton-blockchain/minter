@@ -1,23 +1,31 @@
-import { Box, Fade, styled } from '@mui/material'
-import React, { ReactNode } from 'react'
+import { Box, Fade, styled } from "@mui/material";
+import React, { ReactNode } from "react";
 
-interface Props{
-    children: ReactNode;
-    id?: string;
+interface Props {
+  children: ReactNode;
+  id?: string;
 }
 
 const StyledScreen = styled(Box)({
-    paddingTop: 130
-})
+  display: "flex",
+  alignItems: "center",
+  flexDirection: "column",
+});
 
-function Screen({children, id = ''}: Props) {
+const StyledContent = styled(Box)({
+  background:'#F7FAFC',
+  width:'100%',
+  borderRadius: '20px'
+});
+
+function Screen({ children, id = "" }: Props) {
   return (
     <Fade in>
-        <StyledScreen id={id}>
-        {children}
-    </StyledScreen>
+      <StyledScreen id={id}>
+        <StyledContent> {children}</StyledContent>
+      </StyledScreen>
     </Fade>
-  )
+  );
 }
 
-export default Screen
+export default Screen;

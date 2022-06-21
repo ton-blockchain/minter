@@ -30,11 +30,15 @@ function useConnectionStore() {
       isSandbox,
       isMobile ? onTxUrlReady : undefined
     );
+
+    
+    
     localStorage.setItem(LOCAL_STORAGE_PROVIDER, provider);
     setConnectionState((prevState) => ({
       ...prevState,
       address: wallet.address,
       wallet,
+      adapterId: provider
     }));
   };
 

@@ -1,6 +1,6 @@
 import { styled } from "@mui/material";
 import { Box } from "@mui/system";
-import BaseButton from "components/BaseButton";
+import { delay } from "@ton-defi.org/ton-connection";
 import { Popup } from "components/Popup";
 import { providers, Providers } from "lib/env-profiles";
 import { useState } from "react";
@@ -11,25 +11,25 @@ import QR from "./ConnectQR";
 
 const SyledContainer = styled(Box)({
   position: "relative",
-  width: 420,
-  padding: 20,
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
   background: "white",
+  width:'fit-content'
 });
 
-interface Props{
+interface Props {
   open: boolean;
   onClose: () => void;
 }
 
-function ConnectModal({open, onClose}: Props) {
+function ConnectModal({ open, onClose }: Props) {
   const [sessionLink, setSessionLink] = useState<string | null>(null);
   const [showQr, setShowQr] = useState(false);
   const { connect, resetState } = useConnectionStore();
 
   const onSelect = async (provider: Providers) => {
+    resetState();
     const onSessionLinkCreated = (value: string) => {
       if (isMobile) {
         // @ts-ignore
@@ -57,29 +57,23 @@ function ConnectModal({open, onClose}: Props) {
     resetState();
   };
 
+  const close = async () => {
+    onClose();
+    await delay(200);
+    setShowQr(false);
+    setSessionLink(null);
+  };
+
   return (
-    <Popup open={open} onClose={onClose}>
+    <Popup open={open} onClose={close}>
       <SyledContainer>
-        <>
-          {!sessionLink && (
-            <AdaptersList
-              adapters={providers}
-              onClose={() => {}}
-              open={!showQr}
-              select={onSelect}
-            />
-          )}
-          {showQr && <QR open={showQr} link={sessionLink} onClose={onCancel} />}
-          {!showQr && sessionLink && (
-            <BaseButton
-              onClick={() => {
-                window.open(sessionLink);
-              }}
-            >
-              Connect to tonhub
-            </BaseButton>
-          )}
-        </>
+        <AdaptersList
+          adapters={providers}
+          onClose={close}
+          open={!showQr}
+          select={onSelect}
+        />
+        <QR open={showQr} link={sessionLink} onClose={onCancel} />
       </SyledContainer>
     </Popup>
   );

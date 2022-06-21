@@ -1,5 +1,4 @@
-import { Button, FormControl, TextField } from "@mui/material";
-import FormHelperText from "@mui/material/FormHelperText";
+import { Box, Typography } from "@mui/material";
 import { Control, Controller } from "react-hook-form";
 import { styled } from "@mui/material";
 import { useRef } from "react";
@@ -20,13 +19,57 @@ interface Props {
   validate?: (val: string) => boolean;
 }
 
-const StyledInput = styled(TextField)({
-  "& input": {
-    paddingTop: "13px",
-    paddingBottom: "13px",
+const StyledError = styled(Box)({
+  position: "absolute",
+  left: 10,
+  top: "calc(100% + 1px)",
+  "& p": {
+    fontSize: 12,
+    fontWeight: 500,
+    color: '#F06360'
   },
-  "& button": {
-    fontSize: "12px",
+});
+
+const StyledContainer = styled(Box)(({ error }: { error: boolean }) => ({
+  position: "relative",
+  width: "100%",
+  height: 46,
+  display: "flex",
+  alignItems: "center",
+  background: '#EDF2F7',
+  borderRadius: 10,
+  paddingRight: 5,
+  border: error ? '1px solid #F06360' : '1px solid transparent',
+  transition:'0.2s all',
+  "& .base-button": {
+    height: "calc(100% - 10px)",
+    width: 90,
+    "& button": {
+      padding: "unset",
+      width: "100%",
+      height: "100%",
+      fontSize: 12,
+    },
+  },
+}));
+
+const StyledInput = styled("input")({
+  flex: 1,
+  height: "100%",
+  border: "unset",
+  textIndent: 16,
+  fontSize: 16,
+  background: "transparent",
+  outline: "none",
+
+  "&::placeholder": {
+    color: "#7A828A",
+    transition: "0.2s all",
+  },
+  "&:focus": {
+    "&::placeholder": {
+      opacity: 0,
+    },
   },
 });
 
@@ -59,31 +102,29 @@ function Input({
     <Controller
       name={name}
       control={control}
-      defaultValue={disabled ? defaultValue : ''}
+      defaultValue={disabled ? defaultValue : ""}
       rules={{
         required,
         validate: validate,
-        
       }}
       render={({ field: { onChange, value } }) => (
-        <FormControl>
+        <StyledContainer error={error}>
           <StyledInput
             ref={ref}
             value={value || ""}
             onFocus={onFocus}
             onChange={onChange}
-            label={label}
-            type={type}
+            placeholder={label}
             disabled={disabled}
-          
-            InputProps={{
-              endAdornment: !disabled ? (
-                <BaseButton onClick={onClick}>example</BaseButton>
-              ) : null,
-            }}
           />
-          {error && errorText && <FormHelperText>{errorText}</FormHelperText>}
-        </FormControl>
+          <BaseButton onClick={onClick}>Example</BaseButton>
+
+          {error && errorText && (
+            <StyledError>
+              <Typography>{errorText}</Typography>
+            </StyledError>
+          )}
+        </StyledContainer>
       )}
     />
   );

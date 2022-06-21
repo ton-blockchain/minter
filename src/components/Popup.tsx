@@ -20,17 +20,18 @@ export function Popup({
 }: Props) {
   return (
     <Dialog
-      
       className={`${className} ${blur && "popup-filter"}`}
       fullWidth
       onClose={onClose}
       open={open}
-      PaperProps ={{
+      PaperProps={{
         style: {
-          maxWidth:'calc(100% - 50px)',
-          width: 'fit-content',
-          // padding: '30px'
-        }
+          maxWidth: "calc(100% - 50px)",
+          width: "fit-content",
+          borderRadius: '10px',
+          padding: 35
+         
+        },
       }}
       BackdropProps={{
         style: {

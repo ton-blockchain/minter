@@ -1,27 +1,24 @@
 import { Box } from "@mui/material";
-import QRCode from "react-qr-code";
+import { QRCodeSVG } from "qrcode.react";
+
 import Fade from "@mui/material/Fade";
 import CircularProgress from "@mui/material/CircularProgress";
-import { styled } from '@mui/system';
+import { styled } from "@mui/system";
+import TonhubQr from 'assets/tonhub-qr.png'
+import Header from "./Header";
 
 const StyledContainer = styled(Box)({
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
-  padding: "20px",
-  background: "white",
-  width: "260px",
-  height: "260px",
 });
 
 const StyledQrBox = styled(Box)({
- 
-  width:'100%',
-  height:'100%',
-  display: 'flex',
-  alignItems:'center',
-  justifyContent:'center'
-
+  width: 260,
+  height: 260,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
 });
 
 interface Props {
@@ -34,19 +31,33 @@ function QR({ onClose, link, open }: Props) {
   if (!open) {
     return null;
   }
-  
-  
+
   return (
     <StyledContainer>
+       <Header title ='Connect to tonhub' onClose={onClose} />
       <StyledQrBox>
+       
         {link ? (
           <Fade in={true}>
-            <Box>
-              <QRCode   value={link} />
-            </Box>
+            <span>
+              <QRCodeSVG
+                value={link}
+                size={260}
+                bgColor={"#ffffff"}
+                fgColor={"#002457"}
+                level={"L"}
+                includeMargin={false}
+                imageSettings={{
+                  src: TonhubQr,
+                  height: 50,
+                  width: 50,
+                  excavate: true,
+                }}
+              />
+            </span>
           </Fade>
         ) : (
-          <CircularProgress  />
+          <CircularProgress />
         )}
       </StyledQrBox>
     </StyledContainer>

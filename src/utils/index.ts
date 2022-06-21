@@ -5,3 +5,4 @@ export const makeElipsisAddress = (address?: string | null, padding?: number): s
     const secondPart = address.substr(address.length - paddingValue);
     return `${firstPart}...${secondPart}`;
 };
+

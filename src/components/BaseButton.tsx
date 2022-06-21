@@ -12,29 +12,40 @@ interface Props {
   type?: "button" | "submit" | "reset";
   fontSize?: number;
   minWidth?: number;
+  fullWidth?: boolean;
 }
 
 interface StyledButtonProps{
   fontSize: number;
   minWidth?: number;
+  fullWidth?: boolean;
 }
 
-const StyledButton = styled(LoadingButton)(({fontSize, minWidth}:StyledButtonProps) => ({
-  width: "fit-content",
+const StyledButton = styled(LoadingButton)(({fontSize, minWidth, fullWidth}:StyledButtonProps) => ({
   marginLeft: "auto",
   marginRight: "auto",
   fontSize: fontSize,
-  minWidth: minWidth || 'unset'
+  minWidth: minWidth || 'unset',
+  boxShadow:'none',
+  borderRadius: 6,
+  fontWeight: 600,
+  padding: fullWidth ? 0 : '',
+  width: fullWidth ? '100%' : 'fit-content',
+  height:fullWidth ? '100%' : ''
+  
 }));
 
-const StyledBox = styled(Box)({
+const StyledBox = styled(Box)(({fullWidth}:{fullWidth?: boolean}) => ({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
+  width: fullWidth ? '100%' : 'unset',
+  height: fullWidth ? '100%' : 'unset',
+  
   "& .MuiCircularProgress-root":{
     color:'white'
   }
-});
+}))
 
 function BaseButton({
   children,
@@ -42,11 +53,12 @@ function BaseButton({
   disabled,
   onClick,
   type = "button",
-  fontSize = 16,
-  minWidth
+  fontSize = 14,
+  minWidth,
+  fullWidth
 }: Props) {
   return (
-    <StyledBox>
+    <StyledBox className="base-button" fullWidth={fullWidth}>
       <StyledButton
         fontSize={fontSize}
         minWidth={minWidth}
@@ -55,6 +67,7 @@ function BaseButton({
         variant="contained"
         loading={loading}
         disabled={disabled}
+        fullWidth={fullWidth}
       >
         {children}
       </StyledButton>

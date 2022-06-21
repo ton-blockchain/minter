@@ -47,16 +47,7 @@ const formSpec = [
     type: "string",
     default: "My jetton description",
   },
-  {
-    name: "initialSupply",
-    label: "Initial supply",
-    placeholder: "Initial supply of token. usually 0",
-    type: "number",
-    default: '0',
-    example: false,
-    disabled: true,
 
-  },
 
   {
     name: "tokenImage",

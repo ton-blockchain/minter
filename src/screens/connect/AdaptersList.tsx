@@ -5,6 +5,7 @@ import TonhubImg from "assets/tonhub.png";
 import ChromeExtImg from "assets/chrome.svg";
 import { Providers } from "lib/env-profiles";
 import { isMobile } from "react-device-detect";
+import Header from "./Header";
 
 const StyledListItem = styled(ListItem)({
   background: "white",
@@ -12,19 +13,20 @@ const StyledListItem = styled(ListItem)({
 });
 const StyledList = styled(List)({
   width: "100%",
+  display:'flex',
+  flexDirection:'column',
+  gap:30,
+  padding: 0
 });
 
 const StyledListItemButton = styled(ListItemButton)({
-  paddingLeft: 10,
+  padding: 0
 });
 
 const StyledContainer = styled(Box)({
-  width: "100%",
+  
 });
 
-const StyledConnectModalTitle = styled(Box)({
-  paddingLeft: "10px",
-});
 const StyledIcon = styled("img")({
   width: "40px",
   height: "40px",
@@ -79,9 +81,7 @@ function AdaptersList({ onClose, select, open, adapters }: Props) {
 
   return (
     <StyledContainer>
-      <StyledConnectModalTitle>
-        {/* <Title onClose={onClose} text="Select Wallet" /> */}
-      </StyledConnectModalTitle>
+       <Header title='Select Wallet' onClose={onClose} />
       <StyledList>
         {adapters.filter(a => !isMobile || adapterConfig[a.type].mobileCompatible).map((adapter) => {
           const { type } = adapter;

@@ -5,8 +5,8 @@ import { createContext, useEffect } from "react";
 import useConnectionStore from "store/connection-store/useConnectionStore";
 import { APP_GRID, LOCAL_STORAGE_PROVIDER, ROUTES } from "consts";
 import { Providers } from "lib/env-profiles";
-import { Route, Routes, useNavigate } from "react-router-dom";
-import { ConnectScreen, DeployerScreen } from "screens";
+import { Route, Routes, useNavigate, useRoutes } from "react-router-dom";
+import { ConnectScreen, DeployerScreen, JettonScreen } from "screens";
 
 const StyledApp = styled(Box)({
   maxWidth: APP_GRID,
@@ -28,13 +28,19 @@ function App() {
   useEffect(() => {
     (async () => {
       const provider = localStorage.getItem(LOCAL_STORAGE_PROVIDER);
+      
       if (!provider) {
         navigate(ROUTES.connect);
         return;
       }
+   ;
       try {
+       
         await connect(provider as Providers);
+       
+       
       } catch (error) {
+        
         navigate(ROUTES.connect);
       }
     })();
@@ -52,10 +58,10 @@ function App() {
         <Routes>
           <Route path={ROUTES.deployer} element={<DeployerScreen />} />
           <Route path={ROUTES.connect} element={<ConnectScreen />} />
-         
+          <Route path={ROUTES.jettonId} element={<JettonScreen />} />
+          <Route path={ROUTES.jetton} element={<JettonScreen />} />
         </Routes>
-
-      </EnvContext.Provider>{" "}
+      </EnvContext.Provider>
     </StyledApp>
   );
 }

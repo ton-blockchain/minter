@@ -1,8 +1,14 @@
-import { Link, Typography } from '@mui/material'
-import React from 'react'
+import { Link, styled, Typography } from '@mui/material'
+import { Box } from '@mui/system'
+
+const StyledContainer = styled(Box)({
+  padding: 47,
+  position:'relative',
+})
 
 function Description() {
   return (
+    <StyledContainer>
     <Typography variant="body2" gutterBottom>
     Jetton is the fungible{" "}
     <Link href="https://github.com/ton-blockchain/TIPs/issues/74">
@@ -30,6 +36,7 @@ function Description() {
     </Link>{" "}
     to understand why.
   </Typography>
+  </StyledContainer>
   )
 }
 

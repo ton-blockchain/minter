@@ -1,61 +1,72 @@
-import {
-  AppBar,
-  Chip,
-  ClickAwayListener,
-  IconButton,
-  Toolbar,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { AppBar, Chip, IconButton, Tooltip, Typography } from "@mui/material";
 import { styled } from "@mui/material";
 import { Box } from "@mui/system";
 import { EnvContext } from "App";
 import { useContext, useState } from "react";
 import useConnectionStore from "store/connection-store/useConnectionStore";
-import githubIcon from "../github-mark.svg";
+import githubIcon from "assets/github.svg";
 import { APP_GRID, JETTON_DEPLOYER_CONTRACTS_GITHUB } from "consts";
-import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
+import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
+import LogoImg from "assets/logo.svg";
+
 const StyledChip = styled(Chip)({
   width: 200,
+  background: "#4BA0E3",
   "& .MuiChip-label": {
     color: "white",
   },
 });
 
-const StyledToolbar = styled(Toolbar)({
+const StyledToolbar = styled(Box)({
   display: "flex",
   justifyContent: "space-between",
   width: "100%",
+  height: "100%",
 });
 
-const StyledLeftSide = styled(Box)({});
-
 const StyledRightSide = styled(Box)({
-  display:'flex',
-  alignItems:'center',
-  gap:10
+  display: "flex",
+  alignItems: "center",
+  gap: 10,
 });
 
 const StyledAppBar = styled(AppBar)(
   ({ isSandBox }: { isSandBox: boolean }) => ({
     maxWidth: APP_GRID,
-    background: isSandBox ? "orange" : "",
-    left: "50%",
-    transform: "translate(-50%)",
+    background: isSandBox ? "orange" : "transparent",
+
+    boxShadow: "none",
+    paddingTop: 40,
+    paddingBottom: 20,
   })
 );
+
+const StyledLogo = styled(Box)({
+  display: "flex",
+  color: "#6D6D6D",
+  alignItems: "center",
+  gap: 11,
+  "& p": {
+    fontSize: 18,
+    fontWeight: 700,
+  },
+});
 
 function Navbar() {
   const { disconnect, address } = useConnectionStore();
   const { isSandbox } = useContext(EnvContext);
 
   return (
-    <StyledAppBar isSandBox={isSandbox}>
+    <StyledAppBar position="static" isSandBox={isSandbox}>
       <StyledToolbar>
-        <StyledLeftSide>
-          <Typography>Jetton Deployer</Typography>
-        </StyledLeftSide>
+        <StyledLogo>
+          <IconButton>
+            <img src={LogoImg} />
+          </IconButton>
+          <Typography>Jettonic</Typography>
+        </StyledLogo>
         <StyledRightSide>
+          <BetaIndicator />
           {address && (
             <ConnectedSection address={address} disconnect={disconnect} />
           )}
@@ -73,37 +84,44 @@ interface ConnectedSectionProps {
   disconnect: () => void;
 }
 
-
 const StyledConnectionSection = styled(Box)({
-  position:'relative',
-  display:'flex',
-  alignItems:'center',
-  gap: 10
+  position: "relative",
+  display: "flex",
+  alignItems: "center",
+  gap: 10,
 });
+
+const StyledBetaIndicator = styled(Box)({
+  border: "2px solid #50A7EA",
+  borderRadius: 20,
+  padding: "5px 20px",
+  "& p": {
+    color: "#50A7EA",
+    fontSize: 16,
+    fontWeight: 500,
+  },
+});
+
+const BetaIndicator = () => {
+  return (
+    <StyledBetaIndicator>
+      <Typography>Beta</Typography>
+    </StyledBetaIndicator>
+  );
+};
 
 const ConnectedSection = ({ address, disconnect }: ConnectedSectionProps) => {
   return (
-   
-      <StyledConnectionSection>
-        <Tooltip title='Disconnect'>
+    <StyledConnectionSection>
+      <Tooltip title="Disconnect">
         <IconButton onClick={disconnect}>
-        <PowerSettingsNewIcon />
+          <PowerSettingsNewIcon style={{ color: "#4BA0E3" }} />
         </IconButton>
-        </Tooltip>
-        <Tooltip title={address}>
-        <StyledChip
-          label={address}
-        />
-        </Tooltip>
-        {/* {showDisconnectButton && (
-          <ClickAwayListener onClickAway={() => setShowDisconnectButton(false)}>
-            <StyledDisconnectButton>
-            <BaseButton>Disconnect</BaseButton>
-          </StyledDisconnectButton>
-          </ClickAwayListener>
-        )} */}
-      </StyledConnectionSection>
-   
+      </Tooltip>
+      <Tooltip title={address}>
+        <StyledChip label={address} />
+      </Tooltip>
+    </StyledConnectionSection>
   );
 };
 

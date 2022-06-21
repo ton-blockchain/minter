@@ -5,14 +5,20 @@ import { ContractDeployer } from "./contract-deployer";
 // TODO temporary
 import axios from "axios";
 import axiosThrottle from "axios-request-throttle";
-import { createDeployParams, parseGetMethodCall, waitForContractDeploy } from "./utils";
-import { TonConnection } from "@ton-defi.org/ton-connection";
+import {
+  createDeployParams,
+  parseGetMethodCall,
+  waitForContractDeploy,
+} from "./utils";
+import { cellToAddress, TonConnection } from "@ton-defi.org/ton-connection";
+import { zeroAddress } from "./utils";
 import {
   initData,
   mintBody,
   JETTON_MINTER_CODE,
   parseOnChainData,
   JettonMetaDataKeys,
+  changeAdminBody,
 } from "./jetton-minter";
 axiosThrottle.use(axios, { requestsPerSecond: 0.9 }); // required since toncenter jsonRPC limits to 1 req/sec without API key
 
@@ -40,20 +46,17 @@ export interface JettonDeployParams {
 }
 
 class JettonDeployController {
-
   async createJetton(
     params: JettonDeployParams,
     tonConnection: TonConnection
   ): Promise<Address> {
     const contractDeployer = new ContractDeployer();
 
-
-
     // params.onProgress?.(JettonDeployState.BALANCE_CHECK);
     const balance = await tonConnection._tonClient.getBalance(params.owner);
     if (balance.lt(JETTON_DEPLOY_GAS))
       throw new Error("Not enough balance in deployer wallet");
-    const deployParams = createDeployParams(params)
+    const deployParams = createDeployParams(params);
     const contractAddr = contractDeployer.addressForContract(deployParams);
 
     if (await tonConnection._tonClient.isContractDeployed(contractAddr)) {
@@ -123,54 +126,51 @@ class JettonDeployController {
     return contractAddr;
   }
 
+  async burnAdmin(contractAddress: Address, tonConnection: TonConnection) {
+    // @ts-ignore
+    await tonConnection.requestTransaction({
+      to: contractAddress,
+      value: toNano(0.01),
+      message: changeAdminBody(zeroAddress()),
+    });
+  }
+
   async getJettonDetails(
     contractAddr: Address,
     owner: Address,
     tonConnection: TonConnection
   ) {
-    const jettonDataRes = await tonConnection._tonClient.callGetMethod(
+    const minter = await tonConnection.makeGetCall(
       contractAddr,
-      "get_jetton_data"
+      "get_jetton_data",
+      [],
+      ([_, __, adminCell, contentCell]) => ({
+        ...parseOnChainData(contentCell as unknown as Cell),
+        admin: cellToAddress(adminCell),
+      })
     );
 
-    const contentCell = parseGetMethodCall(jettonDataRes.stack)[3] as Cell;
-    const dict = parseOnChainData(contentCell);
-
-    const jwalletAdressRes = await tonConnection._tonClient.callGetMethod(
+    const jWalletAddress = await tonConnection.makeGetCall(
       contractAddr,
       "get_wallet_address",
-      [
-        [
-          "tvm.Slice",
-          beginCell()
-            .storeAddress(owner)
-            .endCell()
-            .toBoc({ idx: false })
-            .toString("base64"),
-        ],
-      ]
+      [beginCell().storeAddress(owner).endCell()],
+      ([addressCell]) => cellToAddress(addressCell)
     );
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const ownerJWalletAddr = (
-      parseGetMethodCall(jwalletAdressRes.stack)[0] as Cell
-    )
-      .beginParse()
-      .readAddress()!;
 
-    const jwalletDataRes = await tonConnection._tonClient.callGetMethod(
-      ownerJWalletAddr,
-      "get_wallet_data"
+    const jettonWallet = await tonConnection.makeGetCall(
+      jWalletAddress,
+      "get_wallet_data",
+      [],
+      ([amount, jWalletAddressCell, jettonMasterAddressCell]) => ({
+        balance: (amount as unknown as BN).toString(),
+        jWalletAddress: cellToAddress(jWalletAddressCell),
+        jettonMasterAddress: cellToAddress(jettonMasterAddressCell),
+      })
     );
 
     return {
-      jetton: { ...dict, contractAddress: contractAddr.toFriendly() },
-      wallet: {
-        jettonAmount: (
-          parseGetMethodCall(jwalletDataRes.stack)[0] as BN
-        ).toString(),
-        ownerJWallet: ownerJWalletAddr.toFriendly(),
-        owner: owner.toFriendly(),
-      },
+      minter,
+      jettonWallet,
     };
   }
 }

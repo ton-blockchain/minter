@@ -1,12 +1,28 @@
 import BN from "bn.js";
-import { Address, Cell, TonClient, Wallet } from "ton";
+import { Address, beginCell, Cell, TonClient, Wallet } from "ton";
 import { JettonDeployParams, JETTON_DEPLOY_GAS } from "./deploy-controller";
-import { initData, JettonMetaDataKeys, JETTON_MINTER_CODE, mintBody } from "./jetton-minter";
+import {
+  initData,
+  JettonMetaDataKeys,
+  JETTON_MINTER_CODE,
+  mintBody,
+} from "./jetton-minter";
 
 export async function sleep(time: number) {
   return new Promise((resolve) => {
     setTimeout(resolve, time);
   });
+}
+
+export function zeroAddress(): Address {
+  return beginCell()
+    .storeUint(2, 2)
+    .storeUint(0, 1)
+    .storeUint(0, 8)
+    .storeUint(0, 256)
+    .endCell()
+    .beginParse()
+    .readAddress() as Address;
 }
 
 export async function waitForSeqno(wallet: Wallet) {
@@ -22,7 +38,10 @@ export async function waitForSeqno(wallet: Wallet) {
   };
 }
 
-export async function waitForContractDeploy(address: Address, client: TonClient) {
+export async function waitForContractDeploy(
+  address: Address,
+  client: TonClient
+) {
   let isDeployed = false;
   let maxTries = 25;
   while (!isDeployed && maxTries > 0) {
@@ -47,9 +66,7 @@ export function parseGetMethodCall(stack: any[]) {
   });
 }
 
-
-
-export const createDeployParams = (params: JettonDeployParams ) => {
+export const createDeployParams = (params: JettonDeployParams) => {
   const metadata: { [s in JettonMetaDataKeys]?: string } = {
     name: params.jettonName,
     symbol: params.jettonSymbol,
@@ -57,11 +74,11 @@ export const createDeployParams = (params: JettonDeployParams ) => {
     image: params.imageUri,
   };
 
-  return  {
+  return {
     code: JETTON_MINTER_CODE,
     data: initData(params.owner, metadata),
     deployer: params.owner,
     value: JETTON_DEPLOY_GAS,
     message: mintBody(params.owner, params.amountToMint),
   };
-}
+};

@@ -1,6 +1,5 @@
 import {
   buildTokenMetadataCell,
-  parseJettonOnchainMetadata,
   readJettonMetadata,
 } from "lib/jetton-minter";
 import { beginCell } from "ton";

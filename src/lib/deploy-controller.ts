@@ -9,6 +9,7 @@ import {
   createDeployParams,
   parseGetMethodCall,
   waitForContractDeploy,
+  waitForSeqno,
 } from "./utils";
 import { cellToAddress, TonConnection } from "@ton-defi.org/ton-connection";
 import { zeroAddress } from "./utils";
@@ -20,6 +21,7 @@ import {
   JettonMetaDataKeys,
   changeAdminBody,
 } from "./jetton-minter";
+import { wait } from "@testing-library/user-event/dist/utils";
 axiosThrottle.use(axios, { requestsPerSecond: 0.9 }); // required since toncenter jsonRPC limits to 1 req/sec without API key
 
 export const JETTON_DEPLOY_GAS = toNano(0.25);
@@ -128,11 +130,20 @@ class JettonDeployController {
 
   async burnAdmin(contractAddress: Address, tonConnection: TonConnection) {
     // @ts-ignore
+    const { address } = await tonConnection.connect();
+    const waiter = await waitForSeqno(
+      tonConnection._tonClient.openWalletFromAddress({
+        source: Address.parse(address),
+      })
+    );
+
     await tonConnection.requestTransaction({
       to: contractAddress,
       value: toNano(0.01),
       message: changeAdminBody(zeroAddress()),
     });
+
+    await waiter();
   }
 
   async getJettonDetails(

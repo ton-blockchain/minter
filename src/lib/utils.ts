@@ -29,7 +29,7 @@ export async function waitForSeqno(wallet: Wallet) {
   const seqnoBefore = await wallet.getSeqNo();
 
   return async () => {
-    for (let attempt = 0; attempt < 10; attempt++) {
+    for (let attempt = 0; attempt < 25; attempt++) {
       await sleep(3000);
       const seqnoAfter = await wallet.getSeqNo();
       if (seqnoAfter > seqnoBefore) return;

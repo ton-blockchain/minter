@@ -17,7 +17,7 @@ import {
   initData,
   mintBody,
   JETTON_MINTER_CODE,
-  parseOnChainData,
+  parseJettonOnchainMetadata,
   JettonMetaDataKeys,
   changeAdminBody,
 } from "./jetton-minter";
@@ -156,7 +156,7 @@ class JettonDeployController {
       "get_jetton_data",
       [],
       ([_, __, adminCell, contentCell]) => ({
-        ...parseOnChainData(contentCell as unknown as Cell),
+        ...parseJettonOnchainMetadata(contentCell as unknown as Cell),
         admin: cellToAddress(adminCell),
       })
     );

@@ -11,6 +11,7 @@ const formSpec = [
     type: "text",
     default: "MyJetton",
     required: true,
+    errorMessage: 'Name required'
   },
   {
     name: "symbol",
@@ -20,6 +21,7 @@ const formSpec = [
     inputStyle: { textTransform: "uppercase" },
     default: "JET",
     required: true,
+    errorMessage: 'Symbol required'
   },
   {
     name: "decimals",
@@ -38,6 +40,7 @@ const formSpec = [
     type: "number",
     default: 100,
     required: true,
+    errorMessage: 'Mint amount required'
 
   },
   {

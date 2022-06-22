@@ -23,7 +23,7 @@ interface Props {
   onClose: () => void;
 }
 
-function ConnectModal({ open, onClose }: Props) {
+function ConnectPopup({ open, onClose }: Props) {
   const [sessionLink, setSessionLink] = useState<string | null>(null);
   const [showQr, setShowQr] = useState(false);
   const { connect, resetState } = useConnectionStore();
@@ -79,4 +79,4 @@ function ConnectModal({ open, onClose }: Props) {
   );
 }
 
-export default ConnectModal;
+export default ConnectPopup;

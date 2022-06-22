@@ -1,8 +1,11 @@
-import { Box, Typography } from "@mui/material";
+import { Box, IconButton, Tooltip, Typography } from "@mui/material";
 import { Control, Controller } from "react-hook-form";
 import { styled } from "@mui/material";
 import { useRef } from "react";
-import BaseButton from "./BaseButton";
+import BaseButton from '../../components/BaseButton'
+import InfoIcon from '@mui/icons-material/Info';
+
+
 
 interface Props {
   error: boolean;
@@ -17,7 +20,10 @@ interface Props {
   clearErrors: any;
   disabled?: boolean;
   validate?: (val: string) => boolean;
+  errorMessage?: string;
 }
+
+
 
 const StyledError = styled(Box)({
   position: "absolute",
@@ -29,6 +35,12 @@ const StyledError = styled(Box)({
     color: '#F06360'
   },
 });
+
+
+const StyledIconButton = styled(IconButton)({
+  position:'absolute',
+  left: -40
+})
 
 const StyledContainer = styled(Box)(({ error }: { error: boolean }) => ({
   position: "relative",
@@ -86,6 +98,7 @@ function Input({
   type = "string",
   clearErrors,
   disabled,
+  errorMessage
 }: Props) {
   const ref = useRef<any>();
 
@@ -104,11 +117,15 @@ function Input({
       control={control}
       defaultValue={disabled ? defaultValue : ""}
       rules={{
-        required,
-        validate: validate,
+        required:errorMessage,
       }}
       render={({ field: { onChange, value } }) => (
         <StyledContainer error={error}>
+          <Tooltip title='some text'  >
+          <StyledIconButton>
+            <InfoIcon style={{color: '#50A7EA'}} />
+          </StyledIconButton>
+          </Tooltip>
           <StyledInput
             ref={ref}
             value={value || ""}

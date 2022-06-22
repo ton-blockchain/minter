@@ -1,10 +1,9 @@
-import { ReactNode, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Address, toNano } from "ton";
 import useConnectionStore from "store/connection-store/useConnectionStore";
-import Input from "components/Input";
 import { formSpec } from "./data";
-import { styled, Alert, Snackbar, Typography } from "@mui/material";
+import { styled, Typography } from "@mui/material";
 import useMainStore from "store/main-store/useMainStore";
 import BaseButton from "components/BaseButton";
 import HeroImg from "assets/hero.png";
@@ -20,6 +19,8 @@ import { ROUTES } from "consts";
 import TxLoader from "components/TxLoader";
 import { isMobile } from "react-device-detect";
 import { Providers } from "lib/env-profiles";
+import useNotification from "hooks/useNotification";
+import Input from './Input'
 
 const StyledForm = styled("form")({
   padding: "40px 50px 35px 70px",
@@ -36,7 +37,7 @@ const StyledFormInputs = styled(Box)({
 });
 
 const StyledTxLoaderContent = styled(Box)({
-  textAlign:'center',
+  textAlign: "center",
   "& p": {
     fontSize: 18,
     fontWeight: 500,
@@ -66,7 +67,7 @@ const StyledContainer = styled(Box)({
   padding: "5px 0px 5px 5px",
 });
 const StyledActionBtn = styled(Box)({
-  marginTop: "auto",
+  marginTop: 40,
   height: 46,
   maxWidth: 344,
   marginLeft: "auto",
@@ -96,11 +97,9 @@ function DeployerScreen() {
     setValue,
     clearErrors,
   } = useForm({ mode: "onSubmit", reValidateMode: "onChange" });
-
+  const { showNotification } = useNotification();
   const { toggleConnectPopup } = useMainStore();
   const { address, adapterId } = useConnectionStore();
-
-  const [error, setError] = useState<null | string | ReactNode>(null);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const onExampleClick = (name: string, value: string | number) => {
@@ -132,11 +131,12 @@ function DeployerScreen() {
     );
 
     if (isDeployed) {
-      setError(
+      showNotification(
         <>
           Contract already deployed,{" "}
           <Link to={`${ROUTES.jetton}/${contractAddress}/`}>View contract</Link>
-        </>
+        </>,
+        "warning"
       );
       setIsLoading(false);
       return;
@@ -148,41 +148,50 @@ function DeployerScreen() {
       );
       navigate(`${ROUTES.jetton}/${Address.normalize(result)}`);
     } catch (err) {
-      console.log(error);
-
       if (err instanceof Error) {
-        setError(err.message);
+        showNotification(<>{err.message}</>, "warning");
       }
     } finally {
       setIsLoading(false);
     }
   }
 
+  const showReminderInLoader = !isMobile && adapterId === Providers.TON_HUB;
 
-  const showReminderInLoader = !isMobile && adapterId === Providers.TON_HUB
-  console.log(adapterId);
+ const onFormError = (value: any) => {
+  const firstError = value[Object.keys(value)[0]]
+  if(!firstError){
+    return 
+  }    
+  showNotification(
+    <>
+     {firstError.message}
+    </>,
+    "warning"
+  );
   
+ }
 
   return (
     <Screen>
       <TxLoader open={isLoading}>
         <StyledTxLoaderContent>
           <Typography>Deploying...</Typography>
-          {showReminderInLoader && <Typography>
-            Please check tonhub wallet for pending notification
-          </Typography>}
+          {showReminderInLoader && (
+            <Typography>
+              Please check tonhub wallet for pending notification
+            </Typography>
+          )}
         </StyledTxLoaderContent>
       </TxLoader>
       <StyledContainer>
         <StyledLeft>
-          <StyledLeftImg alt="hero" src={HeroImg} />
+          {/* <StyledLeftImg alt="hero" src={HeroImg} /> */}
           <Description />
         </StyledLeft>
-        <StyledForm onSubmit={handleSubmit(deployContract)}>
-          <StyledFormHeader>
-            <Typography variant="h3">Jetton Wizard</Typography>
-            <Typography>Let's Create amazing Jetton</Typography>
-          </StyledFormHeader>
+        <StyledForm onSubmit={handleSubmit(deployContract, onFormError)} >
+        
+
 
           <StyledFormInputs>
             {formSpec.map((spec, index) => {
@@ -199,6 +208,7 @@ function DeployerScreen() {
                   defaultValue={spec.default || ""}
                   onExamleClick={onExampleClick}
                   disabled={spec.disabled}
+                  errorMessage={spec.errorMessage}
                   // validate={spec.validate}
                 />
               );
@@ -217,15 +227,6 @@ function DeployerScreen() {
             )}
           </StyledActionBtn>
         </StyledForm>
-        <Snackbar
-          open={!!error}
-          autoHideDuration={8000}
-          onClose={() => setError(null)}
-        >
-          <Alert severity="warning" sx={{ width: "100%" }}>
-            {error}
-          </Alert>
-        </Snackbar>
       </StyledContainer>
     </Screen>
   );

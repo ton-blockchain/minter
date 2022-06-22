@@ -1,4 +1,4 @@
-import { ListItem, List, ListItemButton, Box, Typography } from "@mui/material";
+import { ListItem, List, ListItemButton, Box, Typography, Fade } from "@mui/material";
 import { useTheme, Theme } from "@mui/material/styles";
 import { styled } from "@mui/system";
 import TonhubImg from "assets/tonhub.png";
@@ -80,7 +80,8 @@ function AdaptersList({ onClose, select, open, adapters }: Props) {
   }
 
   return (
-    <StyledContainer>
+    <Fade in>
+      <StyledContainer>
        <Header title='Select Wallet' onClose={onClose} />
       <StyledList>
         {adapters.filter(a => !isMobile || adapterConfig[a.type].mobileCompatible).map((adapter) => {
@@ -102,6 +103,7 @@ function AdaptersList({ onClose, select, open, adapters }: Props) {
         })}
       </StyledList>
     </StyledContainer>
+    </Fade>
   );
 }
 

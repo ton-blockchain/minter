@@ -33,12 +33,13 @@ function QR({ onClose, link, open }: Props) {
   }
 
   return (
-    <StyledContainer>
+    <Fade in>
+      <StyledContainer>
        <Header title ='Connect to tonhub' onClose={onClose} />
       <StyledQrBox>
        
         {link ? (
-          <Fade in={true}>
+          
             <span>
               <QRCodeSVG
                 value={link}
@@ -55,12 +56,13 @@ function QR({ onClose, link, open }: Props) {
                 }}
               />
             </span>
-          </Fade>
+         
         ) : (
           <CircularProgress />
         )}
       </StyledQrBox>
     </StyledContainer>
+    </Fade>
   );
 }
 

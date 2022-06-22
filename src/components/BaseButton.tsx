@@ -1,5 +1,4 @@
-import { Button } from "@mui/material";
-import React, { ReactNode } from "react";
+import  { ReactNode } from "react";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { styled } from "@mui/material";
 import { Box } from "@mui/system";
@@ -17,15 +16,13 @@ interface Props {
 
 interface StyledButtonProps{
   fontSize: number;
-  minWidth?: number;
   fullWidth?: boolean;
 }
 
-const StyledButton = styled(LoadingButton)(({fontSize, minWidth, fullWidth}:StyledButtonProps) => ({
+const StyledButton = styled(LoadingButton)(({fontSize, fullWidth}:StyledButtonProps) => ({
   marginLeft: "auto",
   marginRight: "auto",
   fontSize: fontSize,
-  minWidth: minWidth || 'unset',
   boxShadow:'none',
   borderRadius: 6,
   fontWeight: 600,
@@ -61,7 +58,6 @@ function BaseButton({
     <StyledBox className="base-button" fullWidth={fullWidth}>
       <StyledButton
         fontSize={fontSize}
-        minWidth={minWidth}
         type={type}
         onClick={onClick ? onClick : () => {}}
         variant="contained"

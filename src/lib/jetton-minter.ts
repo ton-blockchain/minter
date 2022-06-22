@@ -37,7 +37,7 @@ const sha256 = (str: string) => {
   return Buffer.from(sha.digestSync());
 };
 
-export function buildTokenMetadataCell(data: {
+export function buildJettonOnchainMetadata(data: {
   [s: string]: string | undefined;
 }): Cell {
   const KEYLEN = 256;
@@ -156,7 +156,7 @@ export function initData(
   return beginCell()
     .storeCoins(0)
     .storeAddress(owner)
-    .storeRef(buildTokenMetadataCell(data))
+    .storeRef(buildJettonOnchainMetadata(data))
     .storeRef(JETTON_WALLET_CODE)
     .endCell();
 }

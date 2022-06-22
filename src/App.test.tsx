@@ -1,5 +1,5 @@
 import {
-  buildTokenMetadataCell,
+  buildJettonOnchainMetadata,
   readJettonMetadata,
 } from "lib/jetton-minter";
 import { beginCell } from "ton";
@@ -20,7 +20,7 @@ test("Long serialization", async () => {
     symbol: longUrl,
   };
 
-  expect(await readJettonMetadata(buildTokenMetadataCell(data))).toEqual({
+  expect(await readJettonMetadata(buildJettonOnchainMetadata(data))).toEqual({
     isOnchain: true,
     metadata: data,
   });
@@ -28,7 +28,7 @@ test("Long serialization", async () => {
 
 test("Short serialization", async () => {
   const data = { image: "nope" };
-  expect(await readJettonMetadata(buildTokenMetadataCell(data))).toEqual({
+  expect(await readJettonMetadata(buildJettonOnchainMetadata(data))).toEqual({
     isOnchain: true,
     metadata: data,
   });

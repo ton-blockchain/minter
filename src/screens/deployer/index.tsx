@@ -131,7 +131,7 @@ function Deployer() {
             token standard
           </Link>{" "}
           for <Link href="https://ton.org">TON blockchain</Link>. This
-          educational tool allows you to deploy your own Jetton to mainnet in
+          educational tool allows you to create and deploy your own Jetton to mainnet in
           one click. You will need at least 0.25 TON for deployment fees. Never
           deploy code that you've never seen before! This deployer is fully open
           source with all smart contract code{" "}

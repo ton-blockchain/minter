@@ -147,12 +147,12 @@ class JettonDeployController {
       contractAddr,
       "get_jetton_data",
       [],
-      async ([_, __, adminCell, contentCell]) => ({
+      async ([totalSupply, __, adminCell, contentCell]) => ({
         ...(await readJettonMetadata(contentCell as unknown as Cell)),
         admin: cellToAddress(adminCell),
+        totalSupply: totalSupply as BN,
       })
     );
-    
 
     const jWalletAddress = await tonConnection.makeGetCall(
       contractAddr,
@@ -161,7 +161,9 @@ class JettonDeployController {
       ([addressCell]) => cellToAddress(addressCell)
     );
 
-    const isDeployed = await tonConnection._tonClient.isContractDeployed(jWalletAddress);
+    const isDeployed = await tonConnection._tonClient.isContractDeployed(
+      jWalletAddress
+    );
 
     let jettonWallet;
     if (isDeployed) {
@@ -169,20 +171,16 @@ class JettonDeployController {
         jWalletAddress,
         "get_wallet_data",
         [],
-        ([amount, jWalletAddressCell, jettonMasterAddressCell]) => ({
+        ([amount, _, jettonMasterAddressCell]) => ({
           balance: (amount as unknown as BN).toString(),
-          jWalletAddress: cellToAddress(jWalletAddressCell),
+          jWalletAddress,
           jettonMasterAddress: cellToAddress(jettonMasterAddressCell),
         })
       );
-
-      
     } else {
-      jettonWallet = null
+      jettonWallet = null;
     }
 
-    
-    
     return {
       minter,
       jettonWallet,

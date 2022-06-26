@@ -1,12 +1,14 @@
+import { AlertColor } from "@mui/material";
+import { JettonDetailMessage } from "./types";
 
-const getAdminMessage = (isRevokedOwnership?: boolean, isAdmin?: boolean, jettonAddress?: string) => {
+const getAdminMessage = (isRevokedOwnership?: boolean, isAdmin?: boolean, jettonAddress?: string):  JettonDetailMessage | undefined => {
   if(!jettonAddress){
       return undefined
   }
   if (isRevokedOwnership) {
     return {
-      type: "info",
-      text: "Token is safe",
+      type: "success",
+      text: "Ownership is revoked",
     };
   }
   if (isAdmin) {
@@ -23,6 +25,17 @@ const getAdminMessage = (isRevokedOwnership?: boolean, isAdmin?: boolean, jetton
 };
 
 
+const getOffChainMessage = (isOnChain: boolean): JettonDetailMessage | undefined => {
+ 
+  if (!isOnChain) {
+    return {
+      type: "warning",
+      text: "this jetton's metadata (name and symbol) can be altered or removed, since they're not store on the Ton chain",
+    };
+  }
+  return 
+};
 
 
-export {  getAdminMessage };
+
+export {  getAdminMessage, getOffChainMessage };

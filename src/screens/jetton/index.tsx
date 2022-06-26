@@ -1,17 +1,16 @@
-import { Box, styled, Typography } from "@mui/material";
+import {  Box, styled, Typography } from "@mui/material";
 import { JettonDetailButton, JettonDetailMessage } from "./types";
 import AddressLink from "components/AddressLink";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { EnvContext } from "App";
 import BaseButton from "components/BaseButton";
-import { getAdminMessage } from "./util";
+import { getAdminMessage, getOffChainMessage } from "./util";
 import useNotification from "hooks/useNotification";
 import useConnectionStore from "store/connection-store/useConnectionStore";
 import { useParams } from "react-router-dom";
-import  { ScreenContent, Screen } from "components/Screen";
+import { ScreenContent, Screen } from "components/Screen";
 import LoadingImage from "components/LoadingImage";
 import LoadingContainer from "components/LoadingContainer";
-import ConnectPopup from "components/connect-popup";
 import TxLoader from "components/TxLoader";
 import WarningRoundedIcon from "@mui/icons-material/WarningRounded";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
@@ -36,9 +35,9 @@ const StyledMessage = styled(Box)(({ type }: { type: string }) => ({
   paddingLeft: 10,
   fontSize: 13,
   marginTop: 5,
-  color: type === "info" ? "#27272E" : "#EE404C",
+  color: type === "success" ? "#2e7d32" : "#EE404C",
   "& svg": {
-    color: type === "info" ? "#27272E" : "#EE404C",
+    color: type === "success" ? "#2e7d32" : "#EE404C",
     width: 16,
     position: "relative",
     top: -3,
@@ -61,16 +60,10 @@ const StyledSectionRight = styled(Box)(({ theme }) => ({
   flexDirection: "column",
   width: "calc(100% - 145px)",
 
-  "& button": {
-    paddingTop: 0,
-    paddingBottom: 0,
-    height: "100%",
-    display: "flex",
-    alignItems: "center",
-    fontSize: 12,
-  },
   "& .base-button": {
     height: "calc(100% - 10px)",
+    fontSize: 12,
+    padding:'0px 10px'
   },
 
   [theme.breakpoints.down("sm")]: {
@@ -184,9 +177,10 @@ function JettonScreen() {
     name,
     description,
     revokeAdminOwnership,
-    jettonAddress,
+    jettonMaster,
     stopLoading,
-    reset
+    reset,
+    isOnchain,
   } = useJettonStore();
 
   const onRevokeAdminOwnership = async (contractAddr?: string) => {
@@ -218,97 +212,94 @@ function JettonScreen() {
   }, [id, getJettonDetails, isConnecting]);
 
   useEffect(() => {
-    if (jettonAddress) {
-      
-      getJettonDetails(jettonAddress, address);
+    if (jettonMaster) {
+      getJettonDetails(jettonMaster, address);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address, getJettonDetails]);
 
-
   useEffect(() => {
-  
     return () => {
-      reset()
-    }
-  }, [reset])
-  
+      reset();
+    };
+  }, [reset]);
 
   return (
     <Screen>
-      <Navbar customLink={{text: 'Create Jetton', path: ROUTES.deployer}} />
+      <Navbar customLink={{ text: "Create Jetton", path: ROUTES.deployer }} />
       <TxLoader open={txLoading}></TxLoader>
-      
-      <ScreenContent>
-      <StyledContainer>
-        <StyledTop>
-          <StyledTopImg>
-            <LoadingImage
-              src={jettonImage}
-              alt="jetton image"
-              loading={isLoading}
-            />
-          </StyledTopImg>
-          <StyledTopText>
-            <LoadingContainer loading={isLoading} loaderWidth="80px">
-              <Typography variant="h3">{name}</Typography>
-            </LoadingContainer>
-            <LoadingContainer loading={isLoading} loaderWidth="150px">
-              {description && (
-                <Typography variant="h5">{description}</Typography>
-              )}
-            </LoadingContainer>
-          </StyledTopText>
-        </StyledTop>
 
-        <StyledTextSections>
-          <Row
-            title="Admin"
-            value={adminAddress}
-            isAddress
-            message={getAdminMessage(
-              adminRevokedOwnership,
-              isAdmin,
-              jettonAddress
-            )}
-            dataLoading={isLoading}
-            button={
-              isAdmin
-                ? {
-                    text: "Revoke ownership",
-                    action: () => onRevokeAdminOwnership(jettonAddress),
-                  }
-                : undefined
-            }
-          />
-          <Row
-            title="Address"
-            value={jettonAddress}
-            dataLoading={isLoading}
-            isAddress
-          />
-          <Row title="Symbol" value={symbol} dataLoading={isLoading} />
-          <Row
-            title="Jetton Wallet"
-            value={address}
-            dataLoading={isLoading}
-            isAddress
-          />
-          <Row
-            title="Balance"
-            value={balance && `${balance} ${symbol}s`}
-            dataLoading={isLoading}
-            button={
-              !address
-                ? {
-                    text: "Connect wallet",
-                    action: () => toggleConnect(true),
-                  }
-                : undefined
-            }
-          />
-        </StyledTextSections>
-      </StyledContainer>
+      <ScreenContent>
+        <StyledContainer>
+          <StyledTop>
+            <StyledTopImg>
+              <LoadingImage
+                src={jettonImage}
+                alt="jetton image"
+                loading={isLoading}
+              />
+            </StyledTopImg>
+            <StyledTopText>
+              <LoadingContainer loading={isLoading} loaderWidth="80px">
+                <Typography variant="h3">{name}</Typography>
+              </LoadingContainer>
+              <LoadingContainer loading={isLoading} loaderWidth="150px">
+                {description && (
+                  <Typography variant="h5">{description}</Typography>
+                )}
+              </LoadingContainer>
+            </StyledTopText>
+          </StyledTop>
+        
+          <StyledTextSections>
+            <Row
+              title="Admin"
+              value={adminAddress}
+              isAddress
+              message={getAdminMessage(
+                adminRevokedOwnership,
+                isAdmin,
+                jettonMaster
+              )}
+              dataLoading={isLoading}
+              button={
+                isAdmin
+                  ? {
+                      text: "Revoke ownership",
+                      action: () => onRevokeAdminOwnership(jettonMaster),
+                    }
+                  : undefined
+              }
+            />
+            <Row
+              title="Address"
+              value={jettonMaster}
+              dataLoading={isLoading}
+              isAddress
+            />
+            <Row title="Symbol" value={symbol} dataLoading={isLoading} />
+            <Row
+              title="Jetton Wallet"
+              value={address}
+              dataLoading={isLoading}
+              isAddress
+            />
+            <Row
+              title="Balance"
+              value={balance && `${balance} ${symbol}s`}
+              dataLoading={isLoading}
+              button={
+                !address
+                  ? {
+                      text: "Connect wallet",
+                      action: () => toggleConnect(true),
+                    }
+                  : undefined
+              }
+            />
+          </StyledTextSections>
+          {!isLoading && <Message message={getOffChainMessage(isOnchain)} />}
+        </StyledContainer>
       </ScreenContent>
     </Screen>
   );
@@ -357,7 +348,7 @@ const Row = ({
                     href={`${scannerUrl}/${value}`}
                   />
                 ) : (
-                  <Typography>{value || '-'}</Typography>
+                  <Typography>{value || "-"}</Typography>
                 )}
               </StyledSectionValue>
               {button && (
@@ -366,20 +357,31 @@ const Row = ({
             </LoadingContainer>
           </StyledSectionRightColored>
 
-          {message && !dataLoading && (
-            <StyledMessage type={message.type}>
-              {message.type === "warning" ? (
-                <WarningRoundedIcon />
-              ) : (
-                <CheckCircleRoundedIcon />
-              )}
-
-              {message.text}
-            </StyledMessage>
-          )}
+          {!dataLoading && <Message message={message} />}
         </StyledSectionRight>
       </StyledSection>
     </Box>
+  );
+};
+
+const Message = ({
+  message,
+}: {
+  message?: JettonDetailMessage;
+}) => {
+  if (!message) {
+    return null;
+  }
+  return (
+    <StyledMessage type={message.type}>
+      {message.type === "warning" ? (
+        <WarningRoundedIcon />
+      ) : (
+        <CheckCircleRoundedIcon />
+      )}
+
+      {message.text}
+    </StyledMessage>
   );
 };
 

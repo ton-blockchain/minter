@@ -1,4 +1,4 @@
-import { Box, Drawer, IconButton, styled } from "@mui/material";
+import { Box, Drawer, IconButton, styled, Typography } from "@mui/material";
 import SearchInput from "components/SearchInput";
 import { JETTON_DEPLOYER_CONTRACTS_GITHUB } from "consts";
 import { Link } from "react-router-dom";
@@ -7,17 +7,21 @@ import { NavbarProps } from "./types";
 import githubIcon from "assets/github.svg";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import BaseButton from "components/BaseButton";
+import JettonImg from "assets/jetton.svg";
+import Logo from "./Logo";
 
 const StyledCustomLink = styled(Link)(({ theme }) => ({
   color: theme.palette.text.primary,
   textDecoration: "none",
-  "& button": {
-    borderRadius: 40,
-    fontWeight: 400,
+  height: "100%",
+  "& .base-button": {
+    borderRadius: 20,
     fontSize: 12,
   },
+
   [theme.breakpoints.down("sm")]: {
     marginRight: 0,
+    height: 35
   },
 }));
 
@@ -27,6 +31,16 @@ const StyledCloseButton = styled(IconButton)({
   right: 10,
   top: 10,
 });
+
+const StyledDrawerContent = styled(Box)(({theme}) => ({
+  display:'flex',
+  flexDirection:'column',
+  alignItems:'center',
+  marginTop: 60,
+    "& .logo":{
+      flexDirection:'column'
+    }
+}));
 
 interface Props extends NavbarProps {
   closeMenu?: () => void;
@@ -43,7 +57,14 @@ const MobileMenu = ({ closeMenu, customLink, showMenu }: Props) => {
       <StyledCloseButton onClick={closeMenu}>
         <CloseRoundedIcon style={{ width: 30, height: 30 }} />
       </StyledCloseButton>
-      <Menu showMenu={showMenu} closeMenu={closeMenu} customLink={customLink} />
+      <StyledDrawerContent>
+        <Logo />
+        <Menu
+          showMenu={showMenu}
+          closeMenu={closeMenu}
+          customLink={customLink}
+        />
+      </StyledDrawerContent>
     </Drawer>
   );
 };
@@ -62,21 +83,38 @@ const StyledMenu = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down("md")]: {
     flexDirection: "column",
     width: "calc(100vw - 60px)",
-    maxWidth: 500,
-    paddingTop: 70,
+    maxWidth: 400,
+    padding: '40px 30px 40px 30px',
     gap: 20,
     height: "unset",
     "& .search": {
-      order: 2,
+      order: 1,
+      width: '100%',
+      border:`1px solid ${theme.palette.primary.main}`,
+      height: 35,
+  
     },
     "& .connected-section": {
       order: 1,
+      width: '100%',
+      maxWidth:'unset',
+      height: 35,
+      marginTop: 40, 
+      "& p":{
+        maxWidth:'unset'
+      }
     },
     "& .github-icon": {
       order: 4,
+      marginTop: 40
     },
     "& .custom-link": {
       order: 3,
+      width: '100%',
+      height: 35,
+      "& .base-button":{
+        width:'100%'
+      }
     },
   },
 }));
@@ -87,7 +125,10 @@ const Menu = ({ customLink }: Props) => {
       <SearchInput />
       {customLink && (
         <StyledCustomLink to={customLink.path} className="custom-link">
-          <BaseButton>{customLink.text}</BaseButton>
+          <BaseButton transparent>
+            <img src={JettonImg} />
+            {customLink.text}
+          </BaseButton>
         </StyledCustomLink>
       )}
       <ConnecSection />

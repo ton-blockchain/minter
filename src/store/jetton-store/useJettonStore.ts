@@ -14,10 +14,10 @@ import { useCallback } from "react";
 
 function useJettonStore() {
   const [state, setState] = useRecoilState(jettonStateAtom);
-  const reset = useResetRecoilState(jettonStateAtom)
+  const reset = useResetRecoilState(jettonStateAtom);
 
   const getJettonDetails = useCallback(
-    async (_jettonAddress: string, address?: string | null) => {
+    async (jettonMaster: string, address?: string | null) => {
       setState((prevState) => {
         return {
           ...prevState,
@@ -38,7 +38,7 @@ function useJettonStore() {
 
       try {
         const result = await jettonDeployController.getJettonDetails(
-          Address.parse(_jettonAddress),
+          Address.parse(jettonMaster),
           address ? Address.parse(address) : zeroAddress(),
           connection
         );
@@ -51,20 +51,28 @@ function useJettonStore() {
         const _adminAddress = result.minter.admin.toFriendly();
         const admin = _adminAddress === address;
 
+        console.log({ result });
+        console.log(result.jettonWallet?.jettonMasterAddress.toFriendly());
+      
+
         setState((prevState) => {
           return {
             ...prevState,
-            description: result.minter.description,
-            jettonImage: result.minter.image || QuestiomMarkImg,
-            name: result.minter.name,
-            symbol: result.minter.symbol,
+            isOnchain: result.minter.isOnchain,
+            description: result.minter.metadata.description,
+            jettonImage: result.minter.metadata.image || QuestiomMarkImg,
+            name: result.minter.metadata.name,
+            symbol: result.minter.metadata.symbol,
             adminRevokedOwnership: _adminAddress === zeroAddress().toFriendly(),
             isAdmin: admin,
             adminAddress: _adminAddress,
             balance: result.jettonWallet
               ? fromNano(result.jettonWallet.balance)
               : undefined,
-            jettonAddress: Address.normalize(_jettonAddress),
+            jettonAddress: result.jettonWallet
+              ? result.jettonWallet.jWalletAddress.toFriendly()
+              : undefined,
+            jettonMaster
           };
         });
       } finally {
@@ -106,15 +114,12 @@ function useJettonStore() {
     });
   }, [setState]);
 
-
-
-
   return {
     ...state,
     getJettonDetails,
     revokeAdminOwnership,
     stopLoading,
-    reset
+    reset,
   };
 }
 

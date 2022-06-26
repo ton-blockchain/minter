@@ -15,28 +15,30 @@ const SyledContainer = styled(Box)({
   flexDirection: "column",
   alignItems: "center",
   background: "white",
-  width:'fit-content'
+  width: "fit-content",
 });
 
 function ConnectPopup() {
   const [sessionLink, setSessionLink] = useState<string | null>(null);
   const [showQr, setShowQr] = useState(false);
-  const { connect, resetState, toggleConnect, showConnect } = useConnectionStore();
-
+  const { connect, resetState, toggleConnect, showConnect } =
+    useConnectionStore();
 
   const onSelect = async (provider: Providers) => {
-    resetState();
+    setSessionLink(null)
     const onSessionLinkCreated = (value: string) => {
       if (isMobile) {
         // @ts-ignore
         window.location = value;
       } else {
-        return setSessionLink(value);
+        setSessionLink(value);
       }
     };
     try {
-      if (provider === Providers.TON_HUB) {
-        !isMobile && setShowQr(true);
+      console.log(provider);
+
+      if (provider === Providers.TON_HUB && !isMobile) {
+        setShowQr(true);
       }
       await connect(provider, onSessionLinkCreated);
       toggleConnect(false);
@@ -48,9 +50,10 @@ function ConnectPopup() {
     }
   };
 
+
+
   const onCancel = () => {
     setShowQr(false);
-    resetState();
   };
 
   const close = async () => {

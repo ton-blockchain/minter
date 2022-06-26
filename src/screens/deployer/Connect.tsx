@@ -15,17 +15,12 @@ const StyledImage = styled("img")({
 
 const StyledConnectButton = styled(Box)({
   marginTop: 70,
-  width: 344,
+  width: '100%',
   height: 46,
-  maxWidth:'100%',
+  maxWidth:344,
   "& .base-button":{
     width: '100%',
     height: '100%',
-    "& button" :{
-      padding: 0,
-      width:'100%',
-      height: '100%'
-    }
   }
 });
 

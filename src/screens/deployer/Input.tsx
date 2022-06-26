@@ -20,18 +20,16 @@ interface Props {
   description: string;
 }
 
-
 const StyledDescription = styled(Typography)({
   fontSize: 14,
   marginTop: 2,
   paddingLeft: 15,
-  opacity: 0.8
-})
-
+  opacity: 0.8,
+});
 
 const StyledContainer = styled(Box)({
   width: "100%",
-})
+});
 
 const StyledInputContainer = styled(Box)(({ error }: { error: boolean }) => ({
   width: "100%",
@@ -45,13 +43,8 @@ const StyledInputContainer = styled(Box)(({ error }: { error: boolean }) => ({
   transition: "0.2s all",
   "& .base-button": {
     height: "calc(100% - 10px)",
-    width: 90,
-    "& button": {
-      padding: "unset",
-      width: "100%",
-      height: "100%",
-      fontSize: 12,
-    },
+    padding: "0px 15px",
+    fontSize: 12,
   },
 }));
 
@@ -117,8 +110,8 @@ function Input({
               onChange={onChange}
               placeholder={label}
               disabled={disabled}
-              style ={{
-                opacity: disabled ? 0.5 : 1
+              style={{
+                opacity: disabled ? 0.5 : 1,
               }}
             />
             <BaseButton onClick={onClick}>Example</BaseButton>

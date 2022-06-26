@@ -66,6 +66,9 @@ const StyledActionBtn = styled(Box)({
   marginLeft: "auto",
   marginRight: "auto",
   width: "100%",
+  "& .base-button":{
+    width:'100%'
+  }
 });
 
 const StyledLeft = styled(Box)(({theme}) => ({
@@ -209,7 +212,7 @@ function Deployer() {
           </StyledFormInputs>
 
           <StyledActionBtn>
-          <BaseButton fullWidth type="submit">
+          <BaseButton type="submit">
                 Deploy
               </BaseButton>
           </StyledActionBtn>

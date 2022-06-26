@@ -10,12 +10,14 @@ interface JettonStoreState {
   adminAddress?: string;
   balance?: string;
   isLoading: boolean
-  jettonAddress?: string;
+  jettonMaster?: string;
+  isOnchain: boolean;
 }
 
 const jettonStateAtom = atom<JettonStoreState>({
   key: "jettonStateAtom",
   default: {
+    isOnchain: true,
     isAdmin: false,
     adminRevokedOwnership: true,
     symbol: undefined,
@@ -25,7 +27,7 @@ const jettonStateAtom = atom<JettonStoreState>({
     adminAddress: undefined,
     balance: undefined,
     isLoading: true,
-    jettonAddress: undefined
+    jettonMaster: undefined
   },
 });
 

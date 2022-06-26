@@ -147,11 +147,12 @@ class JettonDeployController {
       contractAddr,
       "get_jetton_data",
       [],
-      ([_, __, adminCell, contentCell]) => ({
-        ...readJettonMetadata(contentCell as unknown as Cell),
+      async ([_, __, adminCell, contentCell]) => ({
+        ...(await readJettonMetadata(contentCell as unknown as Cell)),
         admin: cellToAddress(adminCell),
       })
     );
+    
 
     const jWalletAddress = await tonConnection.makeGetCall(
       contractAddr,
@@ -174,6 +175,8 @@ class JettonDeployController {
           jettonMasterAddress: cellToAddress(jettonMasterAddressCell),
         })
       );
+
+      
     } else {
       jettonWallet = null
     }

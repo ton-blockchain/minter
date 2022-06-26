@@ -1,7 +1,8 @@
+import { AlertColor } from "@mui/material";
 
 
 export type JettonDetailMessage = {
-  type: string;
+  type: AlertColor;
   text: string;
 };
 

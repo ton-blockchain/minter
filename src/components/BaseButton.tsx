@@ -1,7 +1,6 @@
 import  { ReactNode } from "react";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { styled } from "@mui/material";
-import { Box } from "@mui/system";
 
 interface Props {
   children: ReactNode;
@@ -10,39 +9,32 @@ interface Props {
   onClick?: () => void;
   type?: "button" | "submit" | "reset";
   fontSize?: number;
-  minWidth?: number;
-  fullWidth?: boolean;
+  transparent?: boolean;
 }
 
 interface StyledButtonProps{
   fontSize: number;
-  fullWidth?: boolean;
 }
 
-const StyledButton = styled(LoadingButton)(({fontSize, fullWidth}:StyledButtonProps) => ({
-  marginLeft: "auto",
-  marginRight: "auto",
+const StyledButton = styled(LoadingButton)(({fontSize}:StyledButtonProps) => ({
   fontSize: fontSize,
   boxShadow:'none',
   borderRadius: 6,
   fontWeight: 600,
-  padding: fullWidth ? 0 : '',
-  width: fullWidth ? '100%' : 'fit-content',
-  height:fullWidth ? '100%' : ''
-  
+  padding:  '0px 20px',
+  height:'100%',
+  display:'flex',
+  alignItems:'center',
+  justifyContent:'center',
+  gap: 8,
+  whiteSpace:'nowrap',
+  "& img":{
+    maxWidth: 22
+  },
+
 }));
 
-const StyledBox = styled(Box)(({fullWidth}:{fullWidth?: boolean}) => ({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  width: fullWidth ? '100%' : 'unset',
-  height: fullWidth ? '100%' : 'unset',
-  
-  "& .MuiCircularProgress-root":{
-    color:'white'
-  }
-}))
+
 
 function BaseButton({
   children,
@@ -51,23 +43,24 @@ function BaseButton({
   onClick,
   type = "button",
   fontSize = 14,
-  minWidth,
-  fullWidth
+  transparent
 }: Props) {
   return (
-    <StyledBox className="base-button" fullWidth={fullWidth}>
       <StyledButton
+       className="base-button"
         fontSize={fontSize}
         type={type}
         onClick={onClick ? onClick : () => {}}
-        variant="contained"
+        variant={transparent ? 'outlined' : 'contained'}
         loading={loading}
         disabled={disabled}
-        fullWidth={fullWidth}
+        style={{
+          border: transparent ? '1px solid #50A7EA' : ''
+        }}
       >
         {children}
       </StyledButton>
-    </StyledBox>
+   
   );
 }
 

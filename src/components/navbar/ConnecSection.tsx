@@ -12,24 +12,22 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
 import WalletImg from "assets/wallet.svg";
 import useConnectionStore from "store/connection-store/useConnectionStore";
+import BaseButton from "components/BaseButton";
+import WalletBlue from "assets/wallet-blue.svg";
 
 const StyledContainer = styled(Box)({
   maxWidth: 156,
   position: "relative",
-  background: "#50A7EA",
+
   height: "100%",
   minHeight: 35,
-  borderRadius: 20,
-
-  "& .MuiButtonBase-root": {
-    padding: 0,
-  },
   "& p": {
     fontSize: 12,
-    maxWidth: 100,
+    
     whiteSpace: "nowrap",
     overflow: "hidden",
     textOverflow: "ellipsis",
+    paddingRight: 10
   },
 });
 
@@ -40,17 +38,24 @@ const StyledConnected = styled(Box)({
   alignItems: "center",
   gap: 10,
   position: "relative",
-  padding: '0px 28px 0px 15px'
+  padding: "0px 28px 0px 15px",
+  background: "#50A7EA",
+  borderRadius: 20,
 });
 
 const StyledConnect = styled("div")({
-  paddingLeft: 30,
-  paddingRight: 30,
   cursor: "pointer",
-  width:'100%',
-  height: '100%',
-  display:'flex',
-  alignItems:'center'
+  width: "100%",
+  height: "100%",
+  display: "flex",
+  alignItems: "center",
+  borderRadius: 20,
+  color: "#50A7EA",
+  "& .base-button": {
+    width:'100%',
+    borderRadius: 20,
+    fontSize: 12
+  },
 });
 
 const StyledDisconnect = styled("button")({
@@ -102,13 +107,16 @@ const ConnecSection = () => {
             <Tooltip title={address}>
               <Typography style={{ color: "white" }}>{address}</Typography>
             </Tooltip>
-            <StyledDisconnectToggle onClick={() => setShowDisconnect(true)}>
-              <ArrowDropDownIcon />
+            <StyledDisconnectToggle onClick={() => setShowDisconnect(true)} sx={{padding: 0}}>
+              <ArrowDropDownIcon  />
             </StyledDisconnectToggle>
           </StyledConnected>
         ) : (
-          <StyledConnect onClick={() => toggleConnect(true)}>
-            <Typography>Connect</Typography>
+          <StyledConnect>
+            <BaseButton onClick={() => toggleConnect(true)} transparent>
+              <img src={WalletBlue} />
+              Connect Wallet
+            </BaseButton>
           </StyledConnect>
         )}
       </>

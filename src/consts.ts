@@ -1,5 +1,4 @@
 const ROUTES = {
-    connect: '/connect',
     deployer: '/',
     jetton: '/jetton',
     jettonId: '/jetton/:id'

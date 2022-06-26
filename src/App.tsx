@@ -1,20 +1,24 @@
 import { styled } from "@mui/material";
 import { Box } from "@mui/system";
-import Navbar from "components/Navbar";
+import Navbar from "components/navbar";
 import { createContext, useEffect } from "react";
 import useConnectionStore from "store/connection-store/useConnectionStore";
 import { APP_GRID, LOCAL_STORAGE_PROVIDER, ROUTES } from "consts";
 import { Providers } from "lib/env-profiles";
-import { Route, Routes, useNavigate, useRoutes } from "react-router-dom";
-import { ConnectScreen, DeployerScreen, JettonScreen } from "screens";
+import { Route, Routes } from "react-router-dom";
+import {  DeployerScreen, JettonScreen } from "screens";
 
-const StyledApp = styled(Box)({
+const StyledApp = styled(Box)(({theme}) => ({
   maxWidth: APP_GRID,
   width: "calc(100% - 50px)",
   marginLeft: "auto",
   marginRight: "auto",
   paddingBottom: "100px",
-});
+  [theme.breakpoints.down('sm')]: {
+    width: "calc(100% - 30px)",
+   
+  }
+}));
 
 export const EnvContext = createContext({
   isSandbox: false,
@@ -22,28 +26,10 @@ export const EnvContext = createContext({
 });
 
 function App() {
-  const { connect } = useConnectionStore();
-  const navigate = useNavigate();
+  const { connectOnLoad } = useConnectionStore();
 
   useEffect(() => {
-    (async () => {
-      const provider = localStorage.getItem(LOCAL_STORAGE_PROVIDER);
-      
-      if (!provider) {
-        navigate(ROUTES.connect);
-        return;
-      }
-   ;
-      try {
-       
-        await connect(provider as Providers);
-       
-       
-      } catch (error) {
-        
-        navigate(ROUTES.connect);
-      }
-    })();
+    connectOnLoad()
   }, []);
 
   return (
@@ -54,10 +40,8 @@ function App() {
           isTestnet: window.location.search.includes("testnet"),
         }}
       >
-        <Navbar />
         <Routes>
           <Route path={ROUTES.deployer} element={<DeployerScreen />} />
-          <Route path={ROUTES.connect} element={<ConnectScreen />} />
           <Route path={ROUTES.jettonId} element={<JettonScreen />} />
           <Route path={ROUTES.jetton} element={<JettonScreen />} />
         </Routes>

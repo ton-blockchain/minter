@@ -1,93 +1,377 @@
-import { styled, TextField } from "@mui/material";
-import { Box } from "@mui/system";
-import Screen from "components/Screen";
-import { jettonDeployController } from "lib/deploy-controller";
-import { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
-import WalletConnection from "services/wallet-connection";
+import { Box, styled, Typography } from "@mui/material";
+import { JettonDetailButton, JettonDetailMessage } from "./types";
+import AddressLink from "components/AddressLink";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { EnvContext } from "App";
+import BaseButton from "components/BaseButton";
+import { getAdminMessage } from "./util";
+import useNotification from "hooks/useNotification";
 import useConnectionStore from "store/connection-store/useConnectionStore";
-import { Address, fromNano } from "ton";
-import ContentLoader from "./ContentLoader";
-import JettonDetails from "./JettonDetails";
-import SearchInput from "./SearchInput";
-import { JettonWalletState, MinterState } from "./types";
+import { useParams } from "react-router-dom";
+import  { ScreenContent, Screen } from "components/Screen";
+import LoadingImage from "components/LoadingImage";
+import LoadingContainer from "components/LoadingContainer";
+import ConnectPopup from "components/connect-popup";
+import TxLoader from "components/TxLoader";
+import WarningRoundedIcon from "@mui/icons-material/WarningRounded";
+import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
+import useJettonStore from "store/jetton-store/useJettonStore";
+import Navbar from "components/navbar";
+import { ROUTES } from "consts";
+const StyledSection = styled(Box)(({ theme }) => ({
+  display: "flex",
+  alignItems: "flex-start",
 
+  gap: 15,
+  [theme.breakpoints.down("sm")]: {
+    flexDirection: "column",
+    gap: 5,
+  },
+}));
 
+const StyledMessage = styled(Box)(({ type }: { type: string }) => ({
+  display: "flex",
+  alignItems: "flex-start",
+  gap: 5,
+  paddingLeft: 10,
+  fontSize: 13,
+  marginTop: 5,
+  color: type === "info" ? "#27272E" : "#EE404C",
+  "& svg": {
+    color: type === "info" ? "#27272E" : "#EE404C",
+    width: 16,
+    position: "relative",
+    top: -3,
+  },
+}));
 
-const StyledContainer = styled(Box)({
-  width: "100%",
-  maxWidth: 700,
+const StyledSectionTitle = styled(Box)(({ theme }) => ({
+  width: 130,
+  paddingLeft: 10,
+  paddingTop: 14,
+  [theme.breakpoints.down("sm")]: {
+    width: "100%",
+    paddingLeft: 0,
+    paddingTop: 0,
+  },
+}));
+
+const StyledSectionRight = styled(Box)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  width: "calc(100% - 145px)",
+
+  "& button": {
+    paddingTop: 0,
+    paddingBottom: 0,
+    height: "100%",
+    display: "flex",
+    alignItems: "center",
+    fontSize: 12,
+  },
+  "& .base-button": {
+    height: "calc(100% - 10px)",
+  },
+
+  [theme.breakpoints.down("sm")]: {
+    width: "100%",
+  },
+}));
+
+const StyledSectionRightColored = styled(Box)({
+  borderRadius: 10,
+  height: 46,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  padding: "0px 5px 0px 20px",
+  background: "#EDF2F7",
 });
 
+const StyledSectionValue = styled(Box)(
+  ({ hasButton }: { hasButton: boolean }) => ({
+    width: hasButton ? "calc(100% - 140px)" : "100%",
+    display: "flex",
+    alignItems: "center",
+    "& .address-link": {},
+    "& p": {
+      flex: 1,
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      paddingRight: 20,
+    },
+  })
+);
+
+const StyledContainer = styled(Box)(({ theme }) => ({
+  display: "flex",
+  gap: 30,
+  flexDirection: "column",
+  width: "100%",
+  maxWidth: 600,
+  marginLeft: "auto",
+  marginRight: "auto",
+  padding: "60px 0px",
+  [theme.breakpoints.down("sm")]: {
+    padding: "30px 0px",
+  },
+}));
+
+const StyledTop = styled(Box)({
+  display: "flex",
+  alignItems: "center",
+  gap: 30,
+});
+
+const StyledTopText = styled(Box)({
+  color: "#27272E",
+  display: "flex",
+  flexDirection: "column",
+  gap: 10,
+  flex: 1,
+  "& h5": {
+    fontSize: 15,
+    fontWeight: 400,
+  },
+  "& h3": {
+    fontSize: 19,
+    fontWeight: 600,
+  },
+});
+
+const StyledTopImg = styled(Box)(({ theme }) => ({
+  width: 90,
+  height: 90,
+  borderRadius: "50%",
+  overflow: "hidden",
+  background: "rgba(0,0,0, 0.1)",
+  border: "13px solid #D9D9D9",
+  "& img": {
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+  },
+  [theme.breakpoints.down("sm")]: {
+    width: 60,
+    height: 60,
+    border: "2px solid #D9D9D9",
+  },
+}));
+
+const StyledTextSections = styled(Box)({
+  display: "flex",
+  flexDirection: "column",
+  gap: 24,
+});
 function JettonScreen() {
   const { id }: { id?: string } = useParams();
-  const { address } = useConnectionStore();
+
+  const { address, isConnecting } = useConnectionStore();
+  const { showNotification } = useNotification();
   const getJettonOnLoadRef = useRef(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [minter, setMinter] = useState<MinterState | null>(null);
-  const [jettonWallet, setJettonWallet] = useState<JettonWalletState | null>(
-    null
-  );
+  const [showConnect, setShowConnect] = useState(false);
+  const [txLoading, setTxLoading] = useState(false);
 
+  const {
+    getJettonDetails,
+    jettonImage,
+    isLoading,
+    adminAddress,
+    isAdmin,
+    adminRevokedOwnership,
+    balance,
+    symbol,
+    name,
+    description,
+    revokeAdminOwnership,
+    jettonAddress,
+    stopLoading,
+  } = useJettonStore();
 
-  useEffect(() => {
-    if (id && !getJettonOnLoadRef.current && address) {
-      getJettonDetails(id);
-      getJettonOnLoadRef.current = true;
+  const onRevokeAdminOwnership = async (contractAddr?: string) => {
+    if (!contractAddr) {
+      return;
     }
-  }, [address, id]);
-
-  const getJettonDetails = async (id: string) => {
-    if(!address){
-        return 
-    }
-    setJettonWallet(null);
-    setMinter(null);
-    setIsLoading(true);
     try {
-      const result = await jettonDeployController.getJettonDetails(
-        Address.parse(id),
-        Address.parse(address),
-        WalletConnection.getConnection()
-      );
-      const { minter, jettonWallet } = result;
-
-      setMinter({
-        ...minter,
-        admin: Address.normalize(minter.admin),
-      });
-      setJettonWallet({
-        balance: fromNano(jettonWallet.balance),
-        jWalletAddress: Address.normalize(jettonWallet.jWalletAddress),
-        jettonMasterAddress: Address.normalize(
-          jettonWallet.jettonMasterAddress
-        ),
-      });
-
-
+      setTxLoading(true);
+      await revokeAdminOwnership(contractAddr);
+      showNotification(<>Successfully revoked ownership </>, "success");
     } catch (error) {
-        console.log(error);
-        
+      if (error instanceof Error) {
+        showNotification(<>{error.message}</>, "error");
+      }
     } finally {
-      setIsLoading(false);
+      setTxLoading(false);
     }
   };
 
+  useEffect(() => {
+    if (!id) {
+      stopLoading();
+      return;
+    }
+    if (!getJettonOnLoadRef.current && !isConnecting) {
+      getJettonDetails(id, address);
+      getJettonOnLoadRef.current = true;
+    }
+  }, [id, getJettonDetails, isConnecting]);
 
-
+  useEffect(() => {
+    if (jettonAddress) {
+      
+      getJettonDetails(jettonAddress, address);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [address, getJettonDetails]);
 
   return (
     <Screen>
+      <Navbar customLink={{text: 'Deployer', path: ROUTES.deployer}} />
+      <TxLoader open={txLoading}></TxLoader>
+      <ConnectPopup open={showConnect} onClose={() => setShowConnect(false)} />
+      <ScreenContent>
       <StyledContainer>
-       <SearchInput  submit = {getJettonDetails} />
-        {minter && jettonWallet && address && !isLoading ? (
-          <JettonDetails address={address} minter={minter} jettonWallet={jettonWallet} />
-        ) : (
-          <ContentLoader />
-        )}
+        <StyledTop>
+          <StyledTopImg>
+            <LoadingImage
+              src={jettonImage}
+              alt="jetton image"
+              loading={isLoading}
+            />
+          </StyledTopImg>
+          <StyledTopText>
+            <LoadingContainer loading={isLoading} loaderWidth="80px">
+              <Typography variant="h3">{name}</Typography>
+            </LoadingContainer>
+            <LoadingContainer loading={isLoading} loaderWidth="150px">
+              {description && (
+                <Typography variant="h5">{description}</Typography>
+              )}
+            </LoadingContainer>
+          </StyledTopText>
+        </StyledTop>
+
+        <StyledTextSections>
+          <Row
+            title="Admin"
+            value={adminAddress || "-"}
+            isAddress
+            message={getAdminMessage(
+              adminRevokedOwnership,
+              isAdmin,
+              jettonAddress
+            )}
+            dataLoading={isLoading}
+            button={
+              isAdmin
+                ? {
+                    text: "Revoke ownership",
+                    action: () => onRevokeAdminOwnership(jettonAddress),
+                  }
+                : undefined
+            }
+          />
+          <Row
+            title="Address"
+            value={jettonAddress || "-"}
+            dataLoading={isLoading}
+            isAddress
+          />
+          <Row title="Symbol" value={symbol || "-"} dataLoading={isLoading} />
+          <Row
+            title="Jetton Wallet"
+            value={address || "-"}
+            dataLoading={isLoading}
+            isAddress
+          />
+          <Row
+            title="Balance"
+            value={balance ? `${balance} ${symbol}s` : "-"}
+            dataLoading={isLoading}
+            button={
+              !address
+                ? {
+                    text: "Connect wallet",
+                    action: () => setShowConnect(true),
+                  }
+                : undefined
+            }
+          />
+        </StyledTextSections>
       </StyledContainer>
+      </ScreenContent>
     </Screen>
   );
 }
+
+interface RowProps {
+  title: string;
+  value: string;
+  message?: JettonDetailMessage | undefined;
+  isAddress?: boolean | undefined;
+  button?: JettonDetailButton | undefined;
+  dataLoading: boolean;
+}
+
+const Row = ({
+  title,
+  value,
+  message,
+  isAddress,
+  button,
+  dataLoading,
+}: RowProps) => {
+  const { isSandbox } = useContext(EnvContext);
+
+  const scannerUrl = useMemo(
+    () =>
+      isSandbox
+        ? `https://sandbox.tonwhales.com/explorer/address`
+        : `https://tonscan.org/jetton`,
+    [isSandbox]
+  );
+
+  return (
+    <Box>
+      <StyledSection>
+        <StyledSectionTitle>
+          <Typography>{title}</Typography>
+        </StyledSectionTitle>
+        <StyledSectionRight>
+          <StyledSectionRightColored>
+            <LoadingContainer loading={dataLoading} loaderHeight="50%">
+              <StyledSectionValue hasButton={!!button}>
+                {isAddress ? (
+                  <AddressLink
+                    address={value}
+                    href={`${scannerUrl}/${value}`}
+                  />
+                ) : (
+                  <Typography>{value}</Typography>
+                )}
+              </StyledSectionValue>
+              {button && (
+                <BaseButton onClick={button.action}>{button.text}</BaseButton>
+              )}
+            </LoadingContainer>
+          </StyledSectionRightColored>
+
+          {message && !dataLoading && (
+            <StyledMessage type={message.type}>
+              {message.type === "warning" ? (
+                <WarningRoundedIcon />
+              ) : (
+                <CheckCircleRoundedIcon />
+              )}
+
+              {message.text}
+            </StyledMessage>
+          )}
+        </StyledSectionRight>
+      </StyledSection>
+    </Box>
+  );
+};
 
 export { JettonScreen };

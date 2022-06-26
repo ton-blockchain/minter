@@ -168,17 +168,26 @@ class JettonDeployController {
       ([addressCell]) => cellToAddress(addressCell)
     );
 
-    const jettonWallet = await tonConnection.makeGetCall(
-      jWalletAddress,
-      "get_wallet_data",
-      [],
-      ([amount, jWalletAddressCell, jettonMasterAddressCell]) => ({
-        balance: (amount as unknown as BN).toString(),
-        jWalletAddress: cellToAddress(jWalletAddressCell),
-        jettonMasterAddress: cellToAddress(jettonMasterAddressCell),
-      })
-    );
+    const isDeployed = await tonConnection._tonClient.isContractDeployed(jWalletAddress);
 
+    let jettonWallet;
+    if (isDeployed) {
+      jettonWallet = await tonConnection.makeGetCall(
+        jWalletAddress,
+        "get_wallet_data",
+        [],
+        ([amount, jWalletAddressCell, jettonMasterAddressCell]) => ({
+          balance: (amount as unknown as BN).toString(),
+          jWalletAddress: cellToAddress(jWalletAddressCell),
+          jettonMasterAddress: cellToAddress(jettonMasterAddressCell),
+        })
+      );
+    } else {
+      jettonWallet = null
+    }
+
+    
+    
     return {
       minter,
       jettonWallet,

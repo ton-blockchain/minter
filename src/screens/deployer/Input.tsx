@@ -1,15 +1,11 @@
-import { Box, IconButton, Tooltip, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { Control, Controller } from "react-hook-form";
 import { styled } from "@mui/material";
 import { useRef } from "react";
-import BaseButton from '../../components/BaseButton'
-import InfoIcon from '@mui/icons-material/Info';
-
-
+import BaseButton from "../../components/BaseButton";
 
 interface Props {
   error: boolean;
-  errorText: string;
   label: string;
   control: Control;
   name: string;
@@ -21,38 +17,32 @@ interface Props {
   disabled?: boolean;
   validate?: (val: string) => boolean;
   errorMessage?: string;
+  description: string;
 }
 
 
-
-const StyledError = styled(Box)({
-  position: "absolute",
-  left: 10,
-  top: "calc(100% + 1px)",
-  "& p": {
-    fontSize: 12,
-    fontWeight: 500,
-    color: '#F06360'
-  },
-});
-
-
-const StyledIconButton = styled(IconButton)({
-  position:'absolute',
-  left: -40
+const StyledDescription = styled(Typography)({
+  fontSize: 14,
+  marginTop: 2,
+  paddingLeft: 15,
+  opacity: 0.8
 })
 
-const StyledContainer = styled(Box)(({ error }: { error: boolean }) => ({
-  position: "relative",
+
+const StyledContainer = styled(Box)({
+  width: "100%",
+})
+
+const StyledInputContainer = styled(Box)(({ error }: { error: boolean }) => ({
   width: "100%",
   height: 46,
   display: "flex",
   alignItems: "center",
-  background: '#EDF2F7',
+  background: "#EDF2F7",
   borderRadius: 10,
   paddingRight: 5,
-  border: error ? '1px solid #F06360' : '1px solid transparent',
-  transition:'0.2s all',
+  border: error ? "1px solid #F06360" : "1px solid transparent",
+  transition: "0.2s all",
   "& .base-button": {
     height: "calc(100% - 10px)",
     width: 90,
@@ -73,7 +63,7 @@ const StyledInput = styled("input")({
   fontSize: 16,
   background: "transparent",
   outline: "none",
-
+  color: "unset",
   "&::placeholder": {
     color: "#7A828A",
     transition: "0.2s all",
@@ -86,19 +76,17 @@ const StyledInput = styled("input")({
 });
 
 function Input({
-  validate,
-  required,
+  description,
   defaultValue,
   control,
   error,
-  errorText,
   label,
   name,
   onExamleClick,
   type = "string",
   clearErrors,
   disabled,
-  errorMessage
+  errorMessage,
 }: Props) {
   const ref = useRef<any>();
 
@@ -112,38 +100,30 @@ function Input({
   };
 
   return (
-    <Controller
-      name={name}
-      control={control}
-      defaultValue={disabled ? defaultValue : ""}
-      rules={{
-        required:errorMessage,
-      }}
-      render={({ field: { onChange, value } }) => (
-        <StyledContainer error={error}>
-          <Tooltip title='some text'  >
-          <StyledIconButton>
-            <InfoIcon style={{color: '#50A7EA'}} />
-          </StyledIconButton>
-          </Tooltip>
-          <StyledInput
-            ref={ref}
-            value={value || ""}
-            onFocus={onFocus}
-            onChange={onChange}
-            placeholder={label}
-            disabled={disabled}
-          />
-          <BaseButton onClick={onClick}>Example</BaseButton>
-
-          {error && errorText && (
-            <StyledError>
-              <Typography>{errorText}</Typography>
-            </StyledError>
-          )}
-        </StyledContainer>
-      )}
-    />
+    <StyledContainer>
+      <Controller
+        name={name}
+        control={control}
+        defaultValue={disabled ? defaultValue : ""}
+        rules={{
+          required: errorMessage,
+        }}
+        render={({ field: { onChange, value } }) => (
+          <StyledInputContainer error={error}>
+            <StyledInput
+              ref={ref}
+              value={value || ""}
+              onFocus={onFocus}
+              onChange={onChange}
+              placeholder={label}
+              disabled={disabled}
+            />
+            <BaseButton onClick={onClick}>Example</BaseButton>
+          </StyledInputContainer>
+        )}
+      />
+      <StyledDescription>{description}</StyledDescription>
+    </StyledContainer>
   );
 }
 

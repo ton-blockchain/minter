@@ -7,7 +7,6 @@ export interface ConnectionStateAtom {
   wallet: Wallet | null;
   adapterId: Providers | null;
   isConnecting: boolean;
-  isRestoring: boolean;
 }
 
 const connectionStateAtom = atom<ConnectionStateAtom>({
@@ -17,7 +16,6 @@ const connectionStateAtom = atom<ConnectionStateAtom>({
     wallet: null,
     adapterId: null,
     isConnecting: true,
-    isRestoring: true,
   },
 });
 

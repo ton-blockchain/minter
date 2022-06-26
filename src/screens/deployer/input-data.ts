@@ -7,7 +7,7 @@ const formSpec = [
   {
     name: "name",
     label: "Jetton Name",
-    placeholder: "Choose a name for your token",
+    description: "Choose a name for your token",
     type: "text",
     default: "MyJetton",
     required: true,
@@ -16,9 +16,8 @@ const formSpec = [
   {
     name: "symbol",
     label: "Jetton Symbol",
-    placeholder: "Choose a symbol for your token (usually 3-5 chars)",
+    description: "Choose a symbol for your token (usually 3-5 chars)",
     type: "text",
-    inputStyle: { textTransform: "uppercase" },
     default: "JET",
     required: true,
     errorMessage: 'Symbol required'
@@ -26,7 +25,7 @@ const formSpec = [
   {
     name: "decimals",
     label: "Jetton decimals",
-    placeholder: "The decimal precision of your token",
+    description: "The decimal precision of your token",
     type: "number",
     disabled: true,
     default: 9,
@@ -36,7 +35,7 @@ const formSpec = [
   {
     name: "mintAmount",
     label: "Amount to mint",
-    placeholder: "The amount to mint",
+    description: "The amount to mint",
     type: "number",
     default: 100,
     required: true,
@@ -46,7 +45,7 @@ const formSpec = [
   {
     name: "description",
     label: "Description",
-    placeholder: "Jetton description",
+    description: "Jetton description",
     type: "string",
     default: "My jetton description",
   },
@@ -55,7 +54,7 @@ const formSpec = [
   {
     name: "tokenImage",
     label: "Jetton logo URI",
-    placeholder: "Image of the jetton",
+    description: "Image of the jetton",
     type: "string",
     required: false,
     example: false,

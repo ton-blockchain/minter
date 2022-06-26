@@ -78,8 +78,13 @@ export function buildJettonOnchainMetadata(data: {
     .endCell();
 }
 
+export type persistenceType =
+  | "onchain"
+  | "offchain_private_domain"
+  | "offchain_ipfs";
+
 export async function readJettonMetadata(contentCell: Cell): Promise<{
-  isOnchain: boolean;
+  persistenceType: persistenceType;
   metadata: { [s in JettonMetaDataKeys]?: string };
 }> {
   const contentSlice = contentCell.beginParse();
@@ -87,24 +92,31 @@ export async function readJettonMetadata(contentCell: Cell): Promise<{
   switch (contentSlice.readUint(8).toNumber()) {
     case ONCHAIN_CONTENT_PREFIX:
       return {
-        isOnchain: true,
+        persistenceType: "onchain",
         metadata: parseJettonOnchainMetadata(contentSlice),
       };
     case OFFCHAIN_CONTENT_PREFIX:
+      const { metadata, isIpfs } = await parseJettonOffchainMetadata(
+        contentSlice
+      );
       return {
-        isOnchain: false,
-        metadata: await parseJettonOffchainMetadata(contentSlice),
+        persistenceType: isIpfs ? "offchain_ipfs" : "offchain_private_domain",
+        metadata,
       };
     default:
       throw new Error("Unexpected jetton metadata content prefix");
   }
 }
 
-async function parseJettonOffchainMetadata(
-  contentSlice: Slice
-): Promise<{ [s in JettonMetaDataKeys]?: string }> {
+async function parseJettonOffchainMetadata(contentSlice: Slice): Promise<{
+  metadata: { [s in JettonMetaDataKeys]?: string };
+  isIpfs: boolean;
+}> {
   const jsonURI = contentSlice.readRemainingBytes().toString("ascii");
-  return (await axios.get(jsonURI)).data;
+  return {
+    metadata: (await axios.get(jsonURI)).data,
+    isIpfs: /(^|\/)ipfs[.:]/.test(jsonURI),
+  };
 }
 
 function parseJettonOnchainMetadata(contentSlice: Slice): {

@@ -54,7 +54,7 @@ const formSpec = [
   {
     name: "tokenImage",
     label: "Jetton logo URI",
-    description: "Image of the jetton",
+    description: "Image of the jetton (png/jpg/jpeg/svg)",
     type: "string",
     required: false,
     example: false,

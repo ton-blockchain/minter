@@ -2,9 +2,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Address, toNano } from "ton";
 import useConnectionStore from "store/connection-store/useConnectionStore";
-import { formSpec } from "./input-data";
+import { formSpec } from "./data";
 import { Fade, Link, styled, Typography } from "@mui/material";
-import useMainStore from "store/main-store/useMainStore";
 import BaseButton from "components/BaseButton";
 import { Box } from "@mui/system";
 import { jettonDeployController } from "lib/deploy-controller";
@@ -94,7 +93,6 @@ function Deployer() {
     clearErrors,
   } = useForm({ mode: "onSubmit", reValidateMode: "onChange" });
   const { showNotification } = useNotification();
-  const { toggleConnectPopup } = useMainStore();
   const { address, adapterId } = useConnectionStore();
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -130,7 +128,7 @@ function Deployer() {
       showNotification(
         <>
           Contract already deployed,{" "}
-          <ReactRouterLink to={`${ROUTES.jetton}/${contractAddress}/`}>View contract</ReactRouterLink>
+          <ReactRouterLink to={`${ROUTES.jetton}/${Address.normalize(contractAddress)}/`}>View contract</ReactRouterLink>
         </>,
         "warning"
       );
@@ -189,8 +187,6 @@ function Deployer() {
         </StyledLeft>
         <StyledForm onSubmit={handleSubmit(deployContract, onFormError)} >
         
-
-
           <StyledFormInputs>
             {formSpec.map((spec, index) => {
               return (
@@ -207,22 +203,15 @@ function Deployer() {
                   onExamleClick={onExampleClick}
                   disabled={spec.disabled}
                   errorMessage={spec.errorMessage}
-                  // validate={spec.validate}
                 />
               );
             })}
           </StyledFormInputs>
 
           <StyledActionBtn>
-            {!address ? (
-              <BaseButton fullWidth onClick={() => toggleConnectPopup(true)}>
-                Connect Wallet
-              </BaseButton>
-            ) : (
-              <BaseButton fullWidth type="submit">
+          <BaseButton fullWidth type="submit">
                 Deploy
               </BaseButton>
-            )}
           </StyledActionBtn>
         </StyledForm>
       </StyledContainer>

@@ -5,7 +5,7 @@ import {
 import { jettonDeployController } from "lib/deploy-controller";
 import { EnvProfiles, Environments } from "lib/env-profiles";
 import { zeroAddress } from "lib/utils";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useResetRecoilState } from "recoil";
 import WalletConnection from "services/wallet-connection";
 import { Address, fromNano } from "ton";
 import { jettonStateAtom } from ".";
@@ -14,6 +14,7 @@ import { useCallback } from "react";
 
 function useJettonStore() {
   const [state, setState] = useRecoilState(jettonStateAtom);
+  const reset = useResetRecoilState(jettonStateAtom)
 
   const getJettonDetails = useCallback(
     async (_jettonAddress: string, address?: string | null) => {
@@ -105,11 +106,15 @@ function useJettonStore() {
     });
   }, [setState]);
 
+
+
+
   return {
     ...state,
     getJettonDetails,
     revokeAdminOwnership,
     stopLoading,
+    reset
   };
 }
 

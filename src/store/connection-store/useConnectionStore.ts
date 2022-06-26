@@ -18,6 +18,14 @@ function useConnectionStore() {
     window.location = value;
   };
 
+
+  const toggleConnect = (value: boolean) => {
+    setConnectionState((prevState) => ({
+      ...prevState,
+     showConnect: value
+    }));
+  }
+
   const connect = async (
     provider: Providers,
     onSessionLink?: (value: string) => void
@@ -73,7 +81,8 @@ function useConnectionStore() {
     disconnect,
     connect,
     resetState,
-    connectOnLoad
+    connectOnLoad,
+    toggleConnect
   };
 }
 

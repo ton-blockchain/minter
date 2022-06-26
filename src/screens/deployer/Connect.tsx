@@ -1,9 +1,8 @@
 import BaseButton from "components/BaseButton";
-import {  useState } from "react";
 import HeroImg from "assets/connect.png";
 import { Fade, styled, Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import ConnectPopup from "components/connect-popup";
+import useConnectionStore from "store/connection-store/useConnectionStore";
 
 const StyledImage = styled("img")({
 
@@ -54,27 +53,24 @@ const StyledHeader = styled(Box)({
 });
 
 function Connect() {
-  const [showConnect, setShowConnect] = useState(false);
-  return (
-    <>
-      <Fade in>
-        <StyledContainer>
-          <StyledHeader>
-            <Typography variant="h3">
-              An open source tool to create jettons
-            </Typography>
-          </StyledHeader>
+  const {toggleConnect} = useConnectionStore()
+    return (
+    <Fade in>
+    <StyledContainer>
+      <StyledHeader>
+        <Typography variant="h3">
+          An open source tool to create jettons
+        </Typography>
+      </StyledHeader>
 
-          <StyledImage src={HeroImg} />
-          <StyledConnectButton>
-            <BaseButton  onClick={() => setShowConnect(true)}>
-              Connect wallet
-            </BaseButton>
-          </StyledConnectButton>
-        </StyledContainer>
-      </Fade>
-      <ConnectPopup open={showConnect} onClose={() => setShowConnect(false)} />
-    </>
+      <StyledImage src={HeroImg} />
+      <StyledConnectButton>
+        <BaseButton  onClick={() => toggleConnect(true)}>
+          Connect wallet
+        </BaseButton>
+      </StyledConnectButton>
+    </StyledContainer>
+  </Fade>
   );
 }
 

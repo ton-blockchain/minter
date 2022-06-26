@@ -18,15 +18,11 @@ const SyledContainer = styled(Box)({
   width:'fit-content'
 });
 
-interface Props {
-  open: boolean;
-  onClose: () => void;
-}
-
-function ConnectPopup({ open, onClose }: Props) {
+function ConnectPopup() {
   const [sessionLink, setSessionLink] = useState<string | null>(null);
   const [showQr, setShowQr] = useState(false);
-  const { connect, resetState } = useConnectionStore();
+  const { connect, resetState, toggleConnect, showConnect } = useConnectionStore();
+
 
   const onSelect = async (provider: Providers) => {
     resetState();
@@ -43,7 +39,7 @@ function ConnectPopup({ open, onClose }: Props) {
         !isMobile && setShowQr(true);
       }
       await connect(provider, onSessionLinkCreated);
-      onClose();
+      toggleConnect(false);
     } catch (error) {
       resetState();
     } finally {
@@ -58,14 +54,14 @@ function ConnectPopup({ open, onClose }: Props) {
   };
 
   const close = async () => {
-    onClose();
+    toggleConnect(false);
     await delay(200);
     setShowQr(false);
     setSessionLink(null);
   };
 
   return (
-    <Popup open={open} onClose={close}>
+    <Popup open={showConnect} onClose={close}>
       <SyledContainer>
         <AdaptersList
           adapters={providers}

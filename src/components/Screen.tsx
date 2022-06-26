@@ -16,6 +16,8 @@ const StyledContent = styled(Box)({
   background: "#F7FAFC",
   width: "100%",
   borderRadius: "20px",
+  maxHeight: 'calc(100vh - 100px)',
+  overflow:'auto'
 });
 
 const ScreenContent = ({ children }: { children: ReactNode }) => {

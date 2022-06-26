@@ -112,9 +112,9 @@ const StyledContainer = styled(Box)(({ theme }) => ({
   maxWidth: 600,
   marginLeft: "auto",
   marginRight: "auto",
-  padding: "60px 0px",
+  padding: "60px 20px",
   [theme.breakpoints.down("sm")]: {
-    padding: "30px 0px",
+    padding: "30px 20px",
   },
 }));
 
@@ -167,10 +167,9 @@ const StyledTextSections = styled(Box)({
 function JettonScreen() {
   const { id }: { id?: string } = useParams();
 
-  const { address, isConnecting } = useConnectionStore();
+  const { address, isConnecting, toggleConnect } = useConnectionStore();
   const { showNotification } = useNotification();
   const getJettonOnLoadRef = useRef(false);
-  const [showConnect, setShowConnect] = useState(false);
   const [txLoading, setTxLoading] = useState(false);
 
   const {
@@ -187,6 +186,7 @@ function JettonScreen() {
     revokeAdminOwnership,
     jettonAddress,
     stopLoading,
+    reset
   } = useJettonStore();
 
   const onRevokeAdminOwnership = async (contractAddr?: string) => {
@@ -225,11 +225,20 @@ function JettonScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address, getJettonDetails]);
 
+
+  useEffect(() => {
+  
+    return () => {
+      reset()
+    }
+  }, [reset])
+  
+
   return (
     <Screen>
       <Navbar customLink={{text: 'Deployer', path: ROUTES.deployer}} />
       <TxLoader open={txLoading}></TxLoader>
-      <ConnectPopup open={showConnect} onClose={() => setShowConnect(false)} />
+      
       <ScreenContent>
       <StyledContainer>
         <StyledTop>
@@ -255,7 +264,7 @@ function JettonScreen() {
         <StyledTextSections>
           <Row
             title="Admin"
-            value={adminAddress || "-"}
+            value={adminAddress}
             isAddress
             message={getAdminMessage(
               adminRevokedOwnership,
@@ -274,26 +283,26 @@ function JettonScreen() {
           />
           <Row
             title="Address"
-            value={jettonAddress || "-"}
+            value={jettonAddress}
             dataLoading={isLoading}
             isAddress
           />
-          <Row title="Symbol" value={symbol || "-"} dataLoading={isLoading} />
+          <Row title="Symbol" value={symbol} dataLoading={isLoading} />
           <Row
             title="Jetton Wallet"
-            value={address || "-"}
+            value={address}
             dataLoading={isLoading}
             isAddress
           />
           <Row
             title="Balance"
-            value={balance ? `${balance} ${symbol}s` : "-"}
+            value={balance && `${balance} ${symbol}s`}
             dataLoading={isLoading}
             button={
               !address
                 ? {
                     text: "Connect wallet",
-                    action: () => setShowConnect(true),
+                    action: () => toggleConnect(true),
                   }
                 : undefined
             }
@@ -307,7 +316,7 @@ function JettonScreen() {
 
 interface RowProps {
   title: string;
-  value: string;
+  value?: string | null;
   message?: JettonDetailMessage | undefined;
   isAddress?: boolean | undefined;
   button?: JettonDetailButton | undefined;
@@ -342,13 +351,13 @@ const Row = ({
           <StyledSectionRightColored>
             <LoadingContainer loading={dataLoading} loaderHeight="50%">
               <StyledSectionValue hasButton={!!button}>
-                {isAddress ? (
+                {isAddress && value ? (
                   <AddressLink
                     address={value}
                     href={`${scannerUrl}/${value}`}
                   />
                 ) : (
-                  <Typography>{value}</Typography>
+                  <Typography>{value || '-'}</Typography>
                 )}
               </StyledSectionValue>
               {button && (

@@ -12,6 +12,7 @@ import { DesktopMenu, MobileMenu } from "./Menu";
 const StyledToolbar = styled(Box)(({ theme }) => ({
   display: "flex",
   justifyContent: "space-between",
+  alignItems:'center',
   width: "100%",
   height: "100%",
   [theme.breakpoints.down("md")]: {
@@ -31,7 +32,7 @@ const StyledAppBar = styled(AppBar)(({ theme }) => ({
 
   }))
 
-const StyledLogo = styled(Box)({
+const StyledLogo = styled(Box)(({theme}) => ({
   display: "flex",
   color: "#6D6D6D",
   alignItems: "center",
@@ -41,7 +42,15 @@ const StyledLogo = styled(Box)({
     lineHeight: "20px",
     fontWeight: 700,
   },
-});
+  [theme.breakpoints.down('sm')]: {
+    "& img":{
+      width:40
+    },
+    "& h4": {
+      fontSize: 15,
+    }
+  }
+}));
 
 interface Props {
   customLink?: {
@@ -51,7 +60,6 @@ interface Props {
 }
 
 function Navbar({ customLink }: Props) {
-  const { isSandbox } = useContext(EnvContext);
   const [mobileMenu, setMobileMenu] = useState(false);
   const navigate = useNavigate();
   const matches = useMediaQuery("(min-width:900px)");
@@ -75,7 +83,7 @@ function Navbar({ customLink }: Props) {
         </StyledLogo>
         {matches && <DesktopMenu customLink={customLink} />}
       </StyledToolbar>
-      <MobileMenu showMenu={mobileMenu} customLink={customLink} closeMenu={() => setMobileMenu(false)} />
+      <MobileMenu showMenu={mobileMenu && !matches} customLink={customLink} closeMenu={() => setMobileMenu(false)} />
     </StyledAppBar>
   );
 }

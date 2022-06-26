@@ -10,7 +10,8 @@ import { ROUTES } from "consts";
 const StyledContainer = styled(Box)(({ expanded }: { expanded: boolean }) => ({
   width: expanded ? 260 : 160,
   transition: "0.1s all",
-  height: 35,
+  height: '100%',
+  minHeight:35,
   padding: "0px 17px",
   border: "1px solid #7A828A",
   borderRadius: 20,
@@ -61,7 +62,6 @@ function SearchInput() {
   };
 
   useEffect(() => {
-    console.log('test');
     
     const listener = (event: any) => {
       if (event.code === "Enter" || event.code === "NumpadEnter") {
@@ -77,7 +77,7 @@ function SearchInput() {
 
   return (
     <ClickAwayListener onClickAway={() => setExpanded(false)}>
-      <StyledContainer expanded={expanded}>
+      <StyledContainer expanded={expanded} className='search'>
         <IconButton sx={{ padding: 0 }} onClick={onSubmit}>
           <img src={SearchImg} alt="" />
         </IconButton>

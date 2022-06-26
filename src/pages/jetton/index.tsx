@@ -181,7 +181,8 @@ function JettonScreen() {
     stopLoading,
     reset,
     isOnchain,
-    totalSupply
+    totalSupply,
+    jettonAddress
   } = useJettonStore();
 
   
@@ -286,7 +287,7 @@ function JettonScreen() {
             dataLoading={isLoading} />
             <Row
               title="Jetton Wallet"
-              value={address}
+              value={jettonAddress}
               dataLoading={isLoading}
               isAddress
             />

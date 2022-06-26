@@ -14,7 +14,6 @@ const StyledApp = styled(Box)(({theme}) => ({
   width: "calc(100% - 50px)",
   marginLeft: "auto",
   marginRight: "auto",
-  paddingBottom: "100px",
   '*::-webkit-scrollbar': {
     display:'none'
   },

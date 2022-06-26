@@ -13,6 +13,7 @@ interface JettonStoreState {
   jettonMaster?: string;
   isOnchain: boolean;
   totalSupply?: string;
+  jettonAddress?: string;
 }
 
 const jettonStateAtom = atom<JettonStoreState>({
@@ -29,7 +30,8 @@ const jettonStateAtom = atom<JettonStoreState>({
     balance: undefined,
     isLoading: true,
     jettonMaster: undefined,
-    totalSupply: undefined
+    totalSupply: undefined,
+    jettonAddress: undefined
   },
 });
 

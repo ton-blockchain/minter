@@ -1,4 +1,3 @@
-import { AlertColor } from "@mui/material";
 import { JettonDetailMessage } from "./types";
 
 const getAdminMessage = (isRevokedOwnership?: boolean, isAdmin?: boolean, jettonAddress?: string):  JettonDetailMessage | undefined => {
@@ -20,7 +19,7 @@ const getAdminMessage = (isRevokedOwnership?: boolean, isAdmin?: boolean, jetton
 
   return {
     type: "warning",
-    text: "This token is not safe because admin has not revoked ownership",
+    text: "This token is not 100% safe because admin has not revoked ownership",
   };
 };
 
@@ -30,7 +29,7 @@ const getOffChainMessage = (isOnChain: boolean): JettonDetailMessage | undefined
   if (!isOnChain) {
     return {
       type: "warning",
-      text: "this jetton's metadata (name and symbol) can be altered or removed, since they're not store on the Ton chain",
+      text: "This Jetton's metadata (name and symbol) can be altered or removed, since they're not stored on the TON chain",
     };
   }
   return 

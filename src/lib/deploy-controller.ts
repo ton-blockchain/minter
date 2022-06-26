@@ -160,6 +160,8 @@ class JettonDeployController {
       [beginCell().storeAddress(owner).endCell()],
       ([addressCell]) => cellToAddress(addressCell)
     );
+      
+
 
     const isDeployed = await tonConnection._tonClient.isContractDeployed(
       jWalletAddress

@@ -51,12 +51,15 @@ function useJettonStore() {
         const _adminAddress = result.minter.admin.toFriendly();
         const admin = _adminAddress === address;
 
+        
+
         setState((prevState) => {
           return {
             ...prevState,
             isOnchain: result.minter.isOnchain,
             description: result.minter.metadata.description,
             jettonImage: result.minter.metadata.image || QuestiomMarkImg,
+            totalSupply: parseFloat(result.minter.totalSupply.toString()).toLocaleString(),
             name: result.minter.metadata.name,
             symbol: result.minter.metadata.symbol,
             adminRevokedOwnership: _adminAddress === zeroAddress().toFriendly(),

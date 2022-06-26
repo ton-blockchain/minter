@@ -181,7 +181,10 @@ function JettonScreen() {
     stopLoading,
     reset,
     isOnchain,
+    totalSupply
   } = useJettonStore();
+
+  
 
   const onRevokeAdminOwnership = async (contractAddr?: string) => {
     if (!contractAddr) {
@@ -278,6 +281,9 @@ function JettonScreen() {
               isAddress
             />
             <Row title="Symbol" value={symbol} dataLoading={isLoading} />
+            <Row title="Total supply" 
+             value={totalSupply && `${totalSupply} ${symbol}s`}
+            dataLoading={isLoading} />
             <Row
               title="Jetton Wallet"
               value={address}

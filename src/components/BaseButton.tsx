@@ -1,8 +1,6 @@
-import { Button } from "@mui/material";
-import React, { ReactNode } from "react";
+import  { ReactNode } from "react";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { styled } from "@mui/material";
-import { Box } from "@mui/system";
 
 interface Props {
   children: ReactNode;
@@ -10,22 +8,33 @@ interface Props {
   disabled?: boolean;
   onClick?: () => void;
   type?: "button" | "submit" | "reset";
+  fontSize?: number;
+  transparent?: boolean;
 }
 
-const StyledButton = styled(LoadingButton)({
-  width: "fit-content",
-  marginLeft: "auto",
-  marginRight: "auto",
-});
+interface StyledButtonProps{
+  fontSize: number;
+}
 
-const StyledBox = styled(Box)({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  "& .MuiCircularProgress-root":{
-    color:'white'
-  }
-});
+const StyledButton = styled(LoadingButton)(({fontSize}:StyledButtonProps) => ({
+  fontSize: fontSize,
+  boxShadow:'none',
+  borderRadius: 6,
+  fontWeight: 600,
+  padding:  '0px 20px',
+  height:'100%',
+  display:'flex',
+  alignItems:'center',
+  justifyContent:'center',
+  gap: 8,
+  whiteSpace:'nowrap',
+  "& img":{
+    maxWidth: 22
+  },
+
+}));
+
+
 
 function BaseButton({
   children,
@@ -33,19 +42,25 @@ function BaseButton({
   disabled,
   onClick,
   type = "button",
+  fontSize = 14,
+  transparent
 }: Props) {
   return (
-    <StyledBox>
       <StyledButton
+       className="base-button"
+        fontSize={fontSize}
         type={type}
         onClick={onClick ? onClick : () => {}}
-        variant="contained"
+        variant={transparent ? 'outlined' : 'contained'}
         loading={loading}
         disabled={disabled}
+        style={{
+          border: transparent ? '1px solid #50A7EA' : ''
+        }}
       >
         {children}
       </StyledButton>
-    </StyledBox>
+   
   );
 }
 

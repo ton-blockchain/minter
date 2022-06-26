@@ -4,14 +4,17 @@ import { Cell, beginCell, Address, toNano, beginDict, Slice } from "ton";
 import walletHex from "./contracts/jetton-wallet-bitcode.json";
 import minterHex from "./contracts/jetton-minter-bitcode.json";
 import { Sha256 } from "@aws-crypto/sha256-js";
+import axios from "axios";
 
 const ONCHAIN_CONTENT_PREFIX = 0x00;
+const OFFCHAIN_CONTENT_PREFIX = 0x01;
 const SNAKE_PREFIX = 0x00;
 
 export const JETTON_WALLET_CODE = Cell.fromBoc(walletHex.hex)[0];
 export const JETTON_MINTER_CODE = Cell.fromBoc(minterHex.hex)[0]; // code cell from build output
 
 enum OPS {
+  ChangeAdmin = 3,
   Mint = 21,
   InternalTransfer = 0x178d4519,
   Transfer = 0xf8a7ea5,
@@ -34,7 +37,7 @@ const sha256 = (str: string) => {
   return Buffer.from(sha.digestSync());
 };
 
-export function buildOnChainData(data: {
+export function buildJettonOnchainMetadata(data: {
   [s: string]: string | undefined;
 }): Cell {
   const KEYLEN = 256;
@@ -75,7 +78,48 @@ export function buildOnChainData(data: {
     .endCell();
 }
 
-export function parseOnChainData(contentCell: Cell): {
+export type persistenceType =
+  | "onchain"
+  | "offchain_private_domain"
+  | "offchain_ipfs";
+
+export async function readJettonMetadata(contentCell: Cell): Promise<{
+  persistenceType: persistenceType;
+  metadata: { [s in JettonMetaDataKeys]?: string };
+}> {
+  const contentSlice = contentCell.beginParse();
+
+  switch (contentSlice.readUint(8).toNumber()) {
+    case ONCHAIN_CONTENT_PREFIX:
+      return {
+        persistenceType: "onchain",
+        metadata: parseJettonOnchainMetadata(contentSlice),
+      };
+    case OFFCHAIN_CONTENT_PREFIX:
+      const { metadata, isIpfs } = await parseJettonOffchainMetadata(
+        contentSlice
+      );
+      return {
+        persistenceType: isIpfs ? "offchain_ipfs" : "offchain_private_domain",
+        metadata,
+      };
+    default:
+      throw new Error("Unexpected jetton metadata content prefix");
+  }
+}
+
+async function parseJettonOffchainMetadata(contentSlice: Slice): Promise<{
+  metadata: { [s in JettonMetaDataKeys]?: string };
+  isIpfs: boolean;
+}> {
+  const jsonURI = contentSlice.readRemainingBytes().toString("ascii");
+  return {
+    metadata: (await axios.get(jsonURI)).data,
+    isIpfs: /(^|\/)ipfs[.:]/.test(jsonURI),
+  };
+}
+
+function parseJettonOnchainMetadata(contentSlice: Slice): {
   [s in JettonMetaDataKeys]?: string;
 } {
   // Note that this relies on what is (perhaps) an internal implementation detail:
@@ -85,9 +129,6 @@ export function parseOnChainData(contentCell: Cell): {
   const toKey = (str: string) => new BN(str, "hex").toString(10);
 
   const KEYLEN = 256;
-  const contentSlice = contentCell.beginParse();
-  if (contentSlice.readUint(8).toNumber() !== ONCHAIN_CONTENT_PREFIX)
-    throw new Error("Expected onchain content marker");
 
   const dict = contentSlice.readDict(KEYLEN, (s) => {
     let buffer = Buffer.from("");
@@ -99,8 +140,8 @@ export function parseOnChainData(contentCell: Cell): {
 
       v = Buffer.concat([v, s.readRemainingBytes()]);
       if (s.remainingRefs === 1) {
-        v = sliceToVal(s.readRef(), v)
-      } 
+        v = sliceToVal(s.readRef(), v);
+      }
 
       return v;
     };
@@ -127,14 +168,14 @@ export function initData(
   return beginCell()
     .storeCoins(0)
     .storeAddress(owner)
-    .storeRef(buildOnChainData(data))
+    .storeRef(buildJettonOnchainMetadata(data))
     .storeRef(JETTON_WALLET_CODE)
     .endCell();
 }
 
 export function mintBody(owner: Address, jettonValue: BN): Cell {
   return beginCell()
-    .storeUint(OPS.Mint, 32) // opcode (reference TODO)
+    .storeUint(OPS.Mint, 32)
     .storeUint(0, 64) // queryid
     .storeAddress(owner)
     .storeCoins(toNano(0.2)) // gas fee
@@ -150,5 +191,13 @@ export function mintBody(owner: Address, jettonValue: BN): Cell {
         .storeBit(false) // forward_payload in this slice, not separate cell
         .endCell()
     )
+    .endCell();
+}
+
+export function changeAdminBody(newAdmin: Address): Cell {
+  return beginCell()
+    .storeUint(OPS.ChangeAdmin, 32)
+    .storeUint(0, 64) // queryid
+    .storeAddress(newAdmin)
     .endCell();
 }

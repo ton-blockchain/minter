@@ -1,12 +1,13 @@
 import { atom, selector } from "recoil";
 import { Wallet } from "@ton-defi.org/ton-connection";
+import { Providers } from "lib/env-profiles";
 
 export interface ConnectionStateAtom {
   address: string | null;
   wallet: Wallet | null;
-  adapterId: any;
+  adapterId: Providers | null;
   isConnecting: boolean;
-  isRestoring: boolean;
+  showConnect: boolean;
 }
 
 const connectionStateAtom = atom<ConnectionStateAtom>({
@@ -16,7 +17,7 @@ const connectionStateAtom = atom<ConnectionStateAtom>({
     wallet: null,
     adapterId: null,
     isConnecting: true,
-    isRestoring: true,
+    showConnect: false
   },
 });
 

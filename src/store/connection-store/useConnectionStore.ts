@@ -18,23 +18,58 @@ function useConnectionStore() {
     window.location = value;
   };
 
+
+  const toggleConnect = (value: boolean) => {
+    setConnectionState((prevState) => ({
+      ...prevState,
+     showConnect: value
+    }));
+  }
+
   const connect = async (
     provider: Providers,
     onSessionLink?: (value: string) => void
   ) => {
-    const wallet = await WalletConnection.connect(
-      provider,
-      onSessionLink ? onSessionLink : () => {},
-      isSandbox,
-      isMobile ? onTxUrlReady : undefined
-    );
-    localStorage.setItem(LOCAL_STORAGE_PROVIDER, provider);
-    setConnectionState((prevState) => ({
-      ...prevState,
-      address: wallet.address,
-      wallet,
-    }));
+    try {
+      setConnectionState((prevState) => ({
+        ...prevState,
+        isConnecting: true,
+      }));
+
+      const wallet = await WalletConnection.connect(
+        provider,
+        onSessionLink ? onSessionLink : () => {},
+        isSandbox,
+        isMobile ? onTxUrlReady : undefined
+      );
+
+      localStorage.setItem(LOCAL_STORAGE_PROVIDER, provider);
+      setConnectionState((prevState) => ({
+        ...prevState,
+        address: wallet.address,
+        wallet,
+        adapterId: provider,
+      }));
+    } catch (error) {
+    } finally {
+      setConnectionState((prevState) => ({
+        ...prevState,
+        isConnecting: false,
+      }));
+    }
   };
+
+  const connectOnLoad = async () => {
+    const provider = localStorage.getItem(LOCAL_STORAGE_PROVIDER);
+    if (provider) {
+      connect(provider as Providers);
+    }else{
+      setConnectionState((prevState) => ({
+        ...prevState,
+        isConnecting: false,
+      }));
+    }
+  }
 
   const disconnect = () => {
     resetState();
@@ -46,6 +81,8 @@ function useConnectionStore() {
     disconnect,
     connect,
     resetState,
+    connectOnLoad,
+    toggleConnect
   };
 }
 

@@ -57,7 +57,6 @@ const formSpec = [
     description: "Image of the jetton (png/jpg/jpeg/svg)",
     type: "string",
     required: false,
-    example: false,
     validate: checkURL,
     default: "https://www.linkpicture.com/q/download_183.png"
   },

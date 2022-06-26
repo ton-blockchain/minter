@@ -114,7 +114,7 @@ function Input({
                 opacity: disabled ? 0.5 : 1,
               }}
             />
-            <BaseButton onClick={onClick}>Example</BaseButton>
+            {!disabled && <BaseButton onClick={onClick}>Example</BaseButton>}
           </StyledInputContainer>
         )}
       />

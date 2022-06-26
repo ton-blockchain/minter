@@ -51,10 +51,6 @@ function useJettonStore() {
         const _adminAddress = result.minter.admin.toFriendly();
         const admin = _adminAddress === address;
 
-        console.log({ result });
-        console.log(result.jettonWallet?.jettonMasterAddress.toFriendly());
-      
-
         setState((prevState) => {
           return {
             ...prevState,

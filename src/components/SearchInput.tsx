@@ -82,7 +82,7 @@ function SearchInput() {
           <img src={SearchImg} alt="" />
         </IconButton>
         <StyledInput
-          placeholder="Search address"
+          placeholder="Jetton address"
           onPaste={onPaste}
           onChange={onChange}
           value={value}

@@ -10,7 +10,7 @@ function DeployerScreen() {
 
   return (
     <Screen>
-      <Navbar customLink={{ text: "Jetton", path: ROUTES.jetton }} />
+      <Navbar />
       <ScreenContent>{address ? <Deployer /> : <Connect />}</ScreenContent>
     </Screen>
   );

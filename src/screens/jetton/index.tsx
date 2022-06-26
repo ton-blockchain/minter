@@ -236,7 +236,7 @@ function JettonScreen() {
 
   return (
     <Screen>
-      <Navbar customLink={{text: 'Deployer', path: ROUTES.deployer}} />
+      <Navbar customLink={{text: 'Create Jetton', path: ROUTES.deployer}} />
       <TxLoader open={txLoading}></TxLoader>
       
       <ScreenContent>

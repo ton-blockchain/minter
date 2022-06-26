@@ -117,6 +117,9 @@ function Input({
               onChange={onChange}
               placeholder={label}
               disabled={disabled}
+              style ={{
+                opacity: disabled ? 0.5 : 1
+              }}
             />
             <BaseButton onClick={onClick}>Example</BaseButton>
           </StyledInputContainer>

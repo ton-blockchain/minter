@@ -16,7 +16,7 @@ const StyledContent = styled(Box)({
   background: "#F7FAFC",
   width: "100%",
   borderRadius: "20px",
-  maxHeight: 'calc(100vh - 100px)',
+  maxHeight: 'calc(100vh - 140px)',
   overflow:'auto'
 });
 

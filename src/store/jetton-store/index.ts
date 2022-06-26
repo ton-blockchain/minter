@@ -1,3 +1,4 @@
+import { persistenceType } from "lib/jetton-minter";
 import { atom } from "recoil";
 
 interface JettonStoreState {
@@ -11,7 +12,7 @@ interface JettonStoreState {
   balance?: string;
   isLoading: boolean
   jettonMaster?: string;
-  isOnchain: boolean;
+  persistenceType?: persistenceType;
   totalSupply?: string;
   jettonAddress?: string;
 }
@@ -19,7 +20,7 @@ interface JettonStoreState {
 const jettonStateAtom = atom<JettonStoreState>({
   key: "jettonStateAtom",
   default: {
-    isOnchain: true,
+    persistenceType: undefined,
     isAdmin: false,
     adminRevokedOwnership: true,
     symbol: undefined,

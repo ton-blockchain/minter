@@ -1,8 +1,13 @@
+import { persistenceType } from "lib/jetton-minter";
 import { JettonDetailMessage } from "./types";
 
-const getAdminMessage = (isRevokedOwnership?: boolean, isAdmin?: boolean, jettonAddress?: string):  JettonDetailMessage | undefined => {
-  if(!jettonAddress){
-      return undefined
+const getAdminMessage = (
+  isRevokedOwnership?: boolean,
+  isAdmin?: boolean,
+  jettonAddress?: string
+): JettonDetailMessage | undefined => {
+  if (!jettonAddress) {
+    return undefined;
   }
   if (isRevokedOwnership) {
     return {
@@ -23,18 +28,25 @@ const getAdminMessage = (isRevokedOwnership?: boolean, isAdmin?: boolean, jetton
   };
 };
 
+const getOffChainMessage = (
+  persistenceType?: persistenceType
+): JettonDetailMessage | undefined => {
+  
+  switch (persistenceType) {
+    case "offchain_ipfs":
+      return {
+        type: "warning",
+        text: "This jetton’s metadata (name and symbol) is stored on IPFS instead of on-chain. It will not change, but be careful, it can disappear and become unpinned.",
+      };
+    case "offchain_private_domain":
+      return {
+        type: "warning",
+        text: "This jetton’s metadata (name and symbol) is stored on a privately owned website instead of on-chain. Be careful, it can we changed freely or deleted by the website owner without your consent.",
+      };
 
-const getOffChainMessage = (isOnChain: boolean): JettonDetailMessage | undefined => {
- 
-  if (!isOnChain) {
-    return {
-      type: "warning",
-      text: "This Jetton's metadata (name and symbol) can be altered or removed, since they're not stored on the TON chain",
-    };
+    default:
+      return;
   }
-  return 
 };
 
-
-
-export {  getAdminMessage, getOffChainMessage };
+export { getAdminMessage, getOffChainMessage };

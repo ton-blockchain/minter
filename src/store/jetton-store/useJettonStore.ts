@@ -51,12 +51,16 @@ function useJettonStore() {
         const _adminAddress = result.minter.admin.toFriendly();
         const admin = _adminAddress === address;
 
+        console.log(result);
+        
           
+          //onChain, 
+
 
         setState((prevState) => {
           return {
             ...prevState,
-            isOnchain: result.minter.isOnchain,
+            persistenceType: result.minter.persistenceType,
             description: result.minter.metadata.description,
             jettonImage: result.minter.metadata.image || QuestiomMarkImg,
             totalSupply: parseFloat(fromNano(result.minter.totalSupply)).toLocaleString(),

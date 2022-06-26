@@ -1,4 +1,4 @@
-import {  Box, styled, Typography } from "@mui/material";
+import { Box, styled, Typography } from "@mui/material";
 import { JettonDetailButton, JettonDetailMessage } from "./types";
 import AddressLink from "components/AddressLink";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
@@ -17,146 +17,21 @@ import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import useJettonStore from "store/jetton-store/useJettonStore";
 import Navbar from "components/navbar";
 import { ROUTES } from "consts";
-const StyledSection = styled(Box)(({ theme }) => ({
-  display: "flex",
-  alignItems: "flex-start",
+import {
+  StyledContainer,
+  StyledTop,
+  StyledTopImg,
+  StyledTopText,
+  StyledTextSections,
+  StyledCategoryTitle,
+  StyledSection,
+  StyledSectionTitle,
+  StyledSectionRight,
+  StyledSectionRightColored,
+  StyledSectionValue,
+  StyledMessage,
+} from "./styles";
 
-  gap: 15,
-  [theme.breakpoints.down("sm")]: {
-    flexDirection: "column",
-    gap: 5,
-  },
-}));
-
-const StyledMessage = styled(Box)(({ type }: { type: string }) => ({
-  display: "flex",
-  alignItems: "flex-start",
-  gap: 5,
-  paddingLeft: 10,
-  fontSize: 13,
-  marginTop: 5,
-  color: type === "success" ? "#2e7d32" : "#EE404C",
-  "& svg": {
-    color: type === "success" ? "#2e7d32" : "#EE404C",
-    width: 16,
-    position: "relative",
-    top: -3,
-  },
-}));
-
-const StyledSectionTitle = styled(Box)(({ theme }) => ({
-  width: 130,
-  paddingLeft: 10,
-  paddingTop: 14,
-  [theme.breakpoints.down("sm")]: {
-    width: "100%",
-    paddingLeft: 0,
-    paddingTop: 0,
-  },
-}));
-
-const StyledSectionRight = styled(Box)(({ theme }) => ({
-  display: "flex",
-  flexDirection: "column",
-  width: "calc(100% - 145px)",
-
-  "& .base-button": {
-    height: "calc(100% - 10px)",
-    fontSize: 12,
-    padding:'0px 10px'
-  },
-
-  [theme.breakpoints.down("sm")]: {
-    width: "100%",
-  },
-}));
-
-const StyledSectionRightColored = styled(Box)({
-  borderRadius: 10,
-  height: 46,
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-  padding: "0px 5px 0px 20px",
-  background: "#EDF2F7",
-});
-
-const StyledSectionValue = styled(Box)(
-  ({ hasButton }: { hasButton: boolean }) => ({
-    width: hasButton ? "calc(100% - 140px)" : "100%",
-    display: "flex",
-    alignItems: "center",
-    "& .address-link": {},
-    "& p": {
-      flex: 1,
-      whiteSpace: "nowrap",
-      overflow: "hidden",
-      textOverflow: "ellipsis",
-      paddingRight: 20,
-    },
-  })
-);
-
-const StyledContainer = styled(Box)(({ theme }) => ({
-  display: "flex",
-  gap: 30,
-  flexDirection: "column",
-  width: "100%",
-  maxWidth: 600,
-  marginLeft: "auto",
-  marginRight: "auto",
-  padding: "60px 20px",
-  [theme.breakpoints.down("sm")]: {
-    padding: "30px 20px",
-  },
-}));
-
-const StyledTop = styled(Box)({
-  display: "flex",
-  alignItems: "center",
-  gap: 30,
-});
-
-const StyledTopText = styled(Box)({
-  color: "#27272E",
-  display: "flex",
-  flexDirection: "column",
-  gap: 10,
-  flex: 1,
-  "& h5": {
-    fontSize: 15,
-    fontWeight: 400,
-  },
-  "& h3": {
-    fontSize: 19,
-    fontWeight: 600,
-  },
-});
-
-const StyledTopImg = styled(Box)(({ theme }) => ({
-  width: 90,
-  height: 90,
-  borderRadius: "50%",
-  overflow: "hidden",
-  background: "rgba(0,0,0, 0.1)",
-  border: "13px solid #D9D9D9",
-  "& img": {
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-  },
-  [theme.breakpoints.down("sm")]: {
-    width: 60,
-    height: 60,
-    border: "2px solid #D9D9D9",
-  },
-}));
-
-const StyledTextSections = styled(Box)({
-  display: "flex",
-  flexDirection: "column",
-  gap: 24,
-});
 function JettonScreen() {
   const { id }: { id?: string } = useParams();
 
@@ -180,12 +55,10 @@ function JettonScreen() {
     jettonMaster,
     stopLoading,
     reset,
-    isOnchain,
+    persistenceType,
     totalSupply,
-    jettonAddress
+    jettonAddress,
   } = useJettonStore();
-
-  
 
   const onRevokeAdminOwnership = async (contractAddr?: string) => {
     if (!contractAddr) {
@@ -254,7 +127,7 @@ function JettonScreen() {
               </LoadingContainer>
             </StyledTopText>
           </StyledTop>
-        
+
           <StyledTextSections>
             <Row
               title="Admin"
@@ -282,11 +155,14 @@ function JettonScreen() {
               isAddress
             />
             <Row title="Symbol" value={symbol} dataLoading={isLoading} />
-            <Row title="Total supply" 
-             value={totalSupply && `${totalSupply} ${symbol}s`}
-            dataLoading={isLoading} />
             <Row
-              title="Jetton Wallet"
+              title="Total supply"
+              value={totalSupply && `${totalSupply} ${symbol}s`}
+              dataLoading={isLoading}
+            />
+            <StyledCategoryTitle>Connected Jetton Wallet</StyledCategoryTitle>
+            <Row
+              title="Address"
               value={jettonAddress}
               dataLoading={isLoading}
               isAddress
@@ -305,7 +181,9 @@ function JettonScreen() {
               }
             />
           </StyledTextSections>
-          {!isLoading && <Message message={getOffChainMessage(isOnchain)} />}
+          {!isLoading && (
+            <Message message={getOffChainMessage(persistenceType)} />
+          )}
         </StyledContainer>
       </ScreenContent>
     </Screen>
@@ -371,11 +249,7 @@ const Row = ({
   );
 };
 
-const Message = ({
-  message,
-}: {
-  message?: JettonDetailMessage;
-}) => {
+const Message = ({ message }: { message?: JettonDetailMessage }) => {
   if (!message) {
     return null;
   }

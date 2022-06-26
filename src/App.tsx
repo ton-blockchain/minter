@@ -6,7 +6,7 @@ import useConnectionStore from "store/connection-store/useConnectionStore";
 import { APP_GRID, LOCAL_STORAGE_PROVIDER, ROUTES } from "consts";
 import { Providers } from "lib/env-profiles";
 import { Route, Routes } from "react-router-dom";
-import {  DeployerScreen, JettonScreen } from "screens";
+import {  DeployerScreen, JettonScreen } from "pages";
 import ConnectPopup from 'components/connect-popup'
 
 const StyledApp = styled(Box)(({theme}) => ({

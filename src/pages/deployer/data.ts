@@ -1,6 +1,4 @@
-function checkURL(url: string) {
-  return(url.match(/\.(jpeg|jpg|gif|png)$/) != null);
-}
+import { checkImageURL } from "helpers";
 
 
 const formSpec = [
@@ -57,7 +55,7 @@ const formSpec = [
     description: "Image of the jetton (png/jpg/jpeg/svg)",
     type: "string",
     required: false,
-    validate: checkURL,
+    validate: checkImageURL,
     default: "https://www.linkpicture.com/q/download_183.png"
   },
 ];

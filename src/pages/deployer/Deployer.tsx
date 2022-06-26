@@ -18,74 +18,7 @@ import { Providers } from "lib/env-profiles";
 import useNotification from "hooks/useNotification";
 import Input from './Input'
 
-const StyledForm = styled("form")(({theme}) => ({
-  padding: "40px 30px 35px 70px",
-  flex: 1,
-  display: "flex",
-  flexDirection: "column",
-  [theme.breakpoints.down('lg')]: {
-    padding: "40px 20px 35px 40px",
-  },
-  [theme.breakpoints.down('md')]: {
-    padding: 0,
-   }
-  
-}));
 
-const StyledFormInputs = styled(Box)({
-  width: "100%",
-  display: "flex",
-  flexDirection: "column",
-  gap: 17,
-  
-});
-
-const StyledTxLoaderContent = styled(Box)({
-  textAlign: "center",
-  "& p": {
-    fontSize: 18,
-    fontWeight: 500,
-  },
-});
-
-const StyledContainer = styled(Box)(({theme}) => ({
-  display: "flex",
-  alignItems: "stretch",
-  padding: "5px 0px 5px 5px",
-  [theme.breakpoints.down('md')]: {
-   flexDirection:'column',
-   gap:30,
-   padding: "15px 15px 30px 15px",
-  }
-}));
-
-const StyledActionBtn = styled(Box)({
-  marginTop: 40,
-  height: 46,
-  maxWidth: 344,
-  marginLeft: "auto",
-  marginRight: "auto",
-  width: "100%",
-  "& .base-button":{
-    width:'100%'
-  }
-});
-
-const StyledLeft = styled(Box)(({theme}) => ({
-  display: "flex",
-  alignItems: "center",
-  flexDirection: "column",
-  justifyContent: "center",
-  background: "#F0F0F0",
-  borderRadius: 16,
-  width: 496,
-  [theme.breakpoints.down('lg')]: {
-    width: 396,
-  },
-  [theme.breakpoints.down('md')]: {
-    width:'100%'
-   }
-}));
 
 function Deployer() {
   const {
@@ -276,3 +209,73 @@ const StyledDescription = styled(Box)(({theme}) => ({
     </StyledDescription>
     )
   }
+
+
+  const StyledForm = styled("form")(({theme}) => ({
+    padding: "40px 30px 35px 70px",
+    flex: 1,
+    display: "flex",
+    flexDirection: "column",
+    [theme.breakpoints.down('lg')]: {
+      padding: "40px 20px 35px 40px",
+    },
+    [theme.breakpoints.down('md')]: {
+      padding: 0,
+     }
+    
+  }));
+  
+  const StyledFormInputs = styled(Box)({
+    width: "100%",
+    display: "flex",
+    flexDirection: "column",
+    gap: 17,
+    
+  });
+  
+  const StyledTxLoaderContent = styled(Box)({
+    textAlign: "center",
+    "& p": {
+      fontSize: 18,
+      fontWeight: 500,
+    },
+  });
+  
+  const StyledContainer = styled(Box)(({theme}) => ({
+    display: "flex",
+    alignItems: "stretch",
+    padding: "5px 0px 5px 5px",
+    [theme.breakpoints.down('md')]: {
+     flexDirection:'column',
+     gap:30,
+     padding: "15px 15px 30px 15px",
+    }
+  }));
+  
+  const StyledActionBtn = styled(Box)({
+    marginTop: 40,
+    height: 46,
+    maxWidth: 344,
+    marginLeft: "auto",
+    marginRight: "auto",
+    width: "100%",
+    "& .base-button":{
+      width:'100%'
+    }
+  });
+  
+  const StyledLeft = styled(Box)(({theme}) => ({
+    display: "flex",
+    alignItems: "center",
+    flexDirection: "column",
+    justifyContent: "center",
+    background: "#F0F0F0",
+    borderRadius: 16,
+    width: 496,
+    [theme.breakpoints.down('lg')]: {
+      width: 396,
+    },
+    [theme.breakpoints.down('md')]: {
+      width:'100%'
+     }
+  }));

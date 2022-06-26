@@ -6,3 +6,7 @@ export const makeElipsisAddress = (address?: string | null, padding?: number): s
     return `${firstPart}...${secondPart}`;
 };
 
+export function checkImageURL(url: string) {
+    return(url.match(/\.(jpeg|jpg|gif|png|svg)$/) != null);
+  }
+  

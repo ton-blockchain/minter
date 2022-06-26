@@ -13,15 +13,7 @@ import {
 } from "./utils";
 import { cellToAddress, TonConnection } from "@ton-defi.org/ton-connection";
 import { zeroAddress } from "./utils";
-import {
-  initData,
-  mintBody,
-  JETTON_MINTER_CODE,
-  parseOnChainData,
-  JettonMetaDataKeys,
-  changeAdminBody,
-} from "./jetton-minter";
-import { wait } from "@testing-library/user-event/dist/utils";
+import { readJettonMetadata, changeAdminBody } from "./jetton-minter";
 axiosThrottle.use(axios, { requestsPerSecond: 0.9 }); // required since toncenter jsonRPC limits to 1 req/sec without API key
 
 export const JETTON_DEPLOY_GAS = toNano(0.25);
@@ -156,7 +148,7 @@ class JettonDeployController {
       "get_jetton_data",
       [],
       ([_, __, adminCell, contentCell]) => ({
-        ...parseOnChainData(contentCell as unknown as Cell),
+        ...readJettonMetadata(contentCell as unknown as Cell),
         admin: cellToAddress(adminCell),
       })
     );

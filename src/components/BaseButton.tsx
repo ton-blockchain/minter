@@ -21,7 +21,7 @@ const StyledButton = styled(LoadingButton)(({fontSize}:StyledButtonProps) => ({
   boxShadow:'none',
   borderRadius: 6,
   fontWeight: 600,
-  padding:  '0px 20px',
+  padding:  '0px 16px',
   height:'100%',
   display:'flex',
   alignItems:'center',

@@ -31,8 +31,9 @@ import {
   StyledSectionValue,
   StyledMessage,
 } from "./styles";
+import FieldDescription from "components/FieldDescription";
 
-function JettonScreen() {
+function JettonPage() {
   const { id }: { id?: string } = useParams();
 
   const { address, isConnecting, toggleConnect } = useConnectionStore();
@@ -107,6 +108,7 @@ function JettonScreen() {
       <TxLoader open={txLoading}></TxLoader>
 
       <ScreenContent>
+        <Box style={{background:'#F7FAFC'}}>
         <StyledContainer>
           <StyledTop>
             <StyledTopImg>
@@ -133,6 +135,7 @@ function JettonScreen() {
               title="Admin"
               value={adminAddress}
               isAddress
+              description="Account address that can mint tokens freely and change metadata"
               message={getAdminMessage(
                 adminRevokedOwnership,
                 isAdmin,
@@ -149,16 +152,23 @@ function JettonScreen() {
               }
             />
             <Row
+              description="On-chain smart contract address of the Jetton parent (jetton-minter.fc)"
               title="Address"
               value={jettonMaster}
               dataLoading={isLoading}
               isAddress
             />
-            <Row title="Symbol" value={symbol} dataLoading={isLoading} />
+            <Row title="Symbol" value={symbol} dataLoading={isLoading} 
+              message = {getOffChainMessage(persistenceType, adminRevokedOwnership)}
+            />
             <Row
               title="Total supply"
-              value={totalSupply && `${totalSupply} ${symbol}s`}
+              value={totalSupply && `${totalSupply} ${symbol}`}
               dataLoading={isLoading}
+              message = {!adminRevokedOwnership  ? {
+                text:'The admin can mint more of this jetton without warning',
+                type:'warning'
+              } :  undefined}
             />
             <StyledCategoryTitle>Connected Jetton Wallet</StyledCategoryTitle>
             <Row
@@ -169,7 +179,7 @@ function JettonScreen() {
             />
             <Row
               title="Balance"
-              value={balance && `${balance} ${symbol}s`}
+              value={balance && `${parseFloat(balance).toLocaleString()} ${symbol}`}
               dataLoading={isLoading}
               button={
                 !address
@@ -181,10 +191,8 @@ function JettonScreen() {
               }
             />
           </StyledTextSections>
-          {!isLoading && (
-            <Message message={getOffChainMessage(persistenceType)} />
-          )}
         </StyledContainer>
+        </Box>
       </ScreenContent>
     </Screen>
   );
@@ -197,6 +205,7 @@ interface RowProps {
   isAddress?: boolean | undefined;
   button?: JettonDetailButton | undefined;
   dataLoading: boolean;
+  description?: string; 
 }
 
 const Row = ({
@@ -206,6 +215,7 @@ const Row = ({
   isAddress,
   button,
   dataLoading,
+  description
 }: RowProps) => {
   const { isSandbox } = useContext(EnvContext);
 
@@ -242,7 +252,9 @@ const Row = ({
             </LoadingContainer>
           </StyledSectionRightColored>
 
+          {description && <FieldDescription >{description}</FieldDescription>}
           {!dataLoading && <Message message={message} />}
+
         </StyledSectionRight>
       </StyledSection>
     </Box>
@@ -266,4 +278,4 @@ const Message = ({ message }: { message?: JettonDetailMessage }) => {
   );
 };
 
-export { JettonScreen };
+export { JettonPage };

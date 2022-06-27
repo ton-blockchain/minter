@@ -54,9 +54,6 @@ function useJettonStore() {
         console.log(result);
         
           
-          //onChain, 
-
-
         setState((prevState) => {
           return {
             ...prevState,

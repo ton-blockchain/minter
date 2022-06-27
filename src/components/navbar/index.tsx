@@ -1,8 +1,8 @@
-import { AppBar, IconButton, Typography, useMediaQuery } from "@mui/material";
+import { AppBar, IconButton, useMediaQuery } from "@mui/material";
 import { styled } from "@mui/material";
 import { Box } from "@mui/system";
 import { useState } from "react";
-import { APP_DISPLAY_NAME, APP_GRID, ROUTES } from "consts";
+import {  APP_GRID } from "consts";
 import { useNavigate } from "react-router-dom";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import { DesktopMenu, MobileMenu } from "./Menu";

@@ -30,9 +30,7 @@ const StyledFormTitle = styled(FormLabel)({
   marginBottom: 10,
 });
 
-const StyledLink = styled('div')({
-
-  marginTop: 5,
+const StyledLink = styled('span')({
 
   "& p":{
     whiteSpace:'nowrap',

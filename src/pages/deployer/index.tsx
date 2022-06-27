@@ -133,7 +133,7 @@ function Description() {
         <Link target="_blank" href="https://ton.org">
           TON blockchain
         </Link>
-        . This educational tool allows you to deploy your own Jetton to mainnet
+        . This free educational tool allows you to deploy your own Jetton to mainnet
         in one click. You will need at least 0.25 TON for deployment fees.{" "}
         <br />
         <Spacer />

@@ -3,12 +3,13 @@ import useNotification from "hooks/useNotification";
 import { useForm } from "react-hook-form";
 import useConnectionStore from "store/connection-store/useConnectionStore";
 import { formSpec } from "./data";
-import { Box } from "@mui/material";
+import { Box, TextField } from "@mui/material";
 import { Control, Controller } from "react-hook-form";
 import { styled } from "@mui/material";
 import { useRef } from "react";
 import FieldDescription from "components/FieldDescription";
 import SectionLabel from "components/SectionLabel";
+import NumberFormat from "react-number-format";
 
 interface FormProps {
   onSubmit: (values: any) => Promise<void>;
@@ -160,9 +161,23 @@ function Input({
         }}
         render={({ field: { onChange, value } }) => (
           <StyledInputContainer error={error}>
-            <StyledInput
+            {type === 'number' ? 
+             <NumberFormat
+             value={value}
+             name={name}
+             customInput={StyledInput}
+             type="text"
+             thousandSeparator=','
+             onChange={onChange}
+             onFocus={onFocus}
+             disabled={disabled}
+             style={{
+              opacity: disabled ? 0.5 : 1,
+            }}
+           />
+            : <StyledInput
               ref={ref}
-              value={value || ""}
+              value={ value  || ""}
               onFocus={onFocus}
               onChange={onChange}
               placeholder={label}
@@ -171,7 +186,7 @@ function Input({
               style={{
                 opacity: disabled ? 0.5 : 1,
               }}
-            />
+            />}
             {!disabled && <BaseButton transparent onClick={onClick}>Example</BaseButton>}
           </StyledInputContainer>
         )}

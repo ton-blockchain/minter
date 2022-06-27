@@ -3,6 +3,9 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { styled, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { ReactNode } from "react";
+import { isMobile } from "react-device-detect";
+import { Providers } from "lib/env-profiles";
+import useConnectionStore from "store/connection-store/useConnectionStore";
 
 interface Props {
   open: boolean;
@@ -16,20 +19,25 @@ const StyledContainer = styled(Box)({
   gap: 10,
 });
 
-const StyledText = styled(Typography)({
-  fontSize: 20,
-  fontWeight: 500,
-});
+
 
 function TxLoader({ open, children }: Props) {
+  const {adapterId} = useConnectionStore()
+  const showReminderInLoader = !isMobile && adapterId === Providers.TON_HUB;
+
   return (
     <Backdrop
-      sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1, backdropFilter: 'blur(5px) '}}
       open={open}
     >
       <StyledContainer>
         <CircularProgress color="inherit" />
         {children}
+        {showReminderInLoader && (
+            <Typography>
+              Please check tonhub wallet for pending notification
+            </Typography>
+          )}
       </StyledContainer>
     </Backdrop>
   );

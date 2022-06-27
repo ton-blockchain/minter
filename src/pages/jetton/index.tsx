@@ -105,7 +105,9 @@ function JettonPage() {
   return (
     <Screen>
       <Navbar customLink={{ text: "Create Jetton", path: ROUTES.deployer }} />
-      <TxLoader open={txLoading}></TxLoader>
+      <TxLoader open={txLoading}>
+        <Typography>Revoking in progress</Typography>
+      </TxLoader>
 
       <ScreenContent>
         <Box style={{background:'#F7FAFC'}}>

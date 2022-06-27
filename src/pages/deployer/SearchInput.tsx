@@ -109,11 +109,8 @@ function SearchInput() {
         }}
       />
       <FieldDescription>
-        Enter an existing Jetton contract address
+        Enter an existing Jetton contract address, <StyledLink><a onClick={onExample}>example</a></StyledLink>
       </FieldDescription>
-      <StyledLink >
-        <FieldDescription>Example: <a  onClick={onExample}>{exampleAddress}</a></FieldDescription>
-      </StyledLink>
     </StyledContainer>
   );
 }

@@ -85,7 +85,6 @@ function DeployerPage() {
     }
   }
 
-  const showReminderInLoader = !isMobile && adapterId === Providers.TON_HUB;
 
   return (
     <Screen>
@@ -93,11 +92,6 @@ function DeployerPage() {
       <TxLoader open={isLoading}>
         <StyledTxLoaderContent>
           <Typography>Deploying...</Typography>
-          {showReminderInLoader && (
-            <Typography>
-              Please check tonhub wallet for pending notification
-            </Typography>
-          )}
         </StyledTxLoaderContent>
       </TxLoader>
       <ScreenContent removeBackground>

@@ -17,7 +17,7 @@ export const StyledSection = styled(Box)(({ theme }) => ({
     gap: 5,
     paddingLeft: 10,
     fontSize: 13,
-    marginTop: 5,
+    marginTop: 11,
     color: type === "success" ? "#2e7d32" : "#EE404C",
     "& svg": {
       color: type === "success" ? "#2e7d32" : "#EE404C",
@@ -81,6 +81,7 @@ export const StyledSection = styled(Box)(({ theme }) => ({
   );
   
   export const StyledContainer = styled(Box)(({ theme }) => ({
+    
     display: "flex",
     gap: 30,
     flexDirection: "column",

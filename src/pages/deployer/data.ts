@@ -5,25 +5,25 @@ const formSpec = [
   {
     name: "name",
     label: "Jetton Name",
-    description: "Choose a name for your token",
+    description: "Your project unabbreviated name with spaces (usually 1-3 words)",
     type: "text",
-    default: "MyJetton",
+    default: "Bitcoin Cash",
     required: true,
     errorMessage: 'Name required'
   },
   {
     name: "symbol",
     label: "Jetton Symbol",
-    description: "Choose a symbol for your token (usually 3-5 chars)",
+    description: "Currency symbol appearing in balance (usually 3-5 uppercase chars)",
     type: "text",
-    default: "JET",
+    default: "BCH",
     required: true,
     errorMessage: 'Symbol required'
   },
   {
     name: "decimals",
     label: "Jetton decimals",
-    description: "The decimal precision of your token",
+    description: "The decimal precision of your token (9 is TON default)",
     type: "number",
     disabled: true,
     default: 9,
@@ -32,10 +32,10 @@ const formSpec = [
   },
   {
     name: "mintAmount",
-    label: "Amount to mint",
-    description: "The amount to mint",
+    label: "Amount to Mint",
+    description: "Number of initial tokens to mint and send to your wallet address (float)",
     type: "number",
-    default: 100,
+    default: 21000000,
     required: true,
     errorMessage: 'Mint amount required'
 
@@ -43,20 +43,20 @@ const formSpec = [
   {
     name: "description",
     label: "Description",
-    description: "Jetton description",
+    description: "Optional freeform sentence explaining about your project",
     type: "string",
-    default: "My jetton description",
+    default: "Low fee peer-to-peer electronic cash alternative to Bitcoin",
   },
 
 
   {
     name: "tokenImage",
-    label: "Jetton logo URI",
-    description: "Image of the jetton (png/jpg/jpeg/svg)",
+    label: "Jetton Logo URI",
+    description: "URL of 256x256 pixel PNG image of token logo with transparent background",
     type: "string",
     required: false,
     validate: checkImageURL,
-    default: "https://www.linkpicture.com/q/download_183.png"
+    default: "https://bitcoincash-example.github.io/website/logo.png"
   },
 ];
 

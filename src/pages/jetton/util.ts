@@ -29,8 +29,17 @@ const getAdminMessage = (
 };
 
 const getOffChainMessage = (
-  persistenceType?: persistenceType
+  persistenceType?: persistenceType,
+  adminRevokedOwnership?: boolean
+
 ): JettonDetailMessage | undefined => {
+
+  if(persistenceType === 'onchain' && !adminRevokedOwnership){
+    return {
+      type: "warning",
+      text: "This can be changed by the admin without warning",
+    };
+  }
   
   switch (persistenceType) {
     case "offchain_ipfs":
@@ -41,7 +50,7 @@ const getOffChainMessage = (
     case "offchain_private_domain":
       return {
         type: "warning",
-        text: "This jetton’s metadata (name and symbol) is stored on a privately owned website instead of on-chain. Be careful, it can we changed freely or deleted by the website owner without your consent.",
+        text: "Can be changed without warning by admin since metadata is stored on privately owned website",
       };
 
     default:

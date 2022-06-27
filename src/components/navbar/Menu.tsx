@@ -1,5 +1,4 @@
-import { Box, Drawer, IconButton, styled, Typography } from "@mui/material";
-import SearchInput from "components/SearchInput";
+import { Box, Drawer, IconButton, styled } from "@mui/material";
 import { JETTON_DEPLOYER_CONTRACTS_GITHUB } from "consts";
 import { Link } from "react-router-dom";
 import ConnecSection from "./ConnecSection";
@@ -87,13 +86,6 @@ const StyledMenu = styled(Box)(({ theme }) => ({
     padding: '40px 30px 40px 30px',
     gap: 20,
     height: "unset",
-    "& .search": {
-      order: 1,
-      width: '100%',
-      border:`1px solid ${theme.palette.primary.main}`,
-      height: 35,
-  
-    },
     "& .connected-section": {
       order: 1,
       width: '100%',
@@ -122,7 +114,6 @@ const StyledMenu = styled(Box)(({ theme }) => ({
 const Menu = ({ customLink }: Props) => {
   return (
     <StyledMenu className="navbar-menu">
-      <SearchInput />
       {customLink && (
         <StyledCustomLink to={customLink.path} className="custom-link">
           <BaseButton transparent>

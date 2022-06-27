@@ -1,31 +1,29 @@
 import { styled } from "@mui/material";
 import { Box } from "@mui/system";
-import Navbar from "components/navbar";
 import { createContext, useEffect } from "react";
 import useConnectionStore from "store/connection-store/useConnectionStore";
-import { APP_GRID, LOCAL_STORAGE_PROVIDER, ROUTES } from "consts";
-import { Providers } from "lib/env-profiles";
+import { APP_GRID, ROUTES } from "consts";
 import { Route, Routes } from "react-router-dom";
-import {  DeployerScreen, JettonScreen } from "pages";
-import ConnectPopup from 'components/connect-popup'
+import { DeployerPage, JettonPage } from "pages";
+import ConnectPopup from "components/connect-popup";
 
-const StyledApp = styled(Box)(({theme}) => ({
+const StyledApp = styled(Box)(({ theme }) => ({
   maxWidth: APP_GRID,
   width: "calc(100% - 50px)",
   marginLeft: "auto",
   marginRight: "auto",
-  '*::-webkit-scrollbar': {
-    display:'none'
+  "*::-webkit-scrollbar": {
+    display: "none",
   },
-  '*::-webkit-scrollbar-track': {
-    display:'none'
+  "*::-webkit-scrollbar-track": {
+    display: "none",
   },
-  '*::-webkit-scrollbar-thumb': {
-    display:'none'
+  "*::-webkit-scrollbar-thumb": {
+    display: "none",
   },
-  [theme.breakpoints.down('sm')]: {
+  [theme.breakpoints.down("sm")]: {
     width: "calc(100% - 30px)",
-  }
+  },
 }));
 
 export const EnvContext = createContext({
@@ -37,7 +35,7 @@ function App() {
   const { connectOnLoad } = useConnectionStore();
 
   useEffect(() => {
-    connectOnLoad()
+    connectOnLoad();
   }, []);
 
   return (
@@ -49,9 +47,9 @@ function App() {
         }}
       >
         <Routes>
-          <Route path={ROUTES.deployer} element={<DeployerScreen />} />
-          <Route path={ROUTES.jettonId} element={<JettonScreen />} />
-          <Route path={ROUTES.jetton} element={<JettonScreen />} />
+          <Route path={ROUTES.deployer} element={<DeployerPage />} />
+          <Route path={ROUTES.jettonId} element={<JettonPage />} />
+          <Route path={ROUTES.jetton} element={<JettonPage />} />
         </Routes>
       </EnvContext.Provider>
       <ConnectPopup />

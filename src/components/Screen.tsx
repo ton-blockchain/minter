@@ -4,6 +4,7 @@ import { ReactNode } from "react";
 interface Props {
   children: ReactNode;
   id?: string;
+  removeBackground?: boolean;
 }
 
 const StyledScreen = styled(Box)({
@@ -12,16 +13,18 @@ const StyledScreen = styled(Box)({
   flexDirection: "column",
 });
 
-const StyledContent = styled(Box)({
-  background: "#F7FAFC",
+const StyledContent = styled(Box)(({theme}) => ({
   width: "100%",
   borderRadius: "20px",
-  maxHeight: 'calc(100vh - 140px)',
-  overflow:'auto'
-});
+  maxHeight: 'calc(100vh - 150px)',
+  overflow:'auto',
+  [theme.breakpoints.down('sm')]:{
+    maxHeight: 'calc(100vh - 120px)',
+  }
+}));
 
-const ScreenContent = ({ children }: { children: ReactNode }) => {
-  return <StyledContent> {children}</StyledContent>;
+const ScreenContent = ({ children }: Props) => {
+  return <StyledContent className="screen-content"> {children}</StyledContent>;
 };
 
 function Screen({ children, id = "" }: Props) {

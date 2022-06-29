@@ -41,7 +41,7 @@ function Form({ onSubmit }: FormProps) {
 
   return (
     <StyledForm onSubmit={handleSubmit(onSubmit, onFormError)}>
-      <SectionLabel>Create your own new Jetton</SectionLabel>
+     <SectionLabel>Create your own new Jetton</SectionLabel>
       <StyledFormInputs>
         {formSpec.map((spec, index) => {
           return (
@@ -79,25 +79,25 @@ function Form({ onSubmit }: FormProps) {
 
 export default Form;
 
-const StyledForm = styled("form")(({ theme }) => ({
+ const StyledForm = styled("form")(({ theme }) => ({
   flex: 1,
   display: "flex",
   flexDirection: "column",
   background: "#F7FAFC",
   borderRadius: 16,
-  padding: "20px 30px 30px 30px",
+  padding: '20px 30px 30px 30px',
   [theme.breakpoints.down("lg")]: {},
   [theme.breakpoints.down("md")]: {},
 }));
 
-const StyledFormInputs = styled(Box)({
+ const StyledFormInputs = styled(Box)({
   width: "100%",
   display: "flex",
   flexDirection: "column",
   gap: 17,
 });
 
-const StyledActionBtn = styled(Box)({
+ const StyledActionBtn = styled(Box)({
   marginTop: 40,
   height: 46,
   maxWidth: 344,
@@ -108,6 +108,7 @@ const StyledActionBtn = styled(Box)({
     width: "100%",
   },
 });
+
 
 interface InputProps {
   error: boolean;
@@ -160,41 +161,35 @@ function Input({
         }}
         render={({ field: { onChange, value } }) => (
           <StyledInputContainer error={error}>
-            {type === "number" ? (
-              <NumberFormat
-                value={value}
-                name={name}
-                customInput={StyledInput}
-                type="text"
-                thousandSeparator=","
-                onValueChange={({ value }) => {
-                  onChange(value);
-                }}
-                onFocus={onFocus}
-                disabled={disabled}
-                style={{
-                  opacity: disabled ? 0.5 : 1,
-                }}
-              />
-            ) : (
-              <StyledInput
-                ref={ref}
-                value={value || ""}
-                onFocus={onFocus}
-                onChange={onChange}
-                placeholder={label}
-                disabled={disabled}
-                type={type}
-                style={{
-                  opacity: disabled ? 0.5 : 1,
-                }}
-              />
-            )}
-            {!disabled && (
-              <BaseButton transparent onClick={onClick}>
-                Example
-              </BaseButton>
-            )}
+            {type === 'number' ? 
+             <NumberFormat
+             value={value}
+             name={name}
+             customInput={StyledInput}
+             type="text"
+             thousandSeparator=','
+             onValueChange={({ value }) => {
+              onChange(value);
+             }}
+             onFocus={onFocus}
+             disabled={disabled}
+             style={{
+              opacity: disabled ? 0.5 : 1,
+            }}
+           />
+            : <StyledInput
+              ref={ref}
+              value={ value  || ""}
+              onFocus={onFocus}
+              onChange={onChange}
+              placeholder={label}
+              disabled={disabled}
+              type={type}
+              style={{
+                opacity: disabled ? 0.5 : 1,
+              }}
+            />}
+            {!disabled && <BaseButton transparent onClick={onClick}>Example</BaseButton>}
           </StyledInputContainer>
         )}
       />

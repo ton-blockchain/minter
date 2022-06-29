@@ -18,13 +18,12 @@ function useConnectionStore() {
     window.location = value;
   };
 
-
   const toggleConnect = (value: boolean) => {
     setConnectionState((prevState) => ({
       ...prevState,
-     showConnect: value
+      showConnect: value,
     }));
-  }
+  };
 
   const connect = async (
     provider: Providers,
@@ -63,13 +62,13 @@ function useConnectionStore() {
     const provider = localStorage.getItem(LOCAL_STORAGE_PROVIDER);
     if (provider) {
       connect(provider as Providers);
-    }else{
+    } else {
       setConnectionState((prevState) => ({
         ...prevState,
         isConnecting: false,
       }));
     }
-  }
+  };
 
   const disconnect = () => {
     resetState();
@@ -82,7 +81,7 @@ function useConnectionStore() {
     connect,
     resetState,
     connectOnLoad,
-    toggleConnect
+    toggleConnect,
   };
 }
 

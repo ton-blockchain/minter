@@ -38,22 +38,22 @@ function App() {
     connectOnLoad();
   }, []);
 
+  const ctxVal = {
+    isSandbox: window.location.search.includes("sandbox"),
+    isTestnet: window.location.search.includes("testnet"),
+  };
+
   return (
-    <StyledApp>
-      <EnvContext.Provider
-        value={{
-          isSandbox: window.location.search.includes("sandbox"),
-          isTestnet: window.location.search.includes("testnet"),
-        }}
-      >
+    <EnvContext.Provider value={ctxVal}>
+      <StyledApp>
         <Routes>
           <Route path={ROUTES.deployer} element={<DeployerPage />} />
           <Route path={ROUTES.jettonId} element={<JettonPage />} />
           <Route path={ROUTES.jetton} element={<JettonPage />} />
         </Routes>
-      </EnvContext.Provider>
-      <ConnectPopup />
-    </StyledApp>
+        <ConnectPopup />
+      </StyledApp>
+    </EnvContext.Provider>
   );
 }
 

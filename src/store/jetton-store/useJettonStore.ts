@@ -10,11 +10,13 @@ import WalletConnection from "services/wallet-connection";
 import { Address, fromNano } from "ton";
 import { jettonStateAtom } from ".";
 import QuestiomMarkImg from "assets/question.png";
-import { useCallback } from "react";
+import { useCallback, useContext } from "react";
+import { EnvContext } from "../../App";
 
 function useJettonStore() {
   const [state, setState] = useRecoilState(jettonStateAtom);
   const reset = useResetRecoilState(jettonStateAtom);
+  const { isSandbox } = useContext(EnvContext);
 
   const getJettonDetails = useCallback(
     async (jettonMaster: string, address?: string | null) => {
@@ -32,7 +34,7 @@ function useJettonStore() {
       } catch (error) {
         connection = new TonConnection(
           new ChromeExtensionWalletProvider(),
-          EnvProfiles[Environments.MAINNET].rpcApi
+          EnvProfiles[isSandbox ? Environments.SANDBOX : Environments.MAINNET].rpcApi
         );
       }
 
@@ -52,15 +54,16 @@ function useJettonStore() {
         const admin = _adminAddress === address;
 
         console.log(result);
-        
-          
+
         setState((prevState) => {
           return {
             ...prevState,
             persistenceType: result.minter.persistenceType,
             description: result.minter.metadata.description,
             jettonImage: result.minter.metadata.image || QuestiomMarkImg,
-            totalSupply: parseFloat(fromNano(result.minter.totalSupply)).toLocaleString(),
+            totalSupply: parseFloat(
+              fromNano(result.minter.totalSupply)
+            ).toLocaleString(),
             name: result.minter.metadata.name,
             symbol: result.minter.metadata.symbol,
             adminRevokedOwnership: _adminAddress === zeroAddress().toFriendly(),
@@ -70,7 +73,7 @@ function useJettonStore() {
               ? fromNano(result.jettonWallet.balance)
               : undefined,
             jettonAddress: result.jettonWallet?.jWalletAddress.toFriendly(),
-            jettonMaster
+            jettonMaster,
           };
         });
       } finally {

@@ -168,7 +168,9 @@ function Input({
              customInput={StyledInput}
              type="text"
              thousandSeparator=','
-             onChange={onChange}
+             onValueChange={({ value }) => {
+              onChange(value);
+             }}
              onFocus={onFocus}
              disabled={disabled}
              style={{

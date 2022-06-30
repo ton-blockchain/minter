@@ -14,7 +14,7 @@ export function Popup({
   open,
   onClose,
   children,
-  backgroundColor = "rgba(48, 48, 48, 0.8)",
+  backgroundColor = "rgba(48, 48, 48, 0.4)",
   blur = true,
   className = "",
 }: Props) {

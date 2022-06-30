@@ -17,6 +17,7 @@ import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import useJettonStore from "store/jetton-store/useJettonStore";
 import Navbar from "components/navbar";
 import { ROUTES } from "consts";
+import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
 import {
   StyledContainer,
   StyledTop,
@@ -30,8 +31,10 @@ import {
   StyledSectionRightColored,
   StyledSectionValue,
   StyledMessage,
+  StyledWarningPopup,
 } from "./styles";
 import FieldDescription from "components/FieldDescription";
+import { Popup } from "components/Popup";
 
 function JettonPage() {
   const { id }: { id?: string } = useParams();
@@ -105,95 +108,117 @@ function JettonPage() {
   return (
     <Screen>
       <Navbar customLink={{ text: "Create Jetton", path: ROUTES.deployer }} />
+      <Popup open={true} onClose={() => {}}>
+        <StyledWarningPopup>
+          <Box className="header">
+            <WarningAmberRoundedIcon />
+            <Typography>Some warning</Typography>
+          </Box>
+          <Typography className="description">Some description</Typography>
+          <BaseButton>Action</BaseButton>
+        </StyledWarningPopup>
+      </Popup>
       <TxLoader open={txLoading}>
         <Typography>Revoking in progress</Typography>
       </TxLoader>
 
       <ScreenContent>
-        <Box style={{background:'#F7FAFC'}}>
-        <StyledContainer>
-          <StyledTop>
-            <StyledTopImg>
-              <LoadingImage
-                src={jettonImage}
-                alt="jetton image"
-                loading={isLoading}
-              />
-            </StyledTopImg>
-            <StyledTopText>
-              <LoadingContainer loading={isLoading} loaderWidth="80px">
-                <Typography variant="h3">{name}</Typography>
-              </LoadingContainer>
-              <LoadingContainer loading={isLoading} loaderWidth="150px">
-                {description && (
-                  <Typography variant="h5">{description}</Typography>
-                )}
-              </LoadingContainer>
-            </StyledTopText>
-          </StyledTop>
+        <Box style={{ background: "#F7FAFC" }}>
+          <StyledContainer>
+            <StyledTop>
+              <StyledTopImg>
+                <LoadingImage
+                  src={jettonImage}
+                  alt="jetton image"
+                  loading={isLoading}
+                />
+              </StyledTopImg>
+              <StyledTopText>
+                <LoadingContainer loading={isLoading} loaderWidth="80px">
+                  <Typography variant="h3">{name}</Typography>
+                </LoadingContainer>
+                <LoadingContainer loading={isLoading} loaderWidth="150px">
+                  {description && (
+                    <Typography variant="h5">{description}</Typography>
+                  )}
+                </LoadingContainer>
+              </StyledTopText>
+            </StyledTop>
 
-          <StyledTextSections>
-            <Row
-              title="Admin"
-              value={adminAddress}
-              isAddress
-              description="Account address that can mint tokens freely and change metadata"
-              message={getAdminMessage(
-                adminRevokedOwnership,
-                isAdmin,
-                jettonMaster
-              )}
-              dataLoading={isLoading}
-              button={
-                isAdmin
-                  ? {
-                      text: "Revoke ownership",
-                      action: () => onRevokeAdminOwnership(jettonMaster),
-                    }
-                  : undefined
-              }
-            />
-            <Row
-              description="On-chain smart contract address of the Jetton parent (jetton-minter.fc)"
-              title="Address"
-              value={jettonMaster}
-              dataLoading={isLoading}
-              isAddress
-            />
-            <Row title="Symbol" value={symbol} dataLoading={isLoading} 
-              message = {getOffChainMessage(persistenceType, adminRevokedOwnership)}
-            />
-            <Row
-              title="Total supply"
-              value={totalSupply && `${totalSupply} ${symbol}`}
-              dataLoading={isLoading}
-              message = {!adminRevokedOwnership  ? {
-                text:'The admin can mint more of this jetton without warning',
-                type:'warning'
-              } :  undefined}
-            />
-            <StyledCategoryTitle>Connected Jetton Wallet</StyledCategoryTitle>
-            <Row
-              title="Address"
-              value={jettonAddress}
-              dataLoading={isLoading}
-              isAddress
-            />
-            <Row
-              title="Balance"
-              value={balance && `${parseFloat(balance).toLocaleString()} ${symbol}`}
-              dataLoading={isLoading}
-              button={
-                !address
-                  ? {
-                      text: "Connect wallet",
-                      action: () => toggleConnect(true),
-                    }
-                  : undefined
-              }
-            />
-          </StyledTextSections>
-        </StyledContainer>
+            <StyledTextSections>
+              <Row
+                title="Admin"
+                value={adminRevokedOwnership ? "Empty address" : adminAddress}
+                address={adminAddress}
+                description="Account address that can mint tokens freely and change metadata"
+                message={getAdminMessage(
+                  adminRevokedOwnership,
+                  isAdmin,
+                  jettonMaster
+                )}
+                dataLoading={isLoading}
+                button={
+                  isAdmin
+                    ? {
+                        text: "Revoke ownership",
+                        action: () => onRevokeAdminOwnership(jettonMaster),
+                      }
+                    : undefined
+                }
+              />
+              <Row
+                description="On-chain smart contract address of the Jetton parent (jetton-minter.fc)"
+                title="Address"
+                value={jettonMaster}
+                dataLoading={isLoading}
+                address={jettonMaster}
+              />
+              <Row
+                title="Symbol"
+                value={symbol}
+                dataLoading={isLoading}
+                message={getOffChainMessage(
+                  persistenceType,
+                  adminRevokedOwnership
+                )}
+              />
+              <Row
+                title="Total supply"
+                value={totalSupply && `${totalSupply} ${symbol}`}
+                dataLoading={isLoading}
+                message={
+                  !adminRevokedOwnership
+                    ? {
+                        text: "The admin can mint more of this jetton without warning",
+                        type: "warning",
+                      }
+                    : undefined
+                }
+              />
+              <StyledCategoryTitle>Connected Jetton Wallet</StyledCategoryTitle>
+              <Row
+                title="Address"
+                value={jettonAddress}
+                dataLoading={isLoading}
+                address={jettonAddress}
+              />
+              <Row
+                title="Balance"
+                value={
+                  balance && `${parseFloat(balance).toLocaleString()} ${symbol}`
+                }
+                dataLoading={isLoading}
+                button={
+                  !address
+                    ? {
+                        text: "Connect wallet",
+                        action: () => toggleConnect(true),
+                      }
+                    : undefined
+                }
+              />
+            </StyledTextSections>
+          </StyledContainer>
         </Box>
       </ScreenContent>
     </Screen>
@@ -204,31 +229,21 @@ interface RowProps {
   title: string;
   value?: string | null;
   message?: JettonDetailMessage | undefined;
-  isAddress?: boolean | undefined;
+  address?: string;
   button?: JettonDetailButton | undefined;
   dataLoading: boolean;
-  description?: string; 
+  description?: string;
 }
 
 const Row = ({
   title,
   value,
   message,
-  isAddress,
   button,
   dataLoading,
-  description
+  description,
+  address,
 }: RowProps) => {
-  const { isSandbox } = useContext(EnvContext);
-
-  const scannerUrl = useMemo(
-    () =>
-      isSandbox
-        ? `https://sandbox.tonwhales.com/explorer/address`
-        : `https://tonscan.org/jetton`,
-    [isSandbox]
-  );
-
   return (
     <Box>
       <StyledSection>
@@ -239,11 +254,8 @@ const Row = ({
           <StyledSectionRightColored>
             <LoadingContainer loading={dataLoading} loaderHeight="50%">
               <StyledSectionValue hasButton={!!button}>
-                {isAddress && value ? (
-                  <AddressLink
-                    address={value}
-                    href={`${scannerUrl}/${value}`}
-                  />
+                {address && value ? (
+                  <AddressLink address={address} value={value} />
                 ) : (
                   <Typography>{value || "-"}</Typography>
                 )}
@@ -254,9 +266,8 @@ const Row = ({
             </LoadingContainer>
           </StyledSectionRightColored>
 
-          {description && <FieldDescription >{description}</FieldDescription>}
+          {description && <FieldDescription>{description}</FieldDescription>}
           {!dataLoading && <Message message={message} />}
-
         </StyledSectionRight>
       </StyledSection>
     </Box>

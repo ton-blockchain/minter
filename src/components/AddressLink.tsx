@@ -1,18 +1,21 @@
-import { Box, IconButton, Link, styled, Typography } from "@mui/material";
+import { Box, IconButton, Link, styled } from "@mui/material";
 import CopyToClipboard from "react-copy-to-clipboard";
 import useNotification from "hooks/useNotification";
 import CopyImg from "assets/copy.svg";
+import { useContext } from "react";
+import { EnvContext } from "App";
+import { scannerUrl } from "utils";
 
 interface Props {
   address?: string | null;
-  href?: string;
+  value?: string;
 }
 
 const StyledContainer = styled(Box)({
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
- width:'100%',
+  width: "100%",
   "& a": {
     textDecoration: "none",
     color: "unset",
@@ -23,7 +26,7 @@ const StyledImg = styled("img")({
   width: 20,
 });
 
-const StyledLink = styled('div')({
+const StyledLink = styled("div")({
   whiteSpace: "nowrap",
   overflow: "hidden",
   textOverflow: "ellipsis",
@@ -31,8 +34,10 @@ const StyledLink = styled('div')({
   color: "#0688CC!important",
 });
 
-function AddressLink({ address, href }: Props) {
+function AddressLink({ address, value }: Props) {
   const { showNotification } = useNotification();
+  const { isSandbox } = useContext(EnvContext);
+
   const onCopy = () => {
     showNotification("Address Copied!", "success", undefined, 3000);
   };
@@ -40,9 +45,9 @@ function AddressLink({ address, href }: Props) {
   return (
     <StyledContainer className="address-link">
       <StyledLink>
-      <Link target="_blank" href={href}>
-       {address || "-"}
-      </Link>
+        <Link target="_blank" href={`${scannerUrl(isSandbox)}/${address}`}>
+          {value || "-"}
+        </Link>
       </StyledLink>
       {address && (
         <CopyToClipboard text={address} onCopy={onCopy}>

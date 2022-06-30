@@ -3,7 +3,7 @@ import useNotification from "hooks/useNotification";
 import { useForm } from "react-hook-form";
 import useConnectionStore from "store/connection-store/useConnectionStore";
 import { formSpec } from "./data";
-import { Box, TextField } from "@mui/material";
+import { Box, TextField, Tooltip, Typography } from "@mui/material";
 import { Control, Controller } from "react-hook-form";
 import { styled } from "@mui/material";
 import { useRef } from "react";
@@ -64,15 +64,17 @@ function Form({ onSubmit }: FormProps) {
         })}
       </StyledFormInputs>
 
-      <StyledActionBtn>
+        <Tooltip title ={<Typography style={{fontSize: 14}}>In maintenance</Typography>}>
+        <StyledActionBtn>
         {!address ? (
-          <BaseButton type="button" onClick={() => toggleConnect(true)}>
+          <BaseButton disabled type="button" onClick={() => toggleConnect(true)}>
             Connect wallet
           </BaseButton>
         ) : (
-          <BaseButton type="submit">Deploy</BaseButton>
+          <BaseButton disabled type="submit">Deploy</BaseButton>
         )}
       </StyledActionBtn>
+        </Tooltip>
     </StyledForm>
   );
 }
@@ -108,6 +110,8 @@ export default Form;
     width: "100%",
   },
 });
+
+
 
 
 interface InputProps {
@@ -152,6 +156,7 @@ function Input({
 
   return (
     <StyledContainer>
+     
       <Controller
         name={name}
         control={control}

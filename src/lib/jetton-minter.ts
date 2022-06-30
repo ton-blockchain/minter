@@ -53,7 +53,7 @@ export function buildJettonOnchainMetadata(data: {
       jettonOnChainMetadataSpec[k as JettonMetaDataKeys]
     );
 
-    const CELL_MAX_SIZE_BYTES = 750 / 8; // TODO figure out this number
+    const CELL_MAX_SIZE_BYTES = Math.floor(1023 / 8);
 
     const rootCell = new Cell();
     let currentCell = rootCell;
@@ -69,7 +69,7 @@ export function buildJettonOnchainMetadata(data: {
       }
     }
 
-    dict.storeCell(sha256(k), rootCell);
+    dict.storeRef(sha256(k), rootCell);
   });
 
   return beginCell()
@@ -131,6 +131,7 @@ function parseJettonOnchainMetadata(contentSlice: Slice): {
   const KEYLEN = 256;
 
   const dict = contentSlice.readDict(KEYLEN, (s) => {
+    
     let buffer = Buffer.from("");
 
     const sliceToVal = (s: Slice, v: Buffer) => {
@@ -146,7 +147,7 @@ function parseJettonOnchainMetadata(contentSlice: Slice): {
       return v;
     };
 
-    return sliceToVal(s, buffer);
+    return sliceToVal(s.readRef(), buffer);
   });
 
   const res: { [s in JettonMetaDataKeys]?: string } = {};

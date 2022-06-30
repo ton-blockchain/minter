@@ -1,8 +1,7 @@
-import { Box, styled, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { JettonDetailButton, JettonDetailMessage } from "./types";
 import AddressLink from "components/AddressLink";
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
-import { EnvContext } from "App";
+import {  useEffect, useRef, useState } from "react";
 import BaseButton from "components/BaseButton";
 import { getAdminMessage, getOffChainMessage } from "./util";
 import useNotification from "hooks/useNotification";
@@ -17,7 +16,7 @@ import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import useJettonStore from "store/jetton-store/useJettonStore";
 import Navbar from "components/navbar";
 import { ROUTES } from "consts";
-import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
+
 import {
   StyledContainer,
   StyledTop,
@@ -31,10 +30,9 @@ import {
   StyledSectionRightColored,
   StyledSectionValue,
   StyledMessage,
-  StyledWarningPopup,
 } from "./styles";
 import FieldDescription from "components/FieldDescription";
-import { Popup } from "components/Popup";
+import FaultyDeploy from "./FaultyDeploy";
 
 function JettonPage() {
   const { id }: { id?: string } = useParams();
@@ -62,6 +60,7 @@ function JettonPage() {
     persistenceType,
     totalSupply,
     jettonAddress,
+    isJettonDeployerFaultyOnChainData,
   } = useJettonStore();
 
   const onRevokeAdminOwnership = async (contractAddr?: string) => {
@@ -105,19 +104,18 @@ function JettonPage() {
     };
   }, [reset]);
 
+  const resolveFaultyDeploy = () => {
+    //tx
+  };
+
   return (
     <Screen>
       <Navbar customLink={{ text: "Create Jetton", path: ROUTES.deployer }} />
-      <Popup open={true} onClose={() => {}}>
-        <StyledWarningPopup>
-          <Box className="header">
-            <WarningAmberRoundedIcon />
-            <Typography>Some warning</Typography>
-          </Box>
-          <Typography className="description">Some description</Typography>
-          <BaseButton>Action</BaseButton>
-        </StyledWarningPopup>
-      </Popup>
+      <FaultyDeploy
+        open={!!isJettonDeployerFaultyOnChainData}
+        onSubmit={resolveFaultyDeploy}
+      />
+
       <TxLoader open={txLoading}>
         <Typography>Revoking in progress</Typography>
       </TxLoader>

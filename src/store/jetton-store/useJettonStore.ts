@@ -57,6 +57,7 @@ function useJettonStore() {
         setState((prevState) => {
           return {
             ...prevState,
+            isJettonDeployerFaultyOnChainData: result.minter.isJettonDeployerFaultyOnChainData,
             persistenceType: result.minter.persistenceType,
             description: result.minter.metadata.description,
             jettonImage: result.minter.metadata.image || QuestiomMarkImg,

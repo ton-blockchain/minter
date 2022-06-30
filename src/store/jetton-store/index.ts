@@ -15,6 +15,7 @@ interface JettonStoreState {
   persistenceType?: persistenceType;
   totalSupply?: string;
   jettonAddress?: string;
+  isJettonDeployerFaultyOnChainData?: boolean;
 }
 
 const jettonStateAtom = atom<JettonStoreState>({
@@ -32,7 +33,8 @@ const jettonStateAtom = atom<JettonStoreState>({
     isLoading: true,
     jettonMaster: undefined,
     totalSupply: undefined,
-    jettonAddress: undefined
+    jettonAddress: undefined,
+    isJettonDeployerFaultyOnChainData: false
   },
 });
 

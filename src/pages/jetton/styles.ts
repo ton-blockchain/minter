@@ -150,33 +150,3 @@ export const StyledSection = styled(Box)(({ theme }) => ({
   })
 
 
-  export const StyledWarningPopup = styled(Box)({
-    width: 300,
-    display:'flex',
-    alignItems:'center',
-    flexDirection:'column',
-    "& .header": {
-      display:'flex',
-      gap: 10,
-      "* ":{
-        color: 'rgb(255, 152, 0)'
-      },
-      "& p": {
-        fontSize: 22,
-        fontWeight: 500
-      },
-      "& svg":{
-        position:'relative',
-        top: 4
-      }
-    },
-    "& .description": {
-      fontSize: 16,
-      marginTop: 20
-    },
-    "& .base-button": {
-      marginTop: 40,
-      height: 40,
-      width: 200
-    }
-  })  

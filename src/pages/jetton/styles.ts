@@ -18,9 +18,15 @@ export const StyledSection = styled(Box)(({ theme }) => ({
     paddingLeft: 10,
     fontSize: 13,
     marginTop: 11,
-    color: type === "success" ? "#2e7d32" : "#EE404C",
+    color: type === "success" ? "#2e7d32" : "rgb(255, 152, 0)",
+    a: {
+      color: type === "success" ? "#2e7d32" : "rgb(255, 152, 0)",
+    },
+    "& p":{
+      margin: 0
+    },
     "& svg": {
-      color: type === "success" ? "#2e7d32" : "#EE404C",
+      color: type === "success" ? "#2e7d32" : "rgb(255, 152, 0)",
       width: 16,
       position: "relative",
       top: -3,

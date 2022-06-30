@@ -9,8 +9,6 @@ import { ContractDeployer } from "lib/contract-deployer";
 import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
 import { ROUTES } from "consts";
 import TxLoader from "components/TxLoader";
-import { isMobile } from "react-device-detect";
-import { Providers } from "lib/env-profiles";
 import useNotification from "hooks/useNotification";
 
 import {

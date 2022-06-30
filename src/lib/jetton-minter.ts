@@ -53,7 +53,7 @@ export function buildJettonOnchainMetadata(data: {
       jettonOnChainMetadataSpec[k as JettonMetaDataKeys]
     );
 
-    const CELL_MAX_SIZE_BYTES = 750 / 8; // TODO figure out this number
+    const CELL_MAX_SIZE_BYTES = Math.floor(1023 / 8);
 
     const rootCell = new Cell();
     let currentCell = rootCell;
@@ -69,7 +69,7 @@ export function buildJettonOnchainMetadata(data: {
       }
     }
 
-    dict.storeCell(sha256(k), rootCell);
+    dict.storeRef(sha256(k), rootCell);
   });
 
   return beginCell()
@@ -86,6 +86,7 @@ export type persistenceType =
 export async function readJettonMetadata(contentCell: Cell): Promise<{
   persistenceType: persistenceType;
   metadata: { [s in JettonMetaDataKeys]?: string };
+  isJettonDeployerFaultyOnChainData?: boolean;
 }> {
   const contentSlice = contentCell.beginParse();
 
@@ -93,7 +94,7 @@ export async function readJettonMetadata(contentCell: Cell): Promise<{
     case ONCHAIN_CONTENT_PREFIX:
       return {
         persistenceType: "onchain",
-        metadata: parseJettonOnchainMetadata(contentSlice),
+        ...parseJettonOnchainMetadata(contentSlice),
       };
     case OFFCHAIN_CONTENT_PREFIX:
       const { metadata, isIpfs } = await parseJettonOffchainMetadata(
@@ -120,15 +121,17 @@ async function parseJettonOffchainMetadata(contentSlice: Slice): Promise<{
 }
 
 function parseJettonOnchainMetadata(contentSlice: Slice): {
-  [s in JettonMetaDataKeys]?: string;
+  metadata: { [s in JettonMetaDataKeys]?: string };
+  isJettonDeployerFaultyOnChainData: boolean;
 } {
   // Note that this relies on what is (perhaps) an internal implementation detail:
   // "ton" library dict parser converts: key (provided as buffer) => BN(base10)
   // and upon parsing, it reads it back to a BN(base10)
   // tl;dr if we want to read the map back to a JSON with string keys, we have to convert BN(10) back to hex
   const toKey = (str: string) => new BN(str, "hex").toString(10);
-
   const KEYLEN = 256;
+
+  let isJettonDeployerFaultyOnChainData = false;
 
   const dict = contentSlice.readDict(KEYLEN, (s) => {
     let buffer = Buffer.from("");
@@ -146,7 +149,12 @@ function parseJettonOnchainMetadata(contentSlice: Slice): {
       return v;
     };
 
-    return sliceToVal(s, buffer);
+    if (s.remainingRefs === 0) {
+      isJettonDeployerFaultyOnChainData = true;
+      return sliceToVal(s, buffer);
+    }
+
+    return sliceToVal(s.readRef(), buffer);
   });
 
   const res: { [s in JettonMetaDataKeys]?: string } = {};
@@ -158,7 +166,10 @@ function parseJettonOnchainMetadata(contentSlice: Slice): {
     if (val) res[k as JettonMetaDataKeys] = val;
   });
 
-  return res;
+  return {
+    metadata: res,
+    isJettonDeployerFaultyOnChainData,
+  };
 }
 
 export function initData(

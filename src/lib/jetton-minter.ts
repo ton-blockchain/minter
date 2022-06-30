@@ -86,6 +86,7 @@ export type persistenceType =
 export async function readJettonMetadata(contentCell: Cell): Promise<{
   persistenceType: persistenceType;
   metadata: { [s in JettonMetaDataKeys]?: string };
+  isJettonDeployerFaultyOnChainData?: boolean;
 }> {
   const contentSlice = contentCell.beginParse();
 
@@ -93,7 +94,7 @@ export async function readJettonMetadata(contentCell: Cell): Promise<{
     case ONCHAIN_CONTENT_PREFIX:
       return {
         persistenceType: "onchain",
-        metadata: parseJettonOnchainMetadata(contentSlice),
+        ...parseJettonOnchainMetadata(contentSlice),
       };
     case OFFCHAIN_CONTENT_PREFIX:
       const { metadata, isIpfs } = await parseJettonOffchainMetadata(
@@ -120,18 +121,19 @@ async function parseJettonOffchainMetadata(contentSlice: Slice): Promise<{
 }
 
 function parseJettonOnchainMetadata(contentSlice: Slice): {
-  [s in JettonMetaDataKeys]?: string;
+  metadata: { [s in JettonMetaDataKeys]?: string };
+  isJettonDeployerFaultyOnChainData: boolean;
 } {
   // Note that this relies on what is (perhaps) an internal implementation detail:
   // "ton" library dict parser converts: key (provided as buffer) => BN(base10)
   // and upon parsing, it reads it back to a BN(base10)
   // tl;dr if we want to read the map back to a JSON with string keys, we have to convert BN(10) back to hex
   const toKey = (str: string) => new BN(str, "hex").toString(10);
-
   const KEYLEN = 256;
 
+  let isJettonDeployerFaultyOnChainData = false;
+
   const dict = contentSlice.readDict(KEYLEN, (s) => {
-    
     let buffer = Buffer.from("");
 
     const sliceToVal = (s: Slice, v: Buffer) => {
@@ -147,6 +149,11 @@ function parseJettonOnchainMetadata(contentSlice: Slice): {
       return v;
     };
 
+    if (s.remainingRefs === 0) {
+      isJettonDeployerFaultyOnChainData = true;
+      return sliceToVal(s, buffer);
+    }
+
     return sliceToVal(s.readRef(), buffer);
   });
 
@@ -159,7 +166,10 @@ function parseJettonOnchainMetadata(contentSlice: Slice): {
     if (val) res[k as JettonMetaDataKeys] = val;
   });
 
-  return res;
+  return {
+    metadata: res,
+    isJettonDeployerFaultyOnChainData,
+  };
 }
 
 export function initData(

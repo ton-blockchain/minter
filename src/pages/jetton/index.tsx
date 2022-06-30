@@ -174,8 +174,8 @@ function JettonPage() {
             />
             <StyledCategoryTitle>Connected Jetton Wallet</StyledCategoryTitle>
             <Row
-              title="Address"
-              value={jettonAddress}
+              title="Wallet address"
+              value={address}
               dataLoading={isLoading}
               isAddress
             />

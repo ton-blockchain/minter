@@ -52,16 +52,18 @@ function useJettonStore() {
         const admin = _adminAddress === address;
 
         console.log(result);
-        
-          
+
         setState((prevState) => {
           return {
             ...prevState,
-            isJettonDeployerFaultyOnChainData: result.minter.isJettonDeployerFaultyOnChainData,
+            isJettonDeployerFaultyOnChainData:
+              result.minter.isJettonDeployerFaultyOnChainData,
             persistenceType: result.minter.persistenceType,
             description: result.minter.metadata.description,
             jettonImage: result.minter.metadata.image || QuestiomMarkImg,
-            totalSupply: parseFloat(fromNano(result.minter.totalSupply)).toLocaleString(),
+            totalSupply: parseFloat(
+              fromNano(result.minter.totalSupply)
+            ).toLocaleString(),
             name: result.minter.metadata.name,
             symbol: result.minter.metadata.symbol,
             adminRevokedOwnership: _adminAddress === zeroAddress().toFriendly(),
@@ -71,7 +73,7 @@ function useJettonStore() {
               ? fromNano(result.jettonWallet.balance)
               : undefined,
             jettonAddress: result.jettonWallet?.jWalletAddress.toFriendly(),
-            jettonMaster
+            jettonMaster,
           };
         });
       } finally {
@@ -85,6 +87,38 @@ function useJettonStore() {
     },
     [setState]
   );
+
+  const fixFaultyDeploy = async () => {
+    const connection = WalletConnection.getConnection();
+    if (!connection) {
+      throw new Error("Please connect wallet");
+    }
+
+    if (!state.jettonMaster) {
+      throw new Error("Jetton address missing");
+    }
+
+    return jettonDeployController.fixFaultyJetton(
+      Address.parse(state.jettonMaster),
+      {
+        symbol: state.symbol,
+        name: state.name,
+        description: state.description,
+        image: state.jettonImage,
+      },
+      connection
+    );
+  };
+
+
+  const hideFaultyModal = () => {
+    setState(prevState => {
+      return {
+        ...prevState,
+        isJettonDeployerFaultyOnChainData: false
+      }
+    })
+  }
 
   const revokeAdminOwnership = useCallback(
     async (contractAddr: string) => {
@@ -119,6 +153,8 @@ function useJettonStore() {
     revokeAdminOwnership,
     stopLoading,
     reset,
+    fixFaultyDeploy,
+    hideFaultyModal
   };
 }
 

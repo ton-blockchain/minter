@@ -67,11 +67,11 @@ function Form({ onSubmit }: FormProps) {
         <Tooltip title ={<Typography style={{fontSize: 14}}>In maintenance</Typography>}>
         <StyledActionBtn>
         {!address ? (
-          <BaseButton disabled type="button" onClick={() => toggleConnect(true)}>
+          <BaseButton  type="button" onClick={() => toggleConnect(true)}>
             Connect wallet
           </BaseButton>
         ) : (
-          <BaseButton disabled type="submit">Deploy</BaseButton>
+          <BaseButton  type="submit">Deploy</BaseButton>
         )}
       </StyledActionBtn>
         </Tooltip>

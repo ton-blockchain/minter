@@ -1,7 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import { JettonDetailButton, JettonDetailMessage } from "./types";
 import AddressLink from "components/AddressLink";
-import {  useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import BaseButton from "components/BaseButton";
 import { getAdminMessage, getOffChainMessage } from "./util";
 import useNotification from "hooks/useNotification";
@@ -41,6 +41,7 @@ function JettonPage() {
   const { showNotification } = useNotification();
   const getJettonOnLoadRef = useRef(false);
   const [txLoading, setTxLoading] = useState(false);
+  const [deployLoading, setDeployLoading] = useState(false);
 
   const {
     getJettonDetails,
@@ -61,6 +62,8 @@ function JettonPage() {
     totalSupply,
     jettonAddress,
     isJettonDeployerFaultyOnChainData,
+    fixFaultyDeploy,
+    hideFaultyModal
   } = useJettonStore();
 
   const onRevokeAdminOwnership = async (contractAddr?: string) => {
@@ -104,20 +107,32 @@ function JettonPage() {
     };
   }, [reset]);
 
-  const resolveFaultyDeploy = () => {
-    //tx
+  const onFaultyDeployFixClick = async () => {
+    try {
+      setDeployLoading(true);
+      await fixFaultyDeploy();
+      await getJettonDetails(jettonMaster!!, address);
+      hideFaultyModal()
+    } catch (error) {
+    } finally {
+      setDeployLoading(false);
+    }
   };
 
   return (
     <Screen>
       <Navbar customLink={{ text: "Create Jetton", path: ROUTES.deployer }} />
       <FaultyDeploy
-        open={!!isJettonDeployerFaultyOnChainData}
-        onSubmit={resolveFaultyDeploy}
+        open={!!isJettonDeployerFaultyOnChainData && isAdmin}
+        onSubmit={onFaultyDeployFixClick}
       />
 
       <TxLoader open={txLoading}>
         <Typography>Revoking in progress</Typography>
+      </TxLoader>
+
+      <TxLoader open={deployLoading}>
+        <Typography>Loading...</Typography>
       </TxLoader>
 
       <ScreenContent>

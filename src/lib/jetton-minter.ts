@@ -15,6 +15,7 @@ export const JETTON_MINTER_CODE = Cell.fromBoc(minterHex.hex)[0]; // code cell f
 
 enum OPS {
   ChangeAdmin = 3,
+  ReplaceMetadata = 4,
   Mint = 21,
   InternalTransfer = 0x178d4519,
   Transfer = 0xf8a7ea5,
@@ -210,5 +211,13 @@ export function changeAdminBody(newAdmin: Address): Cell {
     .storeUint(OPS.ChangeAdmin, 32)
     .storeUint(0, 64) // queryid
     .storeAddress(newAdmin)
+    .endCell();
+}
+
+export function _replaceMetadataFAULTY_FIX(metadata: Cell): Cell {
+  return beginCell()
+    .storeUint(OPS.ReplaceMetadata, 32)
+    .storeUint(0, 64) // queryid
+    .storeRef(metadata)
     .endCell();
 }

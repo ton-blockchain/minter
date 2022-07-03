@@ -14,7 +14,7 @@ import React, { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Address } from "ton";
 
-const exampleAddress = "EQAV2ycs_ltZGvYBtO0YAoK3gPgb6zGVvqlUEAiQjA_sphDr";
+const exampleAddress = "EQBb4JNqn4Z6U6-nf0cSLnOJo2dxj1QRuGoq-y6Hod72jPbl";
 const StyledContainer = styled(Box)({
   background: "rgba(80, 167, 234, 0.2)",
   width: "100%",

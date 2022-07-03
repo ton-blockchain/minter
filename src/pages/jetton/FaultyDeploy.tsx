@@ -67,6 +67,7 @@ function FaultyDeploy() {
 export default FaultyDeploy;
 
 export const StyledWarningPopup = styled(Box)({
+
   maxWidth: 380,
   width: "100%",
   display: "flex",
@@ -77,7 +78,7 @@ export const StyledWarningPopup = styled(Box)({
     textAlign: "center",
     gap: 10,
     "* ": {
-      color: "rgb(255, 152, 0)",
+      color: "#d32f2f",
     },
     "& p": {
       fontSize: 22,
@@ -99,5 +100,6 @@ export const StyledWarningPopup = styled(Box)({
     marginTop: 40,
     height: 40,
     width: 200,
+    background: '#d32f2f'
   },
 });

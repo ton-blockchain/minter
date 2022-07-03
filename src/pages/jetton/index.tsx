@@ -155,7 +155,7 @@ function JettonPage() {
               </StyledTopText>
             </StyledTop>
             {!isAdmin && isJettonDeployerFaultyOnChainData && (
-              <Alert severity="error">
+              <Alert variant="filled" severity="error">
                 {getFaultyMetadataWarning(adminRevokedOwnership)}
               </Alert>
             )}
@@ -244,7 +244,7 @@ interface RowProps {
   title: string;
   value?: string | null;
   message?: JettonDetailMessage | undefined;
-  address?: string;
+  address?: string | null;
   button?: JettonDetailButton | undefined;
   dataLoading: boolean;
   description?: string;

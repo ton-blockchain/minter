@@ -162,6 +162,13 @@ function JettonPage() {
 
             <StyledTextSections>
               <Row
+                description="On-chain smart contract address of the Jetton parent (jetton-minter.fc)"
+                title="Address"
+                value={jettonMaster}
+                dataLoading={jettonLoading}
+                address={jettonMaster}
+              />
+              <Row
                 title="Admin"
                 value={adminRevokedOwnership ? "Empty address" : adminAddress}
                 address={adminAddress}
@@ -180,13 +187,6 @@ function JettonPage() {
                       }
                     : undefined
                 }
-              />
-              <Row
-                description="On-chain smart contract address of the Jetton parent (jetton-minter.fc)"
-                title="Address"
-                value={jettonMaster}
-                dataLoading={jettonLoading}
-                address={jettonMaster}
               />
               <Row
                 title="Symbol"
@@ -212,10 +212,18 @@ function JettonPage() {
               />
               <StyledCategoryTitle>Connected Jetton Wallet</StyledCategoryTitle>
               <Row
-                title="Address"
+                title="Owner"
+                value={address}
+                dataLoading={jettonLoading}
+                address={address}
+                description="Owner wallet contract, used for jettons transfers"
+              />
+              <Row
+                title="Jetton Wallet"
                 value={jettonAddress}
                 dataLoading={jettonLoading}
                 address={jettonAddress}
+                description={symbol && `On-chain smart contract address of the Jetton wallet (jetton-wallet.fc), holds the ${symbol} balance`}
               />
               <Row
                 title="Balance"

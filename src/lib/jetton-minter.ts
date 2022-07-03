@@ -135,6 +135,7 @@ function parseJettonOnchainMetadata(contentSlice: Slice): {
   let isJettonDeployerFaultyOnChainData = false;
 
   const dict = contentSlice.readDict(KEYLEN, (s) => {
+    
     let buffer = Buffer.from("");
 
     const sliceToVal = (s: Slice, v: Buffer) => {

@@ -18,13 +18,6 @@ function useJettonStore() {
 
   const getJettonDetails = useCallback(
     async (jettonMaster: string, address?: string | null) => {
-      setState((prevState) => {
-        return {
-          ...prevState,
-          isLoading: true,
-        };
-      });
-
       let connection;
 
       try {
@@ -36,56 +29,47 @@ function useJettonStore() {
         );
       }
 
-      try {
-        const result = await jettonDeployController.getJettonDetails(
-          Address.parse(jettonMaster),
-          address ? Address.parse(address) : zeroAddress(),
-          connection
-        );
+      const result = await jettonDeployController.getJettonDetails(
+        Address.parse(jettonMaster),
+        address ? Address.parse(address) : zeroAddress(),
+        connection
+      );
 
-        if (!result) {
-          console.log("empty");
+      if (!result) {
+        console.log("empty");
 
-          return;
-        }
-        const _adminAddress = result.minter.admin.toFriendly();
-        const admin = _adminAddress === address;
-
-        console.log(result);
-
-        setState((prevState) => {
-          return {
-            ...prevState,
-            isJettonDeployerFaultyOnChainData:
-              result.minter.isJettonDeployerFaultyOnChainData,
-            persistenceType: result.minter.persistenceType,
-            description: result.minter.metadata.description,
-            jettonImage: result.minter.metadata.image || QuestiomMarkImg,
-            totalSupply: parseFloat(
-              fromNano(result.minter.totalSupply)
-            ).toLocaleString(),
-            name: result.minter.metadata.name,
-            symbol: result.minter.metadata.symbol,
-            adminRevokedOwnership: _adminAddress === zeroAddress().toFriendly(),
-            isAdmin: admin,
-            adminAddress: _adminAddress,
-            balance: result.jettonWallet
-              ? fromNano(result.jettonWallet.balance)
-              : undefined,
-            jettonAddress: result.jettonWallet?.jWalletAddress.toFriendly(),
-            jettonMaster,
-          };
-        });
-      } finally {
-        setState((prevState) => {
-          return {
-            ...prevState,
-            isLoading: false,
-          };
-        });
+        return;
       }
+      const _adminAddress = result.minter.admin.toFriendly();
+      const admin = _adminAddress === address;
+
+      console.log(result);
+
+      setState((prevState) => {
+        return {
+          ...prevState,
+          isJettonDeployerFaultyOnChainData:
+            result.minter.isJettonDeployerFaultyOnChainData,
+          persistenceType: result.minter.persistenceType,
+          description: result.minter.metadata.description,
+          jettonImage: result.minter.metadata.image || QuestiomMarkImg,
+          totalSupply: parseFloat(
+            fromNano(result.minter.totalSupply)
+          ).toLocaleString(),
+          name: result.minter.metadata.name,
+          symbol: result.minter.metadata.symbol,
+          adminRevokedOwnership: _adminAddress === zeroAddress().toFriendly(),
+          isAdmin: admin,
+          adminAddress: _adminAddress,
+          balance: result.jettonWallet
+            ? fromNano(result.jettonWallet.balance)
+            : undefined,
+          jettonAddress: result.jettonWallet?.jWalletAddress.toFriendly(),
+          jettonMaster,
+        };
+      });
     },
-    [setState]
+    []
   );
 
   const fixFaultyDeploy = async () => {
@@ -110,16 +94,6 @@ function useJettonStore() {
     );
   };
 
-
-  const hideFaultyModal = () => {
-    setState(prevState => {
-      return {
-        ...prevState,
-        isJettonDeployerFaultyOnChainData: false
-      }
-    })
-  }
-
   const revokeAdminOwnership = useCallback(
     async (contractAddr: string) => {
       await jettonDeployController.burnAdmin(
@@ -138,23 +112,12 @@ function useJettonStore() {
     [setState]
   );
 
-  const stopLoading = useCallback(() => {
-    setState((prevState) => {
-      return {
-        ...prevState,
-        isLoading: false,
-      };
-    });
-  }, [setState]);
-
   return {
     ...state,
     getJettonDetails,
     revokeAdminOwnership,
-    stopLoading,
     reset,
     fixFaultyDeploy,
-    hideFaultyModal
   };
 }
 

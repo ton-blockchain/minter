@@ -58,4 +58,13 @@ const getOffChainMessage = (
   }
 };
 
-export { getAdminMessage, getOffChainMessage };
+
+
+const getFaultyMetadataWarning = (isAdminRevokedOwnership?: boolean) => {
+    if(isAdminRevokedOwnership) {
+      return 'This token was created with a previous faulty version of the tool. The token is permanently unusable, please contact the admin to redeploy it'
+    }
+      return 'This token was created with a previous faulty version of the tool. The token is now unusable but can be fixed, please contact the admin to fix it using this page'
+}
+
+export { getAdminMessage, getOffChainMessage, getFaultyMetadataWarning };

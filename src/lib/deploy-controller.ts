@@ -202,11 +202,20 @@ class JettonDeployController {
     },
     connection: TonConnection
   ) {
+    const { address } = await connection.connect();
+    const waiter = await waitForSeqno(
+      connection._tonClient.openWalletFromAddress({
+        source: Address.parse(address),
+      })
+    );
+
     await connection.requestTransaction({
       to: contractAddress,
       message: _replaceMetadataFAULTY_FIX(buildJettonOnchainMetadata(data)),
-      value: toNano(0),
+      value: toNano(0.01),
     });
+    
+    await waiter()
   }
 }
 

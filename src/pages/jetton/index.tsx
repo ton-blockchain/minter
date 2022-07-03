@@ -3,7 +3,11 @@ import { JettonDetailButton, JettonDetailMessage } from "./types";
 import AddressLink from "components/AddressLink";
 import { useEffect, useRef, useState } from "react";
 import BaseButton from "components/BaseButton";
-import { getAdminMessage, getOffChainMessage } from "./util";
+import {
+  getAdminMessage,
+  getFaultyMetadataWarning,
+  getOffChainMessage,
+} from "./util";
 import useNotification from "hooks/useNotification";
 import useConnectionStore from "store/connection-store/useConnectionStore";
 import { useParams } from "react-router-dom";
@@ -16,6 +20,7 @@ import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import useJettonStore from "store/jetton-store/useJettonStore";
 import Navbar from "components/navbar";
 import { ROUTES } from "consts";
+import Alert from "@mui/material/Alert";
 
 import {
   StyledContainer,
@@ -41,12 +46,11 @@ function JettonPage() {
   const { showNotification } = useNotification();
   const getJettonOnLoadRef = useRef(false);
   const [txLoading, setTxLoading] = useState(false);
-  const [deployLoading, setDeployLoading] = useState(false);
+  const [jettonLoading, setJettonLoading] = useState(true);
 
   const {
     getJettonDetails,
     jettonImage,
-    isLoading,
     adminAddress,
     isAdmin,
     adminRevokedOwnership,
@@ -56,14 +60,11 @@ function JettonPage() {
     description,
     revokeAdminOwnership,
     jettonMaster,
-    stopLoading,
     reset,
     persistenceType,
     totalSupply,
     jettonAddress,
     isJettonDeployerFaultyOnChainData,
-    fixFaultyDeploy,
-    hideFaultyModal
   } = useJettonStore();
 
   const onRevokeAdminOwnership = async (contractAddr?: string) => {
@@ -83,20 +84,34 @@ function JettonPage() {
     }
   };
 
+  const onGetJetton = async (id: string, addr?: string | null) => {
+    try {
+      setJettonLoading(true);
+      await getJettonDetails(id, addr);
+    } catch (error) {
+      if (error instanceof Error) {
+        showNotification(<>{error.message}</>, "error");
+      }
+    } finally {
+      setJettonLoading(false);
+    }
+  };
+
   useEffect(() => {
+
     if (!id) {
-      stopLoading();
+      setJettonLoading(false);
       return;
     }
     if (!getJettonOnLoadRef.current && !isConnecting) {
-      getJettonDetails(id, address);
+      onGetJetton(id, address);
       getJettonOnLoadRef.current = true;
     }
   }, [id, getJettonDetails, isConnecting]);
 
   useEffect(() => {
     if (jettonMaster) {
-      getJettonDetails(jettonMaster, address);
+      onGetJetton(jettonMaster, address);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address, getJettonDetails]);
@@ -107,32 +122,14 @@ function JettonPage() {
     };
   }, [reset]);
 
-  const onFaultyDeployFixClick = async () => {
-    try {
-      setDeployLoading(true);
-      await fixFaultyDeploy();
-      await getJettonDetails(jettonMaster!!, address);
-      hideFaultyModal()
-    } catch (error) {
-    } finally {
-      setDeployLoading(false);
-    }
-  };
-
   return (
     <Screen>
       <Navbar customLink={{ text: "Create Jetton", path: ROUTES.deployer }} />
-      <FaultyDeploy
-        open={!!isJettonDeployerFaultyOnChainData && isAdmin}
-        onSubmit={onFaultyDeployFixClick}
-      />
+
+      <FaultyDeploy />
 
       <TxLoader open={txLoading}>
         <Typography>Revoking in progress</Typography>
-      </TxLoader>
-
-      <TxLoader open={deployLoading}>
-        <Typography>Loading...</Typography>
       </TxLoader>
 
       <ScreenContent>
@@ -143,20 +140,25 @@ function JettonPage() {
                 <LoadingImage
                   src={jettonImage}
                   alt="jetton image"
-                  loading={isLoading}
+                  loading={jettonLoading}
                 />
               </StyledTopImg>
               <StyledTopText>
-                <LoadingContainer loading={isLoading} loaderWidth="80px">
+                <LoadingContainer loading={jettonLoading} loaderWidth="80px">
                   <Typography variant="h3">{name}</Typography>
                 </LoadingContainer>
-                <LoadingContainer loading={isLoading} loaderWidth="150px">
+                <LoadingContainer loading={jettonLoading} loaderWidth="150px">
                   {description && (
                     <Typography variant="h5">{description}</Typography>
                   )}
                 </LoadingContainer>
               </StyledTopText>
             </StyledTop>
+            {!isAdmin && isJettonDeployerFaultyOnChainData && (
+              <Alert severity="error">
+                {getFaultyMetadataWarning(adminRevokedOwnership)}
+              </Alert>
+            )}
 
             <StyledTextSections>
               <Row
@@ -169,7 +171,7 @@ function JettonPage() {
                   isAdmin,
                   jettonMaster
                 )}
-                dataLoading={isLoading}
+                dataLoading={jettonLoading}
                 button={
                   isAdmin
                     ? {
@@ -183,13 +185,13 @@ function JettonPage() {
                 description="On-chain smart contract address of the Jetton parent (jetton-minter.fc)"
                 title="Address"
                 value={jettonMaster}
-                dataLoading={isLoading}
+                dataLoading={jettonLoading}
                 address={jettonMaster}
               />
               <Row
                 title="Symbol"
                 value={symbol}
-                dataLoading={isLoading}
+                dataLoading={jettonLoading}
                 message={getOffChainMessage(
                   persistenceType,
                   adminRevokedOwnership
@@ -198,7 +200,7 @@ function JettonPage() {
               <Row
                 title="Total supply"
                 value={totalSupply && `${totalSupply} ${symbol}`}
-                dataLoading={isLoading}
+                dataLoading={jettonLoading}
                 message={
                   !adminRevokedOwnership
                     ? {
@@ -212,7 +214,7 @@ function JettonPage() {
               <Row
                 title="Address"
                 value={jettonAddress}
-                dataLoading={isLoading}
+                dataLoading={jettonLoading}
                 address={jettonAddress}
               />
               <Row
@@ -220,7 +222,7 @@ function JettonPage() {
                 value={
                   balance && `${parseFloat(balance).toLocaleString()} ${symbol}`
                 }
-                dataLoading={isLoading}
+                dataLoading={jettonLoading}
                 button={
                   !address
                     ? {

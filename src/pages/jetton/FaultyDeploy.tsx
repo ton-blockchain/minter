@@ -53,7 +53,11 @@ function FaultyDeploy() {
           <Box className="description">
             <Typography>
               This token was created with a previous faulty version of the tool.
-              Press below to fix the metadata onchain. This will issue a
+            Press below to fix the metadata onchain. 
+            </Typography>
+            <br/>
+            <Typography>
+            This will issue a
               transaction and keep the token’s original data.
             </Typography>
           </Box>

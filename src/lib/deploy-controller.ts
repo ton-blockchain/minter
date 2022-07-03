@@ -13,7 +13,15 @@ import {
 } from "./utils";
 import { cellToAddress, TonConnection } from "@ton-defi.org/ton-connection";
 import { zeroAddress } from "./utils";
-import { readJettonMetadata, changeAdminBody } from "./jetton-minter";
+import {
+  buildJettonOnchainMetadata,
+  _replaceMetadataFAULTY_FIX,
+} from "./jetton-minter";
+import {
+  readJettonMetadata,
+  changeAdminBody,
+  JettonMetaDataKeys,
+} from "./jetton-minter";
 axiosThrottle.use(axios, { requestsPerSecond: 0.9 }); // required since toncenter jsonRPC limits to 1 req/sec without API key
 
 export const JETTON_DEPLOY_GAS = toNano(0.25);
@@ -160,8 +168,6 @@ class JettonDeployController {
       [beginCell().storeAddress(owner).endCell()],
       ([addressCell]) => cellToAddress(addressCell)
     );
-      
-
 
     const isDeployed = await tonConnection._tonClient.isContractDeployed(
       jWalletAddress
@@ -187,6 +193,29 @@ class JettonDeployController {
       minter,
       jettonWallet,
     };
+  }
+
+  async fixFaultyJetton(
+    contractAddress: Address,
+    data: {
+      [s in JettonMetaDataKeys]?: string | undefined;
+    },
+    connection: TonConnection
+  ) {
+    const { address } = await connection.connect();
+    const waiter = await waitForSeqno(
+      connection._tonClient.openWalletFromAddress({
+        source: Address.parse(address),
+      })
+    );
+
+    await connection.requestTransaction({
+      to: contractAddress,
+      message: _replaceMetadataFAULTY_FIX(buildJettonOnchainMetadata(data)),
+      value: toNano(0.01),
+    });
+    
+    await waiter()
   }
 }
 

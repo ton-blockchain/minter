@@ -27,7 +27,7 @@ function TxLoader({ open, children }: Props) {
 
   return (
     <Backdrop
-      sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1, backdropFilter: 'blur(5px) '}}
+      sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 2, backdropFilter: 'blur(5px) '}}
       open={open}
     >
       <StyledContainer>

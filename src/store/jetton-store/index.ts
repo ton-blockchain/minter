@@ -10,11 +10,11 @@ interface JettonStoreState {
   description?: string;
   adminAddress?: string;
   balance?: string;
-  isLoading: boolean
   jettonMaster?: string;
   persistenceType?: persistenceType;
   totalSupply?: string;
   jettonAddress?: string;
+  isJettonDeployerFaultyOnChainData?: boolean;
 }
 
 const jettonStateAtom = atom<JettonStoreState>({
@@ -29,10 +29,10 @@ const jettonStateAtom = atom<JettonStoreState>({
     description: undefined,
     adminAddress: undefined,
     balance: undefined,
-    isLoading: true,
     jettonMaster: undefined,
     totalSupply: undefined,
-    jettonAddress: undefined
+    jettonAddress: undefined,
+    isJettonDeployerFaultyOnChainData: false
   },
 });
 

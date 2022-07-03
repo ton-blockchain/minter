@@ -23,6 +23,10 @@ let theme = createTheme({
       secondary: "#00000",
     },
     error: {
+      main: "#ef5350",
+      
+    },
+    warning: {
       main: "#FF5147",
     },
   

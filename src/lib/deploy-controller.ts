@@ -2,9 +2,6 @@ import BN from "bn.js";
 import { Address, beginCell, Cell, toNano } from "ton";
 import { ContractDeployer } from "./contract-deployer";
 
-// TODO temporary
-import axios from "axios";
-import axiosThrottle from "axios-request-throttle";
 import {
   createDeployParams,
   parseGetMethodCall,
@@ -22,7 +19,6 @@ import {
   changeAdminBody,
   JettonMetaDataKeys,
 } from "./jetton-minter";
-axiosThrottle.use(axios, { requestsPerSecond: 0.9 }); // required since toncenter jsonRPC limits to 1 req/sec without API key
 
 export const JETTON_DEPLOY_GAS = toNano(0.25);
 

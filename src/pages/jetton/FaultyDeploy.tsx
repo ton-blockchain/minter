@@ -28,7 +28,7 @@ function FaultyDeploy() {
     try {
       setIsLoading(true);
       await fixFaultyDeploy();
-      await getJettonDetails(jettonMaster!!, address);
+      await getJettonDetails(jettonMaster!, address);
     } catch (error) {
       console.log(error);
     } finally {

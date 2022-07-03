@@ -1,5 +1,5 @@
 import { persistenceType } from "lib/jetton-minter";
-import { JettonDetailMessage } from "./types";
+import { JettonDetailAction, JettonDetailMessage } from "./types";
 
 const getAdminMessage = (
   isRevokedOwnership?: boolean,
@@ -31,16 +31,14 @@ const getAdminMessage = (
 const getOffChainMessage = (
   persistenceType?: persistenceType,
   adminRevokedOwnership?: boolean
-
 ): JettonDetailMessage | undefined => {
-
-  if(persistenceType === 'onchain' && !adminRevokedOwnership){
+  if (persistenceType === "onchain" && !adminRevokedOwnership) {
     return {
       type: "warning",
       text: "This can be changed by the admin without warning",
     };
   }
-  
+
   switch (persistenceType) {
     case "offchain_ipfs":
       return {
@@ -58,13 +56,26 @@ const getOffChainMessage = (
   }
 };
 
-
-
 const getFaultyMetadataWarning = (isAdminRevokedOwnership?: boolean) => {
-    if(isAdminRevokedOwnership) {
-      return 'This token was created with a previous faulty version of the tool. The token is permanently unusable, please contact the admin to redeploy a new token'
-    }
-      return 'This token was created with a previous faulty version of the tool. The token is now unusable but can be fixed, please contact the admin to fix it using this page'
-}
+  if (isAdminRevokedOwnership) {
+    return "This token was created with a previous faulty version of the tool. The token is permanently unusable, please contact the admin to redeploy a new token";
+  }
+  return "This token was created with a previous faulty version of the tool. The token is now unusable but can be fixed, please contact the admin to fix it using this page";
+};
 
-export { getAdminMessage, getOffChainMessage, getFaultyMetadataWarning };
+const getBalanceActions = (
+  toggleConnect: (val: boolean) => void,
+  address?: string | null
+): JettonDetailAction[] | undefined => {
+  if (!address) {
+    return [
+      {
+        action: () => toggleConnect(true),
+        text: "Connect wallet",
+      },
+    ];
+  }
+  return;
+};
+
+export { getAdminMessage, getOffChainMessage, getFaultyMetadataWarning, getBalanceActions };

@@ -1,10 +1,11 @@
 import { Box, Typography } from "@mui/material";
-import { JettonDetailButton, JettonDetailMessage } from "./types";
+import { JettonDetailAction, JettonDetailMessage } from "./types";
 import AddressLink from "components/AddressLink";
 import { useEffect, useRef, useState } from "react";
 import BaseButton from "components/BaseButton";
 import {
   getAdminMessage,
+  getBalanceActions,
   getFaultyMetadataWarning,
   getOffChainMessage,
 } from "./util";
@@ -98,7 +99,6 @@ function JettonPage() {
   };
 
   useEffect(() => {
-
     if (!id) {
       setJettonLoading(false);
       return;
@@ -223,7 +223,10 @@ function JettonPage() {
                 value={jettonAddress}
                 dataLoading={jettonLoading}
                 address={jettonAddress}
-                description={symbol && `On-chain smart contract address of the Jetton wallet (jetton-wallet.fc), holds the ${symbol} balance`}
+                description={
+                  symbol &&
+                  `On-chain smart contract address of the Jetton wallet (jetton-wallet.fc), holds the ${symbol} balance`
+                }
               />
               <Row
                 title="Balance"
@@ -231,14 +234,7 @@ function JettonPage() {
                   balance && `${parseFloat(balance).toLocaleString()} ${symbol}`
                 }
                 dataLoading={jettonLoading}
-                button={
-                  !address
-                    ? {
-                        text: "Connect wallet",
-                        action: () => toggleConnect(true),
-                      }
-                    : undefined
-                }
+                actions={getBalanceActions(toggleConnect, address)}
               />
             </StyledTextSections>
           </StyledContainer>
@@ -253,7 +249,7 @@ interface RowProps {
   value?: string | null;
   message?: JettonDetailMessage | undefined;
   address?: string | null;
-  button?: JettonDetailButton | undefined;
+  actions?: JettonDetailAction[] | undefined;
   dataLoading: boolean;
   description?: string;
 }
@@ -262,7 +258,7 @@ const Row = ({
   title,
   value,
   message,
-  button,
+  actions,
   dataLoading,
   description,
   address,
@@ -276,15 +272,23 @@ const Row = ({
         <StyledSectionRight>
           <StyledSectionRightColored>
             <LoadingContainer loading={dataLoading} loaderHeight="50%">
-              <StyledSectionValue hasButton={!!button}>
+              <StyledSectionValue hasButton={!!actions}>
                 {address && value ? (
                   <AddressLink address={address} value={value} />
                 ) : (
                   <Typography>{value || "-"}</Typography>
                 )}
               </StyledSectionValue>
-              {button && (
-                <BaseButton onClick={button.action}>{button.text}</BaseButton>
+              {actions && (
+                <Box>
+                  {actions.map((a, index) => {
+                    return (
+                      <BaseButton key={index} onClick={a.action}>
+                        {a.text}
+                      </BaseButton>
+                    );
+                  })}
+                </Box>
               )}
             </LoadingContainer>
           </StyledSectionRightColored>

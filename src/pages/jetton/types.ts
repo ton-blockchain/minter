@@ -6,7 +6,7 @@ export type JettonDetailMessage = {
   text: string;
 };
 
-export type JettonDetailButton = {
+export type JettonDetailAction = {
   text: string;
   action: () => void;
 };

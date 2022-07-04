@@ -5,10 +5,11 @@ import CopyImg from "assets/copy.svg";
 import { useContext } from "react";
 import { EnvContext } from "App";
 import { scannerUrl } from "utils";
+import theme from "theme";
 
 interface Props {
   address?: string | null;
-  value?: string;
+  value?: string | number;
 }
 
 const StyledContainer = styled(Box)({
@@ -32,6 +33,9 @@ const StyledLink = styled("div")({
   textOverflow: "ellipsis",
   width: "80%",
   color: "#0688CC!important",
+  [theme.breakpoints.down('sm')]: {
+    fontSize: 14
+}
 });
 
 function AddressLink({ address, value }: Props) {

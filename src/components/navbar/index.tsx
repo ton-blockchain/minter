@@ -3,7 +3,6 @@ import { styled } from "@mui/material";
 import { Box } from "@mui/system";
 import { useState } from "react";
 import {  APP_GRID } from "consts";
-import { useNavigate } from "react-router-dom";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import { DesktopMenu, MobileMenu } from "./Menu";
 import Logo from "./Logo";
@@ -41,7 +40,6 @@ interface Props {
 
 function Navbar({ customLink }: Props) {
   const [mobileMenu, setMobileMenu] = useState(false);
-  const navigate = useNavigate();
   const matches = useMediaQuery("(min-width:900px)");
   return (
     <StyledAppBar position="static">

@@ -1,5 +1,5 @@
 import BN from "bn.js";
-import { Cell, beginCell, Address, toNano, beginDict, Slice } from "ton";
+import { Cell, beginCell, Address, beginDict, Slice } from "ton";
 
 import walletHex from "./contracts/jetton-wallet-bitcode.json";
 import minterHex from "./contracts/jetton-minter-bitcode.json";
@@ -19,6 +19,7 @@ enum OPS {
   Mint = 21,
   InternalTransfer = 0x178d4519,
   Transfer = 0xf8a7ea5,
+  Burn = 0x595f07bc,
 }
 
 export type JettonMetaDataKeys = "name" | "description" | "image" | "symbol";
@@ -135,7 +136,6 @@ function parseJettonOnchainMetadata(contentSlice: Slice): {
   let isJettonDeployerFaultyOnChainData = false;
 
   const dict = contentSlice.readDict(KEYLEN, (s) => {
-    
     let buffer = Buffer.from("");
 
     const sliceToVal = (s: Slice, v: Buffer) => {
@@ -186,12 +186,16 @@ export function initData(
     .endCell();
 }
 
-export function mintBody(owner: Address, jettonValue: BN): Cell {
+export function mintBody(
+  owner: Address,
+  jettonValue: BN,
+  transferToJWallet: BN
+): Cell {
   return beginCell()
     .storeUint(OPS.Mint, 32)
     .storeUint(0, 64) // queryid
     .storeAddress(owner)
-    .storeCoins(toNano(0.2)) // gas fee
+    .storeCoins(transferToJWallet)
     .storeRef(
       // internal transfer message
       beginCell()
@@ -204,6 +208,28 @@ export function mintBody(owner: Address, jettonValue: BN): Cell {
         .storeBit(false) // forward_payload in this slice, not separate cell
         .endCell()
     )
+    .endCell();
+}
+
+export function burn(amount: BN, responseAddress: Address) {
+  return beginCell()
+    .storeUint(OPS.Burn, 32) // action
+    .storeUint(1, 64) // query-id
+    .storeCoins(amount)
+    .storeAddress(responseAddress)
+    .storeDict(null)
+    .endCell();
+}
+
+export function transfer(to: Address, jettonAmount: BN) {
+  return beginCell()
+    .storeUint(OPS.Transfer, 32)
+    .storeUint(1, 64)
+    .storeCoins(jettonAmount)
+    .storeAddress(to)
+    .storeAddress(to)
+    .storeBit(false)
+    .storeCoins(0)
     .endCell();
 }
 

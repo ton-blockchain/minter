@@ -1,52 +1,29 @@
-import { Box, Typography } from "@mui/material";
-import { JettonDetailButton, JettonDetailMessage } from "./types";
-import AddressLink from "components/AddressLink";
-import { useEffect, useRef, useState } from "react";
-import BaseButton from "components/BaseButton";
+import { Box, styled, Typography } from "@mui/material";
+import { useEffect } from "react";
 import {
+  adminActions,
+  balanceActions,
   getAdminMessage,
   getFaultyMetadataWarning,
-  getOffChainMessage,
+  getSymbolWarning,
+  getTotalSupplyWarning,
+  totalSupplyActions,
 } from "./util";
-import useNotification from "hooks/useNotification";
 import useConnectionStore from "store/connection-store/useConnectionStore";
 import { useParams } from "react-router-dom";
 import { ScreenContent, Screen } from "components/Screen";
 import LoadingImage from "components/LoadingImage";
 import LoadingContainer from "components/LoadingContainer";
-import TxLoader from "components/TxLoader";
-import WarningRoundedIcon from "@mui/icons-material/WarningRounded";
-import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import useJettonStore from "store/jetton-store/useJettonStore";
 import Navbar from "components/navbar";
 import { ROUTES } from "consts";
 import Alert from "@mui/material/Alert";
-
-import {
-  StyledContainer,
-  StyledTop,
-  StyledTopImg,
-  StyledTopText,
-  StyledTextSections,
-  StyledCategoryTitle,
-  StyledSection,
-  StyledSectionTitle,
-  StyledSectionRight,
-  StyledSectionRightColored,
-  StyledSectionValue,
-  StyledMessage,
-} from "./styles";
-import FieldDescription from "components/FieldDescription";
 import FaultyDeploy from "./FaultyDeploy";
-
+import Row from "./Row";
 function JettonPage() {
   const { id }: { id?: string } = useParams();
 
-  const { address, isConnecting, toggleConnect } = useConnectionStore();
-  const { showNotification } = useNotification();
-  const getJettonOnLoadRef = useRef(false);
-  const [txLoading, setTxLoading] = useState(false);
-  const [jettonLoading, setJettonLoading] = useState(true);
+  const { address, isConnecting } = useConnectionStore();
 
   const {
     getJettonDetails,
@@ -58,80 +35,25 @@ function JettonPage() {
     symbol,
     name,
     description,
-    revokeAdminOwnership,
     jettonMaster,
-    reset,
     persistenceType,
     totalSupply,
     jettonAddress,
     isJettonDeployerFaultyOnChainData,
+    jettonLoading,
   } = useJettonStore();
 
-  const onRevokeAdminOwnership = async (contractAddr?: string) => {
-    if (!contractAddr) {
-      return;
-    }
-    try {
-      setTxLoading(true);
-      await revokeAdminOwnership(contractAddr);
-      showNotification(<>Successfully revoked ownership </>, "success");
-    } catch (error) {
-      if (error instanceof Error) {
-        showNotification(<>{error.message}</>, "error");
-      }
-    } finally {
-      setTxLoading(false);
-    }
-  };
-
-  const onGetJetton = async (id: string, addr?: string | null) => {
-    try {
-      setJettonLoading(true);
-      await getJettonDetails(id, addr);
-    } catch (error) {
-      if (error instanceof Error) {
-        showNotification(<>{error.message}</>, "error");
-      }
-    } finally {
-      setJettonLoading(false);
-    }
-  };
-
   useEffect(() => {
-
-    if (!id) {
-      setJettonLoading(false);
-      return;
+    if (id && !isConnecting) {
+      getJettonDetails();
     }
-    if (!getJettonOnLoadRef.current && !isConnecting) {
-      onGetJetton(id, address);
-      getJettonOnLoadRef.current = true;
-    }
-  }, [id, getJettonDetails, isConnecting]);
-
-  useEffect(() => {
-    if (jettonMaster) {
-      onGetJetton(jettonMaster, address);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [address, getJettonDetails]);
-
-  useEffect(() => {
-    return () => {
-      reset();
-    };
-  }, [reset]);
+  }, [id, getJettonDetails, address, isConnecting]);
 
   return (
     <Screen>
       <Navbar customLink={{ text: "Create Jetton", path: ROUTES.deployer }} />
 
       <FaultyDeploy />
-
-      <TxLoader open={txLoading}>
-        <Typography>Revoking in progress</Typography>
-      </TxLoader>
-
       <ScreenContent>
         <Box style={{ background: "#F7FAFC" }}>
           <StyledContainer>
@@ -174,41 +96,35 @@ function JettonPage() {
                 address={adminAddress}
                 description="Account address that can mint tokens freely and change metadata"
                 message={getAdminMessage(
+                  adminAddress,
+                  symbol,
                   adminRevokedOwnership,
                   isAdmin,
                   jettonMaster
                 )}
                 dataLoading={jettonLoading}
-                button={
-                  isAdmin
-                    ? {
-                        text: "Revoke ownership",
-                        action: () => onRevokeAdminOwnership(jettonMaster),
-                      }
-                    : undefined
-                }
+                actions={adminActions}
               />
               <Row
                 title="Symbol"
                 value={symbol}
                 dataLoading={jettonLoading}
-                message={getOffChainMessage(
+                message={getSymbolWarning(
                   persistenceType,
                   adminRevokedOwnership
                 )}
               />
               <Row
                 title="Total supply"
-                value={totalSupply && `${totalSupply} ${symbol}`}
-                dataLoading={jettonLoading}
-                message={
-                  !adminRevokedOwnership
-                    ? {
-                        text: "The admin can mint more of this jetton without warning",
-                        type: "warning",
-                      }
-                    : undefined
+                value={
+                  totalSupply && `${totalSupply.toLocaleString()} ${symbol}`
                 }
+                dataLoading={jettonLoading}
+                message={getTotalSupplyWarning(
+                  persistenceType,
+                  adminRevokedOwnership
+                )}
+                actions={totalSupplyActions}
               />
               <StyledCategoryTitle>Connected Jetton Wallet</StyledCategoryTitle>
               <Row
@@ -223,22 +139,16 @@ function JettonPage() {
                 value={jettonAddress}
                 dataLoading={jettonLoading}
                 address={jettonAddress}
-                description={symbol && `On-chain smart contract address of the Jetton wallet (jetton-wallet.fc), holds the ${symbol} balance`}
+                description={
+                  symbol &&
+                  `On-chain smart contract address of the Jetton wallet (jetton-wallet.fc), holds the ${symbol} balance`
+                }
               />
               <Row
                 title="Balance"
-                value={
-                  balance && `${parseFloat(balance).toLocaleString()} ${symbol}`
-                }
+                value={balance && `${balance.toLocaleString()} ${symbol}`}
                 dataLoading={jettonLoading}
-                button={
-                  !address
-                    ? {
-                        text: "Connect wallet",
-                        action: () => toggleConnect(true),
-                      }
-                    : undefined
-                }
+                actions={balanceActions}
               />
             </StyledTextSections>
           </StyledContainer>
@@ -248,70 +158,71 @@ function JettonPage() {
   );
 }
 
-interface RowProps {
-  title: string;
-  value?: string | null;
-  message?: JettonDetailMessage | undefined;
-  address?: string | null;
-  button?: JettonDetailButton | undefined;
-  dataLoading: boolean;
-  description?: string;
-}
-
-const Row = ({
-  title,
-  value,
-  message,
-  button,
-  dataLoading,
-  description,
-  address,
-}: RowProps) => {
-  return (
-    <Box>
-      <StyledSection>
-        <StyledSectionTitle>
-          <Typography>{title}</Typography>
-        </StyledSectionTitle>
-        <StyledSectionRight>
-          <StyledSectionRightColored>
-            <LoadingContainer loading={dataLoading} loaderHeight="50%">
-              <StyledSectionValue hasButton={!!button}>
-                {address && value ? (
-                  <AddressLink address={address} value={value} />
-                ) : (
-                  <Typography>{value || "-"}</Typography>
-                )}
-              </StyledSectionValue>
-              {button && (
-                <BaseButton onClick={button.action}>{button.text}</BaseButton>
-              )}
-            </LoadingContainer>
-          </StyledSectionRightColored>
-
-          {description && <FieldDescription>{description}</FieldDescription>}
-          {!dataLoading && <Message message={message} />}
-        </StyledSectionRight>
-      </StyledSection>
-    </Box>
-  );
-};
-
-const Message = ({ message }: { message?: JettonDetailMessage }) => {
-  if (!message) {
-    return null;
-  }
-  return (
-    <StyledMessage type={message.type}>
-      {message.type === "warning" ? (
-        <WarningRoundedIcon />
-      ) : (
-        <CheckCircleRoundedIcon />
-      )}
-
-      {message.text}
-    </StyledMessage>
-  );
-};
-
 export { JettonPage };
+
+export const StyledContainer = styled(Box)(({ theme }) => ({
+  display: "flex",
+  gap: 30,
+  flexDirection: "column",
+  width: "100%",
+  maxWidth: 600,
+  marginLeft: "auto",
+  marginRight: "auto",
+  padding: "60px 0px",
+  [theme.breakpoints.down("sm")]: {
+    padding: "30px 20px",
+  },
+}));
+
+export const StyledTop = styled(Box)({
+  display: "flex",
+  alignItems: "center",
+  gap: 30,
+});
+
+export const StyledTopText = styled(Box)({
+  color: "#27272E",
+  display: "flex",
+  flexDirection: "column",
+  gap: 10,
+  flex: 1,
+  "& h5": {
+    fontSize: 15,
+    fontWeight: 400,
+  },
+  "& h3": {
+    fontSize: 19,
+    fontWeight: 600,
+  },
+});
+
+const StyledTopImg = styled(Box)(({ theme }) => ({
+  width: 90,
+  height: 90,
+  borderRadius: "50%",
+  overflow: "hidden",
+  background: "rgba(0,0,0, 0.1)",
+  border: "13px solid #D9D9D9",
+  "& img": {
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+  },
+  [theme.breakpoints.down("sm")]: {
+    width: 60,
+    height: 60,
+    border: "2px solid #D9D9D9",
+  },
+}));
+
+const StyledTextSections = styled(Box)({
+  display: "flex",
+  flexDirection: "column",
+  gap: 24,
+});
+
+const StyledCategoryTitle = styled(Typography)({
+  fontWeight: 500,
+  fontSize: 18,
+  marginTop: 20,
+});

@@ -217,6 +217,7 @@ export function burn(amount: BN, responseAddress: Address) {
     .storeUint(1, 64) // query-id
     .storeCoins(amount)
     .storeAddress(responseAddress)
+    .storeDict(null)
     .endCell();
 }
 

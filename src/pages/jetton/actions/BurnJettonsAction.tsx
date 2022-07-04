@@ -14,7 +14,7 @@ function BurnJettonsAction() {
   const [amount, setAmount] = useState<number | undefined>(undefined);
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { jettonMaster, isAdmin, symbol, getJettonDetails, balance } =
+  const { jettonMaster, isAdmin, symbol, getJettonDetails, balance, jettonAddress } =
     useJettonStore();
   const { showNotification } = useNotification();
 
@@ -36,7 +36,7 @@ function BurnJettonsAction() {
     try {
       setIsLoading(true);
       const connection = WalletConnection.getConnection();
-      await jettonDeployController.burnJettons(connection, value, jettonMaster);
+      await jettonDeployController.burnJettons(connection, value, jettonAddress!);
       setOpen(false);
       const message = `Successfully burned ${amount.toLocaleString()} ${symbol}`;
       showNotification(message, "success");

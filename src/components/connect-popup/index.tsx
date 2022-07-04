@@ -64,7 +64,7 @@ function ConnectPopup() {
   };
 
   return (
-    <Popup open={showConnect} onClose={close}>
+    <Popup open={showConnect} onClose={close} maxWidth={400}>
       <SyledContainer>
         <AdaptersList
           adapters={providers}

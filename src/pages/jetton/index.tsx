@@ -1,13 +1,13 @@
-import { Box, Typography } from "@mui/material";
-import { JettonDetailAction, JettonDetailMessage } from "./types";
-import AddressLink from "components/AddressLink";
+import { Box, styled, Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
-import BaseButton from "components/BaseButton";
 import {
+  adminActions,
+  balanceActions,
   getAdminMessage,
-  getBalanceActions,
   getFaultyMetadataWarning,
-  getOffChainMessage,
+  getSymbolWarning,
+  getTotalSupplyWarning,
+  totalSupplyActions,
 } from "./util";
 import useNotification from "hooks/useNotification";
 import useConnectionStore from "store/connection-store/useConnectionStore";
@@ -16,30 +16,13 @@ import { ScreenContent, Screen } from "components/Screen";
 import LoadingImage from "components/LoadingImage";
 import LoadingContainer from "components/LoadingContainer";
 import TxLoader from "components/TxLoader";
-import WarningRoundedIcon from "@mui/icons-material/WarningRounded";
-import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import useJettonStore from "store/jetton-store/useJettonStore";
 import Navbar from "components/navbar";
 import { ROUTES } from "consts";
 import Alert from "@mui/material/Alert";
 
-import {
-  StyledContainer,
-  StyledTop,
-  StyledTopImg,
-  StyledTopText,
-  StyledTextSections,
-  StyledCategoryTitle,
-  StyledSection,
-  StyledSectionTitle,
-  StyledSectionRight,
-  StyledSectionRightColored,
-  StyledSectionValue,
-  StyledMessage,
-} from "./styles";
-import FieldDescription from "components/FieldDescription";
 import FaultyDeploy from "./FaultyDeploy";
-
+import Row from "./Row";
 function JettonPage() {
   const { id }: { id?: string } = useParams();
 
@@ -174,41 +157,33 @@ function JettonPage() {
                 address={adminAddress}
                 description="Account address that can mint tokens freely and change metadata"
                 message={getAdminMessage(
+                  adminAddress,
+                  symbol,
                   adminRevokedOwnership,
                   isAdmin,
                   jettonMaster
                 )}
                 dataLoading={jettonLoading}
-                button={
-                  isAdmin
-                    ? {
-                        text: "Revoke ownership",
-                        action: () => onRevokeAdminOwnership(jettonMaster),
-                      }
-                    : undefined
-                }
+                actions={adminActions}
               />
               <Row
                 title="Symbol"
                 value={symbol}
                 dataLoading={jettonLoading}
-                message={getOffChainMessage(
+                message={getSymbolWarning(
                   persistenceType,
                   adminRevokedOwnership
                 )}
               />
               <Row
                 title="Total supply"
-                value={totalSupply && `${totalSupply} ${symbol}`}
+                value={totalSupply && `${totalSupply.toLocaleString()} ${symbol}`}
                 dataLoading={jettonLoading}
-                message={
-                  !adminRevokedOwnership
-                    ? {
-                        text: "The admin can mint more of this jetton without warning",
-                        type: "warning",
-                      }
-                    : undefined
-                }
+                message={getTotalSupplyWarning(
+                  persistenceType,
+                  adminRevokedOwnership
+                )}
+                actions={totalSupplyActions}
               />
               <StyledCategoryTitle>Connected Jetton Wallet</StyledCategoryTitle>
               <Row
@@ -231,10 +206,10 @@ function JettonPage() {
               <Row
                 title="Balance"
                 value={
-                  balance && `${parseFloat(balance).toLocaleString()} ${symbol}`
+                  balance && `${balance.toLocaleString()} ${symbol}`
                 }
                 dataLoading={jettonLoading}
-                actions={getBalanceActions(toggleConnect, address)}
+                actions={balanceActions}
               />
             </StyledTextSections>
           </StyledContainer>
@@ -244,78 +219,79 @@ function JettonPage() {
   );
 }
 
-interface RowProps {
-  title: string;
-  value?: string | null;
-  message?: JettonDetailMessage | undefined;
-  address?: string | null;
-  actions?: JettonDetailAction[] | undefined;
-  dataLoading: boolean;
-  description?: string;
-}
-
-const Row = ({
-  title,
-  value,
-  message,
-  actions,
-  dataLoading,
-  description,
-  address,
-}: RowProps) => {
-  return (
-    <Box>
-      <StyledSection>
-        <StyledSectionTitle>
-          <Typography>{title}</Typography>
-        </StyledSectionTitle>
-        <StyledSectionRight>
-          <StyledSectionRightColored>
-            <LoadingContainer loading={dataLoading} loaderHeight="50%">
-              <StyledSectionValue hasButton={!!actions}>
-                {address && value ? (
-                  <AddressLink address={address} value={value} />
-                ) : (
-                  <Typography>{value || "-"}</Typography>
-                )}
-              </StyledSectionValue>
-              {actions && (
-                <Box>
-                  {actions.map((a, index) => {
-                    return (
-                      <BaseButton key={index} onClick={a.action}>
-                        {a.text}
-                      </BaseButton>
-                    );
-                  })}
-                </Box>
-              )}
-            </LoadingContainer>
-          </StyledSectionRightColored>
-
-          {description && <FieldDescription>{description}</FieldDescription>}
-          {!dataLoading && <Message message={message} />}
-        </StyledSectionRight>
-      </StyledSection>
-    </Box>
-  );
-};
-
-const Message = ({ message }: { message?: JettonDetailMessage }) => {
-  if (!message) {
-    return null;
-  }
-  return (
-    <StyledMessage type={message.type}>
-      {message.type === "warning" ? (
-        <WarningRoundedIcon />
-      ) : (
-        <CheckCircleRoundedIcon />
-      )}
-
-      {message.text}
-    </StyledMessage>
-  );
-};
 
 export { JettonPage };
+
+
+
+export const StyledContainer = styled(Box)(({ theme }) => ({
+    
+  display: "flex",
+  gap: 30,
+  flexDirection: "column",
+  width: "100%",
+  maxWidth: 600,
+  marginLeft: "auto",
+  marginRight: "auto",
+  padding: "60px 0px",
+  [theme.breakpoints.down("sm")]: {
+    padding: "30px 20px",
+  },
+}));
+
+export const StyledTop = styled(Box)({
+  display: "flex",
+  alignItems: "center",
+  gap: 30,
+});
+
+export const StyledTopText = styled(Box)({
+  color: "#27272E",
+  display: "flex",
+  flexDirection: "column",
+  gap: 10,
+  flex: 1,
+  "& h5": {
+    fontSize: 15,
+    fontWeight: 400,
+  },
+  "& h3": {
+    fontSize: 19,
+    fontWeight: 600,
+  },
+});
+
+ const StyledTopImg = styled(Box)(({ theme }) => ({
+  width: 90,
+  height: 90,
+  borderRadius: "50%",
+  overflow: "hidden",
+  background: "rgba(0,0,0, 0.1)",
+  border: "13px solid #D9D9D9",
+  "& img": {
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+  },
+  [theme.breakpoints.down("sm")]: {
+    width: 60,
+    height: 60,
+    border: "2px solid #D9D9D9",
+  },
+}));
+
+ const StyledTextSections = styled(Box)({
+  display: "flex",
+  flexDirection: "column",
+  gap: 24,
+});
+
+
+ const StyledCategoryTitle = styled(Typography)({
+  fontWeight: 500,
+  fontSize: 18,
+  marginTop: 20,
+})
+
+
+

@@ -12,6 +12,8 @@ import { cellToAddress, TonConnection } from "@ton-defi.org/ton-connection";
 import { zeroAddress } from "./utils";
 import {
   buildJettonOnchainMetadata,
+  mintBody,
+  transfer,
   _replaceMetadataFAULTY_FIX,
 } from "./jetton-minter";
 import {
@@ -140,6 +142,44 @@ class JettonDeployController {
     });
 
     await waiter();
+  }
+
+
+  async mint(tonConnection:TonConnection, jettonMaster: Address, amount: BN ) {
+    const { address } = await tonConnection.connect();
+    
+    const waiter = await waitForSeqno(
+      tonConnection._tonClient.openWalletFromAddress({
+        source: Address.parse(address),
+      })
+    );
+    await tonConnection.requestTransaction({
+      to: jettonMaster,
+      value: toNano(0.2),
+      message: mintBody(Address.parse(address), amount),
+    });
+    await waiter()
+  }
+
+
+
+  async transfer(tonConnection: TonConnection, amount: BN, toAddress: string, ownerJettonWallet: string){
+    const { address } = await tonConnection.connect();
+
+    const waiter = await waitForSeqno(
+      tonConnection._tonClient.openWalletFromAddress({
+        source: Address.parse(address),
+      })
+    );
+
+    await tonConnection.requestTransaction({
+      to: Address.parse(ownerJettonWallet),
+      value: toNano(0.2),
+      message: transfer(Address.parse(toAddress), amount),
+    }); 
+
+
+    await waiter()
   }
 
   async getJettonDetails(

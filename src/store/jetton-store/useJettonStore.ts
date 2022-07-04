@@ -53,16 +53,14 @@ function useJettonStore() {
           persistenceType: result.minter.persistenceType,
           description: result.minter.metadata.description,
           jettonImage: result.minter.metadata.image || QuestiomMarkImg,
-          totalSupply: parseFloat(
-            fromNano(result.minter.totalSupply)
-          ).toLocaleString(),
+          totalSupply: parseFloat(fromNano(result.minter.totalSupply)),
           name: result.minter.metadata.name,
           symbol: result.minter.metadata.symbol,
           adminRevokedOwnership: _adminAddress === zeroAddress().toFriendly(),
           isAdmin: admin,
           adminAddress: _adminAddress,
           balance: result.jettonWallet
-            ? fromNano(result.jettonWallet.balance)
+            ? parseFloat(fromNano(result.jettonWallet.balance))
             : undefined,
           jettonAddress: result.jettonWallet?.jWalletAddress.toFriendly(),
           jettonMaster,
@@ -94,6 +92,28 @@ function useJettonStore() {
     );
   };
 
+  const onMintSuccess = (value: number) => {
+    setState((prevState) => {
+      return {
+        ...prevState,
+        balance: prevState.balance ? prevState.balance + value : undefined,
+        totalSupply: prevState.totalSupply
+          ? prevState.totalSupply + value
+          : undefined,
+      };
+    });
+  };
+
+  const onTransferSuccess = (value: number) => {
+    setState((prevState) => {
+      return {
+        ...prevState,
+        balance: prevState.balance ? prevState.balance - value : undefined,
+      };
+    });
+  };
+
+
   const revokeAdminOwnership = useCallback(
     async (contractAddr: string) => {
       await jettonDeployController.burnAdmin(
@@ -118,6 +138,8 @@ function useJettonStore() {
     revokeAdminOwnership,
     reset,
     fixFaultyDeploy,
+    onMintSuccess,
+    onTransferSuccess
   };
 }
 

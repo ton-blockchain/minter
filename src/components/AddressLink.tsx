@@ -8,7 +8,7 @@ import { scannerUrl } from "utils";
 
 interface Props {
   address?: string | null;
-  value?: string;
+  value?: string | number;
 }
 
 const StyledContainer = styled(Box)({

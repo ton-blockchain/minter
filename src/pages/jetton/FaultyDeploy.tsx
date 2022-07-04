@@ -42,6 +42,7 @@ function FaultyDeploy() {
         <Typography>Loading...</Typography>
       </TxLoader>
       <Popup
+      maxWidth={380}
         open={!!isJettonDeployerFaultyOnChainData && isAdmin && !isLoading}
         onClose={() => {}}
       >
@@ -72,7 +73,6 @@ export default FaultyDeploy;
 
 export const StyledWarningPopup = styled(Box)({
 
-  maxWidth: 380,
   width: "100%",
   display: "flex",
   alignItems: "center",

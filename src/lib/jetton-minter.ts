@@ -135,7 +135,6 @@ function parseJettonOnchainMetadata(contentSlice: Slice): {
   let isJettonDeployerFaultyOnChainData = false;
 
   const dict = contentSlice.readDict(KEYLEN, (s) => {
-    
     let buffer = Buffer.from("");
 
     const sliceToVal = (s: Slice, v: Buffer) => {
@@ -204,6 +203,18 @@ export function mintBody(owner: Address, jettonValue: BN): Cell {
         .storeBit(false) // forward_payload in this slice, not separate cell
         .endCell()
     )
+    .endCell();
+}
+
+export function transfer(to: Address, jettonAmount: BN) {
+  return beginCell()
+    .storeUint(OPS.Transfer, 32)
+    .storeUint(1, 64)
+    .storeCoins(jettonAmount)
+    .storeAddress(to)
+    .storeAddress(to)
+    .storeBit(false)
+    .storeCoins(0)
     .endCell();
 }
 

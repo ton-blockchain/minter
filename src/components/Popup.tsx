@@ -1,3 +1,4 @@
+import { Box, styled } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import { ReactNode } from "react";
 
@@ -8,6 +9,7 @@ export interface Props {
   backgroundColor?: string;
   blur?: boolean;
   className?: string;
+  maxWidth: number;
 }
 
 export function Popup({
@@ -17,6 +19,7 @@ export function Popup({
   backgroundColor = "rgba(48, 48, 48, 0.4)",
   blur = true,
   className = "",
+  maxWidth,
 }: Props) {
   return (
     <Dialog
@@ -26,11 +29,10 @@ export function Popup({
       open={open}
       PaperProps={{
         style: {
-          maxWidth: "calc(100% - 50px)",
-          width: "fit-content",
-          borderRadius: '10px',
-          padding: 35
-         
+          maxWidth: maxWidth || "unset",
+          width: "fot-content",
+          borderRadius: "10px",
+          padding: 35,
         },
       }}
       BackdropProps={{
@@ -39,7 +41,23 @@ export function Popup({
         },
       }}
     >
-      {children}
+      <StyledChildren>{children}</StyledChildren>
     </Dialog>
   );
 }
+
+const StyledChildren = styled(Box)({
+  display: "flex",
+  alignItems: "center",
+  flexDirection: "column",
+  "& .title": {
+    texAlign:'center',
+    fontWeight: 500,
+    fontSize: 20,
+    marginBottom: 20,
+  },
+  "& .base-button": {
+    height: 40,
+    marginTop: 30
+  }
+});

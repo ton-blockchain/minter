@@ -17,6 +17,7 @@ interface RowProps {
   actions?: FunctionComponent[] | undefined;
   dataLoading: boolean;
   description?: string;
+  hasButton?: boolean; 
 }
 
 const Row = ({
@@ -27,6 +28,7 @@ const Row = ({
   dataLoading,
   description,
   address,
+  hasButton
 }: RowProps) => {
   return (
     <Box>
@@ -37,7 +39,7 @@ const Row = ({
         <StyledSectionRight>
           <StyledSectionRightColored>
             <LoadingContainer loading={dataLoading} loaderHeight="50%">
-              <StyledSectionValue hasButton={!!actions}>
+              <StyledSectionValue hasButton={hasButton}>
                 {address && value ? (
                   <AddressLink address={address} value={value} />
                 ) : (
@@ -170,8 +172,8 @@ const StyledSectionRight = styled(Box)(({ theme }) => ({
 }));
 
 const StyledSectionValue = styled(Box)(
-  ({ hasButton }: {hasButton: boolean}) => ({
-    width: hasButton ? "calc(100% - 140px)" : "100%",
+  ({ hasButton }: {hasButton?: boolean}) => ({
+    width: hasButton ? "calc(100% - 130px)" : "100%",
     display: "flex",
     alignItems: "center",
     "& .address-link": {},

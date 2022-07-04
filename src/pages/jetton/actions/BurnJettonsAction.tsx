@@ -18,7 +18,7 @@ function BurnJettonsAction() {
     useJettonStore();
   const { showNotification } = useNotification();
 
-  if (!isAdmin || !balance) {
+  if (!balance) {
     return null;
   }
 

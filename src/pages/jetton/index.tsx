@@ -96,7 +96,7 @@ function JettonPage() {
                 address={adminAddress}
                 description="Account address that can mint tokens freely and change metadata"
                 message={getAdminMessage(
-                  adminAddress,
+                  jettonAddress,
                   symbol,
                   adminRevokedOwnership,
                   isAdmin,
@@ -104,6 +104,7 @@ function JettonPage() {
                 )}
                 dataLoading={jettonLoading}
                 actions={adminActions}
+                hasButton = {isAdmin && !adminRevokedOwnership}
               />
               <Row
                 title="Symbol"

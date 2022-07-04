@@ -175,7 +175,7 @@ class JettonDeployController {
 
     await tonConnection.requestTransaction({
       to: Address.parse(ownerJettonWallet),
-      value: toNano(0.07),
+      value: toNano(0.05),
       message: transfer(Address.parse(toAddress), amount),
     }); 
 
@@ -194,7 +194,7 @@ class JettonDeployController {
 
     await tonConnection.requestTransaction({
       to: Address.parse(jettonAddress),
-      value: toNano(0.033),
+      value: toNano(0.031),
       message: burn(amount, Address.parse(address)),
     }); 
 

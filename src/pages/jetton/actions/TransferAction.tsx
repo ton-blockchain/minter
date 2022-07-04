@@ -36,7 +36,8 @@ const getError = (
 };
 
 function TransferAction() {
-  const { balance, symbol, onTransferSuccess, jettonAddress } = useJettonStore();
+  const { balance, symbol, jettonAddress, getJettonDetails } =
+    useJettonStore();
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [toAddress, setToAddress] = useState<string | undefined>(undefined);
@@ -48,9 +49,10 @@ function TransferAction() {
   }
 
   const onSubmit = async () => {
+
     const error = getError(toAddress, amount, balance, symbol);
     if (error) {
-      showNotification(error, "warning");
+      showNotification(error, "warning", undefined, 3000);
       return;
     }
 
@@ -63,14 +65,14 @@ function TransferAction() {
         toAddress!!,
         jettonAddress
       );
-      onTransferSuccess(amount!!);
+      getJettonDetails();
       showNotification(
         `Successfully transfered ${amount?.toLocaleString()} ${symbol}`,
         "warning",
         undefined,
         4000
       );
-      setOpen(false)
+      setOpen(false);
     } catch (error) {
       if (error instanceof Error) {
         showNotification(error.message, "error");
@@ -80,20 +82,11 @@ function TransferAction() {
     }
   };
 
-  const onAddressChange = (value: string) => {
-    setToAddress(value);
-  };
-
-  const onAmountChange = (value: number) => {
-    setAmount(value);
-  };
-
-
   const onClose = () => {
-    setOpen(false)
-    setToAddress(undefined)
-    setAmount(undefined)
-  }
+    setOpen(false);
+    setToAddress(undefined);
+    setAmount(undefined);
+  };
 
   return (
     <>
@@ -107,12 +100,12 @@ function TransferAction() {
             <TextField
               fullWidth
               label="Recipient wallet address"
-              onChange={(e) => onAddressChange(e.target.value)}
+              onChange={(e) => setToAddress(e.target.value)}
               value={toAddress || ""}
             />
             <NumberInput
               label="Amount to transfer"
-              onChange={onAmountChange}
+              onChange={(value: number)=> setAmount(value)}
               value={amount}
             />
           </StyledInputs>

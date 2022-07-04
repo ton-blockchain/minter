@@ -7,28 +7,41 @@ import useConnectionStore from "store/connection-store/useConnectionStore";
 import useJettonStore from "store/jetton-store/useJettonStore";
 import { useState } from "react";
 import TxLoader from "components/TxLoader";
-
-
+import { jettonDeployController } from "lib/deploy-controller";
+import { Address } from "ton";
+import WalletConnection from "services/wallet-connection";
 
 function FaultyDeploy() {
   const { address } = useConnectionStore();
   const {
-    fixFaultyDeploy,
-    getJettonDetails,
     jettonMaster,
+    getJettonDetails,
     isJettonDeployerFaultyOnChainData,
     isAdmin,
+    symbol,
+    name,
+    description,
+    jettonImage,
   } = useJettonStore();
   const [isLoading, setIsLoading] = useState(false);
 
   const onSubmit = async () => {
-    if (!address) {
+    if (!address || !jettonMaster) {
       return;
     }
     try {
       setIsLoading(true);
-      await fixFaultyDeploy();
-      await getJettonDetails(jettonMaster!, address);
+      await jettonDeployController.fixFaultyJetton(
+        Address.parse(jettonMaster),
+        {
+          symbol,
+          name,
+          description,
+          image: jettonImage,
+        },
+        WalletConnection.getConnection()
+      );
+      await getJettonDetails();
     } catch (error) {
       console.log(error);
     } finally {
@@ -42,7 +55,7 @@ function FaultyDeploy() {
         <Typography>Loading...</Typography>
       </TxLoader>
       <Popup
-      maxWidth={380}
+        maxWidth={380}
         open={!!isJettonDeployerFaultyOnChainData && isAdmin && !isLoading}
         onClose={() => {}}
       >
@@ -54,12 +67,11 @@ function FaultyDeploy() {
           <Box className="description">
             <Typography>
               This token was created with a previous faulty version of the tool.
-            Press below to fix the metadata onchain. 
+              Press below to fix the metadata onchain.
             </Typography>
-            <br/>
+            <br />
             <Typography>
-            This will issue a
-              transaction and keep the token’s original data.
+              This will issue a transaction and keep the token’s original data.
             </Typography>
           </Box>
           <BaseButton onClick={onSubmit}>Submit</BaseButton>
@@ -72,7 +84,6 @@ function FaultyDeploy() {
 export default FaultyDeploy;
 
 export const StyledWarningPopup = styled(Box)({
-
   width: "100%",
   display: "flex",
   alignItems: "center",
@@ -104,6 +115,6 @@ export const StyledWarningPopup = styled(Box)({
     marginTop: 40,
     height: 40,
     width: 200,
-    background: '#d32f2f'
+    background: "#d32f2f",
   },
 });

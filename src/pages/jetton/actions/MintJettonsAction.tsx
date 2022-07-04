@@ -15,7 +15,7 @@ function MintJettonsAction() {
   const [amount, setAmount] = useState<number  | undefined>(undefined);
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { jettonMaster, isAdmin, symbol, onMintSuccess } = useJettonStore();
+  const { jettonMaster, isAdmin, symbol, getJettonDetails } = useJettonStore();
   const { showNotification } = useNotification();
 
   if (!isAdmin) {
@@ -38,7 +38,7 @@ function MintJettonsAction() {
       );
       setOpen(false)
       const message = `Successfully minted ${amount.toLocaleString()} ${symbol}`;
-      onMintSuccess(amount);
+      getJettonDetails();
       showNotification(message, "success");
     } catch (error) {
       console.log(error);

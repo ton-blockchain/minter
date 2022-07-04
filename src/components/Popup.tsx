@@ -1,10 +1,10 @@
-import { Box, styled } from "@mui/material";
+import { Box, IconButton, styled } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import { ReactNode } from "react";
-
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 export interface Props {
   open: boolean;
-  onClose?: (value: string) => void;
+  onClose?: () => void;
   children: ReactNode;
   backgroundColor?: string;
   blur?: boolean;
@@ -30,9 +30,11 @@ export function Popup({
       PaperProps={{
         style: {
           maxWidth: maxWidth || "unset",
-          width: "fot-content",
+          width: "100%",
           borderRadius: "10px",
-          padding: 35,
+          padding: 0,
+          overflow:'unset',
+          margin: 20
         },
       }}
       BackdropProps={{
@@ -41,23 +43,40 @@ export function Popup({
         },
       }}
     >
-      <StyledChildren>{children}</StyledChildren>
+      <StyledChildren>
+        <StyledClose onClick={onClose}>
+          <CloseRoundedIcon style ={{width: 30, height: 30}} />
+        </StyledClose>
+        {children}
+      </StyledChildren>
     </Dialog>
   );
 }
 
+
+const StyledClose = styled(IconButton)(({theme}) => ({
+  position:'absolute',
+  top:-50,
+  right: -50,
+  [theme.breakpoints.down('sm')]: {
+    right: -10
+  }
+}))
+
 const StyledChildren = styled(Box)({
+  position:'relative',
   display: "flex",
   alignItems: "center",
   flexDirection: "column",
+  padding: 30,
   "& .title": {
-    texAlign:'center',
+    texAlign: "center",
     fontWeight: 500,
     fontSize: 20,
     marginBottom: 20,
   },
   "& .base-button": {
     height: 40,
-    marginTop: 30
-  }
+    marginTop: 30,
+  },
 });

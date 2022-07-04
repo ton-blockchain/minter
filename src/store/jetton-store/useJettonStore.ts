@@ -11,26 +11,54 @@ import { Address, fromNano } from "ton";
 import { jettonStateAtom } from ".";
 import QuestiomMarkImg from "assets/question.png";
 import { useCallback } from "react";
+import useNotification from "hooks/useNotification";
+import { useParams } from "react-router-dom";
+import useConnectionStore from "store/connection-store/useConnectionStore";
 
 function useJettonStore() {
   const [state, setState] = useRecoilState(jettonStateAtom);
   const reset = useResetRecoilState(jettonStateAtom);
+  const { showNotification } = useNotification();
+  const {address} = useConnectionStore()
+  const { id }: { id?: string } = useParams();
 
-  const getJettonDetails = useCallback(
-    async (jettonMaster: string, address?: string | null) => {
-      let connection;
+  const getJettonDetails = useCallback(async () => {
+    reset();
 
-      try {
-        connection = WalletConnection.getConnection();
-      } catch (error) {
-        connection = new TonConnection(
-          new ChromeExtensionWalletProvider(),
-          EnvProfiles[Environments.MAINNET].rpcApi
-        );
-      }
+    let parsedJettonMaster;
+
+
+    if(!id){
+      showNotification("Jetton address missing", "error");
+      return 
+    }
+
+    try {
+      parsedJettonMaster = Address.parse(id);
+    } catch (error) {
+      showNotification("Invalid jetton address", "error");
+      return;
+    }
+
+    let connection;
+
+    try {
+      connection = WalletConnection.getConnection();
+    } catch (error) {
+      connection = new TonConnection(
+        new ChromeExtensionWalletProvider(),
+        EnvProfiles[Environments.MAINNET].rpcApi
+      );
+    }
+
+    try {
+      setState((prevState) => ({
+        ...prevState,
+        jettonLoading: true,
+      }));
 
       const result = await jettonDeployController.getJettonDetails(
-        Address.parse(jettonMaster),
+        parsedJettonMaster,
         address ? Address.parse(address) : zeroAddress(),
         connection
       );
@@ -63,83 +91,27 @@ function useJettonStore() {
             ? parseFloat(fromNano(result.jettonWallet.balance))
             : undefined,
           jettonAddress: result.jettonWallet?.jWalletAddress.toFriendly(),
-          jettonMaster,
+          jettonMaster: id,
         };
       });
-    },
-    []
-  );
-
-  const fixFaultyDeploy = async () => {
-    const connection = WalletConnection.getConnection();
-    if (!connection) {
-      throw new Error("Please connect wallet");
-    }
-
-    if (!state.jettonMaster) {
-      throw new Error("Jetton address missing");
-    }
-
-    return jettonDeployController.fixFaultyJetton(
-      Address.parse(state.jettonMaster),
-      {
-        symbol: state.symbol,
-        name: state.name,
-        description: state.description,
-        image: state.jettonImage,
-      },
-      connection
-    );
-  };
-
-  const onMintSuccess = (value: number) => {
-    setState((prevState) => {
-      return {
+    } catch (error) {
+      if (error instanceof Error) {
+        showNotification(error.message, "error");
+      }
+    } finally {
+      setState((prevState) => ({
         ...prevState,
-        balance: prevState.balance ? prevState.balance + value : undefined,
-        totalSupply: prevState.totalSupply
-          ? prevState.totalSupply + value
-          : undefined,
-      };
-    });
-  };
-
-  const onTransferSuccess = (value: number) => {
-    setState((prevState) => {
-      return {
-        ...prevState,
-        balance: prevState.balance ? prevState.balance - value : undefined,
-      };
-    });
-  };
+        jettonLoading: false,
+      }));
+    }
+  }, [setState, showNotification,address, id, reset]);
 
 
-  const revokeAdminOwnership = useCallback(
-    async (contractAddr: string) => {
-      await jettonDeployController.burnAdmin(
-        Address.parse(contractAddr),
-        WalletConnection.getConnection()
-      );
-      setState((prevState) => {
-        return {
-          ...prevState,
-          isAdmin: false,
-          adminRevokedOwnership: true,
-          adminAddress: zeroAddress().toFriendly(),
-        };
-      });
-    },
-    [setState]
-  );
 
   return {
     ...state,
     getJettonDetails,
-    revokeAdminOwnership,
     reset,
-    fixFaultyDeploy,
-    onMintSuccess,
-    onTransferSuccess
   };
 }
 

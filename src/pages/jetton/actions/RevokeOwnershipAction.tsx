@@ -2,12 +2,15 @@ import { Typography } from "@mui/material";
 import BaseButton from "components/BaseButton";
 import TxLoader from "components/TxLoader";
 import useNotification from "hooks/useNotification";
+import { jettonDeployController } from "lib/deploy-controller";
 import { useState } from "react";
+import WalletConnection from "services/wallet-connection";
 import useJettonStore from "store/jetton-store/useJettonStore";
+import { Address } from "ton";
 
 function RevokeOwnershipAction() {
   const [isLoading, setIsLoading] = useState(false);
-  const { revokeAdminOwnership, jettonMaster, isAdmin } = useJettonStore();
+  const { jettonMaster, isAdmin, getJettonDetails } = useJettonStore();
   const { showNotification } = useNotification();
 
   if (!isAdmin) {
@@ -20,7 +23,11 @@ function RevokeOwnershipAction() {
         return;
       }
       setIsLoading(true);
-      await revokeAdminOwnership(jettonMaster);
+      await jettonDeployController.burnAdmin(
+        Address.parse(jettonMaster),
+        WalletConnection.getConnection()
+      );
+      getJettonDetails();
       showNotification("Ownership revoked successfully", "success");
     } catch (error) {
       if (error instanceof Error) {

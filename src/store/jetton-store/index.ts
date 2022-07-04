@@ -15,11 +15,13 @@ interface JettonStoreState {
   totalSupply?: number;
   jettonAddress?: string;
   isJettonDeployerFaultyOnChainData?: boolean;
+  jettonLoading: boolean
 }
 
 const jettonStateAtom = atom<JettonStoreState>({
   key: "jettonStateAtom",
   default: {
+    jettonLoading: false,
     persistenceType: undefined,
     isAdmin: false,
     adminRevokedOwnership: true,

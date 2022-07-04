@@ -1,5 +1,5 @@
 import { Box, styled, Typography } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 import {
   adminActions,
   balanceActions,
@@ -9,28 +9,21 @@ import {
   getTotalSupplyWarning,
   totalSupplyActions,
 } from "./util";
-import useNotification from "hooks/useNotification";
 import useConnectionStore from "store/connection-store/useConnectionStore";
 import { useParams } from "react-router-dom";
 import { ScreenContent, Screen } from "components/Screen";
 import LoadingImage from "components/LoadingImage";
 import LoadingContainer from "components/LoadingContainer";
-import TxLoader from "components/TxLoader";
 import useJettonStore from "store/jetton-store/useJettonStore";
 import Navbar from "components/navbar";
 import { ROUTES } from "consts";
 import Alert from "@mui/material/Alert";
-
 import FaultyDeploy from "./FaultyDeploy";
 import Row from "./Row";
 function JettonPage() {
   const { id }: { id?: string } = useParams();
 
-  const { address, isConnecting, toggleConnect } = useConnectionStore();
-  const { showNotification } = useNotification();
-  const getJettonOnLoadRef = useRef(false);
-  const [txLoading, setTxLoading] = useState(false);
-  const [jettonLoading, setJettonLoading] = useState(true);
+  const { address, isConnecting } = useConnectionStore();
 
   const {
     getJettonDetails,
@@ -42,79 +35,25 @@ function JettonPage() {
     symbol,
     name,
     description,
-    revokeAdminOwnership,
     jettonMaster,
-    reset,
     persistenceType,
     totalSupply,
     jettonAddress,
     isJettonDeployerFaultyOnChainData,
+    jettonLoading,
   } = useJettonStore();
 
-  const onRevokeAdminOwnership = async (contractAddr?: string) => {
-    if (!contractAddr) {
-      return;
-    }
-    try {
-      setTxLoading(true);
-      await revokeAdminOwnership(contractAddr);
-      showNotification(<>Successfully revoked ownership </>, "success");
-    } catch (error) {
-      if (error instanceof Error) {
-        showNotification(<>{error.message}</>, "error");
-      }
-    } finally {
-      setTxLoading(false);
-    }
-  };
-
-  const onGetJetton = async (id: string, addr?: string | null) => {
-    try {
-      setJettonLoading(true);
-      await getJettonDetails(id, addr);
-    } catch (error) {
-      if (error instanceof Error) {
-        showNotification(<>{error.message}</>, "error");
-      }
-    } finally {
-      setJettonLoading(false);
-    }
-  };
-
   useEffect(() => {
-    if (!id) {
-      setJettonLoading(false);
-      return;
+    if (id && !isConnecting) {
+      getJettonDetails();
     }
-    if (!getJettonOnLoadRef.current && !isConnecting) {
-      onGetJetton(id, address);
-      getJettonOnLoadRef.current = true;
-    }
-  }, [id, getJettonDetails, isConnecting]);
-
-  useEffect(() => {
-    if (jettonMaster) {
-      onGetJetton(jettonMaster, address);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [address, getJettonDetails]);
-
-  useEffect(() => {
-    return () => {
-      reset();
-    };
-  }, [reset]);
+  }, [id, getJettonDetails, address, isConnecting]);
 
   return (
     <Screen>
       <Navbar customLink={{ text: "Create Jetton", path: ROUTES.deployer }} />
 
       <FaultyDeploy />
-
-      <TxLoader open={txLoading}>
-        <Typography>Revoking in progress</Typography>
-      </TxLoader>
-
       <ScreenContent>
         <Box style={{ background: "#F7FAFC" }}>
           <StyledContainer>
@@ -177,7 +116,9 @@ function JettonPage() {
               />
               <Row
                 title="Total supply"
-                value={totalSupply && `${totalSupply.toLocaleString()} ${symbol}`}
+                value={
+                  totalSupply && `${totalSupply.toLocaleString()} ${symbol}`
+                }
                 dataLoading={jettonLoading}
                 message={getTotalSupplyWarning(
                   persistenceType,
@@ -205,9 +146,7 @@ function JettonPage() {
               />
               <Row
                 title="Balance"
-                value={
-                  balance && `${balance.toLocaleString()} ${symbol}`
-                }
+                value={balance && `${balance.toLocaleString()} ${symbol}`}
                 dataLoading={jettonLoading}
                 actions={balanceActions}
               />
@@ -219,13 +158,9 @@ function JettonPage() {
   );
 }
 
-
 export { JettonPage };
 
-
-
 export const StyledContainer = styled(Box)(({ theme }) => ({
-    
   display: "flex",
   gap: 30,
   flexDirection: "column",
@@ -261,7 +196,7 @@ export const StyledTopText = styled(Box)({
   },
 });
 
- const StyledTopImg = styled(Box)(({ theme }) => ({
+const StyledTopImg = styled(Box)(({ theme }) => ({
   width: 90,
   height: 90,
   borderRadius: "50%",
@@ -280,18 +215,14 @@ export const StyledTopText = styled(Box)({
   },
 }));
 
- const StyledTextSections = styled(Box)({
+const StyledTextSections = styled(Box)({
   display: "flex",
   flexDirection: "column",
   gap: 24,
 });
 
-
- const StyledCategoryTitle = styled(Typography)({
+const StyledCategoryTitle = styled(Typography)({
   fontWeight: 500,
   fontSize: 18,
   marginTop: 20,
-})
-
-
-
+});

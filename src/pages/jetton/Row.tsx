@@ -1,13 +1,13 @@
 import { Box, styled, Typography } from "@mui/material";
 import AddressLink from "components/AddressLink";
-import BaseButton from "components/BaseButton";
-import React, { FunctionComponent, JSXElementConstructor, ReactNode } from "react";
+import React, { FunctionComponent } from "react";
 import { JettonDetailMessage } from "./types";
 import WarningRoundedIcon from "@mui/icons-material/WarningRounded";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import LoadingContainer from "components/LoadingContainer";
 import FieldDescription from "components/FieldDescription";
 import ReactMarkdown from "react-markdown";
+import theme from "theme";
 
 interface RowProps {
   title: string;
@@ -170,7 +170,7 @@ const StyledSectionRight = styled(Box)(({ theme }) => ({
 }));
 
 const StyledSectionValue = styled(Box)(
-  ({ hasButton }: { hasButton: boolean }) => ({
+  ({ hasButton }: {hasButton: boolean}) => ({
     width: hasButton ? "calc(100% - 140px)" : "100%",
     display: "flex",
     alignItems: "center",
@@ -181,6 +181,9 @@ const StyledSectionValue = styled(Box)(
       overflow: "hidden",
       textOverflow: "ellipsis",
       paddingRight: 20,
+      [theme.breakpoints.down('sm')]: {
+            fontSize: 14
+      }
     },
   })
 );

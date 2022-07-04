@@ -34,20 +34,13 @@ const StyledInput = styled("input")({
 function SearchInput() {
   const [expanded, setExpanded] = useState(false);
   const [value, setValue] = useState("");
-  const { getJettonDetails } = useJettonStore();
-  const { address } = useConnectionStore();
   const navigate = useNavigate();
-  const location = useLocation();
 
   const onSubmit = useCallback(async () => {
     if (value) {
       setValue("");
       setExpanded(false);
-      if (location.pathname.indexOf(ROUTES.jetton) < 0) {
-        navigate(`${ROUTES.jetton}/${value}`);
-      } else {
-        getJettonDetails(value, address);
-      }
+      navigate(`${ROUTES.jetton}/${value}`);
     }
   }, [value]);
 

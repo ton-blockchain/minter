@@ -1,5 +1,5 @@
 import BN from "bn.js";
-import { Address, beginCell, Cell, TonClient, Wallet } from "ton";
+import { Address, beginCell, Cell, toNano, TonClient, Wallet } from "ton";
 import { JettonDeployParams, JETTON_DEPLOY_GAS } from "./deploy-controller";
 import {
   initData,
@@ -79,6 +79,6 @@ export const createDeployParams = (params: JettonDeployParams) => {
     data: initData(params.owner, metadata),
     deployer: params.owner,
     value: JETTON_DEPLOY_GAS,
-    message: mintBody(params.owner, params.amountToMint),
+    message: mintBody(params.owner, params.amountToMint, toNano(0.2)),
   };
 };

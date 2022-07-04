@@ -185,12 +185,12 @@ export function initData(
     .endCell();
 }
 
-export function mintBody(owner: Address, jettonValue: BN): Cell {
+export function mintBody(owner: Address, jettonValue: BN, transferToJWallet: BN): Cell {
   return beginCell()
     .storeUint(OPS.Mint, 32)
     .storeUint(0, 64) // queryid
     .storeAddress(owner)
-    .storeCoins(toNano(0.2)) // gas fee
+    .storeCoins(transferToJWallet)
     .storeRef(
       // internal transfer message
       beginCell()

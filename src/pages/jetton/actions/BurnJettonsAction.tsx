@@ -14,7 +14,7 @@ function BurnJettonsAction() {
   const [amount, setAmount] = useState<number | undefined>(undefined);
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { jettonMaster, isAdmin, symbol, getJettonDetails, balance, jettonAddress } =
+  const { jettonMaster, symbol, getJettonDetails, balance, jettonAddress } =
     useJettonStore();
   const { showNotification } = useNotification();
 
@@ -76,7 +76,7 @@ function BurnJettonsAction() {
           </BaseButton>
         </>
       </Popup>
-      <BaseButton onClick={() => setOpen(true)}>Burn</BaseButton>
+      <BaseButton transparent={true} onClick={() => setOpen(true)}>Burn</BaseButton>
     </>
   );
 }

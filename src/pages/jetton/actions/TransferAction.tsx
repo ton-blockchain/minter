@@ -1,14 +1,15 @@
 import { Box, styled, TextField, Typography } from "@mui/material";
 import BaseButton from "components/BaseButton";
 import NumberInput from "components/NumberInput";
-import { Popup } from "components/Popup";
 import TxLoader from "components/TxLoader";
 import useNotification from "hooks/useNotification";
 import { jettonDeployController } from "lib/deploy-controller";
 import { useState } from "react";
 import WalletConnection from "services/wallet-connection";
 import useJettonStore from "store/jetton-store/useJettonStore";
+import { StyledInput } from "styles/styles";
 import { Address, toNano } from "ton";
+import { StyledSectionTitle } from "../Row";
 
 const getError = (
   toAddress?: string,
@@ -36,9 +37,7 @@ const getError = (
 };
 
 function TransferAction() {
-  const { balance, symbol, jettonAddress, getJettonDetails } =
-    useJettonStore();
-  const [open, setOpen] = useState(false);
+  const { balance, symbol, jettonAddress, getJettonDetails } = useJettonStore();
   const [isLoading, setIsLoading] = useState(false);
   const [toAddress, setToAddress] = useState<string | undefined>(undefined);
   const [amount, setAmount] = useState<number | undefined>(undefined);
@@ -49,7 +48,6 @@ function TransferAction() {
   }
 
   const onSubmit = async () => {
-
     const error = getError(toAddress, amount, balance, symbol);
     if (error) {
       showNotification(error, "warning", undefined, 3000);
@@ -65,6 +63,8 @@ function TransferAction() {
         toAddress!!,
         jettonAddress
       );
+      setToAddress(undefined)
+      setAmount(undefined)
       getJettonDetails();
       showNotification(
         `Successfully transfered ${amount?.toLocaleString()} ${symbol}`,
@@ -72,7 +72,7 @@ function TransferAction() {
         undefined,
         4000
       );
-      setOpen(false);
+     
     } catch (error) {
       if (error instanceof Error) {
         showNotification(error.message, "error");
@@ -82,49 +82,53 @@ function TransferAction() {
     }
   };
 
-  const onClose = () => {
-    setOpen(false);
-    setToAddress(undefined);
-    setAmount(undefined);
-  };
 
   return (
-    <>
+    <StyledContainer>
       <TxLoader open={isLoading}>
         <Typography>Transfer in progress...</Typography>
       </TxLoader>
-      <Popup open={open && !isLoading} onClose={onClose} maxWidth={450}>
-        <>
-          <Typography className="title">Transfer {symbol}</Typography>
-          <StyledInputs>
-            <TextField
-              fullWidth
-              label="Recipient wallet address"
-              onChange={(e) => setToAddress(e.target.value)}
-              value={toAddress || ""}
-            />
-            <NumberInput
-              label="Amount to transfer"
-              onChange={(value: number)=> setAmount(value)}
-              value={amount}
-            />
-          </StyledInputs>
-          <BaseButton onClick={onSubmit}>Submit</BaseButton>
-        </>
-      </Popup>
-      <BaseButton loading={isLoading} onClick={() => setOpen(true)}>
-        Transfer
-      </BaseButton>
-    </>
+      <StyledSectionTitle>Transfer {symbol}</StyledSectionTitle>
+      <StyledInputs>
+        <StyledInput>
+          <TextField
+            fullWidth
+            label="Recipient wallet address"
+            onChange={(e) => setToAddress(e.target.value)}
+            value={toAddress || ""}
+          />
+        </StyledInput>
+        <NumberInput
+          label="Amount to transfer"
+          onChange={(value: number) => setAmount(value)}
+          value={amount}
+        />
+      </StyledInputs>
+      <BaseButton onClick={onSubmit}>Transfer</BaseButton>
+    </StyledContainer>
   );
 }
 
 export default TransferAction;
 
+const StyledContainer = styled(Box)({
+  width: "100%",
+  display: "flex",
+  flexDirection: "column",
+
+  "& .base-button": {
+    height: 40,
+    maxWidth: 200,
+    width: "100%",
+    marginLeft: "auto",
+    marginRight: "auto",
+    marginTop: 20,
+  },
+});
+
 const StyledInputs = styled(Box)({
   width: "100%",
   display: "flex",
   flexDirection: "column",
-  alignItems: "center",
-  gap: 30,
+  gap: 15,
 });

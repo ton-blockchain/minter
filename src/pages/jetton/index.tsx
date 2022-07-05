@@ -21,6 +21,7 @@ import Alert from "@mui/material/Alert";
 import FaultyDeploy from "./FaultyDeploy";
 import Row from "./Row";
 import SectionLabel from "components/SectionLabel";
+import TransferAction from "./actions/TransferAction";
 function JettonPage() {
   const { id }: { id?: string } = useParams();
 
@@ -149,6 +150,7 @@ function JettonPage() {
               actions={balanceActions}
               description="Number of tokens that you own, and can be transfered by you to other accounts"
             />
+            <TransferAction />
             </StyledCategoryFields>
           </StyledWrite>
         </StyledContainer>
@@ -173,7 +175,8 @@ export const StyledCategory = styled(Box)(({ theme }) => ({
   padding: '20px 30px 30px 30px',
   borderRadius: 16,
   [theme.breakpoints.down(1100)]:{
-    width:'100%'
+    width:'100%',
+    padding: '20px 25px 20px 25px',
   }
 }));
 

@@ -33,9 +33,7 @@ const Row = ({
   return (
     <Box>
       <StyledSection>
-        <StyledSectionTitle>
-          <Typography>{title}</Typography>
-        </StyledSectionTitle>
+      <StyledSectionTitle>{title}</StyledSectionTitle>
         <StyledSectionRight>
           <StyledSectionRightColored>
             <LoadingContainer loading={dataLoading} loaderHeight="50%">
@@ -140,24 +138,12 @@ const StyledSectionRightColored = styled(Box)({
 });
 
 const StyledSection = styled(Box)(({ theme }) => ({
-  display: "flex",
-  flexDirection:'column',
-  gap: 8,
-  [theme.breakpoints.down("sm")]: {
-    flexDirection: "column",
-    gap: 5,
-  },
+
 }));
 
-const StyledSectionTitle = styled(Box)(({ theme }) => ({
-  "& p": {
-    fontSize: 14,
-  },
-  [theme.breakpoints.down("sm")]: {
-    width: "100%",
-    paddingLeft: 0,
-    paddingTop: 0,
-  },
+export const StyledSectionTitle = styled(Box)(({ theme }) => ({
+  fontSize: 14,
+  marginBottom: 8
 }));
 
 const StyledSectionRight = styled(Box)(({ theme }) => ({

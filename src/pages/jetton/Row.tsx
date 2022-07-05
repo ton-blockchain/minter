@@ -1,6 +1,6 @@
 import { Box, styled, Typography } from "@mui/material";
 import AddressLink from "components/AddressLink";
-import  { FunctionComponent } from "react";
+import { FunctionComponent } from "react";
 import { JettonDetailMessage } from "./types";
 import WarningRoundedIcon from "@mui/icons-material/WarningRounded";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
@@ -17,7 +17,7 @@ interface RowProps {
   actions?: FunctionComponent[] | undefined;
   dataLoading: boolean;
   description?: string;
-  hasButton?: boolean; 
+  hasButton?: boolean;
 }
 
 const Row = ({
@@ -28,12 +28,12 @@ const Row = ({
   dataLoading,
   description,
   address,
-  hasButton
+  hasButton,
 }: RowProps) => {
   return (
     <Box>
       <StyledSection>
-      <StyledSectionTitle>{title}</StyledSectionTitle>
+        <StyledSectionTitle>{title}</StyledSectionTitle>
         <StyledSectionRight>
           <StyledSectionRightColored>
             <LoadingContainer loading={dataLoading} loaderHeight="50%">
@@ -47,7 +47,7 @@ const Row = ({
               {actions && (
                 <StyledActions>
                   {actions.map((action, index) => {
-                        const ActionComponent = action
+                    const ActionComponent = action;
                     return <ActionComponent key={index} />;
                   })}
                 </StyledActions>
@@ -95,6 +95,7 @@ const Message = ({ message }: { message?: JettonDetailMessage }) => {
 export default Row;
 
 const StyledMessage = styled(Box)(({ type }: { type: string }) => ({
+  maxWidth: '90%',
   display: "flex",
   alignItems: "flex-start",
   gap: 5,
@@ -119,7 +120,7 @@ const StyledActions = styled(Box)({
   height: "100%",
   display: "flex",
   alignItems: "center",
-  gap:10,
+  gap: 10,
   "& .base-button": {
     height: "calc(100% - 10px)",
     fontSize: 12,
@@ -137,26 +138,24 @@ const StyledSectionRightColored = styled(Box)({
   background: "#EDF2F7",
 });
 
-const StyledSection = styled(Box)(({ theme }) => ({
-
-}));
+const StyledSection = styled(Box)(({ theme }) => ({}));
 
 export const StyledSectionTitle = styled(Box)(({ theme }) => ({
   fontSize: 14,
-  marginBottom: 8
+  marginBottom: 8,
 }));
 
 const StyledSectionRight = styled(Box)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
-  width: '100%',
+  width: "100%",
   [theme.breakpoints.down("sm")]: {
     width: "100%",
   },
 }));
 
 const StyledSectionValue = styled(Box)(
-  ({ hasButton }: {hasButton?: boolean}) => ({
+  ({ hasButton }: { hasButton?: boolean }) => ({
     width: hasButton ? "calc(100% - 130px)" : "100%",
     display: "flex",
     alignItems: "center",
@@ -167,9 +166,9 @@ const StyledSectionValue = styled(Box)(
       overflow: "hidden",
       textOverflow: "ellipsis",
       paddingRight: 20,
-      [theme.breakpoints.down('sm')]: {
-            fontSize: 14
-      }
+      [theme.breakpoints.down("sm")]: {
+        fontSize: 14,
+      },
     },
   })
 );

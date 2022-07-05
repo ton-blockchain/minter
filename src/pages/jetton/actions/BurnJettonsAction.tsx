@@ -14,11 +14,11 @@ function BurnJettonsAction() {
   const [amount, setAmount] = useState<number | undefined>(undefined);
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { jettonMaster, symbol, getJettonDetails, balance, jettonAddress } =
+  const { jettonMaster, symbol, getJettonDetails, balance, jettonAddress, isMyWallet } =
     useJettonStore();
   const { showNotification } = useNotification();
 
-  if (!balance) {
+  if (!balance || !isMyWallet) {
     return null;
   }
 
@@ -64,7 +64,7 @@ function BurnJettonsAction() {
         <>
           <Typography className="title">Burn {symbol}</Typography>
           <NumberInput
-            label="Enter tokens amount"
+            label={`Enter ${symbol} amount`}
             value={amount}
             onChange={(value: number) => setAmount(value)}
           />

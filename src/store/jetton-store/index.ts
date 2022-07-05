@@ -15,7 +15,9 @@ interface JettonStoreState {
   totalSupply?: number;
   jettonAddress?: string;
   isJettonDeployerFaultyOnChainData?: boolean;
-  jettonLoading: boolean
+  jettonLoading: boolean;
+  isMyWallet: boolean;
+  selectedWalletAddress?: string | null;
 }
 
 const jettonStateAtom = atom<JettonStoreState>({
@@ -34,7 +36,9 @@ const jettonStateAtom = atom<JettonStoreState>({
     jettonMaster: undefined,
     totalSupply: undefined,
     jettonAddress: undefined,
-    isJettonDeployerFaultyOnChainData: false
+    isJettonDeployerFaultyOnChainData: false,
+    isMyWallet: false,
+    selectedWalletAddress: undefined
   },
 });
 

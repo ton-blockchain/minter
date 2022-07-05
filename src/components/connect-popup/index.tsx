@@ -35,8 +35,6 @@ function ConnectPopup() {
       }
     };
     try {
-      console.log(provider);
-
       if (provider === Providers.TON_HUB && !isMobile) {
         setShowQr(true);
       }
@@ -64,7 +62,7 @@ function ConnectPopup() {
   };
 
   return (
-    <Popup open={showConnect} onClose={close} maxWidth={400}>
+    <Popup open={showConnect} onClose={close} maxWidth={400} hideCloseButton>
       <SyledContainer>
         <AdaptersList
           adapters={providers}

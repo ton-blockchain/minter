@@ -10,6 +10,7 @@ export interface Props {
   blur?: boolean;
   className?: string;
   maxWidth: number;
+  hideCloseButton?: boolean;
 }
 
 export function Popup({
@@ -20,6 +21,7 @@ export function Popup({
   blur = true,
   className = "",
   maxWidth,
+  hideCloseButton,
 }: Props) {
   return (
     <Dialog
@@ -33,8 +35,8 @@ export function Popup({
           width: "100%",
           borderRadius: "10px",
           padding: 0,
-          overflow:'unset',
-          margin: 20
+          overflow: "unset",
+          margin: 20,
         },
       }}
       BackdropProps={{
@@ -44,27 +46,28 @@ export function Popup({
       }}
     >
       <StyledChildren>
-        <StyledClose onClick={onClose}>
-          <CloseRoundedIcon style ={{width: 30, height: 30}} />
-        </StyledClose>
+        {!hideCloseButton && (
+          <StyledClose onClick={onClose}>
+            <CloseRoundedIcon style={{ width: 30, height: 30 }} />
+          </StyledClose>
+        )}
         {children}
       </StyledChildren>
     </Dialog>
   );
 }
 
-
-const StyledClose = styled(IconButton)(({theme}) => ({
-  position:'absolute',
-  top:-50,
+const StyledClose = styled(IconButton)(({ theme }) => ({
+  position: "absolute",
+  top: -50,
   right: -50,
-  [theme.breakpoints.down('sm')]: {
-    right: -10
-  }
-}))
+  [theme.breakpoints.down("sm")]: {
+    right: -10,
+  },
+}));
 
 const StyledChildren = styled(Box)({
-  position:'relative',
+  position: "relative",
   display: "flex",
   alignItems: "center",
   flexDirection: "column",

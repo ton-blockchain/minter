@@ -27,6 +27,14 @@ const StyledAppBar = styled(AppBar)(({ theme }) => ({
   [theme.breakpoints.down("md")]: {
     paddingTop: 10,
   },
+  [theme.breakpoints.down('sm')]:{
+  position:'fixed',
+  background:'white',
+  zIndex: 99,
+  left:0,
+  paddingLeft:15,
+  paddingRight: 15
+  }
 }));
 
 

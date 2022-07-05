@@ -20,6 +20,7 @@ import { ROUTES } from "consts";
 import Alert from "@mui/material/Alert";
 import FaultyDeploy from "./FaultyDeploy";
 import Row from "./Row";
+import SectionLabel from "components/SectionLabel";
 function JettonPage() {
   const { id }: { id?: string } = useParams();
 
@@ -51,12 +52,13 @@ function JettonPage() {
 
   return (
     <Screen>
+      <FaultyDeploy />
       <Navbar customLink={{ text: "Create Jetton", path: ROUTES.deployer }} />
 
-      <FaultyDeploy />
       <ScreenContent>
-        <Box style={{ background: "#F7FAFC" }}>
-          <StyledContainer>
+        <StyledContainer>
+          <StyledRead>
+          <SectionLabel>Jetton Metadata</SectionLabel>
             <StyledTop>
               <StyledTopImg>
                 <LoadingImage
@@ -82,7 +84,7 @@ function JettonPage() {
               </Alert>
             )}
 
-            <StyledTextSections>
+            <StyledCategoryFields>
               <Row
                 description="On-chain smart contract address of the Jetton parent (jetton-minter.fc)"
                 title="Address"
@@ -104,7 +106,7 @@ function JettonPage() {
                 )}
                 dataLoading={jettonLoading}
                 actions={adminActions}
-                hasButton = {isAdmin && !adminRevokedOwnership}
+                hasButton={isAdmin && !adminRevokedOwnership}
               />
               <Row
                 title="Symbol"
@@ -116,7 +118,7 @@ function JettonPage() {
                 )}
               />
               <Row
-                title="Total supply"
+                title="Total Supply"
                 value={
                   totalSupply && `${totalSupply.toLocaleString()} ${symbol}`
                 }
@@ -127,33 +129,29 @@ function JettonPage() {
                 )}
                 actions={totalSupplyActions}
               />
-              <StyledCategoryTitle>Connected Jetton Wallet</StyledCategoryTitle>
-              <Row
-                title="Owner"
-                value={address}
-                dataLoading={jettonLoading}
-                address={address}
-                description="Owner wallet contract, used for jettons transfers"
-              />
-              <Row
-                title="Jetton Wallet"
-                value={jettonAddress}
-                dataLoading={jettonLoading}
-                address={jettonAddress}
-                description={
-                  symbol &&
-                  `On-chain smart contract address of the Jetton wallet (jetton-wallet.fc), holds the ${symbol} balance`
-                }
-              />
-              <Row
-                title="Balance"
-                value={balance && `${balance.toLocaleString()} ${symbol}`}
-                dataLoading={jettonLoading}
-                actions={balanceActions}
-              />
-            </StyledTextSections>
-          </StyledContainer>
-        </Box>
+            </StyledCategoryFields>
+          </StyledRead>
+
+          <StyledWrite>
+            <SectionLabel>Connected Jetton Wallet</SectionLabel>
+            <StyledCategoryFields>
+            <Row
+              title="Wallet Address"
+              value={address}
+              dataLoading={jettonLoading}
+              address={address}
+              description="Owner wallet public address, can be shared to receive jetton transfers"
+            />
+            <Row
+              title="Balance"
+              value={balance && `${balance.toLocaleString()} ${symbol}`}
+              dataLoading={jettonLoading}
+              actions={balanceActions}
+              description="Number of tokens that you own, and can be transfered by you to other accounts"
+            />
+            </StyledCategoryFields>
+          </StyledWrite>
+        </StyledContainer>
       </ScreenContent>
     </Screen>
   );
@@ -161,31 +159,51 @@ function JettonPage() {
 
 export { JettonPage };
 
-export const StyledContainer = styled(Box)(({ theme }) => ({
+const StyledContainer = styled(Box)(({theme}) => ({
   display: "flex",
   gap: 30,
-  flexDirection: "column",
   width: "100%",
-  maxWidth: 600,
-  marginLeft: "auto",
-  marginRight: "auto",
-  padding: "60px 0px",
-  [theme.breakpoints.down("sm")]: {
-    padding: "30px 20px",
-  },
+  [theme.breakpoints.down(1100)]:{
+    flexDirection:'column'
+  }
 }));
+
+export const StyledCategory = styled(Box)(({ theme }) => ({
+  width: "calc(50% - 15px)",
+  padding: '20px 30px 30px 30px',
+  borderRadius: 16,
+  [theme.breakpoints.down(1100)]:{
+    width:'100%'
+  }
+}));
+
+
+const StyledCategoryFields = styled(Box)({
+  display: "flex",
+  flexDirection: "column",
+  gap: 24,
+})
+
+const StyledRead = styled(StyledCategory)({
+  background:'rgba(80, 167, 234, 0.1)'
+});
+
+const StyledWrite = styled(StyledCategory)({
+  background: '#F7FAFC'
+});
 
 export const StyledTop = styled(Box)({
   display: "flex",
   alignItems: "center",
-  gap: 30,
+  gap: 20,
+  marginBottom: 30
 });
 
 export const StyledTopText = styled(Box)({
   color: "#27272E",
   display: "flex",
   flexDirection: "column",
-  gap: 10,
+  gap: 3,
   flex: 1,
   "& h5": {
     fontSize: 15,
@@ -216,14 +234,4 @@ const StyledTopImg = styled(Box)(({ theme }) => ({
   },
 }));
 
-const StyledTextSections = styled(Box)({
-  display: "flex",
-  flexDirection: "column",
-  gap: 24,
-});
 
-const StyledCategoryTitle = styled(Typography)({
-  fontWeight: 500,
-  fontSize: 18,
-  marginTop: 20,
-});

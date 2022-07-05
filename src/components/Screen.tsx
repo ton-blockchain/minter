@@ -19,7 +19,9 @@ const StyledContent = styled(Box)(({theme}) => ({
   maxHeight: 'calc(100vh - 150px)',
   overflow:'auto',
   [theme.breakpoints.down('sm')]:{
-    maxHeight: 'calc(100vh - 120px)',
+    maxHeight: 'unset',
+    paddingBottom: 40,
+    paddingTop:80
   }
 }));
 

@@ -58,20 +58,21 @@ function FaultyDeploy() {
         maxWidth={380}
         open={!!isJettonDeployerFaultyOnChainData && isAdmin && !isLoading}
         onClose={() => {}}
+        hideCloseButton
       >
         <StyledWarningPopup>
           <Box className="header">
             <WarningAmberRoundedIcon />
-            <Typography>Token metadata is invalid</Typography>
+            <Typography>Token metadata requires fix</Typography>
           </Box>
           <Box className="description">
             <Typography>
-              This token was created with a previous faulty version of the tool.
-              Press below to fix the metadata onchain.
+              This token was created with a previous faulty version of the deployer.
+              Don’t worry, this can easily be fixed.
             </Typography>
             <br />
             <Typography>
-              This will issue a transaction and keep the token’s original data.
+               Click below to issue a fix transaction that will keep the token’s original data and fix the format.
             </Typography>
           </Box>
           <BaseButton onClick={onSubmit}>Submit</BaseButton>

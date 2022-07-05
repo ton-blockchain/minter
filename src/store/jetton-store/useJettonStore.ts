@@ -20,7 +20,8 @@ function useJettonStore() {
   const [state, setState] = useRecoilState(jettonStateAtom);
   const reset = useResetRecoilState(jettonStateAtom);
   const { showNotification } = useNotification();
-  const { address: connectedWalletAddress } = useConnectionStore();
+  const { address: connectedWalletAddress, disconnect } = useConnectionStore();
+
   const { id }: { id?: string } = useParams();
 
   const getJettonDetails = useCallback(async () => {
@@ -35,6 +36,9 @@ function useJettonStore() {
         undefined,
         5000
       );
+    }
+    if(queryAddress){
+      disconnect()
     }
 
     const address = queryAddress || connectedWalletAddress;

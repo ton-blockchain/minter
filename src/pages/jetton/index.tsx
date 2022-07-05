@@ -44,7 +44,6 @@ function JettonPage() {
     jettonAddress,
     isJettonDeployerFaultyOnChainData,
     jettonLoading,
-    isMyWallet,
     selectedWalletAddress
   } = useJettonStore();
 
@@ -65,7 +64,7 @@ function JettonPage() {
       <ScreenContent>
         <StyledContainer>
           <StyledRead>
-          <SectionLabel>Jetton Metadata</SectionLabel>
+          <SectionLabel>Shared Jetton metadata</SectionLabel>
             <StyledTop>
               <StyledTopImg>
                 <LoadingImage
@@ -140,21 +139,21 @@ function JettonPage() {
           </StyledRead>
 
           <StyledWrite>
-            <SectionLabel>Jetton Wallet</SectionLabel>
+            <SectionLabel>Connected Jetton wallet</SectionLabel>
             <StyledCategoryFields>
             <Row
               title="Wallet Address"
               value={selectedWalletAddress}
               dataLoading={jettonLoading}
               address={selectedWalletAddress}
-              description="Owner wallet public address, can be shared to receive jetton transfers"
+              description="Connected wallet public address, can be shared to receive jetton transfers"
             />
             <Row
-              title="Balance"
+              title="Wallet Balance"
               value={balance && `${balance.toLocaleString()} ${symbol}`}
               dataLoading={jettonLoading}
               actions={balanceActions}
-              description="Number of tokens that you own, and can be transfered by you to other accounts"
+              description="Number of tokens in connected wallet that can be transferred to others"
             />
             <TransferAction />
             </StyledCategoryFields>
@@ -194,7 +193,7 @@ const StyledCategoryFields = styled(Box)({
 })
 
 const StyledRead = styled(StyledCategory)({
-  background:'rgba(80, 167, 234, 0.1)'
+  background:'rgba(80, 167, 234, 0.05)'
 });
 
 const StyledWrite = styled(StyledCategory)(({theme}) => ({

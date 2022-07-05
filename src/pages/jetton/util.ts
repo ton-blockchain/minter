@@ -1,10 +1,8 @@
 import { persistenceType } from "lib/jetton-minter";
-import { scannerUrl } from "utils";
 import BurnJettonsAction from "./actions/BurnJettonsAction";
 import ConnectAction from "./actions/ConnectAction";
 import MintJettonsAction from "./actions/MintJettonsAction";
 import RevokeOwnershipAction from "./actions/RevokeOwnershipAction";
-import TransferAction from "./actions/TransferAction";
 import { JettonDetailMessage } from "./types";
 
 const commonGithubUrl =
@@ -25,7 +23,7 @@ export const adminActions = [RevokeOwnershipAction];
 
 export const totalSupplyActions = [MintJettonsAction]
 
-export const balanceActions = [ConnectAction, TransferAction, BurnJettonsAction]
+export const balanceActions = [ConnectAction, BurnJettonsAction]
 
 export const getAdminMessage = (
   adminAddress?: string,
@@ -34,7 +32,6 @@ export const getAdminMessage = (
   isAdmin?: boolean,
   jettonAddress?: string
 ): JettonDetailMessage | undefined => {
-  const adminUrl = `${scannerUrl()}/${adminAddress}`;
 
   if (!jettonAddress) {
     return undefined;

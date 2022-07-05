@@ -43,7 +43,7 @@ function RevokeOwnershipAction() {
       <TxLoader open={isLoading}>
         <Typography>Revoking ownership...</Typography>
       </TxLoader>
-      <BaseButton onClick={onClick} loading={isLoading}>
+      <BaseButton transparent={true} onClick={onClick} loading={isLoading}>
         Revoke ownership
       </BaseButton>
     </>

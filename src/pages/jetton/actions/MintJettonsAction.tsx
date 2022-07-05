@@ -67,7 +67,7 @@ function MintJettonsAction() {
           <BaseButton disabled={amount  &&  amount > 0 ? false : true } onClick={onMint}>Submit</BaseButton>
         </>
       </Popup>
-      <BaseButton onClick={() => setOpen(true)}>Mint</BaseButton>
+      <BaseButton transparent={true}  onClick={() => setOpen(true)}>Mint</BaseButton>
     </>
   );
 }

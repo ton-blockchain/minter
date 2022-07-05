@@ -1,24 +1,27 @@
 import { TextField } from "@mui/material";
 import NumberFormat from "react-number-format";
+import { StyledInput } from "styles/styles";
 
 interface Props {
   onChange: (val: number) => void;
-  value?: number
+  value?: number;
   label?: string;
 }
 
-function NumberInput({ onChange, value,  label='' }: Props) {
+function NumberInput({ onChange, value, label = "" }: Props) {
   return (
-    <NumberFormat
-      value={value || ''}
-      customInput={TextField}
-      thousandSeparator=","
-      fullWidth
-      label={label}
-      onValueChange={({ value }) => {
-        onChange(Number(value));
-      }}
-    />
+    <StyledInput>
+      <NumberFormat
+        value={value || ""}
+        customInput={TextField}
+        thousandSeparator=","
+        fullWidth
+        label={label}
+        onValueChange={({ value }) => {
+          onChange(Number(value));
+        }}
+      />
+    </StyledInput>
   );
 }
 

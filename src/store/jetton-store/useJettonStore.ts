@@ -26,13 +26,15 @@ function useJettonStore() {
   const getJettonDetails = useCallback(async () => {
     let queryAddress = getUrlParam("address");
 
-    if (connectedWalletAddress) {
+    if (queryAddress && !isValidAddress(queryAddress)) {
       window.history.replaceState(null, "", window.location.pathname);
       queryAddress = null;
-    } else if (queryAddress && !isValidAddress(queryAddress)) {
-      window.history.replaceState(null, "", window.location.pathname);
-      queryAddress = null;
-      showNotification("Invalid jetton address in query param", "error", undefined, 5000);
+      showNotification(
+        "Invalid jetton address in query param",
+        "error",
+        undefined,
+        5000
+      );
     }
 
     const address = queryAddress || connectedWalletAddress;
@@ -76,9 +78,9 @@ function useJettonStore() {
         return;
       }
       const _adminAddress = result.minter.admin.toFriendly();
-      const admin = _adminAddress === connectedWalletAddress;
+      const admin = isMyWallet &&  _adminAddress === connectedWalletAddress;
 
-      console.log(result);
+      console.log({result});
 
       setState((prevState) => {
         return {

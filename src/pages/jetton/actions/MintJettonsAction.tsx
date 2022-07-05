@@ -15,10 +15,10 @@ function MintJettonsAction() {
   const [amount, setAmount] = useState<number  | undefined>(undefined);
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { jettonMaster, isAdmin, symbol, getJettonDetails } = useJettonStore();
+  const { jettonMaster, isAdmin, symbol, getJettonDetails, isMyWallet } = useJettonStore();
   const { showNotification } = useNotification();
 
-  if (!isAdmin) {
+  if (!isAdmin || !isMyWallet) {
     return null;
   }
 

@@ -8,6 +8,7 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import BaseButton from "components/BaseButton";
 import JettonImg from "assets/jetton.svg";
 import Logo from "./Logo";
+import SearchInput from "./SearchInput";
 
 const StyledCustomLink = styled(Link)(({ theme }) => ({
   color: theme.palette.text.primary,
@@ -111,9 +112,10 @@ const StyledMenu = styled(Box)(({ theme }) => ({
   },
 }));
 
-const Menu = ({ customLink }: Props) => {
+const Menu = ({ customLink, closeMenu }: Props) => {
   return (
     <StyledMenu className="navbar-menu">
+      <SearchInput closeMenu={closeMenu} />
       {customLink && (
         <StyledCustomLink to={customLink.path} className="custom-link">
           <BaseButton transparent>

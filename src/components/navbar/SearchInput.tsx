@@ -2,21 +2,29 @@ import { styled, IconButton, ClickAwayListener } from "@mui/material";
 import { Box } from "@mui/system";
 import { useCallback, useEffect, useState } from "react";
 import SearchImg from "assets/search.svg";
-import useJettonStore from "store/jetton-store/useJettonStore";
-import useConnectionStore from "store/connection-store/useConnectionStore";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ROUTES } from "consts";
+import { isValidAddress } from "utils";
+import useNotification from "hooks/useNotification";
+import theme from "theme";
 
 const StyledContainer = styled(Box)(({ expanded }: { expanded: boolean }) => ({
-  width: expanded ? 260 : 160,
+  width: expanded ? 330 : 200,
   transition: "0.1s all",
-  height: '100%',
-  minHeight:35,
+  height: "100%",
+  minHeight: 35,
   padding: "0px 17px",
   border: "1px solid #7A828A",
   borderRadius: 20,
   display: "flex",
   alignItems: "center",
+  marginLeft: "auto",
+  marginRight: 3,
+  [theme.breakpoints.down('sm')]:{
+    width: '100%',
+    minHeight:'unset',
+    height: 35
+  }
 }));
 
 const StyledInput = styled("input")({
@@ -29,33 +37,41 @@ const StyledInput = styled("input")({
   fontWeight: 500,
   fontFamily: "inherit",
   outline: "unset",
+
 });
 
-function SearchInput() {
+
+interface Props{
+  closeMenu?: () => void;
+}
+
+function SearchInput({closeMenu}: Props) {
   const [expanded, setExpanded] = useState(false);
   const [value, setValue] = useState("");
   const navigate = useNavigate();
+  const { showNotification } = useNotification();
 
   const onSubmit = useCallback(async () => {
-    if (value) {
+    if (!value) {
+      return;
+    }
+
+    if (!isValidAddress(value)) {
+      showNotification("Invalid jetton address", "error");
       setValue("");
       setExpanded(false);
-      navigate(`${ROUTES.jetton}/${value}`);
+      return;
     }
+
+    setValue("");
+    setExpanded(false);
+    closeMenu?.()
+    navigate(`${ROUTES.jetton}/${value}`);
+  
   }, [value]);
 
-  const onChange = (e: any) => {
-    const value = e.target.value;
-    setValue(value);
-  };
-
-  const onPaste = (e: any) => {
-    console.log(e.target.value);
-    setValue(e.target.value);
-  };
 
   useEffect(() => {
-    
     const listener = (event: any) => {
       if (event.code === "Enter" || event.code === "NumpadEnter") {
         event.preventDefault();
@@ -70,14 +86,14 @@ function SearchInput() {
 
   return (
     <ClickAwayListener onClickAway={() => setExpanded(false)}>
-      <StyledContainer expanded={expanded} className='search'>
+      <StyledContainer expanded={expanded} className="search">
         <IconButton sx={{ padding: 0 }} onClick={onSubmit}>
           <img src={SearchImg} alt="" />
         </IconButton>
         <StyledInput
           placeholder="Jetton address"
-          onPaste={onPaste}
-          onChange={onChange}
+          onPaste={(e: any) => setValue(e.target.value)}
+          onChange={(e) => setValue(e.target.value)}
           value={value}
           onFocus={() => setExpanded(true)}
         />

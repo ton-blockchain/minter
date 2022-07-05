@@ -23,9 +23,16 @@ function BurnJettonsAction() {
   }
 
   const onBurn = async () => {
-    if (!jettonMaster || !amount) {
+    if (!jettonMaster) {
       return;
     }
+
+    if(!amount || amount === 0) {
+      showNotification(`Minimum amount to burn is 1 ${symbol}`, "warning");
+      return 
+  }
+
+
     const value = toNano(amount);
 
     if(amount > balance){
@@ -69,7 +76,6 @@ function BurnJettonsAction() {
             onChange={(value: number) => setAmount(value)}
           />
           <BaseButton
-            disabled={amount && amount > 0 ? false : true}
             onClick={onBurn}
           >
             Submit

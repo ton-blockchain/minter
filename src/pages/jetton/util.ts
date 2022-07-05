@@ -49,7 +49,7 @@ export const getAdminMessage = (
     return {
       type: "warning",
       text: `You should revoke this token's ownership. Your ${symbol} tokens will
-          remain safely in your [jetton wallet](${adminUrl}). [Read more](${commonGithubUrl})`,
+          remain safely in your wallet. [Read more](${commonGithubUrl})`,
     };
   }
 

@@ -1,6 +1,6 @@
 import { Box, styled, Typography } from "@mui/material";
 import AddressLink from "components/AddressLink";
-import React, { FunctionComponent } from "react";
+import  { FunctionComponent } from "react";
 import { JettonDetailMessage } from "./types";
 import WarningRoundedIcon from "@mui/icons-material/WarningRounded";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
@@ -141,9 +141,8 @@ const StyledSectionRightColored = styled(Box)({
 
 const StyledSection = styled(Box)(({ theme }) => ({
   display: "flex",
-  alignItems: "flex-start",
-
-  gap: 15,
+  flexDirection:'column',
+  gap: 8,
   [theme.breakpoints.down("sm")]: {
     flexDirection: "column",
     gap: 5,
@@ -151,9 +150,9 @@ const StyledSection = styled(Box)(({ theme }) => ({
 }));
 
 const StyledSectionTitle = styled(Box)(({ theme }) => ({
-  width: 120,
-  paddingLeft: 0,
-  paddingTop: 14,
+  "& p": {
+    fontSize: 14,
+  },
   [theme.breakpoints.down("sm")]: {
     width: "100%",
     paddingLeft: 0,
@@ -164,8 +163,7 @@ const StyledSectionTitle = styled(Box)(({ theme }) => ({
 const StyledSectionRight = styled(Box)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
-  width: "calc(100% - 135px)",
-
+  width: '100%',
   [theme.breakpoints.down("sm")]: {
     width: "100%",
   },

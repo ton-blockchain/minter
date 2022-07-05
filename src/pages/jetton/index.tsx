@@ -25,6 +25,7 @@ import TransferAction from "./actions/TransferAction";
 function JettonPage() {
   const { id }: { id?: string } = useParams();
 
+
   const { address, isConnecting } = useConnectionStore();
 
   const {
@@ -43,7 +44,12 @@ function JettonPage() {
     jettonAddress,
     isJettonDeployerFaultyOnChainData,
     jettonLoading,
+    isMyWallet,
+    selectedWalletAddress
   } = useJettonStore();
+
+
+    
 
   useEffect(() => {
     if (id && !isConnecting) {
@@ -134,13 +140,13 @@ function JettonPage() {
           </StyledRead>
 
           <StyledWrite>
-            <SectionLabel>Connected Jetton Wallet</SectionLabel>
+            <SectionLabel>Jetton Wallet</SectionLabel>
             <StyledCategoryFields>
             <Row
               title="Wallet Address"
-              value={address}
+              value={selectedWalletAddress}
               dataLoading={jettonLoading}
-              address={address}
+              address={selectedWalletAddress}
               description="Owner wallet public address, can be shared to receive jetton transfers"
             />
             <Row
@@ -191,9 +197,12 @@ const StyledRead = styled(StyledCategory)({
   background:'rgba(80, 167, 234, 0.1)'
 });
 
-const StyledWrite = styled(StyledCategory)({
-  background: '#F7FAFC'
-});
+const StyledWrite = styled(StyledCategory)(({theme}) => ({
+  background: '#F7FAFC',
+  [theme.breakpoints.down('sm')]:{
+   paddingBottom: 140,
+  }
+}));
 
 export const StyledTop = styled(Box)({
   display: "flex",

@@ -4,11 +4,13 @@ import NumberInput from "components/NumberInput";
 import TxLoader from "components/TxLoader";
 import useNotification from "hooks/useNotification";
 import { jettonDeployController } from "lib/deploy-controller";
+import { zeroAddress } from "lib/utils";
 import { useState } from "react";
 import WalletConnection from "services/wallet-connection";
 import useJettonStore from "store/jetton-store/useJettonStore";
 import { StyledInput } from "styles/styles";
 import { Address, toNano } from "ton";
+import { isValidAddress } from "utils";
 import { StyledSectionTitle } from "../Row";
 
 const getError = (
@@ -21,9 +23,7 @@ const getError = (
     return "Recipient wallet address required";
   }
 
-  try {
-    Address.parse(toAddress);
-  } catch (error) {
+  if (toAddress && !isValidAddress(toAddress)) {
     return "Invalid Recipient wallet address";
   }
 
@@ -37,13 +37,13 @@ const getError = (
 };
 
 function TransferAction() {
-  const { balance, symbol, jettonAddress, getJettonDetails } = useJettonStore();
+  const { balance, symbol, jettonAddress, getJettonDetails, isMyWallet } = useJettonStore();
   const [isLoading, setIsLoading] = useState(false);
   const [toAddress, setToAddress] = useState<string | undefined>(undefined);
   const [amount, setAmount] = useState<number | undefined>(undefined);
   const { showNotification } = useNotification();
 
-  if (!balance || !jettonAddress) {
+  if (!balance || !jettonAddress || !isMyWallet) {
     return null;
   }
 
@@ -63,8 +63,8 @@ function TransferAction() {
         toAddress!!,
         jettonAddress
       );
-      setToAddress(undefined)
-      setAmount(undefined)
+      setToAddress(undefined);
+      setAmount(undefined);
       getJettonDetails();
       showNotification(
         `Successfully transfered ${amount?.toLocaleString()} ${symbol}`,
@@ -72,7 +72,6 @@ function TransferAction() {
         undefined,
         4000
       );
-     
     } catch (error) {
       if (error instanceof Error) {
         showNotification(error.message, "error");
@@ -81,7 +80,6 @@ function TransferAction() {
       setIsLoading(false);
     }
   };
-
 
   return (
     <StyledContainer>

@@ -10,35 +10,44 @@ import WalletConnection from "services/wallet-connection";
 import { Address, fromNano } from "ton";
 import { jettonStateAtom } from ".";
 import QuestiomMarkImg from "assets/question.png";
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
 import useNotification from "hooks/useNotification";
 import { useParams } from "react-router-dom";
 import useConnectionStore from "store/connection-store/useConnectionStore";
+import { getUrlParam, isValidAddress } from "utils";
 
 function useJettonStore() {
   const [state, setState] = useRecoilState(jettonStateAtom);
   const reset = useResetRecoilState(jettonStateAtom);
   const { showNotification } = useNotification();
-  const {address} = useConnectionStore()
+  const { address: connectedWalletAddress } = useConnectionStore();
   const { id }: { id?: string } = useParams();
 
   const getJettonDetails = useCallback(async () => {
-    reset();
+    let queryAddress = getUrlParam("address");
 
-    let parsedJettonMaster;
-
-
-    if(!id){
-      showNotification("Jetton address missing", "error");
-      return 
+    if (queryAddress && !isValidAddress(queryAddress)) {
+      window.history.replaceState(null, "", window.location.pathname);
+      queryAddress = null;
+      showNotification(
+        "Invalid jetton address in query param",
+        "error",
+        undefined,
+        5000
+      );
     }
 
-    try {
-      parsedJettonMaster = Address.parse(id);
-    } catch (error) {
+    const address = queryAddress || connectedWalletAddress;
+    const isMyWallet = address ? address === connectedWalletAddress : false;
+
+    reset();
+
+    if (!id || !isValidAddress(id)) {
       showNotification("Invalid jetton address", "error");
       return;
     }
+
+    const parsedJettonMaster = Address.parse(id);
 
     let connection;
 
@@ -69,9 +78,9 @@ function useJettonStore() {
         return;
       }
       const _adminAddress = result.minter.admin.toFriendly();
-      const admin = _adminAddress === address;
+      const admin = isMyWallet &&  _adminAddress === connectedWalletAddress;
 
-      console.log(result);
+      console.log({result});
 
       setState((prevState) => {
         return {
@@ -92,6 +101,8 @@ function useJettonStore() {
             : undefined,
           jettonAddress: result.jettonWallet?.jWalletAddress.toFriendly(),
           jettonMaster: id,
+          isMyWallet,
+          selectedWalletAddress: address,
         };
       });
     } catch (error) {
@@ -104,9 +115,7 @@ function useJettonStore() {
         jettonLoading: false,
       }));
     }
-  }, [setState, showNotification,address, id, reset]);
-
-
+  }, [setState, showNotification, connectedWalletAddress, id, reset]);
 
   return {
     ...state,

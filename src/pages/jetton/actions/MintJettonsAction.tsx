@@ -15,16 +15,22 @@ function MintJettonsAction() {
   const [amount, setAmount] = useState<number  | undefined>(undefined);
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { jettonMaster, isAdmin, symbol, getJettonDetails } = useJettonStore();
+  const { jettonMaster, isAdmin, symbol, getJettonDetails, isMyWallet } = useJettonStore();
   const { showNotification } = useNotification();
 
-  if (!isAdmin) {
+  if (!isAdmin || !isMyWallet) {
     return null;
   }
 
   const onMint = async () => {
-    if (!jettonMaster || !amount) {
+    if (!jettonMaster) {
       return;
+    }
+
+
+    if(!amount || amount === 0) {
+        showNotification(`Minimum amount of ${symbol} to mint is 1`, "warning");
+        return 
     }
     const value = toNano(amount);
 
@@ -62,9 +68,9 @@ function MintJettonsAction() {
     </TxLoader>
       <Popup open={open && !isLoading} onClose={onClose} maxWidth={400}>
         <>
-          <Typography className="title">Mint tokens</Typography>
-          <NumberInput label='Enter tokens amount' value={amount} onChange={(value: number) =>  setAmount(value)} />
-          <BaseButton disabled={amount  &&  amount > 0 ? false : true } onClick={onMint}>Submit</BaseButton>
+          <Typography className="title">Mint {symbol}</Typography>
+          <NumberInput label={`Enter ${symbol} amount`} value={amount} onChange={(value: number) =>  setAmount(value)} />
+          <BaseButton onClick={onMint}>Submit</BaseButton>
         </>
       </Popup>
       <BaseButton transparent={true}  onClick={() => setOpen(true)}>Mint</BaseButton>

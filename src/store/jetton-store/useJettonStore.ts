@@ -10,7 +10,7 @@ import WalletConnection from "services/wallet-connection";
 import { Address, fromNano } from "ton";
 import { jettonStateAtom } from ".";
 import QuestiomMarkImg from "assets/question.png";
-import { useCallback, useRef } from "react";
+import { useCallback } from "react";
 import useNotification from "hooks/useNotification";
 import { useParams } from "react-router-dom";
 import useConnectionStore from "store/connection-store/useConnectionStore";

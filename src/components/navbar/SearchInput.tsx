@@ -23,11 +23,11 @@ const StyledContainer = styled(Box)(({ expanded }: { expanded: boolean }) => ({
   [theme.breakpoints.down('sm')]:{
     width: '100%',
     minHeight:'unset',
-    height: 35
+    height: 40
   }
 }));
 
-const StyledInput = styled("input")({
+const StyledInput = styled("input")(({}) => ({
   border: "none",
   flex: 1,
   width: "100%",
@@ -37,8 +37,11 @@ const StyledInput = styled("input")({
   fontWeight: 500,
   fontFamily: "inherit",
   outline: "unset",
+  [theme.breakpoints.down('sm')]: {
+    fontSize: 16
+  }
 
-});
+}));
 
 
 interface Props{

@@ -35,7 +35,7 @@ function BurnJettonsAction() {
 
     const value = toNano(amount);
 
-    if(amount > balance){
+    if(amount > Number(balance)){
       showNotification(`Maximum amount to burn is ${balance.toLocaleString()}`, "warning", undefined, 3000);
       return 
     }    

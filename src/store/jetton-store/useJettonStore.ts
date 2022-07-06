@@ -86,6 +86,7 @@ function useJettonStore() {
 
       console.log({result});
 
+
       setState((prevState) => {
         return {
           ...prevState,
@@ -101,7 +102,7 @@ function useJettonStore() {
           isAdmin: admin,
           adminAddress: _adminAddress,
           balance: result.jettonWallet
-            ? parseFloat(fromNano(result.jettonWallet.balance))
+            ? fromNano(result.jettonWallet.balance)
             : undefined,
           jettonAddress: result.jettonWallet?.jWalletAddress.toFriendly(),
           jettonMaster: id,

@@ -16,7 +16,7 @@ import { StyledSectionTitle } from "../Row";
 const getError = (
   toAddress?: string,
   amount?: number,
-  balance?: number,
+  balance?: string,
   symbol?: string
 ): string | undefined => {
   if (!toAddress) {
@@ -31,7 +31,7 @@ const getError = (
     return "Transfer amount required";
   }
 
-  if (amount > balance!!) {
+  if (amount > Number(balance)!!) {
     return `Maximum amount to transfer is ${balance?.toLocaleString()} ${symbol}`;
   }
 };

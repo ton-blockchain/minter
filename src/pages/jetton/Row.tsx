@@ -11,7 +11,7 @@ import theme from "theme";
 
 interface RowProps {
   title: string;
-  value?: string | null | number;
+  value?: string | null | number | JSX.Element;
   message?: JettonDetailMessage | undefined;
   address?: string | null;
   actions?: FunctionComponent[] | undefined;

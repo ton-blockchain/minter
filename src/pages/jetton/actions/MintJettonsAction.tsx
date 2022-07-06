@@ -1,5 +1,6 @@
 import { Typography } from "@mui/material";
 import BaseButton from "components/BaseButton";
+import BigNumberDisplay from "components/BigNumberDisplay";
 import NumberInput from "components/NumberInput";
 import { Popup } from "components/Popup";
 import TxLoader from "components/TxLoader";
@@ -43,7 +44,7 @@ function MintJettonsAction() {
         value
       );
       setOpen(false)
-      const message = `Successfully minted ${amount.toLocaleString()} ${symbol}`;
+      const message = <>Successfully minted <BigNumberDisplay value={amount} /> {symbol}</>;
       getJettonDetails();
       showNotification(message, "success");
     } catch (error) {

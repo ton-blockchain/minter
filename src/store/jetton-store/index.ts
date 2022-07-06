@@ -12,7 +12,7 @@ interface JettonStoreState {
   balance?: string;
   jettonMaster?: string;
   persistenceType?: persistenceType;
-  totalSupply?: number;
+  totalSupply?: string;
   jettonAddress?: string;
   isJettonDeployerFaultyOnChainData?: boolean;
   jettonLoading: boolean;

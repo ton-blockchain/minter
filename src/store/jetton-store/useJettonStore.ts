@@ -95,7 +95,7 @@ function useJettonStore() {
           persistenceType: result.minter.persistenceType,
           description: result.minter.metadata.description,
           jettonImage: result.minter.metadata.image || QuestiomMarkImg,
-          totalSupply: parseFloat(fromNano(result.minter.totalSupply)),
+          totalSupply: fromNano(result.minter.totalSupply),
           name: result.minter.metadata.name,
           symbol: result.minter.metadata.symbol,
           adminRevokedOwnership: _adminAddress === zeroAddress().toFriendly(),

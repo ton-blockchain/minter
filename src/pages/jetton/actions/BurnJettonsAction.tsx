@@ -1,5 +1,7 @@
 import { Typography } from "@mui/material";
+import { BN } from "bn.js";
 import BaseButton from "components/BaseButton";
+import BigNumberDisplay from "components/BigNumberDisplay";
 import NumberInput from "components/NumberInput";
 import { Popup } from "components/Popup";
 import TxLoader from "components/TxLoader";
@@ -14,8 +16,14 @@ function BurnJettonsAction() {
   const [amount, setAmount] = useState<number | undefined>(undefined);
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { jettonMaster, symbol, getJettonDetails, balance, jettonAddress, isMyWallet } =
-    useJettonStore();
+  const {
+    jettonMaster,
+    symbol,
+    getJettonDetails,
+    balance,
+    jettonAddress,
+    isMyWallet,
+  } = useJettonStore();
   const { showNotification } = useNotification();
 
   if (!balance || !isMyWallet) {
@@ -27,23 +35,31 @@ function BurnJettonsAction() {
       return;
     }
 
-    if(!amount || amount === 0) {
+    if (!amount || amount === 0) {
       showNotification(`Minimum amount to burn is 1 ${symbol}`, "warning");
-      return 
-  }
+      return;
+    }
 
+    const value = toNano(amount);    
 
-    const value = toNano(amount);
-
-    if(amount > Number(balance)){
-      showNotification(`Maximum amount to burn is ${balance.toLocaleString()}`, "warning", undefined, 3000);
-      return 
-    }    
+    if (value.gt(toNano(balance!!))) {
+      const msg = (
+        <>
+          Maximum amount to burn is <BigNumberDisplay value={balance} />
+        </>
+      );
+      showNotification(msg, "warning", undefined, 3000);
+      return;
+    }
 
     try {
       setIsLoading(true);
       const connection = WalletConnection.getConnection();
-      await jettonDeployController.burnJettons(connection, value, jettonAddress!);
+      await jettonDeployController.burnJettons(
+        connection,
+        value,
+        jettonAddress!
+      );
       setOpen(false);
       const message = `Successfully burned ${amount.toLocaleString()} ${symbol}`;
       showNotification(message, "success");
@@ -75,14 +91,12 @@ function BurnJettonsAction() {
             value={amount}
             onChange={(value: number) => setAmount(value)}
           />
-          <BaseButton
-            onClick={onBurn}
-          >
-            Submit
-          </BaseButton>
+          <BaseButton onClick={onBurn}>Submit</BaseButton>
         </>
       </Popup>
-      <BaseButton transparent={true} onClick={() => setOpen(true)}>Burn</BaseButton>
+      <BaseButton transparent={true} onClick={() => setOpen(true)}>
+        Burn
+      </BaseButton>
     </>
   );
 }

@@ -22,9 +22,10 @@ import FaultyDeploy from "./FaultyDeploy";
 import Row from "./Row";
 import SectionLabel from "components/SectionLabel";
 import TransferAction from "./actions/TransferAction";
+import { BN } from "bn.js";
+import BigNumberDisplay from "components/BigNumberDisplay";
 function JettonPage() {
   const { id }: { id?: string } = useParams();
-
 
   const { address, isConnecting } = useConnectionStore();
 
@@ -44,11 +45,8 @@ function JettonPage() {
     jettonAddress,
     isJettonDeployerFaultyOnChainData,
     jettonLoading,
-    selectedWalletAddress
+    selectedWalletAddress,
   } = useJettonStore();
-
-
-    
 
   useEffect(() => {
     if (id && !isConnecting) {
@@ -64,7 +62,7 @@ function JettonPage() {
       <ScreenContent>
         <StyledContainer>
           <StyledRead>
-          <SectionLabel>Shared Jetton metadata</SectionLabel>
+            <SectionLabel>Shared Jetton metadata</SectionLabel>
             <StyledTop>
               <StyledTopImg>
                 <LoadingImage
@@ -126,7 +124,11 @@ function JettonPage() {
               <Row
                 title="Total Supply"
                 value={
-                  totalSupply && `${totalSupply.toLocaleString()} ${symbol}`
+                  totalSupply && (
+                    <>
+                      <BigNumberDisplay value={totalSupply} /> {symbol}
+                    </>
+                  )
                 }
                 dataLoading={jettonLoading}
                 message={getTotalSupplyWarning(
@@ -141,21 +143,27 @@ function JettonPage() {
           <StyledWrite>
             <SectionLabel>Connected Jetton wallet</SectionLabel>
             <StyledCategoryFields>
-            <Row
-              title="Wallet Address"
-              value={selectedWalletAddress}
-              dataLoading={jettonLoading}
-              address={selectedWalletAddress}
-              description="Connected wallet public address, can be shared to receive jetton transfers"
-            />
-            <Row
-              title="Wallet Balance"
-              value={balance && `${balance.toLocaleString()} ${symbol}`}
-              dataLoading={jettonLoading}
-              actions={balanceActions}
-              description="Number of tokens in connected wallet that can be transferred to others"
-            />
-            <TransferAction />
+              <Row
+                title="Wallet Address"
+                value={selectedWalletAddress}
+                dataLoading={jettonLoading}
+                address={selectedWalletAddress}
+                description="Connected wallet public address, can be shared to receive jetton transfers"
+              />
+              <Row
+                title="Wallet Balance"
+                value={
+                  balance && (
+                    <>
+                      <BigNumberDisplay value={balance} /> {symbol}
+                    </>
+                  )
+                }
+                dataLoading={jettonLoading}
+                actions={balanceActions}
+                description="Number of tokens in connected wallet that can be transferred to others"
+              />
+              <TransferAction />
             </StyledCategoryFields>
           </StyledWrite>
         </StyledContainer>
@@ -166,48 +174,47 @@ function JettonPage() {
 
 export { JettonPage };
 
-const StyledContainer = styled(Box)(({theme}) => ({
+const StyledContainer = styled(Box)(({ theme }) => ({
   display: "flex",
   gap: 30,
   width: "100%",
-  [theme.breakpoints.down(1100)]:{
-    flexDirection:'column'
-  }
+  [theme.breakpoints.down(1100)]: {
+    flexDirection: "column",
+  },
 }));
 
 export const StyledCategory = styled(Box)(({ theme }) => ({
   width: "calc(50% - 15px)",
-  padding: '20px 30px 30px 30px',
+  padding: "20px 30px 30px 30px",
   borderRadius: 16,
-  [theme.breakpoints.down(1100)]:{
-    width:'100%',
-    padding: '20px 25px 20px 25px',
-  }
+  [theme.breakpoints.down(1100)]: {
+    width: "100%",
+    padding: "20px 25px 20px 25px",
+  },
 }));
-
 
 const StyledCategoryFields = styled(Box)({
   display: "flex",
   flexDirection: "column",
   gap: 24,
-})
-
-const StyledRead = styled(StyledCategory)({
-  background:'rgba(80, 167, 234, 0.05)'
 });
 
-const StyledWrite = styled(StyledCategory)(({theme}) => ({
-  background: '#F7FAFC',
-  [theme.breakpoints.down('sm')]:{
-   paddingBottom: 140,
-  }
+const StyledRead = styled(StyledCategory)({
+  background: "rgba(80, 167, 234, 0.05)",
+});
+
+const StyledWrite = styled(StyledCategory)(({ theme }) => ({
+  background: "#F7FAFC",
+  [theme.breakpoints.down("sm")]: {
+    paddingBottom: 140,
+  },
 }));
 
 export const StyledTop = styled(Box)({
   display: "flex",
   alignItems: "center",
   gap: 20,
-  marginBottom: 30
+  marginBottom: 30,
 });
 
 export const StyledTopText = styled(Box)({
@@ -244,5 +251,3 @@ const StyledTopImg = styled(Box)(({ theme }) => ({
     border: "2px solid #D9D9D9",
   },
 }));
-
-

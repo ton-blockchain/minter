@@ -2,12 +2,7 @@ import BN from "bn.js";
 import { Address, beginCell, Cell, toNano } from "ton";
 import { ContractDeployer } from "./contract-deployer";
 
-import {
-  createDeployParams,
-  parseGetMethodCall,
-  waitForContractDeploy,
-  waitForSeqno,
-} from "./utils";
+import { createDeployParams, waitForContractDeploy, waitForSeqno } from "./utils";
 import { cellToAddress, TonConnection } from "@ton-defi.org/ton-connection";
 import { zeroAddress } from "./utils";
 import {
@@ -68,41 +63,12 @@ class JettonDeployController {
       await waitForContractDeploy(contractAddr, tonConnection._tonClient);
     }
 
-    const jettonDataRes = await tonConnection._tonClient.callGetMethod(
-      contractAddr,
-      "get_jetton_data"
-    );
-
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const deployedOwnerAddress = (
-      parseGetMethodCall(jettonDataRes.stack)[2] as Cell
-    )
-      .beginParse()
-      .readAddress()!;
-    if (deployedOwnerAddress.toFriendly() !== params.owner.toFriendly())
-      throw new Error("Contract deployed incorrectly");
-
-    // todo why idx:false?
-    const jwalletAddressRes = await tonConnection._tonClient.callGetMethod(
+    const ownerJWalletAddr = await tonConnection.makeGetCall(
       contractAddr,
       "get_wallet_address",
-      [
-        [
-          "tvm.Slice",
-          beginCell()
-            .storeAddress(params.owner)
-            .endCell()
-            .toBoc({ idx: false })
-            .toString("base64"),
-        ],
-      ]
+      [beginCell().storeAddress(params.owner).endCell()],
+      ([addr]) => (addr as Cell).beginParse().readAddress()!
     );
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const ownerJWalletAddr = (
-      parseGetMethodCall(jwalletAddressRes.stack)[0] as Cell
-    )
-      .beginParse()
-      .readAddress()!;
 
     // params.onProgress?.(JettonDeployState.AWAITING_JWALLET_DEPLOY);
     await waitForContractDeploy(ownerJWalletAddr, tonConnection._tonClient);
@@ -113,16 +79,6 @@ class JettonDeployController {
     //   contractAddr.toFriendly()
     // ); // TODO better way of emitting the contract?
 
-    const jwalletDataRes = await tonConnection._tonClient.callGetMethod(
-      ownerJWalletAddr,
-      "get_wallet_data"
-    );
-    if (
-      !(parseGetMethodCall(jwalletDataRes.stack)[0] as BN).eq(
-        params.amountToMint
-      )
-    )
-      throw new Error("Mint fail");
     // params.onProgress?.(JettonDeployState.DONE);
     return contractAddr;
   }
@@ -145,10 +101,9 @@ class JettonDeployController {
     await waiter();
   }
 
-
-  async mint(tonConnection:TonConnection, jettonMaster: Address, amount: BN ) {
+  async mint(tonConnection: TonConnection, jettonMaster: Address, amount: BN) {
     const { address } = await tonConnection.connect();
-    
+
     const waiter = await waitForSeqno(
       tonConnection._tonClient.openWalletFromAddress({
         source: Address.parse(address),
@@ -157,14 +112,17 @@ class JettonDeployController {
     await tonConnection.requestTransaction({
       to: jettonMaster,
       value: toNano(0.02),
-      message: mintBody(Address.parse(address), amount, toNano(0.02)),
+      message: mintBody(Address.parse(address), amount, toNano(0.02), 0),
     });
-    await waiter()
+    await waiter();
   }
 
-
-
-  async transfer(tonConnection: TonConnection, amount: BN, toAddress: string, ownerJettonWallet: string){
+  async transfer(
+    tonConnection: TonConnection,
+    amount: BN,
+    toAddress: string,
+    ownerJettonWallet: string
+  ) {
     const { address } = await tonConnection.connect();
 
     const waiter = await waitForSeqno(
@@ -177,13 +135,16 @@ class JettonDeployController {
       to: Address.parse(ownerJettonWallet),
       value: toNano(0.05),
       message: transfer(Address.parse(toAddress), amount),
-    }); 
+    });
 
-
-    await waiter()
+    await waiter();
   }
 
-  async burnJettons(tonConnection: TonConnection, amount: BN, jettonAddress: string){
+  async burnJettons(
+    tonConnection: TonConnection,
+    amount: BN,
+    jettonAddress: string
+  ) {
     const { address } = await tonConnection.connect();
 
     const waiter = await waitForSeqno(
@@ -196,12 +157,10 @@ class JettonDeployController {
       to: Address.parse(jettonAddress),
       value: toNano(0.031),
       message: burn(amount, Address.parse(address)),
-    }); 
+    });
 
-
-    await waiter()
+    await waiter();
   }
-
 
   async getJettonDetails(
     contractAddr: Address,
@@ -271,8 +230,8 @@ class JettonDeployController {
       message: _replaceMetadataFAULTY_FIX(buildJettonOnchainMetadata(data)),
       value: toNano(0.01),
     });
-    
-    await waiter()
+
+    await waiter();
   }
 }
 

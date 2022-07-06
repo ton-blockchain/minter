@@ -53,19 +53,6 @@ export async function waitForContractDeploy(
   throw new Error("Timeout");
 }
 
-export function parseGetMethodCall(stack: any[]) {
-  return stack.map(([type, val]) => {
-    switch (type) {
-      case "num":
-        return new BN(val.replace("0x", ""), "hex");
-      case "cell":
-        return Cell.fromBoc(Buffer.from(val.bytes, "base64"))[0];
-      default:
-        throw new Error("unknown type");
-    }
-  });
-}
-
 export const createDeployParams = (params: JettonDeployParams) => {
   const metadata: { [s in JettonMetaDataKeys]?: string } = {
     name: params.jettonName,
@@ -74,11 +61,14 @@ export const createDeployParams = (params: JettonDeployParams) => {
     image: params.imageUri,
   };
 
+  // sha256("jetton.live").toDecimal() sliced to fit 64 bit
+  const queryId = 10838952005243645701;
+
   return {
     code: JETTON_MINTER_CODE,
     data: initData(params.owner, metadata),
     deployer: params.owner,
     value: JETTON_DEPLOY_GAS,
-    message: mintBody(params.owner, params.amountToMint, toNano(0.2)),
+    message: mintBody(params.owner, params.amountToMint, toNano(0.2), queryId),
   };
 };

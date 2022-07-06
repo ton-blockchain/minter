@@ -86,6 +86,7 @@ function useJettonStore() {
 
       console.log({result});
 
+
       setState((prevState) => {
         return {
           ...prevState,
@@ -94,14 +95,14 @@ function useJettonStore() {
           persistenceType: result.minter.persistenceType,
           description: result.minter.metadata.description,
           jettonImage: result.minter.metadata.image || QuestiomMarkImg,
-          totalSupply: parseFloat(fromNano(result.minter.totalSupply)),
+          totalSupply: fromNano(result.minter.totalSupply),
           name: result.minter.metadata.name,
           symbol: result.minter.metadata.symbol,
           adminRevokedOwnership: _adminAddress === zeroAddress().toFriendly(),
           isAdmin: admin,
           adminAddress: _adminAddress,
           balance: result.jettonWallet
-            ? parseFloat(fromNano(result.jettonWallet.balance))
+            ? fromNano(result.jettonWallet.balance)
             : undefined,
           jettonAddress: result.jettonWallet?.jWalletAddress.toFriendly(),
           jettonMaster: id,

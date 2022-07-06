@@ -9,7 +9,7 @@ import theme from "theme";
 
 interface Props {
   address?: string | null;
-  value?: string | number;
+  value?: string | number | JSX.Element;
 }
 
 const StyledContainer = styled(Box)({

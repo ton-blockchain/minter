@@ -9,10 +9,10 @@ interface JettonStoreState {
   jettonImage?: string;
   description?: string;
   adminAddress?: string;
-  balance?: number;
+  balance?: string;
   jettonMaster?: string;
   persistenceType?: persistenceType;
-  totalSupply?: number;
+  totalSupply?: string;
   jettonAddress?: string;
   isJettonDeployerFaultyOnChainData?: boolean;
   jettonLoading: boolean;

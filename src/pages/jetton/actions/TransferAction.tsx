@@ -1,10 +1,11 @@
 import { Box, styled, TextField, Typography } from "@mui/material";
+import BN from "bn.js";
 import BaseButton from "components/BaseButton";
+import BigNumberDisplay from "components/BigNumberDisplay";
 import NumberInput from "components/NumberInput";
 import TxLoader from "components/TxLoader";
 import useNotification from "hooks/useNotification";
 import { jettonDeployController } from "lib/deploy-controller";
-import { zeroAddress } from "lib/utils";
 import { useState } from "react";
 import WalletConnection from "services/wallet-connection";
 import useJettonStore from "store/jetton-store/useJettonStore";
@@ -16,12 +17,13 @@ import { StyledSectionTitle } from "../Row";
 const getError = (
   toAddress?: string,
   amount?: number,
-  balance?: number,
+  balance?: string,
   symbol?: string
-): string | undefined => {
+): string | undefined | JSX.Element => {
   if (!toAddress) {
     return "Recipient wallet address required";
   }
+
 
   if (toAddress && !isValidAddress(toAddress)) {
     return "Invalid Recipient wallet address";
@@ -31,8 +33,8 @@ const getError = (
     return "Transfer amount required";
   }
 
-  if (amount > balance!!) {
-    return `Maximum amount to transfer is ${balance?.toLocaleString()} ${symbol}`;
+  if (toNano(amount).gt(toNano(balance!!))) {
+    return <>Maximum amount to transfer is <BigNumberDisplay value={balance!!} /> {symbol}</>;
   }
 };
 

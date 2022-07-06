@@ -189,11 +189,12 @@ export function initData(
 export function mintBody(
   owner: Address,
   jettonValue: BN,
-  transferToJWallet: BN
+  transferToJWallet: BN,
+  queryId: number
 ): Cell {
   return beginCell()
     .storeUint(OPS.Mint, 32)
-    .storeUint(0, 64) // queryid
+    .storeUint(queryId, 64) // queryid
     .storeAddress(owner)
     .storeCoins(transferToJWallet)
     .storeRef(

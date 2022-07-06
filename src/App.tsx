@@ -6,6 +6,8 @@ import { APP_GRID, ROUTES } from "consts";
 import { Route, Routes } from "react-router-dom";
 import { DeployerPage, JettonPage } from "pages";
 import ConnectPopup from "components/connect-popup";
+import 'services/analytics'
+
 
 const StyledApp = styled(Box)(({ theme }) => ({
   maxWidth: APP_GRID,

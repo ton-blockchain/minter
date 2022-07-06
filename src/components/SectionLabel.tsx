@@ -7,7 +7,7 @@ const StyledContainer = styled(Typography)({
   left: "-10px",
   fontSize: 14,
   fontWeight: 600,
-  "& *": {
+  "& a": {
     fontSize: 14,
     color:'unset',
     textDecoration:'unset',

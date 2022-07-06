@@ -47,7 +47,7 @@ export const StyledDescription = styled(Box)(({ theme }) => ({
     lineHeight: "24px",
   },
   [theme.breakpoints.down("md")]: {
-    padding: 20,
+  
     "& p": {
       fontSize: 14,
       lineHeight: "20px",

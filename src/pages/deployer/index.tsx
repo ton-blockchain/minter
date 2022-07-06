@@ -118,7 +118,7 @@ const Spacer = () => {
 function Description() {
   return (
     <StyledDescription>
-      <SectionLabel>
+      <SectionLabel href='https://github.com/ton-defi-org/jetton-deployer-contracts'>
         https://github.com/ton-defi-org/jetton-deployer-contracts
       </SectionLabel>
       <Typography>

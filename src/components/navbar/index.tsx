@@ -33,7 +33,8 @@ const StyledAppBar = styled(AppBar)(({ theme }) => ({
   zIndex: 99,
   left:0,
   paddingLeft:15,
-  paddingRight: 15
+  paddingRight: 15,
+  paddingBottom: 10,
   }
 }));
 

@@ -1,23 +1,35 @@
-import { Typography } from "@mui/material";
-import React, { ReactNode } from "react";
+import { Link, styled, Typography } from "@mui/material";
+import { ReactNode } from "react";
 
-interface Props{
-    children: ReactNode;
+const StyledContainer = styled(Typography)({
+  marginBottom: 25,
+  position: "relative",
+  left: "-10px",
+  fontSize: 14,
+  fontWeight: 600,
+  "& *": {
+    fontSize: 14,
+    color:'unset',
+    textDecoration:'unset',
+    fontWeight: 600,
+  },
+});
+interface Props {
+  children: ReactNode;
+  href?: string;
 }
 
-function SectionLabel({children}: Props) {
+function SectionLabel({ children, href }: Props) {
   return (
-    <Typography
-      style={{
-        fontWeight: 600,
-        fontSize: 14,
-        marginBottom: 25,
-        position: "relative",
-        left: "-10px",
-      }}
-    >
-     {children}
-    </Typography>
+    <StyledContainer>
+      {href ? (
+        <Link target="_blank" href={href}>
+          {children}
+        </Link>
+      ) : (
+        children
+      )}
+    </StyledContainer>
   );
 }
 

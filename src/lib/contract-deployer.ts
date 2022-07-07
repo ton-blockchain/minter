@@ -35,8 +35,6 @@ export class ContractDeployer {
       });
     }
 
-    console.log(params.data)
-
     return _contractAddress;
   }
 }

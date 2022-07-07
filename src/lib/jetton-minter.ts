@@ -1,8 +1,8 @@
 import BN from "bn.js";
 import { Cell, beginCell, Address, beginDict, Slice } from "ton";
 
-import walletHex from "./contracts/jetton-wallet-bitcode.json";
-import minterHex from "./contracts/jetton-minter-bitcode.json";
+import walletHex from "./contracts/jetton-wallet.compiled.json";
+import minterHex from "./contracts/jetton-minter.compiled.json";
 import { Sha256 } from "@aws-crypto/sha256-js";
 import axios from "axios";
 

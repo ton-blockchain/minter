@@ -61,7 +61,7 @@ export const createDeployParams = (params: JettonDeployParams) => {
     image: params.imageUri,
   };
 
-  const queryId = parseInt(process.env.DEPLOY_QUERY_ID ?? "0");
+  const queryId = parseInt(process.env.REACT_APP_DEPLOY_QUERY_ID ?? "0");
 
   return {
     code: JETTON_MINTER_CODE,

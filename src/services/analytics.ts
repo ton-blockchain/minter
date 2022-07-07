@@ -1,6 +1,5 @@
 import ReactGA from "react-ga";
 
-ReactGA.initialize(process.env.REACT_APP_GA!!);
 
 export enum AnalyticsCategory {
   JETTON_PAGE = "Jetton page",
@@ -28,8 +27,17 @@ const sendEvent = (
   }
 };
 
+
+const init = () => {
+  console.log(process.env.REACT_APP_G);
+  
+  ReactGA.initialize(process.env.REACT_APP_GA!!)
+
+}
+
 const analytics = {
   sendEvent,
+  init
 };
 
 export default analytics;

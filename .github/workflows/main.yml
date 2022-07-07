@@ -20,7 +20,7 @@ jobs:
         run: CI=false npm run build
         env:
           REACT_APP_GA: ${{ secrets.REACT_APP_GA }}
-          DEPLOY_QUERY_ID: ${{ secrets.DEPLOY_QUERY_ID }} # sha256("jetton.live").toDecimal() sliced to fit 53 bit (BN assertion, though query id allows 64) = 1083895200524364
+          REACT_APP_DEPLOY_QUERY_ID: ${{ secrets.REACT_APP_DEPLOY_QUERY_ID }} # sha256("jetton.live").toDecimal() sliced to fit 53 bit (BN assertion, though query id allows 64) = 1083895200524364
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@4.1.4
         with:

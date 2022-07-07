@@ -29,7 +29,7 @@ const sendEvent = (
 
 
 const init = () => {
-  console.log(process.env.REACT_APP_G);
+  console.log(process.env.REACT_APP_GA);
   
   ReactGA.initialize(process.env.REACT_APP_GA!!)
 

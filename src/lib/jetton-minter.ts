@@ -222,13 +222,13 @@ export function burn(amount: BN, responseAddress: Address) {
     .endCell();
 }
 
-export function transfer(to: Address, jettonAmount: BN) {
+export function transfer(to: Address, from: Address, jettonAmount: BN) {
   return beginCell()
     .storeUint(OPS.Transfer, 32)
     .storeUint(1, 64)
     .storeCoins(jettonAmount)
     .storeAddress(to)
-    .storeAddress(to)
+    .storeAddress(from)
     .storeBit(false)
     .storeCoins(0)
     .endCell();

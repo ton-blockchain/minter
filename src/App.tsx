@@ -6,11 +6,9 @@ import { APP_GRID, ROUTES } from "consts";
 import { Route, Routes } from "react-router-dom";
 import { DeployerPage, JettonPage } from "pages";
 import ConnectPopup from "components/connect-popup";
-import analytics from "services/analytics";
-
+import analytics  from "services/analytics";
 
 analytics.init()
-
 const StyledApp = styled(Box)(({ theme }) => ({
   maxWidth: APP_GRID,
   width: "calc(100% - 50px)",
@@ -41,6 +39,7 @@ function App() {
 
   useEffect(() => {
     connectOnLoad();
+
   }, []);
 
   return (

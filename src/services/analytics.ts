@@ -28,10 +28,9 @@ const sendEvent = (
 };
 
 
-const init = () => {
-  console.log(process.env.REACT_APP_GA);
-  
+const init = () => {  
   ReactGA.initialize(process.env.REACT_APP_GA!!)
+  ReactGA.pageview(window.location.pathname + window.location.search);
 
 }
 

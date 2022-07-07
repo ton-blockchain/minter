@@ -55,7 +55,7 @@ export function buildJettonOnchainMetadata(data: {
       jettonOnChainMetadataSpec[k as JettonMetaDataKeys]
     );
 
-    const CELL_MAX_SIZE_BYTES = Math.floor((1023-8) / 8);
+    const CELL_MAX_SIZE_BYTES = Math.floor((1023 - 8) / 8);
 
     const rootCell = new Cell();
     let currentCell = rootCell;
@@ -189,11 +189,12 @@ export function initData(
 export function mintBody(
   owner: Address,
   jettonValue: BN,
-  transferToJWallet: BN
+  transferToJWallet: BN,
+  queryId: number
 ): Cell {
   return beginCell()
     .storeUint(OPS.Mint, 32)
-    .storeUint(0, 64) // queryid
+    .storeUint(queryId, 64) // queryid
     .storeAddress(owner)
     .storeCoins(transferToJWallet)
     .storeRef(

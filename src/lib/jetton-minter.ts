@@ -55,7 +55,7 @@ export function buildJettonOnchainMetadata(data: {
       jettonOnChainMetadataSpec[k as JettonMetaDataKeys]
     );
 
-    const CELL_MAX_SIZE_BYTES = Math.floor(1023 / 8);
+    const CELL_MAX_SIZE_BYTES = Math.floor((1023 - 8) / 8);
 
     const rootCell = new Cell();
     let currentCell = rootCell;

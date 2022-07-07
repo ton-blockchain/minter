@@ -1,10 +1,13 @@
 import {
   buildJettonOnchainMetadata,
+  initData,
+  mintBody,
   readJettonMetadata,
 } from "lib/jetton-minter";
 import { beginCell, Cell } from "ton";
 import axios from "axios";
 import { persistenceType } from "./lib/jetton-minter";
+import { zeroAddress } from "./lib/utils";
 
 jest.mock("axios");
 
@@ -21,7 +24,11 @@ test("Long serialization", async () => {
     symbol: longUrl,
   };
 
-  expect(await readJettonMetadata(buildJettonOnchainMetadata(data))).toEqual({
+  const resultC = buildJettonOnchainMetadata(data);
+  const hexC = resultC.toBoc({ idx: false }).toString("hex");
+  const deserC = Cell.fromBoc(hexC)[0];
+
+  expect(await readJettonMetadata(deserC)).toEqual({
     persistenceType: "onchain",
     metadata: data,
     isJettonDeployerFaultyOnChainData: false,
@@ -39,7 +46,7 @@ test("Short serialization", async () => {
 
 test("Faulty serialization", async () => {
   const data = { image: "nope" };
-  
+
   // Precomputed with faulty code prior to https://github.com/ton-defi-org/jetton-deployer-webclient/pull/61
   const faultyContentCell = Cell.fromBoc(
     "b5ee9c72c1010201002e000005010300c001004da00c20bad98ed5e80064bd29ab119ca237cb7fb76e7686fb8a3d948722faf487c7a00dcdee0cb04871a9c9"

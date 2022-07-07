@@ -8,6 +8,7 @@ import { DeployerPage, JettonPage } from "pages";
 import ConnectPopup from "components/connect-popup";
 import 'services/analytics'
 
+console.log(proccess.env.REACT_APP_GA);
 
 const StyledApp = styled(Box)(({ theme }) => ({
   maxWidth: APP_GRID,

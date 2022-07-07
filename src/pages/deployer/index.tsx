@@ -9,8 +9,6 @@ import { ContractDeployer } from "lib/contract-deployer";
 import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
 import { ROUTES } from "consts";
 import TxLoader from "components/TxLoader";
-import { isMobile } from "react-device-detect";
-import { Providers } from "lib/env-profiles";
 import useNotification from "hooks/useNotification";
 
 import {
@@ -24,6 +22,10 @@ import Navbar from "components/navbar";
 import SearchInput from "./SearchInput";
 import Form from "./Form";
 import SectionLabel from "components/SectionLabel";
+import analytics, {
+  AnalyticsAction,
+  AnalyticsCategory,
+} from "services/analytics";
 
 function DeployerPage() {
   const { showNotification } = useNotification();
@@ -70,11 +72,18 @@ function DeployerPage() {
       setIsLoading(false);
       return;
     }
+
     try {
       const result = await jettonDeployController.createJetton(
         params,
         connection
       );
+      analytics.sendEvent(
+        AnalyticsCategory.DEPLOYER_PAGE,
+        AnalyticsAction.DEPLOY,
+        contractAddress.toFriendly()
+      );
+
       navigate(`${ROUTES.jetton}/${Address.normalize(result)}`);
     } catch (err) {
       if (err instanceof Error) {
@@ -84,7 +93,6 @@ function DeployerPage() {
       setIsLoading(false);
     }
   }
-
 
   return (
     <Screen>
@@ -112,13 +120,13 @@ function DeployerPage() {
 export { DeployerPage };
 
 const Spacer = () => {
-  return <aside style ={{height: 25}}></aside>
-}
+  return <aside style={{ height: 25 }}></aside>;
+};
 
 function Description() {
   return (
     <StyledDescription>
-      <SectionLabel href='https://github.com/ton-defi-org/jetton-deployer-contracts'>
+      <SectionLabel href="https://github.com/ton-defi-org/jetton-deployer-contracts">
         https://github.com/ton-defi-org/jetton-deployer-contracts
       </SectionLabel>
       <Typography>
@@ -133,9 +141,9 @@ function Description() {
         <Link target="_blank" href="https://ton.org">
           TON blockchain
         </Link>
-        . This free educational tool allows you to deploy your own Jetton to mainnet
-        in one click. You will need at least 0.25 TON for deployment fees.{" "}
-        <br />
+        . This free educational tool allows you to deploy your own Jetton to
+        mainnet in one click. You will need at least 0.25 TON for deployment
+        fees. <br />
         <Spacer />
         For detailed instructions and in-depth explanations of all fields please
         see the{" "}
@@ -170,7 +178,7 @@ function Description() {
         >
           GitHub Pages
         </Link>
-        .  <Spacer />
+        . <Spacer />
         Is this deployer safe? Yes! read{" "}
         <Link
           target="_blank"

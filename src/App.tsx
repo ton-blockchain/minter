@@ -9,8 +9,6 @@ import ConnectPopup from "components/connect-popup";
 import 'services/analytics'
 
 
-console.log(process.env.REACT_APP_GA);
-
 
 
 const StyledApp = styled(Box)(({ theme }) => ({

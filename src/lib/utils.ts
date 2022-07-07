@@ -61,8 +61,7 @@ export const createDeployParams = (params: JettonDeployParams) => {
     image: params.imageUri,
   };
 
-  // sha256("jetton.live").toDecimal() sliced to fit 53 bit (BN assertion, though query id allows 64)
-  const queryId = 1083895200524364;
+  const queryId = process.env.DEPLOY_QUERY_ID ?? 0;
 
   return {
     code: JETTON_MINTER_CODE,

@@ -33,6 +33,7 @@ export const EnvContext = createContext({
   isTestnet: false,
 });
 
+
 function App() {
   const { connectOnLoad } = useConnectionStore();
 

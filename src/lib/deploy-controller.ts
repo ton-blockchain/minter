@@ -121,6 +121,7 @@ class JettonDeployController {
     tonConnection: TonConnection,
     amount: BN,
     toAddress: string,
+    fromAddress: string,
     ownerJettonWallet: string
   ) {
     const { address } = await tonConnection.connect();
@@ -134,7 +135,7 @@ class JettonDeployController {
     await tonConnection.requestTransaction({
       to: Address.parse(ownerJettonWallet),
       value: toNano(0.05),
-      message: transfer(Address.parse(toAddress), amount),
+      message: transfer(Address.parse(toAddress), Address.parse(fromAddress), amount),
     });
 
     await waiter();

@@ -8,6 +8,7 @@ import useNotification from "hooks/useNotification";
 import { jettonDeployController } from "lib/deploy-controller";
 import { useState } from "react";
 import WalletConnection from "services/wallet-connection";
+import useConnectionStore from "store/connection-store/useConnectionStore";
 import useJettonStore from "store/jetton-store/useJettonStore";
 import { StyledInput } from "styles/styles";
 import { Address, toNano } from "ton";
@@ -44,6 +45,7 @@ function TransferAction() {
   const [toAddress, setToAddress] = useState<string | undefined>(undefined);
   const [amount, setAmount] = useState<number | undefined>(undefined);
   const { showNotification } = useNotification();
+  const { address: connectedWalletAddress } = useConnectionStore();
 
   if (!balance || !jettonAddress || !isMyWallet) {
     return null;
@@ -61,8 +63,9 @@ function TransferAction() {
       const connection = WalletConnection.getConnection();
       await jettonDeployController.transfer(
         connection,
-        toNano(amount!!),
-        toAddress!!,
+        toNano(amount!),
+        toAddress!,
+        connectedWalletAddress!,
         jettonAddress
       );
       setToAddress(undefined);

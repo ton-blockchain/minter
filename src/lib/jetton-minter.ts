@@ -58,10 +58,10 @@ export function buildJettonOnchainMetadata(data: {
     const CELL_MAX_SIZE_BYTES = Math.floor((1023 - 8) / 8);
 
     const rootCell = new Cell();
+    rootCell.bits.writeUint8(SNAKE_PREFIX);
     let currentCell = rootCell;
 
     while (bufferToStore.length > 0) {
-      currentCell.bits.writeUint8(SNAKE_PREFIX);
       currentCell.bits.writeBuffer(bufferToStore.slice(0, CELL_MAX_SIZE_BYTES));
       bufferToStore = bufferToStore.slice(CELL_MAX_SIZE_BYTES);
       if (bufferToStore.length > 0) {
@@ -138,14 +138,14 @@ function parseJettonOnchainMetadata(contentSlice: Slice): {
   const dict = contentSlice.readDict(KEYLEN, (s) => {
     let buffer = Buffer.from("");
 
-    const sliceToVal = (s: Slice, v: Buffer) => {
+    const sliceToVal = (s: Slice, v: Buffer, isFirst: boolean) => {
       s.toCell().beginParse();
-      if (s.readUint(8).toNumber() !== SNAKE_PREFIX)
+      if (isFirst && s.readUint(8).toNumber() !== SNAKE_PREFIX)
         throw new Error("Only snake format is supported");
 
       v = Buffer.concat([v, s.readRemainingBytes()]);
       if (s.remainingRefs === 1) {
-        v = sliceToVal(s.readRef(), v);
+        v = sliceToVal(s.readRef(), v, false);
       }
 
       return v;
@@ -153,10 +153,10 @@ function parseJettonOnchainMetadata(contentSlice: Slice): {
 
     if (s.remainingRefs === 0) {
       isJettonDeployerFaultyOnChainData = true;
-      return sliceToVal(s, buffer);
+      return sliceToVal(s, buffer, true);
     }
 
-    return sliceToVal(s.readRef(), buffer);
+    return sliceToVal(s.readRef(), buffer, true);
   });
 
   const res: { [s in JettonMetaDataKeys]?: string } = {};

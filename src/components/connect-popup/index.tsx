@@ -1,21 +1,21 @@
-import { styled } from "@mui/material";
-import { Box } from "@mui/system";
-import { delay } from "@ton-defi.org/ton-connection";
-import { Popup } from "components/Popup";
-import { providers, Providers } from "lib/env-profiles";
-import { useState } from "react";
-import { isMobile } from "react-device-detect";
-import useConnectionStore from "store/connection-store/useConnectionStore";
-import AdaptersList from "./AdaptersList";
-import QR from "./ConnectQR";
+import { styled } from '@mui/material';
+import { Box } from '@mui/system';
+import { delay } from '@ton-defi.org/ton-connection';
+import { Popup } from 'components/Popup';
+import { providers, Providers } from 'lib/env-profiles';
+import { useState } from 'react';
+import { isMobile } from 'react-device-detect';
+import useConnectionStore from 'store/connection-store/useConnectionStore';
+import AdaptersList from './AdaptersList';
+import QR from './ConnectQR';
 
 const SyledContainer = styled(Box)({
-  position: "relative",
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  background: "white",
-  width: "fit-content",
+  position: 'relative',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  background: 'white',
+  width: 'fit-content',
 });
 
 function ConnectPopup() {

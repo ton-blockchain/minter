@@ -1,26 +1,26 @@
-import BN from "bn.js";
-import { Address, beginCell, Cell, toNano } from "ton";
-import { ContractDeployer } from "./contract-deployer";
+import BN from 'bn.js';
+import { Address, beginCell, Cell, toNano } from 'ton';
+import { ContractDeployer } from './contract-deployer';
 
 import {
   createDeployParams,
   waitForContractDeploy,
   waitForSeqno,
-} from "./utils";
-import { cellToAddress, TonConnection } from "@ton-defi.org/ton-connection";
-import { zeroAddress } from "./utils";
+} from './utils';
+import { cellToAddress, TonConnection } from '@ton-defi.org/ton-connection';
+import { zeroAddress } from './utils';
 import {
   buildJettonOnchainMetadata,
   burn,
   mintBody,
   transfer,
   _replaceMetadataFAULTY_FIX,
-} from "./jetton-minter";
+} from './jetton-minter';
 import {
   readJettonMetadata,
   changeAdminBody,
   JettonMetaDataKeys,
-} from "./jetton-minter";
+} from './jetton-minter';
 
 export const JETTON_DEPLOY_GAS = toNano(0.25);
 
@@ -48,14 +48,14 @@ export interface JettonDeployParams {
 class JettonDeployController {
   async createJetton(
     params: JettonDeployParams,
-    tonConnection: TonConnection
+    tonConnection: TonConnection,
   ): Promise<Address> {
     const contractDeployer = new ContractDeployer();
 
     // params.onProgress?.(JettonDeployState.BALANCE_CHECK);
     const balance = await tonConnection._tonClient.getBalance(params.owner);
     if (balance.lt(JETTON_DEPLOY_GAS))
-      throw new Error("Not enough balance in deployer wallet");
+      throw new Error('Not enough balance in deployer wallet');
     const deployParams = createDeployParams(params);
     const contractAddr = contractDeployer.addressForContract(deployParams);
 
@@ -69,9 +69,9 @@ class JettonDeployController {
 
     const ownerJWalletAddr = await tonConnection.makeGetCall(
       contractAddr,
-      "get_wallet_address",
+      'get_wallet_address',
       [beginCell().storeAddress(params.owner).endCell()],
-      ([addr]) => (addr as Cell).beginParse().readAddress()!
+      ([addr]) => (addr as Cell).beginParse().readAddress()!,
     );
 
     // params.onProgress?.(JettonDeployState.AWAITING_JWALLET_DEPLOY);
@@ -93,7 +93,7 @@ class JettonDeployController {
     const waiter = await waitForSeqno(
       tonConnection._tonClient.openWalletFromAddress({
         source: Address.parse(address),
-      })
+      }),
     );
 
     await tonConnection.requestTransaction({
@@ -111,7 +111,7 @@ class JettonDeployController {
     const waiter = await waitForSeqno(
       tonConnection._tonClient.openWalletFromAddress({
         source: Address.parse(address),
-      })
+      }),
     );
     await tonConnection.requestTransaction({
       to: jettonMaster,
@@ -126,14 +126,14 @@ class JettonDeployController {
     amount: BN,
     toAddress: string,
     fromAddress: string,
-    ownerJettonWallet: string
+    ownerJettonWallet: string,
   ) {
     const { address } = await tonConnection.connect();
 
     const waiter = await waitForSeqno(
       tonConnection._tonClient.openWalletFromAddress({
         source: Address.parse(address),
-      })
+      }),
     );
 
     await tonConnection.requestTransaction({
@@ -142,7 +142,7 @@ class JettonDeployController {
       message: transfer(
         Address.parse(toAddress),
         Address.parse(fromAddress),
-        amount
+        amount,
       ),
     });
 
@@ -152,14 +152,14 @@ class JettonDeployController {
   async burnJettons(
     tonConnection: TonConnection,
     amount: BN,
-    jettonAddress: string
+    jettonAddress: string,
   ) {
     const { address } = await tonConnection.connect();
 
     const waiter = await waitForSeqno(
       tonConnection._tonClient.openWalletFromAddress({
         source: Address.parse(address),
-      })
+      }),
     );
 
     await tonConnection.requestTransaction({
@@ -174,41 +174,41 @@ class JettonDeployController {
   async getJettonDetails(
     contractAddr: Address,
     owner: Address,
-    tonConnection: TonConnection
+    tonConnection: TonConnection,
   ) {
     const minter = await tonConnection.makeGetCall(
       contractAddr,
-      "get_jetton_data",
+      'get_jetton_data',
       [],
       async ([totalSupply, __, adminCell, contentCell]) => ({
         ...(await readJettonMetadata(contentCell as unknown as Cell)),
         admin: cellToAddress(adminCell),
         totalSupply: totalSupply as BN,
-      })
+      }),
     );
 
     const jWalletAddress = await tonConnection.makeGetCall(
       contractAddr,
-      "get_wallet_address",
+      'get_wallet_address',
       [beginCell().storeAddress(owner).endCell()],
-      ([addressCell]) => cellToAddress(addressCell)
+      ([addressCell]) => cellToAddress(addressCell),
     );
 
     const isDeployed = await tonConnection._tonClient.isContractDeployed(
-      jWalletAddress
+      jWalletAddress,
     );
 
     let jettonWallet;
     if (isDeployed) {
       jettonWallet = await tonConnection.makeGetCall(
         jWalletAddress,
-        "get_wallet_data",
+        'get_wallet_data',
         [],
         ([amount, _, jettonMasterAddressCell]) => ({
           balance: (amount as unknown as BN).toString(),
           jWalletAddress,
           jettonMasterAddress: cellToAddress(jettonMasterAddressCell),
-        })
+        }),
       );
     } else {
       jettonWallet = null;
@@ -225,13 +225,13 @@ class JettonDeployController {
     data: {
       [s in JettonMetaDataKeys]?: string | undefined;
     },
-    connection: TonConnection
+    connection: TonConnection,
   ) {
     const { address } = await connection.connect();
     const waiter = await waitForSeqno(
       connection._tonClient.openWalletFromAddress({
         source: Address.parse(address),
-      })
+      }),
     );
 
     await connection.requestTransaction({

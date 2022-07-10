@@ -1,20 +1,20 @@
-var Buffer = require("buffer/").Buffer;
+var Buffer = require('buffer/').Buffer;
 global.Buffer = Buffer;
 /* eslint-disable import/first */
-import ReactDOM from "react-dom/client";
-import "./index.css";
-import App from "./App";
-import reportWebVitals from "./reportWebVitals";
-import { BrowserRouter as Router } from "react-router-dom";
-import { RecoilRoot } from "recoil";
-import CssBaseline from "@mui/material/CssBaseline";
-import { ThemeProvider } from "@mui/material/styles";
-import { ThemeProvider as MakeStylesProvider } from "@mui/material";
-import theme from "theme";
-import { SnackbarProvider } from "notistack";
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
+import { BrowserRouter as Router } from 'react-router-dom';
+import { RecoilRoot } from 'recoil';
+import CssBaseline from '@mui/material/CssBaseline';
+import { ThemeProvider } from '@mui/material/styles';
+import { ThemeProvider as MakeStylesProvider } from '@mui/material';
+import theme from 'theme';
+import { SnackbarProvider } from 'notistack';
 
 const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement
+  document.getElementById('root') as HTMLElement,
 );
 root.render(
   <RecoilRoot>
@@ -28,7 +28,7 @@ root.render(
         </Router>
       </MakeStylesProvider>
     </ThemeProvider>
-  </RecoilRoot>
+  </RecoilRoot>,
 );
 
 // If you want to start measuring performance in your app, pass a function

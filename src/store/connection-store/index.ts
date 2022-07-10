@@ -1,6 +1,6 @@
-import { atom, selector } from "recoil";
-import { Wallet } from "@ton-defi.org/ton-connection";
-import { Providers } from "lib/env-profiles";
+import { atom, selector } from 'recoil';
+import { Wallet } from '@ton-defi.org/ton-connection';
+import { Providers } from 'lib/env-profiles';
 
 export interface ConnectionStateAtom {
   address: string | null;
@@ -11,7 +11,7 @@ export interface ConnectionStateAtom {
 }
 
 const connectionStateAtom = atom<ConnectionStateAtom>({
-  key: "connectionStateAtom",
+  key: 'connectionStateAtom',
   default: {
     address: null,
     wallet: null,
@@ -22,7 +22,7 @@ const connectionStateAtom = atom<ConnectionStateAtom>({
 });
 
 const connectWalletSelector = selector<ConnectionStateAtom>({
-  key: "connectWalletSelector",
+  key: 'connectWalletSelector',
   get: ({ get }) => get(connectionStateAtom),
   set: ({ set, get }, newValue: any) => {
     const state = get(connectionStateAtom);

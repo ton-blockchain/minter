@@ -1,11 +1,11 @@
-import { useRecoilState, useResetRecoilState } from "recoil";
-import { connectionStateAtom } from ".";
-import { Providers } from "lib/env-profiles";
-import WalletConnection from "services/wallet-connection";
-import { LOCAL_STORAGE_PROVIDER } from "consts";
-import { isMobile } from "react-device-detect";
-import { useContext } from "react";
-import { EnvContext } from "../../App";
+import { useRecoilState, useResetRecoilState } from 'recoil';
+import { connectionStateAtom } from '.';
+import { Providers } from 'lib/env-profiles';
+import WalletConnection from 'services/wallet-connection';
+import { LOCAL_STORAGE_PROVIDER } from 'consts';
+import { isMobile } from 'react-device-detect';
+import { useContext } from 'react';
+import { EnvContext } from '../../App';
 
 function useConnectionStore() {
   const [connectionState, setConnectionState] =
@@ -27,7 +27,7 @@ function useConnectionStore() {
 
   const connect = async (
     provider: Providers,
-    onSessionLink?: (value: string) => void
+    onSessionLink?: (value: string) => void,
   ) => {
     try {
       setConnectionState((prevState) => ({
@@ -39,7 +39,7 @@ function useConnectionStore() {
         provider,
         onSessionLink ? onSessionLink : () => {},
         isSandbox,
-        isMobile ? onTxUrlReady : undefined
+        isMobile ? onTxUrlReady : undefined,
       );
 
       localStorage.setItem(LOCAL_STORAGE_PROVIDER, provider);

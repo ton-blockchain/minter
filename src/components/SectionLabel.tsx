@@ -1,16 +1,16 @@
-import { Link, styled, Typography } from "@mui/material";
-import { ReactNode } from "react";
+import { Link, styled, Typography } from '@mui/material';
+import { ReactNode } from 'react';
 
 const StyledContainer = styled(Typography)({
   marginBottom: 25,
-  position: "relative",
-  left: "-10px",
+  position: 'relative',
+  left: '-10px',
   fontSize: 14,
   fontWeight: 600,
-  "& a": {
+  '& a': {
     fontSize: 14,
-    color: "unset",
-    textDecoration: "unset",
+    color: 'unset',
+    textDecoration: 'unset',
     fontWeight: 600,
   },
 });

@@ -1,5 +1,5 @@
-import { persistenceType } from "lib/jetton-minter";
-import { atom } from "recoil";
+import { persistenceType } from 'lib/jetton-minter';
+import { atom } from 'recoil';
 
 interface JettonStoreState {
   isAdmin: boolean;
@@ -21,7 +21,7 @@ interface JettonStoreState {
 }
 
 const jettonStateAtom = atom<JettonStoreState>({
-  key: "jettonStateAtom",
+  key: 'jettonStateAtom',
   default: {
     jettonLoading: false,
     persistenceType: undefined,

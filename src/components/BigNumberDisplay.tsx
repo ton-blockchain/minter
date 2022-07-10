@@ -1,5 +1,5 @@
-import React from "react";
-import NumberFormat from "react-number-format";
+import React from 'react';
+import NumberFormat from 'react-number-format';
 
 interface Props {
   value: string | number;

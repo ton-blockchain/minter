@@ -1,12 +1,12 @@
-import BN from "bn.js";
-import { Address, beginCell, Cell, toNano, TonClient, Wallet } from "ton";
-import { JettonDeployParams, JETTON_DEPLOY_GAS } from "./deploy-controller";
+import BN from 'bn.js';
+import { Address, beginCell, Cell, toNano, TonClient, Wallet } from 'ton';
+import { JettonDeployParams, JETTON_DEPLOY_GAS } from './deploy-controller';
 import {
   initData,
   JettonMetaDataKeys,
   JETTON_MINTER_CODE,
   mintBody,
-} from "./jetton-minter";
+} from './jetton-minter';
 
 export async function sleep(time: number) {
   return new Promise((resolve) => {
@@ -34,13 +34,13 @@ export async function waitForSeqno(wallet: Wallet) {
       const seqnoAfter = await wallet.getSeqNo();
       if (seqnoAfter > seqnoBefore) return;
     }
-    throw new Error("Timeout");
+    throw new Error('Timeout');
   };
 }
 
 export async function waitForContractDeploy(
   address: Address,
-  client: TonClient
+  client: TonClient,
 ) {
   let isDeployed = false;
   let maxTries = 25;
@@ -50,7 +50,7 @@ export async function waitForContractDeploy(
     if (isDeployed) return;
     await sleep(3000);
   }
-  throw new Error("Timeout");
+  throw new Error('Timeout');
 }
 
 export const createDeployParams = (params: JettonDeployParams) => {
@@ -61,7 +61,7 @@ export const createDeployParams = (params: JettonDeployParams) => {
     image: params.imageUri,
   };
 
-  const queryId = parseInt(process.env.REACT_APP_DEPLOY_QUERY_ID ?? "0");
+  const queryId = parseInt(process.env.REACT_APP_DEPLOY_QUERY_ID ?? '0');
 
   return {
     code: JETTON_MINTER_CODE,

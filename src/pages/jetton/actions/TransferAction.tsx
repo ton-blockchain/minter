@@ -1,42 +1,42 @@
-import { Box, styled, TextField, Typography } from "@mui/material";
-import BN from "bn.js";
-import BaseButton from "components/BaseButton";
-import BigNumberDisplay from "components/BigNumberDisplay";
-import NumberInput from "components/NumberInput";
-import TxLoader from "components/TxLoader";
-import useNotification from "hooks/useNotification";
-import { jettonDeployController } from "lib/deploy-controller";
-import { useState } from "react";
-import WalletConnection from "services/wallet-connection";
-import useConnectionStore from "store/connection-store/useConnectionStore";
-import useJettonStore from "store/jetton-store/useJettonStore";
-import { StyledInput } from "styles/styles";
-import { Address, toNano } from "ton";
-import { isValidAddress } from "utils";
-import { StyledSectionTitle } from "../Row";
+import { Box, styled, TextField, Typography } from '@mui/material';
+import BN from 'bn.js';
+import BaseButton from 'components/BaseButton';
+import BigNumberDisplay from 'components/BigNumberDisplay';
+import NumberInput from 'components/NumberInput';
+import TxLoader from 'components/TxLoader';
+import useNotification from 'hooks/useNotification';
+import { jettonDeployController } from 'lib/deploy-controller';
+import { useState } from 'react';
+import WalletConnection from 'services/wallet-connection';
+import useConnectionStore from 'store/connection-store/useConnectionStore';
+import useJettonStore from 'store/jetton-store/useJettonStore';
+import { StyledInput } from 'styles/styles';
+import { Address, toNano } from 'ton';
+import { isValidAddress } from 'utils';
+import { StyledSectionTitle } from '../Row';
 
 const getError = (
   toAddress?: string,
   amount?: number,
   balance?: string,
-  symbol?: string
+  symbol?: string,
 ): string | undefined | JSX.Element => {
   if (!toAddress) {
-    return "Recipient wallet address required";
+    return 'Recipient wallet address required';
   }
 
   if (toAddress && !isValidAddress(toAddress)) {
-    return "Invalid Recipient wallet address";
+    return 'Invalid Recipient wallet address';
   }
 
   if (!amount) {
-    return "Transfer amount required";
+    return 'Transfer amount required';
   }
 
   if (toNano(amount).gt(toNano(balance!!))) {
     return (
       <>
-        Maximum amount to transfer is <BigNumberDisplay value={balance!!} />{" "}
+        Maximum amount to transfer is <BigNumberDisplay value={balance!!} />{' '}
         {symbol}
       </>
     );
@@ -59,7 +59,7 @@ function TransferAction() {
   const onSubmit = async () => {
     const error = getError(toAddress, amount, balance, symbol);
     if (error) {
-      showNotification(error, "warning", undefined, 3000);
+      showNotification(error, 'warning', undefined, 3000);
       return;
     }
 
@@ -71,20 +71,20 @@ function TransferAction() {
         toNano(amount!),
         toAddress!,
         connectedWalletAddress!,
-        jettonAddress
+        jettonAddress,
       );
       setToAddress(undefined);
       setAmount(undefined);
       getJettonDetails();
       showNotification(
         `Successfully transfered ${amount?.toLocaleString()} ${symbol}`,
-        "warning",
+        'warning',
         undefined,
-        4000
+        4000,
       );
     } catch (error) {
       if (error instanceof Error) {
-        showNotification(error.message, "error");
+        showNotification(error.message, 'error');
       }
     } finally {
       setIsLoading(false);
@@ -103,7 +103,7 @@ function TransferAction() {
             fullWidth
             label="Recipient wallet address"
             onChange={(e) => setToAddress(e.target.value)}
-            value={toAddress || ""}
+            value={toAddress || ''}
           />
         </StyledInput>
         <NumberInput
@@ -120,23 +120,23 @@ function TransferAction() {
 export default TransferAction;
 
 const StyledContainer = styled(Box)({
-  width: "100%",
-  display: "flex",
-  flexDirection: "column",
+  width: '100%',
+  display: 'flex',
+  flexDirection: 'column',
 
-  "& .base-button": {
+  '& .base-button': {
     height: 40,
     maxWidth: 200,
-    width: "100%",
-    marginLeft: "auto",
-    marginRight: "auto",
+    width: '100%',
+    marginLeft: 'auto',
+    marginRight: 'auto',
     marginTop: 20,
   },
 });
 
 const StyledInputs = styled(Box)({
-  width: "100%",
-  display: "flex",
-  flexDirection: "column",
+  width: '100%',
+  display: 'flex',
+  flexDirection: 'column',
   gap: 15,
 });

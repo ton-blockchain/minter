@@ -1,15 +1,15 @@
-import { Box, Typography } from "@mui/material";
-import { styled } from "@mui/system";
-import BaseButton from "components/BaseButton";
-import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
-import { Popup } from "components/Popup";
-import useConnectionStore from "store/connection-store/useConnectionStore";
-import useJettonStore from "store/jetton-store/useJettonStore";
-import { useState } from "react";
-import TxLoader from "components/TxLoader";
-import { jettonDeployController } from "lib/deploy-controller";
-import { Address } from "ton";
-import WalletConnection from "services/wallet-connection";
+import { Box, Typography } from '@mui/material';
+import { styled } from '@mui/system';
+import BaseButton from 'components/BaseButton';
+import WarningAmberRoundedIcon from '@mui/icons-material/WarningAmberRounded';
+import { Popup } from 'components/Popup';
+import useConnectionStore from 'store/connection-store/useConnectionStore';
+import useJettonStore from 'store/jetton-store/useJettonStore';
+import { useState } from 'react';
+import TxLoader from 'components/TxLoader';
+import { jettonDeployController } from 'lib/deploy-controller';
+import { Address } from 'ton';
+import WalletConnection from 'services/wallet-connection';
 
 function FaultyDeploy() {
   const { address } = useConnectionStore();
@@ -39,7 +39,7 @@ function FaultyDeploy() {
           description,
           image: jettonImage,
         },
-        WalletConnection.getConnection()
+        WalletConnection.getConnection(),
       );
       await getJettonDetails();
     } catch (error) {
@@ -86,37 +86,37 @@ function FaultyDeploy() {
 export default FaultyDeploy;
 
 export const StyledWarningPopup = styled(Box)({
-  width: "100%",
-  display: "flex",
-  alignItems: "center",
-  flexDirection: "column",
-  "& .header": {
-    display: "flex",
-    textAlign: "center",
+  width: '100%',
+  display: 'flex',
+  alignItems: 'center',
+  flexDirection: 'column',
+  '& .header': {
+    display: 'flex',
+    textAlign: 'center',
     gap: 10,
-    "* ": {
-      color: "#d32f2f",
+    '* ': {
+      color: '#d32f2f',
     },
-    "& p": {
+    '& p': {
       fontSize: 22,
       fontWeight: 500,
     },
-    "& svg": {
-      position: "relative",
+    '& svg': {
+      position: 'relative',
       top: 4,
     },
   },
-  "& .description": {
+  '& .description': {
     marginTop: 20,
-    "& p": {
+    '& p': {
       fontSize: 16,
-      textAlign: "center",
+      textAlign: 'center',
     },
   },
-  "& .base-button": {
+  '& .base-button': {
     marginTop: 40,
     height: 40,
     width: 200,
-    background: "#d32f2f",
+    background: '#d32f2f',
   },
 });

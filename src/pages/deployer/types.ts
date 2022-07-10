@@ -1,4 +1,4 @@
-import { JettonDeployState } from "lib/deploy-controller";
+import { JettonDeployState } from 'lib/deploy-controller';
 
 export interface DeployProgressState {
   state: JettonDeployState;

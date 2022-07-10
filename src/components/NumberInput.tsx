@@ -1,6 +1,6 @@
-import { TextField } from "@mui/material";
-import NumberFormat from "react-number-format";
-import { StyledInput } from "styles/styles";
+import { TextField } from '@mui/material';
+import NumberFormat from 'react-number-format';
+import { StyledInput } from 'styles/styles';
 
 interface Props {
   onChange: (val: number) => void;
@@ -8,11 +8,11 @@ interface Props {
   label?: string;
 }
 
-function NumberInput({ onChange, value, label = "" }: Props) {
+function NumberInput({ onChange, value, label = '' }: Props) {
   return (
     <StyledInput>
       <NumberFormat
-        value={value || ""}
+        value={value || ''}
         customInput={TextField}
         thousandSeparator=","
         fullWidth

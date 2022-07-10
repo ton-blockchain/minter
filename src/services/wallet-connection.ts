@@ -2,9 +2,9 @@ import {
   ChromeExtensionWalletProvider,
   TonConnection,
   TonhubProvider,
-} from "@ton-defi.org/ton-connection";
-import { Environments, EnvProfiles, Providers } from "lib/env-profiles";
-import { Address } from "ton";
+} from '@ton-defi.org/ton-connection';
+import { Environments, EnvProfiles, Providers } from 'lib/env-profiles';
+import { Address } from 'ton';
 
 class WalletConnection {
   private static connection?: TonConnection;
@@ -13,7 +13,7 @@ class WalletConnection {
 
   public static getConnection() {
     if (!this.connection) {
-      throw new Error("Connectiong missing");
+      throw new Error('Connectiong missing');
     }
     return this.connection;
   }
@@ -26,7 +26,7 @@ class WalletConnection {
     providerId: Providers,
     onLinkReady: (link: string) => void,
     isTestnet: boolean,
-    onTransactionLinkReady?: (link: string) => void
+    onTransactionLinkReady?: (link: string) => void,
   ) {
     let prov;
 
@@ -43,14 +43,14 @@ class WalletConnection {
         prov = new ChromeExtensionWalletProvider();
         break;
       default:
-        throw new Error("UNKNOWN PROVIDER");
+        throw new Error('UNKNOWN PROVIDER');
     }
 
     this.connection = new TonConnection(
       prov,
       EnvProfiles[
         isTestnet ? Environments.SANDBOX : Environments.MAINNET
-      ].rpcApi
+      ].rpcApi,
     );
     return this.connection.connect();
   }

@@ -1,31 +1,31 @@
-import { useState } from "react";
-import { Address, toNano } from "ton";
-import useConnectionStore from "store/connection-store/useConnectionStore";
-import { Fade, Link, Typography } from "@mui/material";
-import { jettonDeployController } from "lib/deploy-controller";
-import WalletConnection from "services/wallet-connection";
-import { createDeployParams } from "lib/utils";
-import { ContractDeployer } from "lib/contract-deployer";
-import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
-import { ROUTES } from "consts";
-import TxLoader from "components/TxLoader";
-import useNotification from "hooks/useNotification";
+import { useState } from 'react';
+import { Address, toNano } from 'ton';
+import useConnectionStore from 'store/connection-store/useConnectionStore';
+import { Fade, Link, Typography } from '@mui/material';
+import { jettonDeployController } from 'lib/deploy-controller';
+import WalletConnection from 'services/wallet-connection';
+import { createDeployParams } from 'lib/utils';
+import { ContractDeployer } from 'lib/contract-deployer';
+import { Link as ReactRouterLink, useNavigate } from 'react-router-dom';
+import { ROUTES } from 'consts';
+import TxLoader from 'components/TxLoader';
+import useNotification from 'hooks/useNotification';
 
 import {
   StyledContainer,
   StyledDescription,
   StyledLeft,
   StyledTxLoaderContent,
-} from "./styles";
-import { Screen, ScreenContent } from "components/Screen";
-import Navbar from "components/navbar";
-import SearchInput from "./SearchInput";
-import Form from "./Form";
-import SectionLabel from "components/SectionLabel";
+} from './styles';
+import { Screen, ScreenContent } from 'components/Screen';
+import Navbar from 'components/navbar';
+import SearchInput from './SearchInput';
+import Form from './Form';
+import SectionLabel from 'components/SectionLabel';
 import analytics, {
   AnalyticsAction,
   AnalyticsCategory,
-} from "services/analytics";
+} from 'services/analytics';
 
 function DeployerPage() {
   const { showNotification } = useNotification();
@@ -37,7 +37,7 @@ function DeployerPage() {
     const connection = WalletConnection.getConnection();
 
     if (!address || !connection) {
-      throw new Error("Wallet not connected");
+      throw new Error('Wallet not connected');
     }
     const params = {
       owner: Address.parse(address),
@@ -50,24 +50,24 @@ function DeployerPage() {
     setIsLoading(true);
     const deployParams = createDeployParams(params);
     const contractAddress = new ContractDeployer().addressForContract(
-      deployParams
+      deployParams,
     );
 
     const isDeployed = await WalletConnection.isContractDeployed(
-      contractAddress
+      contractAddress,
     );
 
     if (isDeployed) {
       showNotification(
         <>
-          Contract already deployed,{" "}
+          Contract already deployed,{' '}
           <ReactRouterLink
             to={`${ROUTES.jetton}/${Address.normalize(contractAddress)}/`}
           >
             View contract
           </ReactRouterLink>
         </>,
-        "warning"
+        'warning',
       );
       setIsLoading(false);
       return;
@@ -76,18 +76,18 @@ function DeployerPage() {
     try {
       const result = await jettonDeployController.createJetton(
         params,
-        connection
+        connection,
       );
       analytics.sendEvent(
         AnalyticsCategory.DEPLOYER_PAGE,
         AnalyticsAction.DEPLOY,
-        contractAddress.toFriendly()
+        contractAddress.toFriendly(),
       );
 
       navigate(`${ROUTES.jetton}/${Address.normalize(result)}`);
     } catch (err) {
       if (err instanceof Error) {
-        showNotification(<>{err.message}</>, "error");
+        showNotification(<>{err.message}</>, 'error');
       }
     } finally {
       setIsLoading(false);
@@ -130,14 +130,14 @@ function Description() {
         https://github.com/ton-defi-org/jetton-deployer-contracts
       </SectionLabel>
       <Typography>
-        Jetton is the fungible{" "}
+        Jetton is the fungible{' '}
         <Link
           target="_blank"
           href="https://github.com/ton-blockchain/TIPs/issues/74"
         >
           token standard
-        </Link>{" "}
-        for{" "}
+        </Link>{' '}
+        for{' '}
         <Link target="_blank" href="https://ton.org">
           TON blockchain
         </Link>
@@ -146,7 +146,7 @@ function Description() {
         fees. <br />
         <Spacer />
         For detailed instructions and in-depth explanations of all fields please
-        see the{" "}
+        see the{' '}
         <Link
           target="_blank"
           href="https://github.com/ton-defi-org/jetton-deployer-contracts#jetton-metadata-field-best-practices"
@@ -157,21 +157,21 @@ function Description() {
         look.
         <Spacer />
         Never deploy code that you've never seen before! This deployer is fully
-        open source with all smart contract code{" "}
+        open source with all smart contract code{' '}
         <Link
           target="_blank"
           href="https://github.com/ton-defi-org/jetton-deployer-contracts"
         >
           available here
         </Link>
-        . The HTML form is also{" "}
+        . The HTML form is also{' '}
         <Link
           target="_blank"
           href="https://github.com/ton-defi-org/jetton-deployer-webclient"
         >
           open source
-        </Link>{" "}
-        and served from{" "}
+        </Link>{' '}
+        and served from{' '}
         <Link
           target="_blank"
           href="https://ton-defi-org.github.io/jetton-deployer-webclient"
@@ -179,13 +179,13 @@ function Description() {
           GitHub Pages
         </Link>
         . <Spacer />
-        Is this deployer safe? Yes! read{" "}
+        Is this deployer safe? Yes! read{' '}
         <Link
           target="_blank"
           href="https://github.com/ton-defi-org/jetton-deployer-contracts#protect-yourself-and-your-users"
         >
           this
-        </Link>{" "}
+        </Link>{' '}
         to understand why.
       </Typography>
     </StyledDescription>

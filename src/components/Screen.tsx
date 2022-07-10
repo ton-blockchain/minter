@@ -1,5 +1,5 @@
-import { Box, Fade, styled } from "@mui/material";
-import { ReactNode } from "react";
+import { Box, Fade, styled } from '@mui/material';
+import { ReactNode } from 'react';
 
 interface Props {
   children: ReactNode;
@@ -8,18 +8,18 @@ interface Props {
 }
 
 const StyledScreen = styled(Box)({
-  display: "flex",
-  alignItems: "center",
-  flexDirection: "column",
+  display: 'flex',
+  alignItems: 'center',
+  flexDirection: 'column',
 });
 
 const StyledContent = styled(Box)(({ theme }) => ({
-  width: "100%",
-  borderRadius: "20px",
-  maxHeight: "calc(100vh - 150px)",
-  overflow: "auto",
-  [theme.breakpoints.down("sm")]: {
-    maxHeight: "unset",
+  width: '100%',
+  borderRadius: '20px',
+  maxHeight: 'calc(100vh - 150px)',
+  overflow: 'auto',
+  [theme.breakpoints.down('sm')]: {
+    maxHeight: 'unset',
     paddingBottom: 40,
     paddingTop: 80,
   },
@@ -29,7 +29,7 @@ const ScreenContent = ({ children }: Props) => {
   return <StyledContent className="screen-content"> {children}</StyledContent>;
 };
 
-function Screen({ children, id = "" }: Props) {
+function Screen({ children, id = '' }: Props) {
   return (
     <Fade in>
       <StyledScreen id={id}>{children}</StyledScreen>

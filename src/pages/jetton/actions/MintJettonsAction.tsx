@@ -1,15 +1,15 @@
-import { Typography } from "@mui/material";
-import BaseButton from "components/BaseButton";
-import BigNumberDisplay from "components/BigNumberDisplay";
-import NumberInput from "components/NumberInput";
-import { Popup } from "components/Popup";
-import TxLoader from "components/TxLoader";
-import useNotification from "hooks/useNotification";
-import { jettonDeployController } from "lib/deploy-controller";
-import { useState } from "react";
-import WalletConnection from "services/wallet-connection";
-import useJettonStore from "store/jetton-store/useJettonStore";
-import { Address, toNano } from "ton";
+import { Typography } from '@mui/material';
+import BaseButton from 'components/BaseButton';
+import BigNumberDisplay from 'components/BigNumberDisplay';
+import NumberInput from 'components/NumberInput';
+import { Popup } from 'components/Popup';
+import TxLoader from 'components/TxLoader';
+import useNotification from 'hooks/useNotification';
+import { jettonDeployController } from 'lib/deploy-controller';
+import { useState } from 'react';
+import WalletConnection from 'services/wallet-connection';
+import useJettonStore from 'store/jetton-store/useJettonStore';
+import { Address, toNano } from 'ton';
 
 function MintJettonsAction() {
   const [amount, setAmount] = useState<number | undefined>(undefined);
@@ -29,7 +29,7 @@ function MintJettonsAction() {
     }
 
     if (!amount || amount === 0) {
-      showNotification(`Minimum amount of ${symbol} to mint is 1`, "warning");
+      showNotification(`Minimum amount of ${symbol} to mint is 1`, 'warning');
       return;
     }
     const value = toNano(amount);
@@ -40,7 +40,7 @@ function MintJettonsAction() {
       await jettonDeployController.mint(
         connection,
         Address.parse(jettonMaster),
-        value
+        value,
       );
       setOpen(false);
       const message = (
@@ -49,11 +49,11 @@ function MintJettonsAction() {
         </>
       );
       getJettonDetails();
-      showNotification(message, "success");
+      showNotification(message, 'success');
     } catch (error) {
       console.log(error);
       if (error instanceof Error) {
-        showNotification(error.message, "error");
+        showNotification(error.message, 'error');
       }
     } finally {
       setIsLoading(false);

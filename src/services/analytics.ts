@@ -1,18 +1,18 @@
-import ReactGA from "react-ga";
+import ReactGA from 'react-ga';
 
 export enum AnalyticsCategory {
-  JETTON_PAGE = "Jetton page",
-  DEPLOYER_PAGE = "Deployer page",
+  JETTON_PAGE = 'Jetton page',
+  DEPLOYER_PAGE = 'Deployer page',
 }
 
 export enum AnalyticsAction {
-  DEPLOY = "Deploy jetton",
+  DEPLOY = 'Deploy jetton',
 }
 
 const sendEvent = (
   category: AnalyticsCategory,
   action: AnalyticsAction,
-  label: string
+  label: string,
 ) => {
   try {
     ReactGA.event({

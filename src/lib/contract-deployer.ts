@@ -1,6 +1,6 @@
-import BN from "bn.js";
-import { Address, Cell, contractAddress, StateInit } from "ton";
-import { TonConnection } from "@ton-defi.org/ton-connection";
+import BN from 'bn.js';
+import { Address, Cell, contractAddress, StateInit } from 'ton';
+import { TonConnection } from '@ton-defi.org/ton-connection';
 
 interface ContractDeployDetails {
   deployer: Address;
@@ -22,7 +22,7 @@ export class ContractDeployer {
 
   async deployContract(
     params: ContractDeployDetails,
-    tonConnection: TonConnection
+    tonConnection: TonConnection,
   ): Promise<Address> {
     const _contractAddress = this.addressForContract(params);
 

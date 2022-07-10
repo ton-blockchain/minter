@@ -1,11 +1,11 @@
-import Backdrop from "@mui/material/Backdrop";
-import CircularProgress from "@mui/material/CircularProgress";
-import { styled, Typography } from "@mui/material";
-import { Box } from "@mui/system";
-import { ReactNode } from "react";
-import { isMobile } from "react-device-detect";
-import { Providers } from "lib/env-profiles";
-import useConnectionStore from "store/connection-store/useConnectionStore";
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
+import { styled, Typography } from '@mui/material';
+import { Box } from '@mui/system';
+import { ReactNode } from 'react';
+import { isMobile } from 'react-device-detect';
+import { Providers } from 'lib/env-profiles';
+import useConnectionStore from 'store/connection-store/useConnectionStore';
 
 interface Props {
   open: boolean;
@@ -13,9 +13,9 @@ interface Props {
 }
 
 const StyledContainer = styled(Box)({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
   gap: 10,
 });
 
@@ -26,9 +26,9 @@ function TxLoader({ open, children }: Props) {
   return (
     <Backdrop
       sx={{
-        color: "#fff",
+        color: '#fff',
         zIndex: (theme) => theme.zIndex.drawer + 2,
-        backdropFilter: "blur(5px) ",
+        backdropFilter: 'blur(5px) ',
       }}
       open={open}
     >

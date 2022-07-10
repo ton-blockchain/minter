@@ -1,7 +1,7 @@
-import { Theme } from "@mui/material/styles";
-import { createTheme } from "@mui/material/styles";
+import { Theme } from '@mui/material/styles';
+import { createTheme } from '@mui/material/styles';
 
-declare module "@mui/material" {
+declare module '@mui/material' {
   interface DefaultTheme extends Theme {}
 }
 
@@ -9,36 +9,36 @@ declare module "@mui/material" {
 let theme = createTheme({
   palette: {
     primary: {
-      main: "#50A7EA",
-      contrastText: "#fff",
+      main: '#50A7EA',
+      contrastText: '#fff',
     },
 
     secondary: {
-      main: "#313855",
+      main: '#313855',
     },
 
     text: {
-      primary: "#313855",
-      secondary: "#00000",
+      primary: '#313855',
+      secondary: '#00000',
     },
     error: {
-      main: "#ef5350",
+      main: '#ef5350',
     },
     warning: {
-      main: "#FF5147",
+      main: '#FF5147',
     },
 
     action: {
-      active: "#ffffff",
-      hover: "#00000",
-      disabledBackground: "#B2B2B2",
-      disabled: "",
+      active: '#ffffff',
+      hover: '#00000',
+      disabledBackground: '#B2B2B2',
+      disabled: '',
     },
   },
   typography: {
-    fontFamily: "roboto, sans-serif",
+    fontFamily: 'roboto, sans-serif',
     button: {
-      textTransform: "none",
+      textTransform: 'none',
     },
   },
 });

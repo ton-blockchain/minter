@@ -1,20 +1,20 @@
 const ROUTES = {
-  deployer: "/",
-  jetton: "/jetton",
-  jettonId: "/jetton/:id",
+  deployer: '/',
+  jetton: '/jetton',
+  jettonId: '/jetton/:id',
 };
 
 const APP_GRID = 1156;
 
-const LOCAL_STORAGE_PROVIDER = "wallet_provider";
+const LOCAL_STORAGE_PROVIDER = 'wallet_provider';
 
-const APP_NAME = "deployer";
-const APP_DISPLAY_NAME = "Jetton deployer";
+const APP_NAME = 'deployer';
+const APP_DISPLAY_NAME = 'Jetton deployer';
 
-const EMPTY_ADDRESS = "EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c";
+const EMPTY_ADDRESS = 'EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c';
 
 const JETTON_DEPLOYER_CONTRACTS_GITHUB =
-  "https://github.com/ton-defi-org/jetton-deployer-contracts";
+  'https://github.com/ton-defi-org/jetton-deployer-contracts';
 
 export {
   ROUTES,

@@ -1,14 +1,14 @@
-import { ReactNode, useCallback } from "react";
-import { VariantType, useSnackbar } from "notistack";
-import { IconButton, styled } from "@mui/material";
-import { Box } from "@mui/system";
-import CloseIcon from "@mui/icons-material/Close";
+import { ReactNode, useCallback } from 'react';
+import { VariantType, useSnackbar } from 'notistack';
+import { IconButton, styled } from '@mui/material';
+import { Box } from '@mui/system';
+import CloseIcon from '@mui/icons-material/Close';
 const StyledMessage = styled(Box)({
-  "& &": {
-    color: "white",
+  '& &': {
+    color: 'white',
   },
-  "& a": {
-    color: "white",
+  '& a': {
+    color: 'white',
   },
 });
 
@@ -20,7 +20,7 @@ function useNotification() {
       message: ReactNode | string,
       variant: VariantType,
       onClose?: () => void,
-      autoHideDuration?: number
+      autoHideDuration?: number,
     ) => {
       const key = enqueueSnackbar(<StyledMessage>{message}</StyledMessage>, {
         variant,
@@ -34,7 +34,7 @@ function useNotification() {
         ),
       });
     },
-    [closeSnackbar, enqueueSnackbar]
+    [closeSnackbar, enqueueSnackbar],
   );
 
   return { showNotification };

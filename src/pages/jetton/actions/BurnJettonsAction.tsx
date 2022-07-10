@@ -1,16 +1,16 @@
-import { Typography } from "@mui/material";
-import { BN } from "bn.js";
-import BaseButton from "components/BaseButton";
-import BigNumberDisplay from "components/BigNumberDisplay";
-import NumberInput from "components/NumberInput";
-import { Popup } from "components/Popup";
-import TxLoader from "components/TxLoader";
-import useNotification from "hooks/useNotification";
-import { jettonDeployController } from "lib/deploy-controller";
-import { useState } from "react";
-import WalletConnection from "services/wallet-connection";
-import useJettonStore from "store/jetton-store/useJettonStore";
-import { toNano } from "ton";
+import { Typography } from '@mui/material';
+import { BN } from 'bn.js';
+import BaseButton from 'components/BaseButton';
+import BigNumberDisplay from 'components/BigNumberDisplay';
+import NumberInput from 'components/NumberInput';
+import { Popup } from 'components/Popup';
+import TxLoader from 'components/TxLoader';
+import useNotification from 'hooks/useNotification';
+import { jettonDeployController } from 'lib/deploy-controller';
+import { useState } from 'react';
+import WalletConnection from 'services/wallet-connection';
+import useJettonStore from 'store/jetton-store/useJettonStore';
+import { toNano } from 'ton';
 
 function BurnJettonsAction() {
   const [amount, setAmount] = useState<number | undefined>(undefined);
@@ -36,7 +36,7 @@ function BurnJettonsAction() {
     }
 
     if (!amount || amount === 0) {
-      showNotification(`Minimum amount to burn is 1 ${symbol}`, "warning");
+      showNotification(`Minimum amount to burn is 1 ${symbol}`, 'warning');
       return;
     }
 
@@ -48,7 +48,7 @@ function BurnJettonsAction() {
           Maximum amount to burn is <BigNumberDisplay value={balance} />
         </>
       );
-      showNotification(msg, "warning", undefined, 3000);
+      showNotification(msg, 'warning', undefined, 3000);
       return;
     }
 
@@ -58,15 +58,15 @@ function BurnJettonsAction() {
       await jettonDeployController.burnJettons(
         connection,
         value,
-        jettonAddress!
+        jettonAddress!,
       );
       setOpen(false);
       const message = `Successfully burned ${amount.toLocaleString()} ${symbol}`;
-      showNotification(message, "success");
+      showNotification(message, 'success');
       getJettonDetails();
     } catch (error) {
       if (error instanceof Error) {
-        showNotification(error.message, "error");
+        showNotification(error.message, 'error');
       }
     } finally {
       setIsLoading(false);

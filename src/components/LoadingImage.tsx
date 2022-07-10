@@ -1,6 +1,6 @@
-import { Skeleton, styled } from "@mui/material";
-import { Box } from "@mui/system";
-import React from "react";
+import { Skeleton, styled } from '@mui/material';
+import { Box } from '@mui/system';
+import React from 'react';
 
 interface Props {
   src?: string;
@@ -9,13 +9,13 @@ interface Props {
 }
 
 const StyledContainer = styled(Box)({
-  position: "relative",
-  width: "100%",
-  height: "100%",
-  borderRadius: "inherit",
+  position: 'relative',
+  width: '100%',
+  height: '100%',
+  borderRadius: 'inherit',
 });
 
-function LoadingImage({ loading, src, alt = "Image" }: Props) {
+function LoadingImage({ loading, src, alt = 'Image' }: Props) {
   return (
     <StyledContainer>
       {loading ? (

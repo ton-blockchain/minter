@@ -1,5 +1,5 @@
-import { Box, styled, Typography } from "@mui/material";
-import { useEffect } from "react";
+import { Box, styled, Typography } from '@mui/material';
+import { useEffect } from 'react';
 import {
   adminActions,
   balanceActions,
@@ -8,22 +8,22 @@ import {
   getSymbolWarning,
   getTotalSupplyWarning,
   totalSupplyActions,
-} from "./util";
-import useConnectionStore from "store/connection-store/useConnectionStore";
-import { useParams } from "react-router-dom";
-import { ScreenContent, Screen } from "components/Screen";
-import LoadingImage from "components/LoadingImage";
-import LoadingContainer from "components/LoadingContainer";
-import useJettonStore from "store/jetton-store/useJettonStore";
-import Navbar from "components/navbar";
-import { ROUTES } from "consts";
-import Alert from "@mui/material/Alert";
-import FaultyDeploy from "./FaultyDeploy";
-import Row from "./Row";
-import SectionLabel from "components/SectionLabel";
-import TransferAction from "./actions/TransferAction";
-import { BN } from "bn.js";
-import BigNumberDisplay from "components/BigNumberDisplay";
+} from './util';
+import useConnectionStore from 'store/connection-store/useConnectionStore';
+import { useParams } from 'react-router-dom';
+import { ScreenContent, Screen } from 'components/Screen';
+import LoadingImage from 'components/LoadingImage';
+import LoadingContainer from 'components/LoadingContainer';
+import useJettonStore from 'store/jetton-store/useJettonStore';
+import Navbar from 'components/navbar';
+import { ROUTES } from 'consts';
+import Alert from '@mui/material/Alert';
+import FaultyDeploy from './FaultyDeploy';
+import Row from './Row';
+import SectionLabel from 'components/SectionLabel';
+import TransferAction from './actions/TransferAction';
+import { BN } from 'bn.js';
+import BigNumberDisplay from 'components/BigNumberDisplay';
 function JettonPage() {
   const { id }: { id?: string } = useParams();
 
@@ -57,7 +57,7 @@ function JettonPage() {
   return (
     <Screen>
       <FaultyDeploy />
-      <Navbar customLink={{ text: "Create Jetton", path: ROUTES.deployer }} />
+      <Navbar customLink={{ text: 'Create Jetton', path: ROUTES.deployer }} />
 
       <ScreenContent>
         <StyledContainer>
@@ -98,7 +98,7 @@ function JettonPage() {
               />
               <Row
                 title="Admin"
-                value={adminRevokedOwnership ? "Empty address" : adminAddress}
+                value={adminRevokedOwnership ? 'Empty address' : adminAddress}
                 address={adminAddress}
                 description="Account address that can mint tokens freely and change metadata"
                 message={getAdminMessage(
@@ -106,7 +106,7 @@ function JettonPage() {
                   symbol,
                   adminRevokedOwnership,
                   isAdmin,
-                  jettonMaster
+                  jettonMaster,
                 )}
                 dataLoading={jettonLoading}
                 actions={adminActions}
@@ -118,7 +118,7 @@ function JettonPage() {
                 dataLoading={jettonLoading}
                 message={getSymbolWarning(
                   persistenceType,
-                  adminRevokedOwnership
+                  adminRevokedOwnership,
                 )}
               />
               <Row
@@ -133,7 +133,7 @@ function JettonPage() {
                 dataLoading={jettonLoading}
                 message={getTotalSupplyWarning(
                   persistenceType,
-                  adminRevokedOwnership
+                  adminRevokedOwnership,
                 )}
                 actions={totalSupplyActions}
               />
@@ -175,59 +175,59 @@ function JettonPage() {
 export { JettonPage };
 
 const StyledContainer = styled(Box)(({ theme }) => ({
-  display: "flex",
+  display: 'flex',
   gap: 30,
-  width: "100%",
+  width: '100%',
   [theme.breakpoints.down(1100)]: {
-    flexDirection: "column",
+    flexDirection: 'column',
   },
 }));
 
 export const StyledCategory = styled(Box)(({ theme }) => ({
-  width: "calc(50% - 15px)",
-  padding: "20px 30px 30px 30px",
+  width: 'calc(50% - 15px)',
+  padding: '20px 30px 30px 30px',
   borderRadius: 16,
   [theme.breakpoints.down(1100)]: {
-    width: "100%",
-    padding: "20px 25px 20px 25px",
+    width: '100%',
+    padding: '20px 25px 20px 25px',
   },
 }));
 
 const StyledCategoryFields = styled(Box)({
-  display: "flex",
-  flexDirection: "column",
+  display: 'flex',
+  flexDirection: 'column',
   gap: 24,
 });
 
 const StyledRead = styled(StyledCategory)({
-  background: "rgba(80, 167, 234, 0.05)",
+  background: 'rgba(80, 167, 234, 0.05)',
 });
 
 const StyledWrite = styled(StyledCategory)(({ theme }) => ({
-  background: "#F7FAFC",
-  [theme.breakpoints.down("sm")]: {
+  background: '#F7FAFC',
+  [theme.breakpoints.down('sm')]: {
     paddingBottom: 140,
   },
 }));
 
 export const StyledTop = styled(Box)({
-  display: "flex",
-  alignItems: "center",
+  display: 'flex',
+  alignItems: 'center',
   gap: 20,
   marginBottom: 30,
 });
 
 export const StyledTopText = styled(Box)({
-  color: "#27272E",
-  display: "flex",
-  flexDirection: "column",
+  color: '#27272E',
+  display: 'flex',
+  flexDirection: 'column',
   gap: 3,
   flex: 1,
-  "& h5": {
+  '& h5': {
     fontSize: 15,
     fontWeight: 400,
   },
-  "& h3": {
+  '& h3': {
     fontSize: 19,
     fontWeight: 600,
   },
@@ -236,18 +236,18 @@ export const StyledTopText = styled(Box)({
 const StyledTopImg = styled(Box)(({ theme }) => ({
   width: 90,
   height: 90,
-  borderRadius: "50%",
-  overflow: "hidden",
-  background: "rgba(0,0,0, 0.1)",
-  border: "13px solid #D9D9D9",
-  "& img": {
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
+  borderRadius: '50%',
+  overflow: 'hidden',
+  background: 'rgba(0,0,0, 0.1)',
+  border: '13px solid #D9D9D9',
+  '& img': {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
   },
-  [theme.breakpoints.down("sm")]: {
+  [theme.breakpoints.down('sm')]: {
     width: 60,
     height: 60,
-    border: "2px solid #D9D9D9",
+    border: '2px solid #D9D9D9',
   },
 }));

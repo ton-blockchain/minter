@@ -1,5 +1,5 @@
-import { Typography } from "@mui/material";
-import React, { ReactNode } from "react";
+import { Typography } from '@mui/material';
+import React, { ReactNode } from 'react';
 
 interface Props {
   children: ReactNode;

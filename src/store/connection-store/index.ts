@@ -17,7 +17,7 @@ const connectionStateAtom = atom<ConnectionStateAtom>({
     wallet: null,
     adapterId: null,
     isConnecting: true,
-    showConnect: false
+    showConnect: false,
   },
 });
 

@@ -25,7 +25,6 @@ const getError = (
     return "Recipient wallet address required";
   }
 
-
   if (toAddress && !isValidAddress(toAddress)) {
     return "Invalid Recipient wallet address";
   }
@@ -35,12 +34,18 @@ const getError = (
   }
 
   if (toNano(amount).gt(toNano(balance!!))) {
-    return <>Maximum amount to transfer is <BigNumberDisplay value={balance!!} /> {symbol}</>;
+    return (
+      <>
+        Maximum amount to transfer is <BigNumberDisplay value={balance!!} />{" "}
+        {symbol}
+      </>
+    );
   }
 };
 
 function TransferAction() {
-  const { balance, symbol, jettonAddress, getJettonDetails, isMyWallet } = useJettonStore();
+  const { balance, symbol, jettonAddress, getJettonDetails, isMyWallet } =
+    useJettonStore();
   const [isLoading, setIsLoading] = useState(false);
   const [toAddress, setToAddress] = useState<string | undefined>(undefined);
   const [amount, setAmount] = useState<number | undefined>(undefined);

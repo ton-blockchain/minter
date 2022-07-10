@@ -21,7 +21,7 @@ const StyledCustomLink = styled(Link)(({ theme }) => ({
 
   [theme.breakpoints.down("sm")]: {
     marginRight: 0,
-    height: 35
+    height: 35,
   },
 }));
 
@@ -32,14 +32,14 @@ const StyledCloseButton = styled(IconButton)({
   top: 10,
 });
 
-const StyledDrawerContent = styled(Box)(({theme}) => ({
-  display:'flex',
-  flexDirection:'column',
-  alignItems:'center',
+const StyledDrawerContent = styled(Box)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
   marginTop: 60,
-    "& .logo":{
-      flexDirection:'column'
-    }
+  "& .logo": {
+    flexDirection: "column",
+  },
 }));
 
 interface Props extends NavbarProps {
@@ -84,30 +84,30 @@ const StyledMenu = styled(Box)(({ theme }) => ({
     flexDirection: "column",
     width: "calc(100vw - 60px)",
     maxWidth: 400,
-    padding: '40px 30px 40px 30px',
+    padding: "40px 30px 40px 30px",
     gap: 20,
     height: "unset",
     "& .connected-section": {
       order: 1,
-      width: '100%',
-      maxWidth:'unset',
+      width: "100%",
+      maxWidth: "unset",
       height: 35,
-      marginTop: 40, 
-      "& p":{
-        maxWidth:'unset'
-      }
+      marginTop: 40,
+      "& p": {
+        maxWidth: "unset",
+      },
     },
     "& .github-icon": {
       order: 4,
-      marginTop: 40
+      marginTop: 40,
     },
     "& .custom-link": {
       order: 3,
-      width: '100%',
+      width: "100%",
       height: 35,
-      "& .base-button":{
-        width:'100%'
-      }
+      "& .base-button": {
+        width: "100%",
+      },
     },
   },
 }));

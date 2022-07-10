@@ -4,7 +4,7 @@ import { QRCodeSVG } from "qrcode.react";
 import Fade from "@mui/material/Fade";
 import CircularProgress from "@mui/material/CircularProgress";
 import { styled } from "@mui/system";
-import TonhubQr from 'assets/tonhub-qr.png'
+import TonhubQr from "assets/tonhub-qr.png";
 import Header from "./Header";
 
 const StyledContainer = styled(Box)({
@@ -35,11 +35,9 @@ function QR({ onClose, link, open }: Props) {
   return (
     <Fade in>
       <StyledContainer>
-       <Header title ='Connect to tonhub' onClose={onClose} />
-      <StyledQrBox>
-       
-        {link ? (
-          
+        <Header title="Connect to tonhub" onClose={onClose} />
+        <StyledQrBox>
+          {link ? (
             <span>
               <QRCodeSVG
                 value={link}
@@ -56,12 +54,11 @@ function QR({ onClose, link, open }: Props) {
                 }}
               />
             </span>
-         
-        ) : (
-          <CircularProgress />
-        )}
-      </StyledQrBox>
-    </StyledContainer>
+          ) : (
+            <CircularProgress />
+          )}
+        </StyledQrBox>
+      </StyledContainer>
     </Fade>
   );
 }

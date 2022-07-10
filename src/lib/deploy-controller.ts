@@ -2,7 +2,11 @@ import BN from "bn.js";
 import { Address, beginCell, Cell, toNano } from "ton";
 import { ContractDeployer } from "./contract-deployer";
 
-import { createDeployParams, waitForContractDeploy, waitForSeqno } from "./utils";
+import {
+  createDeployParams,
+  waitForContractDeploy,
+  waitForSeqno,
+} from "./utils";
 import { cellToAddress, TonConnection } from "@ton-defi.org/ton-connection";
 import { zeroAddress } from "./utils";
 import {
@@ -135,7 +139,11 @@ class JettonDeployController {
     await tonConnection.requestTransaction({
       to: Address.parse(ownerJettonWallet),
       value: toNano(0.05),
-      message: transfer(Address.parse(toAddress), Address.parse(fromAddress), amount),
+      message: transfer(
+        Address.parse(toAddress),
+        Address.parse(fromAddress),
+        amount
+      ),
     });
 
     await waiter();

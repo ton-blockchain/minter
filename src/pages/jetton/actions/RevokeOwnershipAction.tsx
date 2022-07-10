@@ -10,7 +10,8 @@ import { Address } from "ton";
 
 function RevokeOwnershipAction() {
   const [isLoading, setIsLoading] = useState(false);
-  const { jettonMaster, isAdmin, getJettonDetails, isMyWallet } = useJettonStore();
+  const { jettonMaster, isAdmin, getJettonDetails, isMyWallet } =
+    useJettonStore();
   const { showNotification } = useNotification();
 
   if (!isAdmin || !isMyWallet) {

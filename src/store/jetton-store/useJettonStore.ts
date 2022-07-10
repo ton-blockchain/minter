@@ -37,8 +37,8 @@ function useJettonStore() {
         5000
       );
     }
-    if(queryAddress){
-      disconnect()
+    if (queryAddress) {
+      disconnect();
     }
 
     const address = queryAddress || connectedWalletAddress;
@@ -82,10 +82,9 @@ function useJettonStore() {
         return;
       }
       const _adminAddress = result.minter.admin.toFriendly();
-      const admin = isMyWallet &&  _adminAddress === connectedWalletAddress;
+      const admin = isMyWallet && _adminAddress === connectedWalletAddress;
 
-      console.log({result});
-
+      console.log({ result });
 
       setState((prevState) => {
         return {

@@ -67,12 +67,13 @@ function FaultyDeploy() {
           </Box>
           <Box className="description">
             <Typography>
-              This token was created with a previous faulty version of the deployer.
-              Don’t worry, this can easily be fixed.
+              This token was created with a previous faulty version of the
+              deployer. Don’t worry, this can easily be fixed.
             </Typography>
             <br />
             <Typography>
-               Click below to issue a fix transaction that will keep the token’s original data and fix the format.
+              Click below to issue a fix transaction that will keep the token’s
+              original data and fix the format.
             </Typography>
           </Box>
           <BaseButton onClick={onSubmit}>Submit</BaseButton>

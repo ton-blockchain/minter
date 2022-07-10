@@ -18,9 +18,7 @@ class WalletConnection {
     return this.connection;
   }
 
-  public static isContractDeployed(
-    contractAddr: Address
-  ) {
+  public static isContractDeployed(contractAddr: Address) {
     return this.connection?._tonClient.isContractDeployed(contractAddr);
   }
 
@@ -28,7 +26,7 @@ class WalletConnection {
     providerId: Providers,
     onLinkReady: (link: string) => void,
     isTestnet: boolean,
-    onTransactionLinkReady?: (link: string) => void,
+    onTransactionLinkReady?: (link: string) => void
   ) {
     let prov;
 
@@ -38,7 +36,7 @@ class WalletConnection {
           onSessionLinkReady: onLinkReady,
           isSandbox: isTestnet,
           persistenceProvider: localStorage,
-          onTransactionLinkReady
+          onTransactionLinkReady,
         });
         break;
       case Providers.EXTENSION:

@@ -40,7 +40,7 @@ function BurnJettonsAction() {
       return;
     }
 
-    const value = toNano(amount);    
+    const value = toNano(amount);
 
     if (value.gt(toNano(balance!!))) {
       const msg = (

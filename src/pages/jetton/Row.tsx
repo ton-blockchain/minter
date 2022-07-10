@@ -95,7 +95,7 @@ const Message = ({ message }: { message?: JettonDetailMessage }) => {
 export default Row;
 
 const StyledMessage = styled(Box)(({ type }: { type: string }) => ({
-  maxWidth: '90%',
+  maxWidth: "90%",
   display: "flex",
   alignItems: "flex-start",
   gap: 5,

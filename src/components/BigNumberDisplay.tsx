@@ -1,14 +1,13 @@
-import React from 'react'
-import NumberFormat from 'react-number-format'
+import React from "react";
+import NumberFormat from "react-number-format";
 
-
-interface Props{
-    value: string | number;
+interface Props {
+  value: string | number;
 }
-function BigNumberDisplay({value}: Props) {
+function BigNumberDisplay({ value }: Props) {
   return (
-   <NumberFormat displayType='text' value={value } thousandSeparator={true} />
-  )
+    <NumberFormat displayType="text" value={value} thousandSeparator={true} />
+  );
 }
 
-export default BigNumberDisplay
+export default BigNumberDisplay;

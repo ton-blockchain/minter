@@ -23,11 +23,11 @@ const StyledContainer = styled(Box)({
   minHeight: 35,
   "& p": {
     fontSize: 12,
-    
+
     whiteSpace: "nowrap",
     overflow: "hidden",
     textOverflow: "ellipsis",
-    paddingRight: 10
+    paddingRight: 10,
   },
 });
 
@@ -52,9 +52,9 @@ const StyledConnect = styled("div")({
   borderRadius: 20,
   color: "#50A7EA",
   "& .base-button": {
-    width:'100%',
+    width: "100%",
     borderRadius: 20,
-    fontSize: 12
+    fontSize: 12,
   },
 });
 
@@ -107,8 +107,11 @@ const ConnecSection = () => {
             <Tooltip title={address}>
               <Typography style={{ color: "white" }}>{address}</Typography>
             </Tooltip>
-            <StyledDisconnectToggle onClick={() => setShowDisconnect(true)} sx={{padding: 0}}>
-              <ArrowDropDownIcon  />
+            <StyledDisconnectToggle
+              onClick={() => setShowDisconnect(true)}
+              sx={{ padding: 0 }}
+            >
+              <ArrowDropDownIcon />
             </StyledDisconnectToggle>
           </StyledConnected>
         ) : (

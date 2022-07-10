@@ -1,24 +1,25 @@
 import { checkImageURL } from "helpers";
 
-
 const formSpec = [
   {
     name: "name",
     label: "Jetton Name",
-    description: "Your project unabbreviated name with spaces (usually 1-3 words)",
+    description:
+      "Your project unabbreviated name with spaces (usually 1-3 words)",
     type: "text",
     default: "Bitcoin Cash",
     required: true,
-    errorMessage: 'Name required'
+    errorMessage: "Name required",
   },
   {
     name: "symbol",
     label: "Jetton Symbol",
-    description: "Currency symbol appearing in balance (usually 3-5 uppercase chars)",
+    description:
+      "Currency symbol appearing in balance (usually 3-5 uppercase chars)",
     type: "text",
     default: "BCH",
     required: true,
-    errorMessage: 'Symbol required'
+    errorMessage: "Symbol required",
   },
   {
     name: "decimals",
@@ -28,17 +29,16 @@ const formSpec = [
     disabled: true,
     default: 9,
     required: false,
-
   },
   {
     name: "mintAmount",
     label: "Amount to Mint",
-    description: "Number of initial tokens to mint and send to your wallet address (float)",
+    description:
+      "Number of initial tokens to mint and send to your wallet address (float)",
     type: "number",
     default: 21000000,
     required: true,
-    errorMessage: 'Mint amount required'
-
+    errorMessage: "Mint amount required",
   },
   {
     name: "description",
@@ -48,15 +48,15 @@ const formSpec = [
     default: "Low fee peer-to-peer electronic cash alternative to Bitcoin",
   },
 
-
   {
     name: "tokenImage",
     label: "Jetton Logo URI",
-    description: "URL of 256x256 pixel PNG image of token logo with transparent background",
+    description:
+      "URL of 256x256 pixel PNG image of token logo with transparent background",
     type: "string",
     required: false,
     validate: checkImageURL,
-    default: "https://bitcoincash-example.github.io/website/logo.png"
+    default: "https://bitcoincash-example.github.io/website/logo.png",
   },
 ];
 

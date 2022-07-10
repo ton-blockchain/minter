@@ -18,12 +18,11 @@ export const getFaultyMetadataWarning = (isAdminRevokedOwnership?: boolean) => {
   return "This token was created with a previous faulty version of the tool. The token is now unusable but can be fixed, please contact the admin to fix it using this page";
 };
 
-
 export const adminActions = [RevokeOwnershipAction];
 
-export const totalSupplyActions = [MintJettonsAction]
+export const totalSupplyActions = [MintJettonsAction];
 
-export const balanceActions = [ConnectAction, BurnJettonsAction]
+export const balanceActions = [ConnectAction, BurnJettonsAction];
 
 export const getAdminMessage = (
   adminAddress?: string,
@@ -32,7 +31,6 @@ export const getAdminMessage = (
   isAdmin?: boolean,
   jettonAddress?: string
 ): JettonDetailMessage | undefined => {
-
   if (!jettonAddress) {
     return undefined;
   }

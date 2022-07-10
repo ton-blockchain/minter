@@ -25,7 +25,7 @@ function ConnectPopup() {
     useConnectionStore();
 
   const onSelect = async (provider: Providers) => {
-    setSessionLink(null)
+    setSessionLink(null);
     const onSessionLinkCreated = (value: string) => {
       if (isMobile) {
         // @ts-ignore
@@ -47,8 +47,6 @@ function ConnectPopup() {
       setSessionLink(null);
     }
   };
-
-
 
   const onCancel = () => {
     setShowQr(false);

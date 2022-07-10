@@ -19,25 +19,27 @@ const StyledContainer = styled(Box)({
   gap: 10,
 });
 
-
-
 function TxLoader({ open, children }: Props) {
-  const {adapterId} = useConnectionStore()
+  const { adapterId } = useConnectionStore();
   const showReminderInLoader = !isMobile && adapterId === Providers.TON_HUB;
 
   return (
     <Backdrop
-      sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 2, backdropFilter: 'blur(5px) '}}
+      sx={{
+        color: "#fff",
+        zIndex: (theme) => theme.zIndex.drawer + 2,
+        backdropFilter: "blur(5px) ",
+      }}
       open={open}
     >
       <StyledContainer>
         <CircularProgress color="inherit" />
         {children}
         {showReminderInLoader && (
-            <Typography>
-              Please check tonhub wallet for pending notification
-            </Typography>
-          )}
+          <Typography>
+            Please check tonhub wallet for pending notification
+          </Typography>
+        )}
       </StyledContainer>
     </Backdrop>
   );

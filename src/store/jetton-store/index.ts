@@ -38,7 +38,7 @@ const jettonStateAtom = atom<JettonStoreState>({
     jettonAddress: undefined,
     isJettonDeployerFaultyOnChainData: false,
     isMyWallet: false,
-    selectedWalletAddress: undefined
+    selectedWalletAddress: undefined,
   },
 });
 

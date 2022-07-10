@@ -33,9 +33,9 @@ const StyledLink = styled("div")({
   textOverflow: "ellipsis",
   width: "80%",
   color: "#0688CC!important",
-  [theme.breakpoints.down('sm')]: {
-    fontSize: 14
-}
+  [theme.breakpoints.down("sm")]: {
+    fontSize: 14,
+  },
 });
 
 function AddressLink({ address, value }: Props) {

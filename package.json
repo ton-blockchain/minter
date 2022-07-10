@@ -19,6 +19,7 @@
     "@types/react-dom": "^18.0.5",
     "buffer": "^6.0.3",
     "notistack": "^2.0.5",
+    "prettier": "^2.7.1",
     "qrcode.react": "^3.0.2",
     "react": "^18.0.0",
     "react-app-rewire-typescript": "^2.0.2",

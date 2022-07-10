@@ -1,30 +1,30 @@
-import { styled } from '@mui/material';
-import { Box } from '@mui/system';
-import { createContext, useEffect } from 'react';
-import useConnectionStore from 'store/connection-store/useConnectionStore';
-import { APP_GRID, ROUTES } from 'consts';
-import { Route, Routes } from 'react-router-dom';
-import { DeployerPage, JettonPage } from 'pages';
-import ConnectPopup from 'components/connect-popup';
-import analytics from 'services/analytics';
+import { styled } from "@mui/material";
+import { Box } from "@mui/system";
+import { createContext, useEffect } from "react";
+import useConnectionStore from "store/connection-store/useConnectionStore";
+import { APP_GRID, ROUTES } from "consts";
+import { Route, Routes } from "react-router-dom";
+import { DeployerPage, JettonPage } from "pages";
+import ConnectPopup from "components/connect-popup";
+import analytics from "services/analytics";
 
 analytics.init();
 const StyledApp = styled(Box)(({ theme }) => ({
   maxWidth: APP_GRID,
-  width: 'calc(100% - 50px)',
-  marginLeft: 'auto',
-  marginRight: 'auto',
-  '*::-webkit-scrollbar': {
-    display: 'none',
+  width: "calc(100% - 50px)",
+  marginLeft: "auto",
+  marginRight: "auto",
+  "*::-webkit-scrollbar": {
+    display: "none",
   },
-  '*::-webkit-scrollbar-track': {
-    display: 'none',
+  "*::-webkit-scrollbar-track": {
+    display: "none",
   },
-  '*::-webkit-scrollbar-thumb': {
-    display: 'none',
+  "*::-webkit-scrollbar-thumb": {
+    display: "none",
   },
-  [theme.breakpoints.down('sm')]: {
-    width: 'calc(100% - 30px)',
+  [theme.breakpoints.down("sm")]: {
+    width: "calc(100% - 30px)",
   },
 }));
 
@@ -44,8 +44,8 @@ function App() {
     <StyledApp>
       <EnvContext.Provider
         value={{
-          isSandbox: window.location.search.includes('sandbox'),
-          isTestnet: window.location.search.includes('testnet'),
+          isSandbox: window.location.search.includes("sandbox"),
+          isTestnet: window.location.search.includes("testnet"),
         }}
       >
         <Routes>

@@ -1,13 +1,13 @@
-import { ReactNode } from 'react';
-import LoadingButton from '@mui/lab/LoadingButton';
-import { CircularProgress, styled } from '@mui/material';
+import { ReactNode } from "react";
+import LoadingButton from "@mui/lab/LoadingButton";
+import { CircularProgress, styled } from "@mui/material";
 
 interface Props {
   children: ReactNode;
   loading?: boolean;
   disabled?: boolean;
   onClick?: () => void;
-  type?: 'button' | 'submit' | 'reset';
+  type?: "button" | "submit" | "reset";
   fontSize?: number;
   transparent?: boolean;
 }
@@ -16,31 +16,29 @@ interface StyledButtonProps {
   fontSize: number;
 }
 
-const StyledButton = styled(LoadingButton)(
-  ({ fontSize }: StyledButtonProps) => ({
-    fontSize: fontSize,
-    boxShadow: 'none',
-    borderRadius: 6,
-    fontWeight: 600,
-    padding: '0px 16px',
-    height: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    whiteSpace: 'nowrap',
-    '& img': {
-      maxWidth: 22,
-    },
-  }),
-);
+const StyledButton = styled(LoadingButton)(({ fontSize }: StyledButtonProps) => ({
+  fontSize: fontSize,
+  boxShadow: "none",
+  borderRadius: 6,
+  fontWeight: 600,
+  padding: "0px 16px",
+  height: "100%",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: 8,
+  whiteSpace: "nowrap",
+  "& img": {
+    maxWidth: 22,
+  },
+}));
 
 function BaseButton({
   children,
   loading,
   disabled,
   onClick,
-  type = 'button',
+  type = "button",
   fontSize = 14,
   transparent,
 }: Props) {
@@ -50,15 +48,13 @@ function BaseButton({
       fontSize={fontSize}
       type={type}
       onClick={onClick ? onClick : () => {}}
-      variant={transparent ? 'outlined' : 'contained'}
+      variant={transparent ? "outlined" : "contained"}
       loading={loading}
       disabled={disabled}
       style={{
-        border: transparent ? '1px solid #50A7EA' : '',
+        border: transparent ? "1px solid #50A7EA" : "",
       }}
-      loadingIndicator={
-        <CircularProgress style={{ color: 'white', width: 20, height: 20 }} />
-      }
+      loadingIndicator={<CircularProgress style={{ color: "white", width: 20, height: 20 }} />}
     >
       {children}
     </StyledButton>

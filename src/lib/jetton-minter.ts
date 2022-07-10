@@ -1,10 +1,10 @@
-import BN from 'bn.js';
-import { Cell, beginCell, Address, beginDict, Slice } from 'ton';
+import BN from "bn.js";
+import { Cell, beginCell, Address, beginDict, Slice } from "ton";
 
-import walletHex from './contracts/jetton-wallet.compiled.json';
-import minterHex from './contracts/jetton-minter.compiled.json';
-import { Sha256 } from '@aws-crypto/sha256-js';
-import axios from 'axios';
+import walletHex from "./contracts/jetton-wallet.compiled.json";
+import minterHex from "./contracts/jetton-minter.compiled.json";
+import { Sha256 } from "@aws-crypto/sha256-js";
+import axios from "axios";
 
 const ONCHAIN_CONTENT_PREFIX = 0x00;
 const OFFCHAIN_CONTENT_PREFIX = 0x01;
@@ -22,15 +22,15 @@ enum OPS {
   Burn = 0x595f07bc,
 }
 
-export type JettonMetaDataKeys = 'name' | 'description' | 'image' | 'symbol';
+export type JettonMetaDataKeys = "name" | "description" | "image" | "symbol";
 
 const jettonOnChainMetadataSpec: {
-  [key in JettonMetaDataKeys]: 'utf8' | 'ascii' | undefined;
+  [key in JettonMetaDataKeys]: "utf8" | "ascii" | undefined;
 } = {
-  name: 'utf8',
-  description: 'utf8',
-  image: 'ascii',
-  symbol: 'utf8',
+  name: "utf8",
+  description: "utf8",
+  image: "ascii",
+  symbol: "utf8",
 };
 
 const sha256 = (str: string) => {
@@ -39,21 +39,16 @@ const sha256 = (str: string) => {
   return Buffer.from(sha.digestSync());
 };
 
-export function buildJettonOnchainMetadata(data: {
-  [s: string]: string | undefined;
-}): Cell {
+export function buildJettonOnchainMetadata(data: { [s: string]: string | undefined }): Cell {
   const KEYLEN = 256;
   const dict = beginDict(KEYLEN);
 
   Object.entries(data).forEach(([k, v]: [string, string | undefined]) => {
     if (!jettonOnChainMetadataSpec[k as JettonMetaDataKeys])
       throw new Error(`Unsupported onchain key: ${k}`);
-    if (v === undefined || v === '') return;
+    if (v === undefined || v === "") return;
 
-    let bufferToStore = Buffer.from(
-      v,
-      jettonOnChainMetadataSpec[k as JettonMetaDataKeys],
-    );
+    let bufferToStore = Buffer.from(v, jettonOnChainMetadataSpec[k as JettonMetaDataKeys]);
 
     const CELL_MAX_SIZE_BYTES = Math.floor((1023 - 8) / 8);
 
@@ -74,16 +69,10 @@ export function buildJettonOnchainMetadata(data: {
     dict.storeRef(sha256(k), rootCell);
   });
 
-  return beginCell()
-    .storeInt(ONCHAIN_CONTENT_PREFIX, 8)
-    .storeDict(dict.endDict())
-    .endCell();
+  return beginCell().storeInt(ONCHAIN_CONTENT_PREFIX, 8).storeDict(dict.endDict()).endCell();
 }
 
-export type persistenceType =
-  | 'onchain'
-  | 'offchain_private_domain'
-  | 'offchain_ipfs';
+export type persistenceType = "onchain" | "offchain_private_domain" | "offchain_ipfs";
 
 export async function readJettonMetadata(contentCell: Cell): Promise<{
   persistenceType: persistenceType;
@@ -95,19 +84,17 @@ export async function readJettonMetadata(contentCell: Cell): Promise<{
   switch (contentSlice.readUint(8).toNumber()) {
     case ONCHAIN_CONTENT_PREFIX:
       return {
-        persistenceType: 'onchain',
+        persistenceType: "onchain",
         ...parseJettonOnchainMetadata(contentSlice),
       };
     case OFFCHAIN_CONTENT_PREFIX:
-      const { metadata, isIpfs } = await parseJettonOffchainMetadata(
-        contentSlice,
-      );
+      const { metadata, isIpfs } = await parseJettonOffchainMetadata(contentSlice);
       return {
-        persistenceType: isIpfs ? 'offchain_ipfs' : 'offchain_private_domain',
+        persistenceType: isIpfs ? "offchain_ipfs" : "offchain_private_domain",
         metadata,
       };
     default:
-      throw new Error('Unexpected jetton metadata content prefix');
+      throw new Error("Unexpected jetton metadata content prefix");
   }
 }
 
@@ -115,7 +102,7 @@ async function parseJettonOffchainMetadata(contentSlice: Slice): Promise<{
   metadata: { [s in JettonMetaDataKeys]?: string };
   isIpfs: boolean;
 }> {
-  const jsonURI = contentSlice.readRemainingBytes().toString('ascii');
+  const jsonURI = contentSlice.readRemainingBytes().toString("ascii");
   return {
     metadata: (await axios.get(jsonURI)).data,
     isIpfs: /(^|\/)ipfs[.:]/.test(jsonURI),
@@ -130,18 +117,18 @@ function parseJettonOnchainMetadata(contentSlice: Slice): {
   // "ton" library dict parser converts: key (provided as buffer) => BN(base10)
   // and upon parsing, it reads it back to a BN(base10)
   // tl;dr if we want to read the map back to a JSON with string keys, we have to convert BN(10) back to hex
-  const toKey = (str: string) => new BN(str, 'hex').toString(10);
+  const toKey = (str: string) => new BN(str, "hex").toString(10);
   const KEYLEN = 256;
 
   let isJettonDeployerFaultyOnChainData = false;
 
   const dict = contentSlice.readDict(KEYLEN, (s) => {
-    let buffer = Buffer.from('');
+    let buffer = Buffer.from("");
 
     const sliceToVal = (s: Slice, v: Buffer, isFirst: boolean) => {
       s.toCell().beginParse();
       if (isFirst && s.readUint(8).toNumber() !== SNAKE_PREFIX)
-        throw new Error('Only snake format is supported');
+        throw new Error("Only snake format is supported");
 
       v = Buffer.concat([v, s.readRemainingBytes()]);
       if (s.remainingRefs === 1) {
@@ -163,7 +150,7 @@ function parseJettonOnchainMetadata(contentSlice: Slice): {
 
   Object.keys(jettonOnChainMetadataSpec).forEach((k) => {
     const val = dict
-      .get(toKey(sha256(k).toString('hex')))
+      .get(toKey(sha256(k).toString("hex")))
       ?.toString(jettonOnChainMetadataSpec[k as JettonMetaDataKeys]);
     if (val) res[k as JettonMetaDataKeys] = val;
   });
@@ -174,10 +161,7 @@ function parseJettonOnchainMetadata(contentSlice: Slice): {
   };
 }
 
-export function initData(
-  owner: Address,
-  data: { [s in JettonMetaDataKeys]?: string | undefined },
-) {
+export function initData(owner: Address, data: { [s in JettonMetaDataKeys]?: string | undefined }) {
   return beginCell()
     .storeCoins(0)
     .storeAddress(owner)

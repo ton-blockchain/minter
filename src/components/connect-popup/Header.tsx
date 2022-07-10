@@ -1,25 +1,25 @@
-import { Box, IconButton, styled, Typography, useTheme } from '@mui/material';
-import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import { Box, IconButton, styled, Typography, useTheme } from "@mui/material";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
 const StyledContainer = styled(Box)({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  position: 'relative',
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  position: "relative",
   paddingBottom: 10,
   marginBottom: 20,
-  width: '100%',
-  '& h4': {
+  width: "100%",
+  "& h4": {
     fontSize: 18,
     fontWeight: 400,
   },
 });
 
 const StyledSeparator = styled(Box)(({ theme }) => ({
-  position: 'absolute',
+  position: "absolute",
   left: 0,
   bottom: 0,
-  width: '100%',
+  width: "100%",
   height: 1,
   background: theme.palette.text.primary,
   opacity: 0.2,

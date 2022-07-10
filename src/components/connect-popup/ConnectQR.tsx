@@ -1,24 +1,24 @@
-import { Box } from '@mui/material';
-import { QRCodeSVG } from 'qrcode.react';
+import { Box } from "@mui/material";
+import { QRCodeSVG } from "qrcode.react";
 
-import Fade from '@mui/material/Fade';
-import CircularProgress from '@mui/material/CircularProgress';
-import { styled } from '@mui/system';
-import TonhubQr from 'assets/tonhub-qr.png';
-import Header from './Header';
+import Fade from "@mui/material/Fade";
+import CircularProgress from "@mui/material/CircularProgress";
+import { styled } from "@mui/system";
+import TonhubQr from "assets/tonhub-qr.png";
+import Header from "./Header";
 
 const StyledContainer = styled(Box)({
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
 });
 
 const StyledQrBox = styled(Box)({
   width: 260,
   height: 260,
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
 });
 
 interface Props {
@@ -42,9 +42,9 @@ function QR({ onClose, link, open }: Props) {
               <QRCodeSVG
                 value={link}
                 size={260}
-                bgColor={'#ffffff'}
-                fgColor={'#002457'}
-                level={'L'}
+                bgColor={"#ffffff"}
+                fgColor={"#002457"}
+                level={"L"}
                 includeMargin={false}
                 imageSettings={{
                   src: TonhubQr,

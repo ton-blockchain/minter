@@ -1,6 +1,6 @@
-import BN from 'bn.js';
-import { Address, Cell, contractAddress, StateInit } from 'ton';
-import { TonConnection } from '@ton-defi.org/ton-connection';
+import BN from "bn.js";
+import { Address, Cell, contractAddress, StateInit } from "ton";
+import { TonConnection } from "@ton-defi.org/ton-connection";
 
 interface ContractDeployDetails {
   deployer: Address;

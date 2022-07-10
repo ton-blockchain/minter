@@ -1,5 +1,5 @@
-import { zeroAddress } from 'lib/utils';
-import { Address } from 'ton';
+import { zeroAddress } from "lib/utils";
+import { Address } from "ton";
 
 export const scannerUrl = (isSandbox?: boolean) => {
   if (isSandbox) {

@@ -1,15 +1,14 @@
-import { useRecoilState, useResetRecoilState } from 'recoil';
-import { connectionStateAtom } from '.';
-import { Providers } from 'lib/env-profiles';
-import WalletConnection from 'services/wallet-connection';
-import { LOCAL_STORAGE_PROVIDER } from 'consts';
-import { isMobile } from 'react-device-detect';
-import { useContext } from 'react';
-import { EnvContext } from '../../App';
+import { useRecoilState, useResetRecoilState } from "recoil";
+import { connectionStateAtom } from ".";
+import { Providers } from "lib/env-profiles";
+import WalletConnection from "services/wallet-connection";
+import { LOCAL_STORAGE_PROVIDER } from "consts";
+import { isMobile } from "react-device-detect";
+import { useContext } from "react";
+import { EnvContext } from "../../App";
 
 function useConnectionStore() {
-  const [connectionState, setConnectionState] =
-    useRecoilState(connectionStateAtom);
+  const [connectionState, setConnectionState] = useRecoilState(connectionStateAtom);
   const resetState = useResetRecoilState(connectionStateAtom);
   const { isSandbox } = useContext(EnvContext);
 
@@ -25,10 +24,7 @@ function useConnectionStore() {
     }));
   };
 
-  const connect = async (
-    provider: Providers,
-    onSessionLink?: (value: string) => void,
-  ) => {
+  const connect = async (provider: Providers, onSessionLink?: (value: string) => void) => {
     try {
       setConnectionState((prevState) => ({
         ...prevState,

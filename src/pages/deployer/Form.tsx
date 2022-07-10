@@ -1,15 +1,15 @@
-import BaseButton from 'components/BaseButton';
-import useNotification from 'hooks/useNotification';
-import { useForm } from 'react-hook-form';
-import useConnectionStore from 'store/connection-store/useConnectionStore';
-import { formSpec } from './data';
-import { Box, TextField, Tooltip, Typography } from '@mui/material';
-import { Control, Controller } from 'react-hook-form';
-import { styled } from '@mui/material';
-import { useRef } from 'react';
-import FieldDescription from 'components/FieldDescription';
-import SectionLabel from 'components/SectionLabel';
-import NumberFormat from 'react-number-format';
+import BaseButton from "components/BaseButton";
+import useNotification from "hooks/useNotification";
+import { useForm } from "react-hook-form";
+import useConnectionStore from "store/connection-store/useConnectionStore";
+import { formSpec } from "./data";
+import { Box, TextField, Tooltip, Typography } from "@mui/material";
+import { Control, Controller } from "react-hook-form";
+import { styled } from "@mui/material";
+import { useRef } from "react";
+import FieldDescription from "components/FieldDescription";
+import SectionLabel from "components/SectionLabel";
+import NumberFormat from "react-number-format";
 
 interface FormProps {
   onSubmit: (values: any) => Promise<void>;
@@ -25,14 +25,14 @@ function Form({ onSubmit }: FormProps) {
     formState: { errors },
     setValue,
     clearErrors,
-  } = useForm({ mode: 'onSubmit', reValidateMode: 'onChange' });
+  } = useForm({ mode: "onSubmit", reValidateMode: "onChange" });
 
   const onFormError = (value: any) => {
     const firstError = value[Object.keys(value)[0]];
     if (!firstError) {
       return;
     }
-    showNotification(<>{firstError.message}</>, 'warning', undefined, 3000);
+    showNotification(<>{firstError.message}</>, "warning", undefined, 3000);
   };
 
   const onExampleClick = (name: string, value: string | number) => {
@@ -55,7 +55,7 @@ function Form({ onSubmit }: FormProps) {
               type={spec.type}
               control={control}
               label={spec.label}
-              defaultValue={spec.default || ''}
+              defaultValue={spec.default || ""}
               onExamleClick={onExampleClick}
               disabled={spec.disabled}
               errorMessage={spec.errorMessage}
@@ -79,21 +79,21 @@ function Form({ onSubmit }: FormProps) {
 
 export default Form;
 
-const StyledForm = styled('form')(({ theme }) => ({
+const StyledForm = styled("form")(({ theme }) => ({
   flex: 1,
-  display: 'flex',
-  flexDirection: 'column',
-  background: '#F7FAFC',
+  display: "flex",
+  flexDirection: "column",
+  background: "#F7FAFC",
   borderRadius: 16,
-  padding: '20px 30px 30px 30px',
-  [theme.breakpoints.down('lg')]: {},
-  [theme.breakpoints.down('md')]: {},
+  padding: "20px 30px 30px 30px",
+  [theme.breakpoints.down("lg")]: {},
+  [theme.breakpoints.down("md")]: {},
 }));
 
 const StyledFormInputs = styled(Box)({
-  width: '100%',
-  display: 'flex',
-  flexDirection: 'column',
+  width: "100%",
+  display: "flex",
+  flexDirection: "column",
   gap: 17,
 });
 
@@ -101,11 +101,11 @@ const StyledActionBtn = styled(Box)({
   marginTop: 40,
   height: 46,
   maxWidth: 344,
-  marginLeft: 'auto',
-  marginRight: 'auto',
-  width: '100%',
-  '& .base-button': {
-    width: '100%',
+  marginLeft: "auto",
+  marginRight: "auto",
+  width: "100%",
+  "& .base-button": {
+    width: "100%",
   },
 });
 
@@ -133,7 +133,7 @@ function Input({
   label,
   name,
   onExamleClick,
-  type = 'string',
+  type = "string",
   clearErrors,
   disabled,
   errorMessage,
@@ -154,13 +154,13 @@ function Input({
       <Controller
         name={name}
         control={control}
-        defaultValue={disabled ? defaultValue : ''}
+        defaultValue={disabled ? defaultValue : ""}
         rules={{
           required: errorMessage,
         }}
         render={({ field: { onChange, value } }) => (
           <StyledInputContainer error={error}>
-            {type === 'number' ? (
+            {type === "number" ? (
               <NumberFormat
                 value={value}
                 name={name}
@@ -179,7 +179,7 @@ function Input({
             ) : (
               <StyledInput
                 ref={ref}
-                value={value || ''}
+                value={value || ""}
                 onFocus={onFocus}
                 onChange={onChange}
                 placeholder={label}
@@ -204,41 +204,41 @@ function Input({
 }
 
 const StyledContainer = styled(Box)({
-  width: '100%',
+  width: "100%",
 });
 
 const StyledInputContainer = styled(Box)(({ error }: { error: boolean }) => ({
-  width: '100%',
+  width: "100%",
   height: 46,
-  display: 'flex',
-  alignItems: 'center',
-  background: '#EDF2F7',
+  display: "flex",
+  alignItems: "center",
+  background: "#EDF2F7",
   borderRadius: 10,
   paddingRight: 5,
-  border: error ? '1px solid #F06360' : '1px solid transparent',
-  transition: '0.2s all',
-  '& .base-button': {
-    height: 'calc(100% - 10px)',
-    padding: '0px 15px',
+  border: error ? "1px solid #F06360" : "1px solid transparent",
+  transition: "0.2s all",
+  "& .base-button": {
+    height: "calc(100% - 10px)",
+    padding: "0px 15px",
     fontSize: 12,
   },
 }));
 
-const StyledInput = styled('input')({
+const StyledInput = styled("input")({
   flex: 1,
-  height: '100%',
-  border: 'unset',
+  height: "100%",
+  border: "unset",
   textIndent: 16,
   fontSize: 16,
-  background: 'transparent',
-  outline: 'none',
-  color: 'unset',
-  '&::placeholder': {
-    color: '#7A828A',
-    transition: '0.2s all',
+  background: "transparent",
+  outline: "none",
+  color: "unset",
+  "&::placeholder": {
+    color: "#7A828A",
+    transition: "0.2s all",
   },
-  '&:focus': {
-    '&::placeholder': {
+  "&:focus": {
+    "&::placeholder": {
       opacity: 0,
     },
   },

@@ -1,20 +1,17 @@
-import {
-  TonConnection,
-  ChromeExtensionWalletProvider,
-} from '@ton-defi.org/ton-connection';
-import { jettonDeployController } from 'lib/deploy-controller';
-import { EnvProfiles, Environments } from 'lib/env-profiles';
-import { zeroAddress } from 'lib/utils';
-import { useRecoilState, useResetRecoilState } from 'recoil';
-import WalletConnection from 'services/wallet-connection';
-import { Address, fromNano } from 'ton';
-import { jettonStateAtom } from '.';
-import QuestiomMarkImg from 'assets/question.png';
-import { useCallback } from 'react';
-import useNotification from 'hooks/useNotification';
-import { useParams } from 'react-router-dom';
-import useConnectionStore from 'store/connection-store/useConnectionStore';
-import { getUrlParam, isValidAddress } from 'utils';
+import { TonConnection, ChromeExtensionWalletProvider } from "@ton-defi.org/ton-connection";
+import { jettonDeployController } from "lib/deploy-controller";
+import { EnvProfiles, Environments } from "lib/env-profiles";
+import { zeroAddress } from "lib/utils";
+import { useRecoilState, useResetRecoilState } from "recoil";
+import WalletConnection from "services/wallet-connection";
+import { Address, fromNano } from "ton";
+import { jettonStateAtom } from ".";
+import QuestiomMarkImg from "assets/question.png";
+import { useCallback } from "react";
+import useNotification from "hooks/useNotification";
+import { useParams } from "react-router-dom";
+import useConnectionStore from "store/connection-store/useConnectionStore";
+import { getUrlParam, isValidAddress } from "utils";
 
 function useJettonStore() {
   const [state, setState] = useRecoilState(jettonStateAtom);
@@ -25,17 +22,12 @@ function useJettonStore() {
   const { id }: { id?: string } = useParams();
 
   const getJettonDetails = useCallback(async () => {
-    let queryAddress = getUrlParam('address');
+    let queryAddress = getUrlParam("address");
 
     if (queryAddress && !isValidAddress(queryAddress)) {
-      window.history.replaceState(null, '', window.location.pathname);
+      window.history.replaceState(null, "", window.location.pathname);
       queryAddress = null;
-      showNotification(
-        'Invalid jetton address in query param',
-        'error',
-        undefined,
-        5000,
-      );
+      showNotification("Invalid jetton address in query param", "error", undefined, 5000);
     }
     if (queryAddress) {
       disconnect();
@@ -47,7 +39,7 @@ function useJettonStore() {
     reset();
 
     if (!id || !isValidAddress(id)) {
-      showNotification('Invalid jetton address', 'error');
+      showNotification("Invalid jetton address", "error");
       return;
     }
 
@@ -77,7 +69,7 @@ function useJettonStore() {
       );
 
       if (!result) {
-        console.log('empty');
+        console.log("empty");
 
         return;
       }
@@ -89,8 +81,7 @@ function useJettonStore() {
       setState((prevState) => {
         return {
           ...prevState,
-          isJettonDeployerFaultyOnChainData:
-            result.minter.isJettonDeployerFaultyOnChainData,
+          isJettonDeployerFaultyOnChainData: result.minter.isJettonDeployerFaultyOnChainData,
           persistenceType: result.minter.persistenceType,
           description: result.minter.metadata.description,
           jettonImage: result.minter.metadata.image || QuestiomMarkImg,
@@ -100,9 +91,7 @@ function useJettonStore() {
           adminRevokedOwnership: _adminAddress === zeroAddress().toFriendly(),
           isAdmin: admin,
           adminAddress: _adminAddress,
-          balance: result.jettonWallet
-            ? fromNano(result.jettonWallet.balance)
-            : undefined,
+          balance: result.jettonWallet ? fromNano(result.jettonWallet.balance) : undefined,
           jettonAddress: result.jettonWallet?.jWalletAddress.toFriendly(),
           jettonMaster: id,
           isMyWallet,
@@ -111,7 +100,7 @@ function useJettonStore() {
       });
     } catch (error) {
       if (error instanceof Error) {
-        showNotification(error.message, 'error');
+        showNotification(error.message, "error");
       }
     } finally {
       setState((prevState) => ({

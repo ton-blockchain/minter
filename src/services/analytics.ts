@@ -1,4 +1,4 @@
-import ReactGA from "react-ga";
+import ReactGA from "react-ga4";
 
 export enum AnalyticsCategory {
   JETTON_PAGE = "Jetton page",
@@ -23,7 +23,7 @@ const sendEvent = (category: AnalyticsCategory, action: AnalyticsAction, label: 
 
 const init = () => {
   ReactGA.initialize(process.env.REACT_APP_GA!!);
-  ReactGA.pageview(window.location.pathname + window.location.search);
+  ReactGA.send(window.location.pathname + window.location.search);
 };
 
 const analytics = {

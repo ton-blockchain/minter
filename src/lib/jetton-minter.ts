@@ -203,8 +203,8 @@ export function mintBody(
         .storeUint(OPS.InternalTransfer, 32)
         .storeUint(0, 64)
         .storeCoins(jettonValue)
-        .storeAddress(null) // TODO FROM?
-        .storeAddress(null) // TODO RESP?
+        .storeAddress(null)
+        .storeAddress(owner)
         .storeCoins(0)
         .storeBit(false) // forward_payload in this slice, not separate cell
         .endCell()
@@ -231,6 +231,7 @@ export function transfer(to: Address, from: Address, jettonAmount: BN) {
     .storeAddress(from)
     .storeBit(false)
     .storeCoins(0)
+    .storeBit(false) // forward_payload in this slice, not separate cell
     .endCell();
 }
 

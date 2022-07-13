@@ -18,9 +18,7 @@ class WalletConnection {
     return this.connection;
   }
 
-  public static isContractDeployed(
-    contractAddr: Address
-  ) {
+  public static isContractDeployed(contractAddr: Address) {
     return this.connection?._tonClient.isContractDeployed(contractAddr);
   }
 
@@ -38,7 +36,7 @@ class WalletConnection {
           onSessionLinkReady: onLinkReady,
           isSandbox: isTestnet,
           persistenceProvider: localStorage,
-          onTransactionLinkReady
+          onTransactionLinkReady,
         });
         break;
       case Providers.EXTENSION:
@@ -50,9 +48,7 @@ class WalletConnection {
 
     this.connection = new TonConnection(
       prov,
-      EnvProfiles[
-        isTestnet ? Environments.SANDBOX : Environments.MAINNET
-      ].rpcApi
+      EnvProfiles[isTestnet ? Environments.SANDBOX : Environments.MAINNET].rpcApi,
     );
     return this.connection.connect();
   }

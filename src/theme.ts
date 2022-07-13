@@ -1,7 +1,7 @@
-import { Theme } from '@mui/material/styles';
-import { createTheme } from '@mui/material/styles';
+import { Theme } from "@mui/material/styles";
+import { createTheme } from "@mui/material/styles";
 
-declare module '@mui/material' {
+declare module "@mui/material" {
   interface DefaultTheme extends Theme {}
 }
 
@@ -12,7 +12,6 @@ let theme = createTheme({
       main: "#50A7EA",
       contrastText: "#fff",
     },
-    
 
     secondary: {
       main: "#313855",
@@ -24,12 +23,11 @@ let theme = createTheme({
     },
     error: {
       main: "#ef5350",
-      
     },
     warning: {
       main: "#FF5147",
     },
-  
+
     action: {
       active: "#ffffff",
       hover: "#00000",
@@ -43,8 +41,6 @@ let theme = createTheme({
       textTransform: "none",
     },
   },
-
 });
-
 
 export default theme;

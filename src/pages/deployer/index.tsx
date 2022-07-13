@@ -11,21 +11,13 @@ import { ROUTES } from "consts";
 import TxLoader from "components/TxLoader";
 import useNotification from "hooks/useNotification";
 
-import {
-  StyledContainer,
-  StyledDescription,
-  StyledLeft,
-  StyledTxLoaderContent,
-} from "./styles";
+import { StyledContainer, StyledDescription, StyledLeft, StyledTxLoaderContent } from "./styles";
 import { Screen, ScreenContent } from "components/Screen";
 import Navbar from "components/navbar";
 import SearchInput from "./SearchInput";
 import Form from "./Form";
 import SectionLabel from "components/SectionLabel";
-import analytics, {
-  AnalyticsAction,
-  AnalyticsCategory,
-} from "services/analytics";
+import analytics, { AnalyticsAction, AnalyticsCategory } from "services/analytics";
 
 function DeployerPage() {
   const { showNotification } = useNotification();
@@ -49,39 +41,30 @@ function DeployerPage() {
     };
     setIsLoading(true);
     const deployParams = createDeployParams(params);
-    const contractAddress = new ContractDeployer().addressForContract(
-      deployParams
-    );
+    const contractAddress = new ContractDeployer().addressForContract(deployParams);
 
-    const isDeployed = await WalletConnection.isContractDeployed(
-      contractAddress
-    );
+    const isDeployed = await WalletConnection.isContractDeployed(contractAddress);
 
     if (isDeployed) {
       showNotification(
         <>
           Contract already deployed,{" "}
-          <ReactRouterLink
-            to={`${ROUTES.jetton}/${Address.normalize(contractAddress)}/`}
-          >
+          <ReactRouterLink to={`${ROUTES.jetton}/${Address.normalize(contractAddress)}/`}>
             View contract
           </ReactRouterLink>
         </>,
-        "warning"
+        "warning",
       );
       setIsLoading(false);
       return;
     }
 
     try {
-      const result = await jettonDeployController.createJetton(
-        params,
-        connection
-      );
+      const result = await jettonDeployController.createJetton(params, connection);
       analytics.sendEvent(
         AnalyticsCategory.DEPLOYER_PAGE,
         AnalyticsAction.DEPLOY,
-        contractAddress.toFriendly()
+        contractAddress.toFriendly(),
       );
 
       navigate(`${ROUTES.jetton}/${Address.normalize(result)}`);
@@ -131,51 +114,36 @@ function Description() {
       </SectionLabel>
       <Typography>
         Jetton is the fungible{" "}
-        <Link
-          target="_blank"
-          href="https://github.com/ton-blockchain/TIPs/issues/74"
-        >
+        <Link target="_blank" href="https://github.com/ton-blockchain/TIPs/issues/74">
           token standard
         </Link>{" "}
         for{" "}
         <Link target="_blank" href="https://ton.org">
           TON blockchain
         </Link>
-        . This free educational tool allows you to deploy your own Jetton to
-        mainnet in one click. You will need at least 0.25 TON for deployment
-        fees. <br />
+        . This free educational tool allows you to deploy your own Jetton to mainnet in one click.
+        You will need at least 0.25 TON for deployment fees. <br />
         <Spacer />
-        For detailed instructions and in-depth explanations of all fields please
-        see the{" "}
+        For detailed instructions and in-depth explanations of all fields please see the{" "}
         <Link
           target="_blank"
           href="https://github.com/ton-defi-org/jetton-deployer-contracts#jetton-metadata-field-best-practices"
         >
           GitHub README
         </Link>
-        . It includes several best practice recommendations so please take a
-        look.
+        . It includes several best practice recommendations so please take a look.
         <Spacer />
-        Never deploy code that you've never seen before! This deployer is fully
-        open source with all smart contract code{" "}
-        <Link
-          target="_blank"
-          href="https://github.com/ton-defi-org/jetton-deployer-contracts"
-        >
+        Never deploy code that you've never seen before! This deployer is fully open source with all
+        smart contract code{" "}
+        <Link target="_blank" href="https://github.com/ton-defi-org/jetton-deployer-contracts">
           available here
         </Link>
         . The HTML form is also{" "}
-        <Link
-          target="_blank"
-          href="https://github.com/ton-defi-org/jetton-deployer-webclient"
-        >
+        <Link target="_blank" href="https://github.com/ton-defi-org/jetton-deployer-webclient">
           open source
         </Link>{" "}
         and served from{" "}
-        <Link
-          target="_blank"
-          href="https://ton-defi-org.github.io/jetton-deployer-webclient"
-        >
+        <Link target="_blank" href="https://ton-defi-org.github.io/jetton-deployer-webclient">
           GitHub Pages
         </Link>
         . <Spacer />

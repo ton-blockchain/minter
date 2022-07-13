@@ -14,7 +14,7 @@ jest.mock("axios");
 test("Long serialization", async () => {
   const longUrl =
     "https://bobbyhadz.com/blog/typescript-cannot-use-import-statement-outside-module#:~:text=To%20solve%20the%20error%20%22Cannot,run%20them%20directly%20with%20node%20.".repeat(
-      100
+      100,
     );
 
   const data = {
@@ -49,7 +49,7 @@ test("Faulty serialization", async () => {
 
   // Precomputed with faulty code prior to https://github.com/ton-defi-org/jetton-deployer-webclient/pull/61
   const faultyContentCell = Cell.fromBoc(
-    "b5ee9c72c1010201002e000005010300c001004da00c20bad98ed5e80064bd29ab119ca237cb7fb76e7686fb8a3d948722faf487c7a00dcdee0cb04871a9c9"
+    "b5ee9c72c1010201002e000005010300c001004da00c20bad98ed5e80064bd29ab119ca237cb7fb76e7686fb8a3d948722faf487c7a00dcdee0cb04871a9c9",
   )[0];
 
   expect(await readJettonMetadata(faultyContentCell)).toEqual({

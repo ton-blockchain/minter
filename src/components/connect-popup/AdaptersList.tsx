@@ -13,19 +13,17 @@ const StyledListItem = styled(ListItem)({
 });
 const StyledList = styled(List)({
   width: "100%",
-  display:'flex',
-  flexDirection:'column',
-  gap:30,
-  padding: 0
+  display: "flex",
+  flexDirection: "column",
+  gap: 30,
+  padding: 0,
 });
 
 const StyledListItemButton = styled(ListItemButton)({
-  padding: 0
+  padding: 0,
 });
 
-const StyledContainer = styled(Box)({
-  
-});
+const StyledContainer = styled(Box)({});
 
 const StyledIcon = styled("img")({
   width: "40px",
@@ -64,12 +62,12 @@ const adapterConfig = {
     mobileCompatible: true,
     description: "A mobile wallet in your pocket",
   },
-  [Providers.EXTENSION] : {
+  [Providers.EXTENSION]: {
     name: "Google Chrome Plugin",
     icon: ChromeExtImg,
     mobileCompatible: false,
     description: "TON Wallet Plugin for Google Chrome",
-  }
+  },
 };
 
 function AdaptersList({ onClose, select, open, adapters }: Props) {
@@ -82,27 +80,29 @@ function AdaptersList({ onClose, select, open, adapters }: Props) {
   return (
     <Fade in>
       <StyledContainer>
-       <Header title='Select Wallet' onClose={onClose} />
-      <StyledList>
-        {adapters.filter(a => !isMobile || adapterConfig[a.type].mobileCompatible).map((adapter) => {
-          const { type } = adapter;
-          // @ts-ignore todo sy
-          const { icon, name, description } = adapterConfig[type];
+        <Header title="Select Wallet" onClose={onClose} />
+        <StyledList>
+          {adapters
+            .filter((a) => !isMobile || adapterConfig[a.type].mobileCompatible)
+            .map((adapter) => {
+              const { type } = adapter;
+              // @ts-ignore todo sy
+              const { icon, name, description } = adapterConfig[type];
 
-          return (
-            <StyledListItem disablePadding key={type}>
-              <StyledListItemButton onClick={() => select(type)}>
-                <StyledIcon src={icon} />
-                <StyledListItemRight theme={theme}>
-                  <Typography variant="h5">{name}</Typography>
-                  <Typography>{description}</Typography>
-                </StyledListItemRight>
-              </StyledListItemButton>
-            </StyledListItem>
-          );
-        })}
-      </StyledList>
-    </StyledContainer>
+              return (
+                <StyledListItem disablePadding key={type}>
+                  <StyledListItemButton onClick={() => select(type)}>
+                    <StyledIcon src={icon} />
+                    <StyledListItemRight theme={theme}>
+                      <Typography variant="h5">{name}</Typography>
+                      <Typography>{description}</Typography>
+                    </StyledListItemRight>
+                  </StyledListItemButton>
+                </StyledListItem>
+              );
+            })}
+        </StyledList>
+      </StyledContainer>
     </Fade>
   );
 }

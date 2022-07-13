@@ -9,7 +9,9 @@ function ConnectAction() {
   }
 
   return (
-    <BaseButton transparent onClick={() => toggleConnect(true)}>Connect wallet</BaseButton>
+    <BaseButton transparent onClick={() => toggleConnect(true)}>
+      Connect wallet
+    </BaseButton>
   );
 }
 

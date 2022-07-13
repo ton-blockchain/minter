@@ -19,12 +19,11 @@ const getError = (
   toAddress?: string,
   amount?: number,
   balance?: string,
-  symbol?: string
+  symbol?: string,
 ): string | undefined | JSX.Element => {
   if (!toAddress) {
     return "Recipient wallet address required";
   }
-
 
   if (toAddress && !isValidAddress(toAddress)) {
     return "Invalid Recipient wallet address";
@@ -35,7 +34,11 @@ const getError = (
   }
 
   if (toNano(amount).gt(toNano(balance!!))) {
-    return <>Maximum amount to transfer is <BigNumberDisplay value={balance!!} /> {symbol}</>;
+    return (
+      <>
+        Maximum amount to transfer is <BigNumberDisplay value={balance!!} /> {symbol}
+      </>
+    );
   }
 };
 
@@ -66,7 +69,7 @@ function TransferAction() {
         toNano(amount!),
         toAddress!,
         connectedWalletAddress!,
-        jettonAddress
+        jettonAddress,
       );
       setToAddress(undefined);
       setAmount(undefined);
@@ -75,7 +78,7 @@ function TransferAction() {
         `Successfully transfered ${amount?.toLocaleString()} ${symbol}`,
         "warning",
         undefined,
-        4000
+        4000,
       );
     } catch (error) {
       if (error instanceof Error) {

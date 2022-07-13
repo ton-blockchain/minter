@@ -1,12 +1,7 @@
 import BN from "bn.js";
 import { Address, beginCell, Cell, toNano, TonClient, Wallet } from "ton";
 import { JettonDeployParams, JETTON_DEPLOY_GAS } from "./deploy-controller";
-import {
-  initData,
-  JettonMetaDataKeys,
-  JETTON_MINTER_CODE,
-  mintBody,
-} from "./jetton-minter";
+import { initData, JettonMetaDataKeys, JETTON_MINTER_CODE, mintBody } from "./jetton-minter";
 
 export async function sleep(time: number) {
   return new Promise((resolve) => {
@@ -38,10 +33,7 @@ export async function waitForSeqno(wallet: Wallet) {
   };
 }
 
-export async function waitForContractDeploy(
-  address: Address,
-  client: TonClient
-) {
+export async function waitForContractDeploy(address: Address, client: TonClient) {
   let isDeployed = false;
   let maxTries = 25;
   while (!isDeployed && maxTries > 0) {

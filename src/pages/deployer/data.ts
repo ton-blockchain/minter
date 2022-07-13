@@ -1,6 +1,5 @@
 import { checkImageURL } from "helpers";
 
-
 const formSpec = [
   {
     name: "name",
@@ -9,7 +8,7 @@ const formSpec = [
     type: "text",
     default: "Bitcoin Cash",
     required: true,
-    errorMessage: 'Name required'
+    errorMessage: "Name required",
   },
   {
     name: "symbol",
@@ -18,7 +17,7 @@ const formSpec = [
     type: "text",
     default: "BCH",
     required: true,
-    errorMessage: 'Symbol required'
+    errorMessage: "Symbol required",
   },
   {
     name: "decimals",
@@ -28,7 +27,6 @@ const formSpec = [
     disabled: true,
     default: 9,
     required: false,
-
   },
   {
     name: "mintAmount",
@@ -37,8 +35,7 @@ const formSpec = [
     type: "number",
     default: 21000000,
     required: true,
-    errorMessage: 'Mint amount required'
-
+    errorMessage: "Mint amount required",
   },
   {
     name: "description",
@@ -48,7 +45,6 @@ const formSpec = [
     default: "Low fee peer-to-peer electronic cash alternative to Bitcoin",
   },
 
-
   {
     name: "tokenImage",
     label: "Jetton Logo URI",
@@ -56,7 +52,7 @@ const formSpec = [
     type: "string",
     required: false,
     validate: checkImageURL,
-    default: "https://bitcoincash-example.github.io/website/logo.png"
+    default: "https://bitcoincash-example.github.io/website/logo.png",
   },
 ];
 

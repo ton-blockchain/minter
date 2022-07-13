@@ -3,6 +3,7 @@
 An open source Jetton deployer webapp, based on [jetton contracts starter template](https://github.com/ton-defi-org/jetton-deployer-contracts).
 
 ## How to use
+
 Instructions:
 Make sure you have a TON wallet with at least 0.25 TON balance. Supported wallets include TonHub and Chrome Extension.
 
@@ -19,6 +20,7 @@ Deploy and approve the deploy transaction in your wallet.
 Once the token is deployed, the deploying wallet will receive all the tokens that were minted, and the form will encourage you to revoke ownership.
 
 ## Forking / Running your own instance
+
 > This project is based on [create-react-app](https://create-react-app.dev/).
 
 Clone or fork the project
@@ -30,4 +32,5 @@ Run `npm start`
 Open `http://localhost:3000`
 
 ## Is this tool safe?
+
 Yes. See https://github.com/ton-defi-org/jetton-deployer-contracts#qa-is-this-contract-deployer-safe

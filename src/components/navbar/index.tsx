@@ -2,7 +2,7 @@ import { AppBar, IconButton, useMediaQuery } from "@mui/material";
 import { styled } from "@mui/material";
 import { Box } from "@mui/system";
 import { useState } from "react";
-import {  APP_GRID } from "consts";
+import { APP_GRID } from "consts";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import { DesktopMenu, MobileMenu } from "./Menu";
 import Logo from "./Logo";
@@ -27,18 +27,16 @@ const StyledAppBar = styled(AppBar)(({ theme }) => ({
   [theme.breakpoints.down("md")]: {
     paddingTop: 10,
   },
-  [theme.breakpoints.down('sm')]:{
-  position:'fixed',
-  background:'white',
-  zIndex: 99,
-  left:0,
-  paddingLeft:15,
-  paddingRight: 15,
-  paddingBottom: 10,
-  }
+  [theme.breakpoints.down("sm")]: {
+    position: "fixed",
+    background: "white",
+    zIndex: 99,
+    left: 0,
+    paddingLeft: 15,
+    paddingRight: 15,
+    paddingBottom: 10,
+  },
 }));
-
-
 
 interface Props {
   customLink?: {
@@ -55,9 +53,7 @@ function Navbar({ customLink }: Props) {
       <StyledToolbar>
         {!matches && (
           <IconButton onClick={() => setMobileMenu(true)}>
-            <MenuRoundedIcon
-              style={{ width: 40, height: 40, color: "#50A7EA" }}
-            />
+            <MenuRoundedIcon style={{ width: 40, height: 40, color: "#50A7EA" }} />
           </IconButton>
         )}
         <Logo />

@@ -21,11 +21,10 @@ const SyledContainer = styled(Box)({
 function ConnectPopup() {
   const [sessionLink, setSessionLink] = useState<string | null>(null);
   const [showQr, setShowQr] = useState(false);
-  const { connect, resetState, toggleConnect, showConnect } =
-    useConnectionStore();
+  const { connect, resetState, toggleConnect, showConnect } = useConnectionStore();
 
   const onSelect = async (provider: Providers) => {
-    setSessionLink(null)
+    setSessionLink(null);
     const onSessionLinkCreated = (value: string) => {
       if (isMobile) {
         // @ts-ignore
@@ -48,8 +47,6 @@ function ConnectPopup() {
     }
   };
 
-
-
   const onCancel = () => {
     setShowQr(false);
   };
@@ -64,12 +61,7 @@ function ConnectPopup() {
   return (
     <Popup open={showConnect} onClose={close} maxWidth={400} hideCloseButton>
       <SyledContainer>
-        <AdaptersList
-          adapters={providers}
-          onClose={close}
-          open={!showQr}
-          select={onSelect}
-        />
+        <AdaptersList adapters={providers} onClose={close} open={!showQr} select={onSelect} />
         <QR open={showQr} link={sessionLink} onClose={onCancel} />
       </SyledContainer>
     </Popup>

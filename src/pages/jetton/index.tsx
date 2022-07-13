@@ -65,20 +65,14 @@ function JettonPage() {
             <SectionLabel>Shared Jetton metadata</SectionLabel>
             <StyledTop>
               <StyledTopImg>
-                <LoadingImage
-                  src={jettonImage}
-                  alt="jetton image"
-                  loading={jettonLoading}
-                />
+                <LoadingImage src={jettonImage} alt="jetton image" loading={jettonLoading} />
               </StyledTopImg>
               <StyledTopText>
                 <LoadingContainer loading={jettonLoading} loaderWidth="80px">
                   <Typography variant="h3">{name}</Typography>
                 </LoadingContainer>
                 <LoadingContainer loading={jettonLoading} loaderWidth="150px">
-                  {description && (
-                    <Typography variant="h5">{description}</Typography>
-                  )}
+                  {description && <Typography variant="h5">{description}</Typography>}
                 </LoadingContainer>
               </StyledTopText>
             </StyledTop>
@@ -106,7 +100,7 @@ function JettonPage() {
                   symbol,
                   adminRevokedOwnership,
                   isAdmin,
-                  jettonMaster
+                  jettonMaster,
                 )}
                 dataLoading={jettonLoading}
                 actions={adminActions}
@@ -116,10 +110,7 @@ function JettonPage() {
                 title="Symbol"
                 value={symbol}
                 dataLoading={jettonLoading}
-                message={getSymbolWarning(
-                  persistenceType,
-                  adminRevokedOwnership
-                )}
+                message={getSymbolWarning(persistenceType, adminRevokedOwnership)}
               />
               <Row
                 title="Total Supply"
@@ -131,10 +122,7 @@ function JettonPage() {
                   )
                 }
                 dataLoading={jettonLoading}
-                message={getTotalSupplyWarning(
-                  persistenceType,
-                  adminRevokedOwnership
-                )}
+                message={getTotalSupplyWarning(persistenceType, adminRevokedOwnership)}
                 actions={totalSupplyActions}
               />
             </StyledCategoryFields>

@@ -39,9 +39,7 @@ const sha256 = (str: string) => {
   return Buffer.from(sha.digestSync());
 };
 
-export function buildJettonOnchainMetadata(data: {
-  [s: string]: string | undefined;
-}): Cell {
+export function buildJettonOnchainMetadata(data: { [s: string]: string | undefined }): Cell {
   const KEYLEN = 256;
   const dict = beginDict(KEYLEN);
 
@@ -50,10 +48,7 @@ export function buildJettonOnchainMetadata(data: {
       throw new Error(`Unsupported onchain key: ${k}`);
     if (v === undefined || v === "") return;
 
-    let bufferToStore = Buffer.from(
-      v,
-      jettonOnChainMetadataSpec[k as JettonMetaDataKeys]
-    );
+    let bufferToStore = Buffer.from(v, jettonOnChainMetadataSpec[k as JettonMetaDataKeys]);
 
     const CELL_MAX_SIZE_BYTES = Math.floor((1023 - 8) / 8);
 
@@ -74,16 +69,10 @@ export function buildJettonOnchainMetadata(data: {
     dict.storeRef(sha256(k), rootCell);
   });
 
-  return beginCell()
-    .storeInt(ONCHAIN_CONTENT_PREFIX, 8)
-    .storeDict(dict.endDict())
-    .endCell();
+  return beginCell().storeInt(ONCHAIN_CONTENT_PREFIX, 8).storeDict(dict.endDict()).endCell();
 }
 
-export type persistenceType =
-  | "onchain"
-  | "offchain_private_domain"
-  | "offchain_ipfs";
+export type persistenceType = "onchain" | "offchain_private_domain" | "offchain_ipfs";
 
 export async function readJettonMetadata(contentCell: Cell): Promise<{
   persistenceType: persistenceType;
@@ -99,9 +88,7 @@ export async function readJettonMetadata(contentCell: Cell): Promise<{
         ...parseJettonOnchainMetadata(contentSlice),
       };
     case OFFCHAIN_CONTENT_PREFIX:
-      const { metadata, isIpfs } = await parseJettonOffchainMetadata(
-        contentSlice
-      );
+      const { metadata, isIpfs } = await parseJettonOffchainMetadata(contentSlice);
       return {
         persistenceType: isIpfs ? "offchain_ipfs" : "offchain_private_domain",
         metadata,
@@ -174,10 +161,7 @@ function parseJettonOnchainMetadata(contentSlice: Slice): {
   };
 }
 
-export function initData(
-  owner: Address,
-  data: { [s in JettonMetaDataKeys]?: string | undefined }
-) {
+export function initData(owner: Address, data: { [s in JettonMetaDataKeys]?: string | undefined }) {
   return beginCell()
     .storeCoins(0)
     .storeAddress(owner)
@@ -190,7 +174,7 @@ export function mintBody(
   owner: Address,
   jettonValue: BN,
   transferToJWallet: BN,
-  queryId: number
+  queryId: number,
 ): Cell {
   return beginCell()
     .storeUint(OPS.Mint, 32)
@@ -207,7 +191,7 @@ export function mintBody(
         .storeAddress(owner)
         .storeCoins(0)
         .storeBit(false) // forward_payload in this slice, not separate cell
-        .endCell()
+        .endCell(),
     )
     .endCell();
 }

@@ -8,8 +8,7 @@ import { useContext } from "react";
 import { EnvContext } from "../../App";
 
 function useConnectionStore() {
-  const [connectionState, setConnectionState] =
-    useRecoilState(connectionStateAtom);
+  const [connectionState, setConnectionState] = useRecoilState(connectionStateAtom);
   const resetState = useResetRecoilState(connectionStateAtom);
   const { isSandbox } = useContext(EnvContext);
 
@@ -25,10 +24,7 @@ function useConnectionStore() {
     }));
   };
 
-  const connect = async (
-    provider: Providers,
-    onSessionLink?: (value: string) => void
-  ) => {
+  const connect = async (provider: Providers, onSessionLink?: (value: string) => void) => {
     try {
       setConnectionState((prevState) => ({
         ...prevState,
@@ -39,7 +35,7 @@ function useConnectionStore() {
         provider,
         onSessionLink ? onSessionLink : () => {},
         isSandbox,
-        isMobile ? onTxUrlReady : undefined
+        isMobile ? onTxUrlReady : undefined,
       );
 
       localStorage.setItem(LOCAL_STORAGE_PROVIDER, provider);

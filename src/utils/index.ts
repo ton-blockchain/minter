@@ -15,7 +15,6 @@ export const getUrlParam = (name: string) => {
 };
 
 export const isValidAddress = (address: string, errorText?: string) => {
-
   try {
     const result = Address.parse(address);
     if (result && result.toFriendly() === zeroAddress().toFriendly()) {

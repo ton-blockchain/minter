@@ -9,8 +9,8 @@ const StyledContainer = styled(Typography)({
   fontWeight: 600,
   "& a": {
     fontSize: 14,
-    color:'unset',
-    textDecoration:'unset',
+    color: "unset",
+    textDecoration: "unset",
     fontWeight: 600,
   },
 });

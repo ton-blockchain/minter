@@ -77,16 +77,10 @@ const Message = ({ message }: { message?: JettonDetailMessage }) => {
   }
   return (
     <StyledMessage type={message.type}>
-      {message.type === "warning" ? (
-        <WarningRoundedIcon />
-      ) : (
-        <CheckCircleRoundedIcon />
-      )}
+      {message.type === "warning" ? <WarningRoundedIcon /> : <CheckCircleRoundedIcon />}
 
       {message.text && (
-        <ReactMarkdown components={{ a: LinkRenderer }}>
-          {message.text}
-        </ReactMarkdown>
+        <ReactMarkdown components={{ a: LinkRenderer }}>{message.text}</ReactMarkdown>
       )}
     </StyledMessage>
   );
@@ -95,7 +89,7 @@ const Message = ({ message }: { message?: JettonDetailMessage }) => {
 export default Row;
 
 const StyledMessage = styled(Box)(({ type }: { type: string }) => ({
-  maxWidth: '90%',
+  maxWidth: "90%",
   display: "flex",
   alignItems: "flex-start",
   gap: 5,
@@ -154,21 +148,19 @@ const StyledSectionRight = styled(Box)(({ theme }) => ({
   },
 }));
 
-const StyledSectionValue = styled(Box)(
-  ({ hasButton }: { hasButton?: boolean }) => ({
-    width: hasButton ? "calc(100% - 130px)" : "100%",
-    display: "flex",
-    alignItems: "center",
-    "& .address-link": {},
-    "& p": {
-      flex: 1,
-      whiteSpace: "nowrap",
-      overflow: "hidden",
-      textOverflow: "ellipsis",
-      paddingRight: 20,
-      [theme.breakpoints.down("sm")]: {
-        fontSize: 14,
-      },
+const StyledSectionValue = styled(Box)(({ hasButton }: { hasButton?: boolean }) => ({
+  width: hasButton ? "calc(100% - 130px)" : "100%",
+  display: "flex",
+  alignItems: "center",
+  "& .address-link": {},
+  "& p": {
+    flex: 1,
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    paddingRight: 20,
+    [theme.breakpoints.down("sm")]: {
+      fontSize: 14,
     },
-  })
-);
+  },
+}));

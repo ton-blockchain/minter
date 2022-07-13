@@ -1,7 +1,4 @@
-import {
-  TonConnection,
-  ChromeExtensionWalletProvider,
-} from "@ton-defi.org/ton-connection";
+import { TonConnection, ChromeExtensionWalletProvider } from "@ton-defi.org/ton-connection";
 import { jettonDeployController } from "lib/deploy-controller";
 import { EnvProfiles, Environments } from "lib/env-profiles";
 import { zeroAddress } from "lib/utils";
@@ -30,15 +27,10 @@ function useJettonStore() {
     if (queryAddress && !isValidAddress(queryAddress)) {
       window.history.replaceState(null, "", window.location.pathname);
       queryAddress = null;
-      showNotification(
-        "Invalid jetton address in query param",
-        "error",
-        undefined,
-        5000
-      );
+      showNotification("Invalid jetton address in query param", "error", undefined, 5000);
     }
-    if(queryAddress){
-      disconnect()
+    if (queryAddress) {
+      disconnect();
     }
 
     const address = queryAddress || connectedWalletAddress;
@@ -60,7 +52,7 @@ function useJettonStore() {
     } catch (error) {
       connection = new TonConnection(
         new ChromeExtensionWalletProvider(),
-        EnvProfiles[Environments.MAINNET].rpcApi
+        EnvProfiles[Environments.MAINNET].rpcApi,
       );
     }
 
@@ -73,7 +65,7 @@ function useJettonStore() {
       const result = await jettonDeployController.getJettonDetails(
         parsedJettonMaster,
         address ? Address.parse(address) : zeroAddress(),
-        connection
+        connection,
       );
 
       if (!result) {
@@ -82,16 +74,14 @@ function useJettonStore() {
         return;
       }
       const _adminAddress = result.minter.admin.toFriendly();
-      const admin = isMyWallet &&  _adminAddress === connectedWalletAddress;
+      const admin = isMyWallet && _adminAddress === connectedWalletAddress;
 
-      console.log({result});
-
+      console.log({ result });
 
       setState((prevState) => {
         return {
           ...prevState,
-          isJettonDeployerFaultyOnChainData:
-            result.minter.isJettonDeployerFaultyOnChainData,
+          isJettonDeployerFaultyOnChainData: result.minter.isJettonDeployerFaultyOnChainData,
           persistenceType: result.minter.persistenceType,
           description: result.minter.metadata.description,
           jettonImage: result.minter.metadata.image || QuestiomMarkImg,
@@ -101,9 +91,7 @@ function useJettonStore() {
           adminRevokedOwnership: _adminAddress === zeroAddress().toFriendly(),
           isAdmin: admin,
           adminAddress: _adminAddress,
-          balance: result.jettonWallet
-            ? fromNano(result.jettonWallet.balance)
-            : undefined,
+          balance: result.jettonWallet ? fromNano(result.jettonWallet.balance) : undefined,
           jettonAddress: result.jettonWallet?.jWalletAddress.toFriendly(),
           jettonMaster: id,
           isMyWallet,

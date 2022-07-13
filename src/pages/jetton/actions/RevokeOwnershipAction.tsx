@@ -25,7 +25,7 @@ function RevokeOwnershipAction() {
       setIsLoading(true);
       await jettonDeployController.burnAdmin(
         Address.parse(jettonMaster),
-        WalletConnection.getConnection()
+        WalletConnection.getConnection(),
       );
       getJettonDetails();
       showNotification("Ownership revoked successfully", "success");

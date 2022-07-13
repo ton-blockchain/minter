@@ -8,31 +8,25 @@ import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter as Router } from "react-router-dom";
 import { RecoilRoot } from "recoil";
 import CssBaseline from "@mui/material/CssBaseline";
-import { ThemeProvider } from '@mui/material/styles';
-import { ThemeProvider as MakeStylesProvider } from '@mui/material';
+import { ThemeProvider } from "@mui/material/styles";
+import { ThemeProvider as MakeStylesProvider } from "@mui/material";
 import theme from "theme";
-import { SnackbarProvider } from 'notistack';
+import { SnackbarProvider } from "notistack";
 
-
-
-
-
-const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement
-);
+const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 root.render(
   <RecoilRoot>
     <ThemeProvider theme={theme}>
-    <MakeStylesProvider theme={theme}>
-      <CssBaseline />
-      <Router>
-        <SnackbarProvider maxSnack={3}>
-        <App />
-        </SnackbarProvider>
-      </Router>
-    </MakeStylesProvider>
+      <MakeStylesProvider theme={theme}>
+        <CssBaseline />
+        <Router>
+          <SnackbarProvider maxSnack={3}>
+            <App />
+          </SnackbarProvider>
+        </Router>
+      </MakeStylesProvider>
     </ThemeProvider>
-  </RecoilRoot>
+  </RecoilRoot>,
 );
 
 // If you want to start measuring performance in your app, pass a function

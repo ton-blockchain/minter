@@ -8,7 +8,7 @@ const StyledContainer = styled(Box)({
   position: "relative",
   paddingBottom: 10,
   marginBottom: 20,
-  width:'100%',
+  width: "100%",
   "& h4": {
     fontSize: 18,
     fontWeight: 400,

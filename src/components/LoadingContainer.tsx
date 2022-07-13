@@ -15,15 +15,7 @@ function LoadingContainer({
   loaderWidth = "70%",
   loaderHeight = "25px",
 }: Props) {
-  return (
-    <>
-      {loading ? (
-        <Skeleton width={loaderWidth} height={loaderHeight} />
-      ) : (
-        children
-      )}
-    </>
-  );
+  return <>{loading ? <Skeleton width={loaderWidth} height={loaderHeight} /> : children}</>;
 }
 
 export default LoadingContainer;

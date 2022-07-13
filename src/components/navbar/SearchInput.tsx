@@ -20,11 +20,11 @@ const StyledContainer = styled(Box)(({ expanded }: { expanded: boolean }) => ({
   alignItems: "center",
   marginLeft: "auto",
   marginRight: 3,
-  [theme.breakpoints.down('sm')]:{
-    width: '100%',
-    minHeight:'unset',
-    height: 40
-  }
+  [theme.breakpoints.down("sm")]: {
+    width: "100%",
+    minHeight: "unset",
+    height: 40,
+  },
 }));
 
 const StyledInput = styled("input")(({}) => ({
@@ -37,18 +37,16 @@ const StyledInput = styled("input")(({}) => ({
   fontWeight: 500,
   fontFamily: "inherit",
   outline: "unset",
-  [theme.breakpoints.down('sm')]: {
-    fontSize: 16
-  }
-
+  [theme.breakpoints.down("sm")]: {
+    fontSize: 16,
+  },
 }));
 
-
-interface Props{
+interface Props {
   closeMenu?: () => void;
 }
 
-function SearchInput({closeMenu}: Props) {
+function SearchInput({ closeMenu }: Props) {
   const [expanded, setExpanded] = useState(false);
   const [value, setValue] = useState("");
   const navigate = useNavigate();
@@ -68,11 +66,9 @@ function SearchInput({closeMenu}: Props) {
 
     setValue("");
     setExpanded(false);
-    closeMenu?.()
+    closeMenu?.();
     navigate(`${ROUTES.jetton}/${value}`);
-  
   }, [value]);
-
 
   useEffect(() => {
     const listener = (event: any) => {

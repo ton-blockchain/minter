@@ -1,9 +1,4 @@
-import {
-  FormLabel,
-  InputAdornment,
-  styled,
-  TextField,
-} from "@mui/material";
+import { FormLabel, InputAdornment, styled, TextField } from "@mui/material";
 import { Box } from "@mui/system";
 import JettonImg from "assets/jetton.svg";
 import BaseButton from "components/BaseButton";
@@ -30,18 +25,16 @@ const StyledFormTitle = styled(FormLabel)({
   marginBottom: 10,
 });
 
-const StyledLink = styled('span')({
-
-  "& p":{
-    whiteSpace:'nowrap',
-    overflow:'hidden',
-    textOverflow:'ellipsis',
+const StyledLink = styled("span")({
+  "& p": {
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
   },
-  "& a":{
-    cursor:'pointer',
-    fontWeight: 600
-  }
-
+  "& a": {
+    cursor: "pointer",
+    fontWeight: 600,
+  },
 });
 
 function SearchInput() {
@@ -78,10 +71,7 @@ function SearchInput() {
   return (
     <StyledContainer>
       <StyledFormTitle>
-        <SectionLabel
-        >
-          Search for an existing Jetton
-        </SectionLabel>
+        <SectionLabel>Search for an existing Jetton</SectionLabel>
       </StyledFormTitle>
       <StyledJettonSearch
         onChange={onChange}
@@ -107,7 +97,10 @@ function SearchInput() {
         }}
       />
       <FieldDescription>
-        Enter an existing Jetton contract address, <StyledLink><a onClick={onExample}>example</a></StyledLink>
+        Enter an existing Jetton contract address,{" "}
+        <StyledLink>
+          <a onClick={onExample}>example</a>
+        </StyledLink>
       </FieldDescription>
     </StyledContainer>
   );

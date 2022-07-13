@@ -16,24 +16,22 @@ interface StyledButtonProps {
   fontSize: number;
 }
 
-const StyledButton = styled(LoadingButton)(
-  ({ fontSize }: StyledButtonProps) => ({
-    fontSize: fontSize,
-    boxShadow: "none",
-    borderRadius: 6,
-    fontWeight: 600,
-    padding: "0px 16px",
-    height: "100%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-    whiteSpace: "nowrap",
-    "& img": {
-      maxWidth: 22,
-    },
-  })
-);
+const StyledButton = styled(LoadingButton)(({ fontSize }: StyledButtonProps) => ({
+  fontSize: fontSize,
+  boxShadow: "none",
+  borderRadius: 6,
+  fontWeight: 600,
+  padding: "0px 16px",
+  height: "100%",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: 8,
+  whiteSpace: "nowrap",
+  "& img": {
+    maxWidth: 22,
+  },
+}));
 
 function BaseButton({
   children,
@@ -56,9 +54,7 @@ function BaseButton({
       style={{
         border: transparent ? "1px solid #50A7EA" : "",
       }}
-      loadingIndicator={
-        <CircularProgress style={{ color: "white", width: 20, height: 20 }} />
-      }
+      loadingIndicator={<CircularProgress style={{ color: "white", width: 20, height: 20 }} />}
     >
       {children}
     </StyledButton>

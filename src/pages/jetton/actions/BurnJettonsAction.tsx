@@ -16,14 +16,8 @@ function BurnJettonsAction() {
   const [amount, setAmount] = useState<number | undefined>(undefined);
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const {
-    jettonMaster,
-    symbol,
-    getJettonDetails,
-    balance,
-    jettonAddress,
-    isMyWallet,
-  } = useJettonStore();
+  const { jettonMaster, symbol, getJettonDetails, balance, jettonAddress, isMyWallet } =
+    useJettonStore();
   const { showNotification } = useNotification();
 
   if (!balance || !isMyWallet) {
@@ -40,7 +34,7 @@ function BurnJettonsAction() {
       return;
     }
 
-    const value = toNano(amount);    
+    const value = toNano(amount);
 
     if (value.gt(toNano(balance!!))) {
       const msg = (
@@ -55,11 +49,7 @@ function BurnJettonsAction() {
     try {
       setIsLoading(true);
       const connection = WalletConnection.getConnection();
-      await jettonDeployController.burnJettons(
-        connection,
-        value,
-        jettonAddress!
-      );
+      await jettonDeployController.burnJettons(connection, value, jettonAddress!);
       setOpen(false);
       const message = `Successfully burned ${amount.toLocaleString()} ${symbol}`;
       showNotification(message, "success");

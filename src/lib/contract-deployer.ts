@@ -22,7 +22,7 @@ export class ContractDeployer {
 
   async deployContract(
     params: ContractDeployDetails,
-    tonConnection: TonConnection
+    tonConnection: TonConnection,
   ): Promise<Address> {
     const _contractAddress = this.addressForContract(params);
 

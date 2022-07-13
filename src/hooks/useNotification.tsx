@@ -20,7 +20,7 @@ function useNotification() {
       message: ReactNode | string,
       variant: VariantType,
       onClose?: () => void,
-      autoHideDuration?: number
+      autoHideDuration?: number,
     ) => {
       const key = enqueueSnackbar(<StyledMessage>{message}</StyledMessage>, {
         variant,
@@ -34,7 +34,7 @@ function useNotification() {
         ),
       });
     },
-    [closeSnackbar, enqueueSnackbar]
+    [closeSnackbar, enqueueSnackbar],
   );
 
   return { showNotification };

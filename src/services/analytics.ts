@@ -10,6 +10,9 @@ export enum AnalyticsAction {
 }
 
 const sendEvent = (category: AnalyticsCategory, action: AnalyticsAction, label: string) => {
+  if(!ReactGA.isInitialized){
+    return 
+  }
   try {
     ReactGA.event({
       category,
@@ -22,8 +25,12 @@ const sendEvent = (category: AnalyticsCategory, action: AnalyticsAction, label: 
 };
 
 const init = () => {
+ try {
   ReactGA.initialize(process.env.REACT_APP_GA!!);
   ReactGA.send(window.location.pathname + window.location.search);
+ } catch (error) {
+  
+ }
 };
 
 const analytics = {

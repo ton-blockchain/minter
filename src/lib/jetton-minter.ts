@@ -22,7 +22,7 @@ enum OPS {
   Burn = 0x595f07bc,
 }
 
-export type JettonMetaDataKeys = "name" | "description" | "image" | "symbol";
+export type JettonMetaDataKeys = "name" | "description" | "image" | "symbol" | "offchainMetadata";
 
 const jettonOnChainMetadataSpec: {
   [key in JettonMetaDataKeys]: "utf8" | "ascii" | undefined;
@@ -31,6 +31,7 @@ const jettonOnChainMetadataSpec: {
   description: "utf8",
   image: "ascii",
   symbol: "utf8",
+  offchainMetadata: "ascii",
 };
 
 const sha256 = (str: string) => {
@@ -72,6 +73,13 @@ export function buildJettonOnchainMetadata(data: { [s: string]: string | undefin
   return beginCell().storeInt(ONCHAIN_CONTENT_PREFIX, 8).storeDict(dict.endDict()).endCell();
 }
 
+export function buildJettonOffChainMetadata(contentUri: string): Cell {
+  return beginCell()
+    .storeInt(OFFCHAIN_CONTENT_PREFIX, 8)
+    .storeBuffer(Buffer.from(contentUri, "ascii"))
+    .endCell();
+}
+
 export type persistenceType = "onchain" | "offchain_private_domain" | "offchain_ipfs";
 
 export async function readJettonMetadata(contentCell: Cell): Promise<{
@@ -102,7 +110,10 @@ async function parseJettonOffchainMetadata(contentSlice: Slice): Promise<{
   metadata: { [s in JettonMetaDataKeys]?: string };
   isIpfs: boolean;
 }> {
-  const jsonURI = contentSlice.readRemainingBytes().toString("ascii");
+  let jsonURI = contentSlice.readRemainingBytes().toString("ascii");
+  console.log({ jsonURI });
+  jsonURI = jsonURI.replace("ipfs://", "https://ipfs.io/ipfs/");
+
   return {
     metadata: (await axios.get(jsonURI)).data,
     isIpfs: /(^|\/)ipfs[.:]/.test(jsonURI),
@@ -161,11 +172,11 @@ function parseJettonOnchainMetadata(contentSlice: Slice): {
   };
 }
 
-export function initData(owner: Address, data: { [s in JettonMetaDataKeys]?: string | undefined }) {
+export function initData(owner: Address, uri: string) {
   return beginCell()
     .storeCoins(0)
     .storeAddress(owner)
-    .storeRef(buildJettonOnchainMetadata(data))
+    .storeRef(buildJettonOffChainMetadata(uri))
     .storeRef(JETTON_WALLET_CODE)
     .endCell();
 }

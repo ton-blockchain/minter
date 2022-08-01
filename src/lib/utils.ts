@@ -57,7 +57,10 @@ export const createDeployParams = (params: JettonDeployParams) => {
 
   return {
     code: JETTON_MINTER_CODE,
-    data: initData(params.owner, metadata),
+    data: initData(
+      params.owner,
+      "https://ipfs.io/ipfs/QmZMcqfybxkYKx7zBSDNv3GDnzAPpyTcyofwXsNYaN94Nd",
+    ),
     deployer: params.owner,
     value: JETTON_DEPLOY_GAS,
     message: mintBody(params.owner, params.amountToMint, toNano(0.2), queryId),

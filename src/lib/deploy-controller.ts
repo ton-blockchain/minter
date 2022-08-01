@@ -29,11 +29,14 @@ export enum JettonDeployState {
 }
 
 export interface JettonDeployParams {
-  jettonName: string;
-  jettonSymbol: string;
-  jettonDescription?: string;
+  onchainMetaData?: {
+    name: string;
+    symbol: string;
+    description?: string;
+    image?: string;
+  };
+  offchainUri?: string;
   owner: Address;
-  imageUri?: string;
   amountToMint: BN;
 }
 
@@ -44,7 +47,7 @@ class JettonDeployController {
     // params.onProgress?.(JettonDeployState.BALANCE_CHECK);
     const balance = await tonConnection._tonClient.getBalance(params.owner);
     if (balance.lt(JETTON_DEPLOY_GAS)) throw new Error("Not enough balance in deployer wallet");
-    const deployParams = createDeployParams(params);
+    const deployParams = createDeployParams(params, params.offchainUri);
     const contractAddr = contractDeployer.addressForContract(deployParams);
 
     if (await tonConnection._tonClient.isContractDeployed(contractAddr)) {

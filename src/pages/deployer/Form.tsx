@@ -2,7 +2,7 @@ import BaseButton from "components/BaseButton";
 import useNotification from "hooks/useNotification";
 import { useForm } from "react-hook-form";
 import useConnectionStore from "store/connection-store/useConnectionStore";
-import { formSpec } from "./data";
+import { offchainFormSpec, onchainFormSpec } from "./data";
 import { Box, TextField, Tooltip, Typography } from "@mui/material";
 import { Control, Controller } from "react-hook-form";
 import { styled } from "@mui/material";
@@ -10,6 +10,7 @@ import { useRef } from "react";
 import FieldDescription from "components/FieldDescription";
 import SectionLabel from "components/SectionLabel";
 import NumberFormat from "react-number-format";
+import { getUrlParam } from "../../utils/index";
 
 interface FormProps {
   onSubmit: (values: any) => Promise<void>;
@@ -18,6 +19,10 @@ interface FormProps {
 function Form({ onSubmit }: FormProps) {
   const { showNotification } = useNotification();
   const { address, toggleConnect } = useConnectionStore();
+
+  const isOffchainInternal = getUrlParam("offchainINTERNAL") !== null;
+
+  let formSpec = isOffchainInternal ? offchainFormSpec : onchainFormSpec;
 
   const {
     control,

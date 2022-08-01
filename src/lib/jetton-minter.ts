@@ -22,7 +22,7 @@ enum OPS {
   Burn = 0x595f07bc,
 }
 
-export type JettonMetaDataKeys = "name" | "description" | "image" | "symbol" | "offchainMetadata";
+export type JettonMetaDataKeys = "name" | "description" | "image" | "symbol";
 
 const jettonOnChainMetadataSpec: {
   [key in JettonMetaDataKeys]: "utf8" | "ascii" | undefined;
@@ -31,7 +31,6 @@ const jettonOnChainMetadataSpec: {
   description: "utf8",
   image: "ascii",
   symbol: "utf8",
-  offchainMetadata: "ascii",
 };
 
 const sha256 = (str: string) => {
@@ -110,9 +109,10 @@ async function parseJettonOffchainMetadata(contentSlice: Slice): Promise<{
   metadata: { [s in JettonMetaDataKeys]?: string };
   isIpfs: boolean;
 }> {
-  let jsonURI = contentSlice.readRemainingBytes().toString("ascii");
-  console.log({ jsonURI });
-  jsonURI = jsonURI.replace("ipfs://", "https://ipfs.io/ipfs/");
+  const jsonURI = contentSlice
+    .readRemainingBytes()
+    .toString("ascii")
+    .replace("ipfs://", "https://ipfs.io/ipfs/");
 
   return {
     metadata: (await axios.get(jsonURI)).data,
@@ -172,11 +172,20 @@ function parseJettonOnchainMetadata(contentSlice: Slice): {
   };
 }
 
-export function initData(owner: Address, uri: string) {
+export function initData(
+  owner: Address,
+  data?: { [s in JettonMetaDataKeys]?: string | undefined },
+  offchainUri?: string,
+) {
+  if (!data && !offchainUri) {
+    throw new Error("Must either specify onchain data or offchain uri");
+  }
   return beginCell()
     .storeCoins(0)
     .storeAddress(owner)
-    .storeRef(buildJettonOffChainMetadata(uri))
+    .storeRef(
+      offchainUri ? buildJettonOffChainMetadata(offchainUri) : buildJettonOnchainMetadata(data!),
+    )
     .storeRef(JETTON_WALLET_CODE)
     .endCell();
 }

@@ -1,6 +1,8 @@
 import { checkImageURL } from "helpers";
 
-const formSpec = [
+const baseFormSpec = [];
+
+const onchainFormSpec = [
   {
     name: "name",
     label: "Jetton Name",
@@ -56,4 +58,26 @@ const formSpec = [
   },
 ];
 
-export { formSpec };
+const offchainFormSpec = [
+  {
+    name: "offchainUri",
+    label: "Offchain URI",
+    description: "JSON containing metadata. Don't forget to pin it if it's ipfs",
+    type: "string",
+    default: "",
+    required: true,
+    errorMessage: "URI required",
+  },
+  {
+    name: "mintAmount",
+    label: "Amount to Mint",
+    description: "Number of initial tokens to mint and send to your wallet address (float)",
+    type: "number",
+    default: 21000000,
+    required: true,
+    errorMessage: "Mint amount required",
+    disabled: undefined,
+  },
+];
+
+export { onchainFormSpec, offchainFormSpec };

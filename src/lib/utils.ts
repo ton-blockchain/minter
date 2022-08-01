@@ -45,19 +45,12 @@ export async function waitForContractDeploy(address: Address, client: TonClient)
   throw new Error("Timeout");
 }
 
-export const createDeployParams = (params: JettonDeployParams) => {
-  const metadata: { [s in JettonMetaDataKeys]?: string } = {
-    name: params.jettonName,
-    symbol: params.jettonSymbol,
-    description: params.jettonDescription,
-    image: params.imageUri,
-  };
-
+export const createDeployParams = (params: JettonDeployParams, offchainUri?: string) => {
   const queryId = parseInt(process.env.REACT_APP_DEPLOY_QUERY_ID ?? "0");
 
   return {
     code: JETTON_MINTER_CODE,
-    data: initData(params.owner, metadata),
+    data: initData(params.owner, params.onchainMetaData, offchainUri),
     deployer: params.owner,
     value: JETTON_DEPLOY_GAS,
     message: mintBody(params.owner, params.amountToMint, toNano(0.2), queryId),

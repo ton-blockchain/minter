@@ -18,6 +18,7 @@ import SearchInput from "./SearchInput";
 import Form from "./Form";
 import SectionLabel from "components/SectionLabel";
 import analytics, { AnalyticsAction, AnalyticsCategory } from "services/analytics";
+import { JettonDeployParams } from "../../lib/deploy-controller";
 
 function DeployerPage() {
   const { showNotification } = useNotification();
@@ -31,16 +32,19 @@ function DeployerPage() {
     if (!address || !connection) {
       throw new Error("Wallet not connected");
     }
-    const params = {
+    const params: JettonDeployParams = {
       owner: Address.parse(address),
-      jettonName: data.name,
-      jettonSymbol: data.symbol,
+      onchainMetaData: {
+        name: data.name,
+        symbol: data.symbol,
+        image: data.tokenImage,
+        description: data.description,
+      },
+      offchainUri: data.offchainUri,
       amountToMint: toNano(data.mintAmount),
-      imageUri: data.tokenImage,
-      jettonDescription: data.description,
     };
     setIsLoading(true);
-    const deployParams = createDeployParams(params);
+    const deployParams = createDeployParams(params, data.offchainUri);
     const contractAddress = new ContractDeployer().addressForContract(deployParams);
 
     const isDeployed = await WalletConnection.isContractDeployed(contractAddress);
@@ -127,8 +131,7 @@ function Description() {
         For detailed instructions and in-depth explanations of all fields please see the{" "}
         <Link
           target="_blank"
-          href="https://github.com/ton-defi-org/jetton-deployer-contracts#jetton-metadata-field-best-practices"
-        >
+          href="https://github.com/ton-defi-org/jetton-deployer-contracts#jetton-metadata-field-best-practices">
           GitHub README
         </Link>
         . It includes several best practice recommendations so please take a look.
@@ -150,8 +153,7 @@ function Description() {
         Is this deployer safe? Yes! read{" "}
         <Link
           target="_blank"
-          href="https://github.com/ton-defi-org/jetton-deployer-contracts#protect-yourself-and-your-users"
-        >
+          href="https://github.com/ton-defi-org/jetton-deployer-contracts#protect-yourself-and-your-users">
           this
         </Link>{" "}
         to understand why.

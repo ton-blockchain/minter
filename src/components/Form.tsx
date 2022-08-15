@@ -2,35 +2,30 @@ import BaseButton from "components/BaseButton";
 import useNotification from "hooks/useNotification";
 import { useForm } from "react-hook-form";
 import useConnectionStore from "store/connection-store/useConnectionStore";
-import { offchainFormSpec, onchainFormSpec } from "./data";
-import { Box, TextField, Tooltip, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import { Control, Controller } from "react-hook-form";
 import { styled } from "@mui/material";
 import { useRef } from "react";
 import FieldDescription from "components/FieldDescription";
-import SectionLabel from "components/SectionLabel";
 import NumberFormat from "react-number-format";
-import { getUrlParam } from "../../utils/index";
 
 interface FormProps {
   onSubmit: (values: any) => Promise<void>;
+  inputs: any[];
+  disableExample?: boolean;
+  submitText: string;
+  defaultValues?: {};
 }
 
-function Form({ onSubmit }: FormProps) {
+function Form({ onSubmit, inputs, disableExample, submitText, defaultValues }: FormProps) {
   const { showNotification } = useNotification();
   const { address, toggleConnect } = useConnectionStore();
 
-  const isOffchainInternal = getUrlParam("offchainINTERNAL") !== null;
-
-  let formSpec = isOffchainInternal ? offchainFormSpec : onchainFormSpec;
-
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-    setValue,
-    clearErrors,
-  } = useForm({ mode: "onSubmit", reValidateMode: "onChange" });
+  const { control, handleSubmit, formState, setValue, clearErrors } = useForm({
+    mode: "onSubmit",
+    reValidateMode: "onChange",
+    defaultValues,
+  });
 
   const onFormError = (value: any) => {
     const firstError = value[Object.keys(value)[0]];
@@ -40,17 +35,19 @@ function Form({ onSubmit }: FormProps) {
     showNotification(<>{firstError.message}</>, "warning", undefined, 3000);
   };
 
-  const onExampleClick = (name: string, value: string | number) => {
+  const onExampleClick = (name: never, value: never) => {
     setValue(name, value);
   };
 
+  const errors = formState.errors as any;
+
   return (
     <StyledForm onSubmit={handleSubmit(onSubmit, onFormError)}>
-      <SectionLabel>Create your own new Jetton</SectionLabel>
       <StyledFormInputs>
-        {formSpec.map((spec, index) => {
+        {inputs.map((spec: any, index: number) => {
           return (
             <Input
+              disableExample={disableExample}
               required={spec.required}
               description={spec.description}
               clearErrors={clearErrors}
@@ -61,7 +58,7 @@ function Form({ onSubmit }: FormProps) {
               control={control}
               label={spec.label}
               defaultValue={spec.default || ""}
-              onExamleClick={onExampleClick}
+              onExamleClick={() => onExampleClick(spec.name as never, spec.default as never)}
               disabled={spec.disabled}
               errorMessage={spec.errorMessage}
             />
@@ -75,7 +72,7 @@ function Form({ onSubmit }: FormProps) {
             Connect wallet
           </BaseButton>
         ) : (
-          <BaseButton type="submit">Deploy</BaseButton>
+          <BaseButton type="submit">{submitText}</BaseButton>
         )}
       </StyledActionBtn>
     </StyledForm>
@@ -84,16 +81,9 @@ function Form({ onSubmit }: FormProps) {
 
 export default Form;
 
-const StyledForm = styled("form")(({ theme }) => ({
-  flex: 1,
-  display: "flex",
-  flexDirection: "column",
-  background: "#F7FAFC",
-  borderRadius: 16,
-  padding: "20px 30px 30px 30px",
-  [theme.breakpoints.down("lg")]: {},
-  [theme.breakpoints.down("md")]: {},
-}));
+const StyledForm = styled("form")({
+  width: "100%",
+});
 
 const StyledFormInputs = styled(Box)({
   width: "100%",
@@ -120,7 +110,7 @@ interface InputProps {
   control: Control;
   name: string;
   defaultValue: string | number;
-  onExamleClick: (name: string, value: string | number) => void;
+  onExamleClick: () => void;
   type?: any;
   required?: boolean;
   clearErrors: any;
@@ -128,6 +118,7 @@ interface InputProps {
   validate?: (val: string) => boolean;
   errorMessage?: string;
   description: string;
+  disableExample?: boolean;
 }
 
 function Input({
@@ -142,11 +133,12 @@ function Input({
   clearErrors,
   disabled,
   errorMessage,
+  disableExample = false,
 }: InputProps) {
   const ref = useRef<any>();
 
   const onClick = () => {
-    onExamleClick(name, defaultValue);
+    onExamleClick();
     clearErrors(name);
   };
 
@@ -195,7 +187,7 @@ function Input({
                 }}
               />
             )}
-            {!disabled && (
+            {!disabled && !disableExample && (
               <BaseButton transparent onClick={onClick}>
                 Example
               </BaseButton>

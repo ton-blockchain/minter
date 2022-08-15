@@ -10,7 +10,7 @@ import {
   burn,
   mintBody,
   transfer,
-  _replaceMetadataFAULTY_FIX,
+  updateMetadataBody,
 } from "./jetton-minter";
 import { readJettonMetadata, changeAdminBody, JettonMetaDataKeys } from "./jetton-minter";
 
@@ -213,7 +213,30 @@ class JettonDeployController {
 
     await connection.requestTransaction({
       to: contractAddress,
-      message: _replaceMetadataFAULTY_FIX(buildJettonOnchainMetadata(data)),
+      message: updateMetadataBody(buildJettonOnchainMetadata(data)),
+      value: toNano(0.01),
+    });
+
+    await waiter();
+  }
+
+  async updateMetadata(
+    contractAddress: Address,
+    data: {
+      [s in JettonMetaDataKeys]?: string | undefined;
+    },
+    connection: TonConnection,
+  ) {
+    const { address } = await connection.connect();
+    const waiter = await waitForSeqno(
+      connection._tonClient.openWalletFromAddress({
+        source: Address.parse(address),
+      }),
+    );
+
+    await connection.requestTransaction({
+      to: contractAddress,
+      message: updateMetadataBody(buildJettonOnchainMetadata(data)),
       value: toNano(0.01),
     });
 

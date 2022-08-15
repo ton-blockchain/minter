@@ -1,7 +1,5 @@
 import { checkImageURL } from "helpers";
 
-const baseFormSpec = [];
-
 const onchainFormSpec = [
   {
     name: "name",

@@ -22,7 +22,7 @@ const StyledAppBar = styled(AppBar)(({ theme }) => ({
   maxWidth: APP_GRID,
   background: "transparent",
   boxShadow: "none",
-  paddingTop: 40,
+  paddingTop: 25,
   paddingBottom: 20,
   [theme.breakpoints.down("md")]: {
     paddingTop: 10,

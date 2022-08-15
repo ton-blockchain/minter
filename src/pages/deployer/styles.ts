@@ -50,3 +50,14 @@ export const StyledDescription = styled(Box)(({ theme }) => ({
     },
   },
 }));
+
+export const StyledRight = styled(Box)(({ theme }) => ({
+  flex: 1,
+  display: "flex",
+  flexDirection: "column",
+  background: "#F7FAFC",
+  borderRadius: 16,
+  padding: "20px 30px 30px 30px",
+  [theme.breakpoints.down("lg")]: {},
+  [theme.breakpoints.down("md")]: {},
+}));

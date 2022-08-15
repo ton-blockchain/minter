@@ -1,7 +1,7 @@
 import { persistenceType } from "lib/jetton-minter";
 import { atom } from "recoil";
 
-interface JettonStoreState {
+export interface JettonStoreState {
   isAdmin: boolean;
   adminRevokedOwnership: boolean;
   symbol?: string;

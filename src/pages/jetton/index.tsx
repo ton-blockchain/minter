@@ -22,8 +22,8 @@ import FaultyDeploy from "./FaultyDeploy";
 import Row from "./Row";
 import SectionLabel from "components/SectionLabel";
 import TransferAction from "./actions/TransferAction";
-import { BN } from "bn.js";
 import BigNumberDisplay from "components/BigNumberDisplay";
+import UpdateMetadata from "./actions/UpdateMetadata";
 function JettonPage() {
   const { id }: { id?: string } = useParams();
 
@@ -125,6 +125,7 @@ function JettonPage() {
                 message={getTotalSupplyWarning(persistenceType, adminRevokedOwnership)}
                 actions={totalSupplyActions}
               />
+              <UpdateMetadata />
             </StyledCategoryFields>
           </StyledRead>
 
@@ -184,7 +185,7 @@ export const StyledCategory = styled(Box)(({ theme }) => ({
 const StyledCategoryFields = styled(Box)({
   display: "flex",
   flexDirection: "column",
-  gap: 24,
+  gap: 20,
 });
 
 const StyledRead = styled(StyledCategory)({

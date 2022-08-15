@@ -247,7 +247,7 @@ export function changeAdminBody(newAdmin: Address): Cell {
     .endCell();
 }
 
-export function _replaceMetadataFAULTY_FIX(metadata: Cell): Cell {
+export function updateMetadataBody(metadata: Cell): Cell {
   return beginCell()
     .storeUint(OPS.ReplaceMetadata, 32)
     .storeUint(0, 64) // queryid

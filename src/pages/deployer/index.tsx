@@ -11,18 +11,30 @@ import { ROUTES } from "consts";
 import TxLoader from "components/TxLoader";
 import useNotification from "hooks/useNotification";
 
-import { StyledContainer, StyledDescription, StyledLeft, StyledTxLoaderContent } from "./styles";
+import {
+  StyledContainer,
+  StyledDescription,
+  StyledLeft,
+  StyledRight,
+  StyledTxLoaderContent,
+} from "./styles";
 import { Screen, ScreenContent } from "components/Screen";
 import Navbar from "components/navbar";
 import SearchInput from "./SearchInput";
-import Form from "./Form";
 import SectionLabel from "components/SectionLabel";
 import analytics, { AnalyticsAction, AnalyticsCategory } from "services/analytics";
 import { JettonDeployParams } from "../../lib/deploy-controller";
+import { getUrlParam } from "utils";
+import { offchainFormSpec, onchainFormSpec } from "./data";
+import Form from "components/Form";
+
+const isOffchainInternal = getUrlParam("offchainINTERNAL") !== null;
+
+let formSpec = isOffchainInternal ? offchainFormSpec : onchainFormSpec;
 
 function DeployerPage() {
   const { showNotification } = useNotification();
-  const { address, adapterId } = useConnectionStore();
+  const { address } = useConnectionStore();
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -96,7 +108,10 @@ function DeployerPage() {
               <SearchInput />
               <Description />
             </StyledLeft>
-            <Form onSubmit={deployContract} />
+            <StyledRight>
+              <SectionLabel>Create your own new Jetton</SectionLabel>
+              <Form submitText="Deploy" onSubmit={deployContract} inputs={formSpec} />
+            </StyledRight>
           </StyledContainer>
         </Fade>
       </ScreenContent>

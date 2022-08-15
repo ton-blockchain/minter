@@ -27,11 +27,10 @@ function TxLoader({ open, children }: Props) {
     <Backdrop
       sx={{
         color: "#fff",
-        zIndex: (theme) => theme.zIndex.drawer + 2,
+        zIndex: (theme) => 9999999,
         backdropFilter: "blur(5px) ",
       }}
-      open={open}
-    >
+      open={open}>
       <StyledContainer>
         <CircularProgress color="inherit" />
         {children}

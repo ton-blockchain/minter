@@ -1,5 +1,5 @@
 import BN from "bn.js";
-import { Cell, beginCell, Address, beginDict, Slice } from "ton";
+import { Cell, beginCell, Address, beginDict, Slice, toNano } from "ton";
 
 import walletHex from "./contracts/jetton-wallet.compiled.json";
 import minterHex from "./contracts/jetton-minter.compiled.json";
@@ -209,7 +209,7 @@ export function mintBody(
         .storeCoins(jettonValue)
         .storeAddress(null)
         .storeAddress(owner)
-        .storeCoins(0)
+        .storeCoins(toNano(0.001))
         .storeBit(false) // forward_payload in this slice, not separate cell
         .endCell(),
     )
@@ -234,7 +234,7 @@ export function transfer(to: Address, from: Address, jettonAmount: BN) {
     .storeAddress(to)
     .storeAddress(from)
     .storeBit(false)
-    .storeCoins(0)
+    .storeCoins(toNano(0.001))
     .storeBit(false) // forward_payload in this slice, not separate cell
     .endCell();
 }

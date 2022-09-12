@@ -106,7 +106,7 @@ class JettonDeployController {
     );
     await tonConnection.requestTransaction({
       to: jettonMaster,
-      value: toNano(0.02),
+      value: toNano(0.04),
       message: mintBody(Address.parse(address), amount, toNano(0.02), 0),
     });
     await waiter();

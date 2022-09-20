@@ -21,7 +21,7 @@ function LoadingImage({ loading, src, alt = "Image" }: Props) {
       {loading ? (
         <Skeleton variant="circular" width="100%" height="100%" />
       ) : src ? (
-        <img alt={alt} src={src} />
+        <img alt={alt} src={src} style={{ objectFit: "contain" }} />
       ) : null}
     </StyledContainer>
   );

@@ -76,7 +76,31 @@ function useJettonStore() {
       const _adminAddress = result.minter.admin.toFriendly();
       const admin = isMyWallet && _adminAddress === connectedWalletAddress;
 
-      console.log({ result });
+      // console.log({ result });
+
+      let image: string | undefined;
+
+      if (result.minter.metadata.image) {
+        image = result.minter.metadata.image;
+      } else if (result.minter.metadata.image_data) {
+        try {
+          const imgData = Buffer.from(result.minter.metadata.image_data, "base64").toString();
+          let type: string;
+
+          if (/<svg xmlns/.test(imgData)) {
+            type = "svg+xml";
+          } else if (/png/i.test(imgData)) {
+            type = "png";
+          } else {
+            console.warn("Defaulting to jpeg");
+            type = "jpeg"; // Fallback
+          }
+
+          image = `data:image/${type};base64,${result.minter.metadata.image_data}`;
+        } catch (e) {
+          console.error("Error parsing img metadata");
+        }
+      }
 
       setState((prevState) => {
         return {
@@ -84,7 +108,7 @@ function useJettonStore() {
           isJettonDeployerFaultyOnChainData: result.minter.isJettonDeployerFaultyOnChainData,
           persistenceType: result.minter.persistenceType,
           description: result.minter.metadata.description,
-          jettonImage: result.minter.metadata.image || QuestiomMarkImg,
+          jettonImage: image ?? QuestiomMarkImg,
           totalSupply: fromNano(result.minter.totalSupply),
           name: result.minter.metadata.name,
           symbol: result.minter.metadata.symbol,

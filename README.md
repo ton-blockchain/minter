@@ -34,3 +34,6 @@ Open `http://localhost:3000`
 ## Is this tool safe?
 
 Yes. See https://github.com/ton-defi-org/jetton-deployer-contracts#qa-is-this-contract-deployer-safe
+
+# License
+MIT

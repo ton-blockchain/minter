@@ -9,7 +9,7 @@ import React, { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Address } from "ton";
 
-const exampleAddress = "EQBb4JNqn4Z6U6-nf0cSLnOJo2dxj1QRuGoq-y6Hod72jPbl";
+const exampleAddress = "EQD-LkpmPTHhPW68cNfc7B83NcfE9JyGegXzAT8LetpQSRSm";
 const StyledContainer = styled(Box)({
   background: "rgba(80, 167, 234, 0.2)",
   width: "100%",

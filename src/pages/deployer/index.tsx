@@ -133,15 +133,21 @@ function Description() {
       </SectionLabel>
       <Typography>
         Jetton is the fungible{" "}
-        <Link target="_blank" href="https://github.com/ton-blockchain/TIPs/issues/74">
+        <Link
+          target="_blank"
+          href="https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md">
           token standard
         </Link>{" "}
         for{" "}
         <Link target="_blank" href="https://ton.org">
           TON blockchain
         </Link>
-        . This free educational tool allows you to deploy your own Jetton to mainnet in one click.
-        You will need at least 0.25 TON for deployment fees. <br />
+        .This tool uses the{" "}
+        <Link href="https://github.com/ton-blockchain/TEPs/blob/master/text/0089-jetton-wallet-discovery.md">
+          discoverable jetton wallet
+        </Link>{" "}
+        protocol .This free educational tool allows you to deploy your own Jetton to mainnet in one
+        click. You will need at least 0.25 TON for deployment fees. <br />
         <Spacer />
         For detailed instructions and in-depth explanations of all fields please see the{" "}
         <Link

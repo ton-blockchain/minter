@@ -112,6 +112,7 @@ function useJettonStore() {
           totalSupply: fromNano(result.minter.totalSupply),
           name: result.minter.metadata.name,
           symbol: result.minter.metadata.symbol,
+          decimals: result.minter.metadata.decimals,
           adminRevokedOwnership: _adminAddress === zeroAddress().toFriendly(),
           isAdmin: admin,
           adminAddress: _adminAddress,

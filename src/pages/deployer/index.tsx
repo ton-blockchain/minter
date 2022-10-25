@@ -51,6 +51,7 @@ function DeployerPage() {
         symbol: data.symbol,
         image: data.tokenImage,
         description: data.description,
+        decimals: data.decimals,
       },
       offchainUri: data.offchainUri,
       amountToMint: toNano(data.mintAmount),

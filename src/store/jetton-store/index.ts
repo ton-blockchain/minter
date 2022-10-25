@@ -5,6 +5,7 @@ export interface JettonStoreState {
   isAdmin: boolean;
   adminRevokedOwnership: boolean;
   symbol?: string;
+  decimals?: string;
   name?: string;
   jettonImage?: string;
   description?: string;
@@ -28,6 +29,7 @@ const jettonStateAtom = atom<JettonStoreState>({
     isAdmin: false,
     adminRevokedOwnership: true,
     symbol: undefined,
+    decimals: undefined,
     name: undefined,
     jettonImage: undefined,
     description: undefined,

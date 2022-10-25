@@ -34,6 +34,7 @@ export interface JettonDeployParams {
     symbol: string;
     description?: string;
     image?: string;
+    decimals?: string;
   };
   offchainUri?: string;
   owner: Address;

@@ -5,7 +5,7 @@ import {
   balanceActions,
   getAdminMessage,
   getFaultyMetadataWarning,
-  getSymbolWarning,
+  getMetadataWarning,
   getTotalSupplyWarning,
   totalSupplyActions,
 } from "./util";
@@ -37,6 +37,7 @@ function JettonPage() {
     adminRevokedOwnership,
     balance,
     symbol,
+    decimals,
     name,
     description,
     jettonMaster,
@@ -110,7 +111,7 @@ function JettonPage() {
                 title="Symbol"
                 value={symbol}
                 dataLoading={jettonLoading}
-                message={getSymbolWarning(persistenceType, adminRevokedOwnership)}
+                message={getMetadataWarning(persistenceType, adminRevokedOwnership)}
               />
               <Row
                 title="Total Supply"
@@ -124,6 +125,12 @@ function JettonPage() {
                 dataLoading={jettonLoading}
                 message={getTotalSupplyWarning(persistenceType, adminRevokedOwnership)}
                 actions={totalSupplyActions}
+              />
+              <Row
+                title="Decimals"
+                value={decimals}
+                dataLoading={jettonLoading}
+                message={getMetadataWarning(persistenceType, adminRevokedOwnership)}
               />
               <UpdateMetadata />
             </StyledCategoryFields>

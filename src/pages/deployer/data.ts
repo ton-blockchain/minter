@@ -1,4 +1,4 @@
-import { checkImageURL } from "helpers";
+import { checkImageURL, checkDecimals } from "helpers";
 
 const onchainFormSpec = [
   {
@@ -24,9 +24,11 @@ const onchainFormSpec = [
     label: "Jetton decimals",
     description: "The decimal precision of your token (9 is TON default)",
     type: "number",
-    disabled: true,
+    disabled: false,
+    validate: checkDecimals,
     default: 9,
-    required: false,
+    required: true,
+    errorMessage: "Decimals amount from 0 to 255 is required", // https://github.com/ton-blockchain/TEPs/blob/master/text/0064-token-data-standard.md#jetton-metadata-attributes
   },
   {
     name: "mintAmount",

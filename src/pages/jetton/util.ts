@@ -54,7 +54,7 @@ export const getAdminMessage = (
   };
 };
 
-export const getSymbolWarning = (
+export const getMetadataWarning = (
   persistenceType?: persistenceType,
   adminRevokedOwnership?: boolean,
 ): JettonDetailMessage | undefined => {
@@ -68,7 +68,7 @@ export const getSymbolWarning = (
     case "offchain_ipfs":
       return {
         type: "warning",
-        text: `This jetton’s metadata (name and symbol) is stored on IPFS instead of on-chain. It will not change, but be careful, it can disappear and become unpinned. [Read more](${offChainGithubUrl})`,
+        text: `This jetton’s metadata (name, decimals and symbol) is stored on IPFS instead of on-chain. It will not change, but be careful, it can disappear and become unpinned. [Read more](${offChainGithubUrl})`,
       };
     case "offchain_private_domain":
       return {

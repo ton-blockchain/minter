@@ -12,7 +12,8 @@ import { jettonDeployController } from "lib/deploy-controller";
 import WalletConnection from "services/wallet-connection";
 import { Address } from "ton";
 import useNotification from "hooks/useNotification";
-const inputsName = ["name", "symbol", "tokenImage", "description"];
+
+const inputsName = ["name", "symbol", "decimals", "tokenImage", "description"];
 
 const getInputs = () => {
   return onchainFormSpec.filter((specInput) => {

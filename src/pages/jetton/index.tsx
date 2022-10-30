@@ -15,8 +15,6 @@ import { ScreenContent, Screen } from "components/Screen";
 import LoadingImage from "components/LoadingImage";
 import LoadingContainer from "components/LoadingContainer";
 import useJettonStore from "store/jetton-store/useJettonStore";
-import Navbar from "components/navbar";
-import { ROUTES } from "consts";
 import Alert from "@mui/material/Alert";
 import FaultyDeploy from "./FaultyDeploy";
 import Row from "./Row";
@@ -57,8 +55,6 @@ function JettonPage() {
   return (
     <Screen>
       <FaultyDeploy />
-      <Navbar customLink={{ text: "Create Jetton", path: ROUTES.deployer }} />
-
       <ScreenContent>
         <StyledContainer>
           <StyledRead>

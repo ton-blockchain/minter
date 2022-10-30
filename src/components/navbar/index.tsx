@@ -6,6 +6,8 @@ import { APP_GRID } from "consts";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import { DesktopMenu, MobileMenu } from "./Menu";
 import Logo from "./Logo";
+import SearchInput from "components/navbar/SearchInput";
+import theme from "theme";
 
 const StyledToolbar = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -19,11 +21,11 @@ const StyledToolbar = styled(Box)(({ theme }) => ({
 }));
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
-  maxWidth: APP_GRID,
-  background: "transparent",
-  boxShadow: "none",
-  paddingTop: 25,
-  paddingBottom: 20,
+  height: 140,
+  background: "white",
+  border: "0.5px solid rgba(114, 138, 150, 0.24)",
+  boxShadow: "0px 2px 16px rgba(114, 138, 150, 0.08)",
+  borderRadius: "0px 0px 48px 48px",
   [theme.breakpoints.down("md")]: {
     paddingTop: 10,
   },
@@ -34,7 +36,6 @@ const StyledAppBar = styled(AppBar)(({ theme }) => ({
     left: 0,
     paddingLeft: 15,
     paddingRight: 15,
-    paddingBottom: 10,
   },
 }));
 
@@ -50,20 +51,34 @@ function Navbar({ customLink }: Props) {
   const matches = useMediaQuery("(min-width:900px)");
   return (
     <StyledAppBar position="static">
-      <StyledToolbar>
-        {!matches && (
-          <IconButton onClick={() => setMobileMenu(true)}>
-            <MenuRoundedIcon style={{ width: 40, height: 40, color: "#50A7EA" }} />
-          </IconButton>
-        )}
-        <Logo />
-        {matches && <DesktopMenu customLink={customLink} />}
-      </StyledToolbar>
-      <MobileMenu
-        showMenu={mobileMenu && !matches}
-        customLink={customLink}
-        closeMenu={() => setMobileMenu(false)}
-      />
+      <Box
+        sx={{
+          maxWidth: APP_GRID,
+          width: "100%",
+          margin: "0 auto",
+          maxHeight: 75,
+          [theme.breakpoints.down("lg")]: {
+            width: "calc(100% - 50px)",
+          },
+        }}>
+        <StyledToolbar>
+          {!matches && (
+            <IconButton onClick={() => setMobileMenu(true)}>
+              <MenuRoundedIcon style={{ width: 40, height: 40, color: "#50A7EA" }} />
+            </IconButton>
+          )}
+          <Logo />
+          {matches && <DesktopMenu customLink={customLink} />}
+        </StyledToolbar>
+        <Box>
+          <SearchInput closeMenu={() => setMobileMenu(false)} />
+        </Box>
+        <MobileMenu
+          showMenu={mobileMenu && !matches}
+          customLink={customLink}
+          closeMenu={() => setMobileMenu(false)}
+        />
+      </Box>
     </StyledAppBar>
   );
 }

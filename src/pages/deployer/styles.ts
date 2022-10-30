@@ -34,10 +34,8 @@ export const StyledLeft = styled(Box)(({ theme }) => ({
 }));
 
 export const StyledDescription = styled(Box)(({ theme }) => ({
-  padding: "20px 30px 30px 30px",
   position: "relative",
-  height: "100%",
-  background: "#F0F0F0",
+  background: "#fff",
   borderRadius: 16,
   "& p": {
     fontSize: 15,

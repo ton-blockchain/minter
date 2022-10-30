@@ -9,19 +9,18 @@ import useNotification from "hooks/useNotification";
 import theme from "theme";
 
 const StyledContainer = styled(Box)(({ expanded }: { expanded: boolean }) => ({
-  width: expanded ? 330 : 200,
+  width: "100%",
   transition: "0.1s all",
   height: "100%",
   minHeight: 35,
   padding: "0px 17px",
-  border: "1px solid #7A828A",
+  border: "1px solid #F2F2F2",
+  background: "#F5F5F5",
   borderRadius: 20,
   display: "flex",
   alignItems: "center",
-  marginLeft: "auto",
-  marginRight: 3,
+  margin: "auto",
   [theme.breakpoints.down("sm")]: {
-    width: "100%",
     minHeight: "unset",
     height: 40,
   },
@@ -40,6 +39,7 @@ const StyledInput = styled("input")(({}) => ({
   [theme.breakpoints.down("sm")]: {
     fontSize: 16,
   },
+  background: "#F5F5F5",
 }));
 
 interface Props {

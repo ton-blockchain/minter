@@ -65,7 +65,6 @@ function Form({ onSubmit, inputs, disableExample, submitText, defaultValues }: F
           );
         })}
       </StyledFormInputs>
-
       <StyledActionBtn>
         {!address ? (
           <BaseButton type="button" onClick={() => toggleConnect(true)}>
@@ -93,6 +92,8 @@ const StyledFormInputs = styled(Box)({
 });
 
 const StyledActionBtn = styled(Box)({
+  display: "flex",
+  justifyContent: "center",
   marginTop: 40,
   height: 46,
   maxWidth: 344,
@@ -209,8 +210,8 @@ const StyledInputContainer = styled(Box)(({ error }: { error: boolean }) => ({
   height: 46,
   display: "flex",
   alignItems: "center",
-  background: "#EDF2F7",
-  borderRadius: 10,
+  background: "#F5F5F5",
+  borderRadius: 40,
   paddingRight: 5,
   border: error ? "1px solid #F06360" : "1px solid transparent",
   transition: "0.2s all",

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Address, toNano } from "ton";
 import useConnectionStore from "store/connection-store/useConnectionStore";
-import { Fade, Link, Typography } from "@mui/material";
+import { Box, Fade, Link, Typography } from "@mui/material";
 import { jettonDeployController } from "lib/deploy-controller";
 import WalletConnection from "services/wallet-connection";
 import { createDeployParams } from "lib/utils";
@@ -11,22 +11,15 @@ import { ROUTES } from "consts";
 import TxLoader from "components/TxLoader";
 import useNotification from "hooks/useNotification";
 
-import {
-  StyledContainer,
-  StyledDescription,
-  StyledLeft,
-  StyledRight,
-  StyledTxLoaderContent,
-} from "./styles";
+import { StyledDescription, StyledTxLoaderContent } from "./styles";
 import { Screen, ScreenContent } from "components/Screen";
-import Navbar from "components/navbar";
-import SearchInput from "./SearchInput";
 import SectionLabel from "components/SectionLabel";
 import analytics, { AnalyticsAction, AnalyticsCategory } from "services/analytics";
-import { JettonDeployParams } from "../../lib/deploy-controller";
+import { JettonDeployParams } from "lib/deploy-controller";
 import { getUrlParam } from "utils";
 import { offchainFormSpec, onchainFormSpec } from "./data";
 import Form from "components/Form";
+import { useTheme } from "@mui/material/styles";
 
 const isOffchainInternal = getUrlParam("offchainINTERNAL") !== null;
 
@@ -37,6 +30,7 @@ function DeployerPage() {
   const { address } = useConnectionStore();
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const theme = useTheme();
 
   async function deployContract(data: any) {
     const connection = WalletConnection.getConnection();
@@ -95,7 +89,6 @@ function DeployerPage() {
 
   return (
     <Screen>
-      <Navbar />
       <TxLoader open={isLoading}>
         <StyledTxLoaderContent>
           <Typography>Deploying...</Typography>
@@ -103,16 +96,41 @@ function DeployerPage() {
       </TxLoader>
       <ScreenContent removeBackground>
         <Fade in>
-          <StyledContainer>
-            <StyledLeft>
-              <SearchInput />
-              <Description />
-            </StyledLeft>
-            <StyledRight>
-              <SectionLabel>Create your own new Jetton</SectionLabel>
-              <Form submitText="Deploy" onSubmit={deployContract} inputs={formSpec} />
-            </StyledRight>
-          </StyledContainer>
+          <Box mt={6}>
+            <Box mb={4}>
+              <Typography variant="h2">Mint your token</Typography>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "stretch",
+                gap: 5,
+                [theme.breakpoints.down("lg")]: {
+                  flexDirection: "column",
+                },
+              }}>
+              <Box
+                sx={{
+                  flex: 5,
+                  background: "#FFFFFF",
+                  border: "0.5px solid rgba(114, 138, 150, 0.24)",
+                  boxShadow: "0px 2px 16px rgba(114, 138, 150, 0.08)",
+                  borderRadius: "24px",
+                  padding: 4,
+                }}>
+                <SectionLabel>Create your own new Jetton</SectionLabel>
+                <Form
+                  submitText="Deploy"
+                  disableExample
+                  onSubmit={deployContract}
+                  inputs={formSpec}
+                />
+              </Box>
+              <Box sx={{ flex: 4 }}>
+                <Description />
+              </Box>
+            </Box>
+          </Box>
         </Fade>
       </ScreenContent>
     </Screen>
@@ -127,9 +145,9 @@ const Spacer = () => {
 
 function Description() {
   return (
-    <StyledDescription>
+    <StyledDescription sx={{ padding: 4 }}>
       <SectionLabel href="https://github.com/ton-defi-org/jetton-deployer-contracts">
-        https://github.com/ton-defi-org/jetton-deployer-contracts
+        This is an open source tool
       </SectionLabel>
       <Typography>
         Jetton is the fungible{" "}

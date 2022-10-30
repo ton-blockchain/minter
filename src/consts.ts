@@ -9,7 +9,7 @@ const APP_GRID = 1156;
 const LOCAL_STORAGE_PROVIDER = "wallet_provider";
 
 const APP_NAME = "deployer";
-const APP_DISPLAY_NAME = "Jetton deployer";
+const APP_DISPLAY_NAME = "TON MINTER";
 
 const EMPTY_ADDRESS = "EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c";
 

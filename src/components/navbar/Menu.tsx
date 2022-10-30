@@ -8,7 +8,6 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import BaseButton from "components/BaseButton";
 import JettonImg from "assets/jetton.svg";
 import Logo from "./Logo";
-import SearchInput from "./SearchInput";
 
 const StyledCustomLink = styled(Link)(({ theme }) => ({
   color: theme.palette.text.primary,
@@ -32,7 +31,7 @@ const StyledCloseButton = styled(IconButton)({
   top: 10,
 });
 
-const StyledDrawerContent = styled(Box)(({ theme }) => ({
+const StyledDrawerContent = styled(Box)(() => ({
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
@@ -111,11 +110,10 @@ const StyledMenu = styled(Box)(({ theme }) => ({
 const Menu = ({ customLink, closeMenu }: Props) => {
   return (
     <StyledMenu className="navbar-menu">
-      <SearchInput closeMenu={closeMenu} />
       {customLink && (
         <StyledCustomLink to={customLink.path} className="custom-link">
           <BaseButton transparent>
-            <img src={JettonImg} />
+            <img alt="Jetton" src={JettonImg} />
             {customLink.text}
           </BaseButton>
         </StyledCustomLink>
@@ -125,8 +123,7 @@ const Menu = ({ customLink, closeMenu }: Props) => {
         className="github-icon"
         sx={{ padding: 0 }}
         href={JETTON_DEPLOYER_CONTRACTS_GITHUB}
-        target="_blank"
-      >
+        target="_blank">
         <StyledGithubIcon src={githubIcon} />
       </IconButton>
     </StyledMenu>

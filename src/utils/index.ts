@@ -1,3 +1,5 @@
+import BigNumber from "bignumber.js";
+import { BN } from "bn.js";
 import { zeroAddress } from "lib/utils";
 import { Address } from "ton";
 
@@ -25,3 +27,17 @@ export const isValidAddress = (address: string, errorText?: string) => {
     return false;
   }
 };
+
+const ten = new BigNumber(10);
+
+export function toDecimals(num: number | string, decimals: number | string) {
+  return BigNumber(num).multipliedBy(ten.pow(decimals)).toFixed();
+}
+
+export function toDecimalsBN(num: number | string, decimals: number | string) {
+  return new BN(BigNumber(num).multipliedBy(ten.pow(decimals)).toFixed());
+}
+
+export function fromDecimals(num: number | string, decimals: number | string) {
+  return BigNumber(num).div(ten.pow(decimals)).toFixed();
+}

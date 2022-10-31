@@ -11,15 +11,15 @@ import WalletConnection from "services/wallet-connection";
 import useConnectionStore from "store/connection-store/useConnectionStore";
 import useJettonStore from "store/jetton-store/useJettonStore";
 import { StyledInput } from "styles/styles";
-import { Address, toNano } from "ton";
-import { isValidAddress } from "utils";
+import { isValidAddress, toDecimals, toDecimalsBN } from "utils";
 import { StyledSectionTitle } from "../Row";
 
 const getError = (
   toAddress?: string,
-  amount?: number,
-  balance?: string,
+  amount?: BN,
+  balance?: BN,
   symbol?: string,
+  decimals?: string,
 ): string | undefined | JSX.Element => {
   if (!toAddress) {
     return "Recipient wallet address required";
@@ -33,17 +33,19 @@ const getError = (
     return "Transfer amount required";
   }
 
-  if (toNano(amount).gt(toNano(balance!!))) {
+  if (amount.gt(balance!!)) {
     return (
       <>
-        Maximum amount to transfer is <BigNumberDisplay value={balance!!} /> {symbol}
+        Maximum amount to transfer is <BigNumberDisplay value={balance!!} decimals={decimals} />{" "}
+        {symbol}
       </>
     );
   }
 };
 
 function TransferAction() {
-  const { balance, symbol, jettonAddress, getJettonDetails, isMyWallet } = useJettonStore();
+  const { balance, symbol, jettonAddress, getJettonDetails, isMyWallet, decimals } =
+    useJettonStore();
   const [isLoading, setIsLoading] = useState(false);
   const [toAddress, setToAddress] = useState<string | undefined>(undefined);
   const [amount, setAmount] = useState<number | undefined>(undefined);
@@ -55,7 +57,7 @@ function TransferAction() {
   }
 
   const onSubmit = async () => {
-    const error = getError(toAddress, amount, balance, symbol);
+    const error = getError(toAddress, toDecimalsBN(amount!, decimals), balance, symbol, decimals);
     if (error) {
       showNotification(error, "warning", undefined, 3000);
       return;
@@ -66,7 +68,7 @@ function TransferAction() {
       const connection = WalletConnection.getConnection();
       await jettonDeployController.transfer(
         connection,
-        toNano(amount!),
+        new BN(toDecimals(amount!.toString(), decimals)),
         toAddress!,
         connectedWalletAddress!,
         jettonAddress,
@@ -75,7 +77,7 @@ function TransferAction() {
       setAmount(undefined);
       getJettonDetails();
       showNotification(
-        `Successfully transfered ${amount?.toLocaleString()} ${symbol}`,
+        `Successfully transferred ${amount?.toLocaleString()} ${symbol}`,
         "warning",
         undefined,
         4000,
@@ -106,7 +108,9 @@ function TransferAction() {
         </StyledInput>
         <NumberInput
           label="Amount to transfer"
-          onChange={(value: number) => setAmount(value)}
+          onChange={(value: number) => {
+            setAmount(value);
+          }}
           value={amount}
         />
       </StyledInputs>

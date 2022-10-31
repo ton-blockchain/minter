@@ -4,7 +4,7 @@ import { EnvProfiles, Environments } from "lib/env-profiles";
 import { zeroAddress } from "lib/utils";
 import { useRecoilState, useResetRecoilState } from "recoil";
 import WalletConnection from "services/wallet-connection";
-import { Address, fromNano } from "ton";
+import { Address } from "ton";
 import { jettonStateAtom } from ".";
 import QuestiomMarkImg from "assets/question.png";
 import { useCallback } from "react";
@@ -12,6 +12,7 @@ import useNotification from "hooks/useNotification";
 import { useParams } from "react-router-dom";
 import useConnectionStore from "store/connection-store/useConnectionStore";
 import { getUrlParam, isValidAddress } from "utils";
+import { BN } from "bn.js";
 
 function useJettonStore() {
   const [state, setState] = useRecoilState(jettonStateAtom);
@@ -109,13 +110,14 @@ function useJettonStore() {
           persistenceType: result.minter.persistenceType,
           description: result.minter.metadata.description,
           jettonImage: image ?? QuestiomMarkImg,
-          totalSupply: fromNano(result.minter.totalSupply),
+          totalSupply: result.minter.totalSupply,
           name: result.minter.metadata.name,
           symbol: result.minter.metadata.symbol,
           adminRevokedOwnership: _adminAddress === zeroAddress().toFriendly(),
           isAdmin: admin,
+          decimals: result.minter.metadata.decimals || "9",
           adminAddress: _adminAddress,
-          balance: result.jettonWallet ? fromNano(result.jettonWallet.balance) : undefined,
+          balance: result.jettonWallet ? result.jettonWallet.balance : undefined,
           jettonAddress: result.jettonWallet?.jWalletAddress.toFriendly(),
           jettonMaster: id,
           isMyWallet,

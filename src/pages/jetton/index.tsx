@@ -38,6 +38,7 @@ function JettonPage() {
     balance,
     symbol,
     name,
+    decimals,
     description,
     jettonMaster,
     persistenceType,
@@ -113,11 +114,21 @@ function JettonPage() {
                 message={getSymbolWarning(persistenceType, adminRevokedOwnership)}
               />
               <Row
+                title="Decimals"
+                value={decimals}
+                dataLoading={jettonLoading}
+                message={getSymbolWarning(persistenceType, adminRevokedOwnership)}
+              />
+              <Row
                 title="Total Supply"
                 value={
                   totalSupply && (
                     <>
-                      <BigNumberDisplay value={totalSupply} /> {symbol}
+                      <BigNumberDisplay
+                        value={totalSupply.toString()}
+                        decimals={parseInt(decimals)}
+                      />{" "}
+                      {symbol}
                     </>
                   )
                 }
@@ -144,7 +155,7 @@ function JettonPage() {
                 value={
                   balance && (
                     <>
-                      <BigNumberDisplay value={balance} /> {symbol}
+                      <BigNumberDisplay value={balance} decimals={decimals} /> {symbol}
                     </>
                   )
                 }

@@ -4,6 +4,7 @@ import ConnectAction from "./actions/ConnectAction";
 import MintJettonsAction from "./actions/MintJettonsAction";
 import RevokeOwnershipAction from "./actions/RevokeOwnershipAction";
 import { JettonDetailMessage } from "./types";
+export { BigNumber } from "bignumber.js";
 
 const commonGithubUrl =
   "https://github.com/ton-defi-org/jetton-deployer-contracts#protect-yourself-and-your-users";

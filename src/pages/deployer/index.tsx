@@ -24,9 +24,10 @@ import SearchInput from "./SearchInput";
 import SectionLabel from "components/SectionLabel";
 import analytics, { AnalyticsAction, AnalyticsCategory } from "services/analytics";
 import { JettonDeployParams } from "../../lib/deploy-controller";
-import { getUrlParam } from "utils";
+import { getUrlParam, toDecimals } from "utils";
 import { offchainFormSpec, onchainFormSpec } from "./data";
 import Form from "components/Form";
+import BN from "bn.js";
 
 const isOffchainInternal = getUrlParam("offchainINTERNAL") !== null;
 
@@ -51,9 +52,10 @@ function DeployerPage() {
         symbol: data.symbol,
         image: data.tokenImage,
         description: data.description,
+        decimals: data.decimals,
       },
       offchainUri: data.offchainUri,
-      amountToMint: toNano(data.mintAmount),
+      amountToMint: new BN(toDecimals(data.mintAmount, data.decimals)),
     };
     setIsLoading(true);
     const deployParams = createDeployParams(params, data.offchainUri);

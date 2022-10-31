@@ -1,3 +1,4 @@
+import BN from "bn.js";
 import { persistenceType } from "lib/jetton-minter";
 import { atom } from "recoil";
 
@@ -9,10 +10,11 @@ export interface JettonStoreState {
   jettonImage?: string;
   description?: string;
   adminAddress?: string;
-  balance?: string;
+  balance?: BN;
   jettonMaster?: string;
   persistenceType?: persistenceType;
-  totalSupply?: string;
+  totalSupply?: BN;
+  decimals: string;
   jettonAddress?: string;
   isJettonDeployerFaultyOnChainData?: boolean;
   jettonLoading: boolean;
@@ -33,6 +35,7 @@ const jettonStateAtom = atom<JettonStoreState>({
     description: undefined,
     adminAddress: undefined,
     balance: undefined,
+    decimals: "9",
     jettonMaster: undefined,
     totalSupply: undefined,
     jettonAddress: undefined,

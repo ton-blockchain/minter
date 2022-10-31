@@ -22,7 +22,13 @@ enum OPS {
   Burn = 0x595f07bc,
 }
 
-export type JettonMetaDataKeys = "name" | "description" | "image" | "symbol" | "image_data";
+export type JettonMetaDataKeys =
+  | "name"
+  | "description"
+  | "image"
+  | "symbol"
+  | "image_data"
+  | "decimals";
 
 const jettonOnChainMetadataSpec: {
   [key in JettonMetaDataKeys]: "utf8" | "ascii" | undefined;
@@ -32,6 +38,7 @@ const jettonOnChainMetadataSpec: {
   image: "ascii",
   symbol: "utf8",
   image_data: undefined,
+  decimals: "utf8",
 };
 
 const sha256 = (str: string) => {

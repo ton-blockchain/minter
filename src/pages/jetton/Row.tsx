@@ -123,13 +123,13 @@ const StyledActions = styled(Box)({
 });
 
 const StyledSectionRightColored = styled(Box)({
-  borderRadius: 10,
   height: 46,
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
   padding: "0px 5px 0px 20px",
-  background: "#EDF2F7",
+  background: "#F7F9FB",
+  borderRadius: 40,
 });
 
 const StyledSection = styled(Box)(({ theme }) => ({}));

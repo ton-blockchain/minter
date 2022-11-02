@@ -7,11 +7,11 @@ import TxLoader from "components/TxLoader";
 import { onchainFormSpec } from "pages/deployer/data";
 import Form from "components/Form";
 import { JettonStoreState } from "store/jetton-store";
-import BaseButton from "components/BaseButton";
 import { jettonDeployController } from "lib/deploy-controller";
 import WalletConnection from "services/wallet-connection";
 import { Address } from "ton";
 import useNotification from "hooks/useNotification";
+import { AppButton } from "components/appButton";
 const inputsName = ["name", "symbol", "tokenImage", "description"];
 
 const getInputs = () => {
@@ -77,7 +77,7 @@ function UpdateMetadata() {
 
   return (
     <StyledContainer>
-      <BaseButton onClick={() => setOpen(true)}>Update metadata</BaseButton>
+      <AppButton onClick={() => setOpen(true)}>Update metadata</AppButton>
       <TxLoader open={isLoading}>
         <Typography>Loading...</Typography>
       </TxLoader>

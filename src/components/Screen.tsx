@@ -11,13 +11,12 @@ const StyledScreen = styled(Box)({
   display: "flex",
   alignItems: "center",
   flexDirection: "column",
+  marginTop: 50,
 });
 
 const StyledContent = styled(Box)(({ theme }) => ({
   width: "100%",
   borderRadius: "20px",
-  maxHeight: "calc(100vh - 150px)",
-  overflow: "auto",
   [theme.breakpoints.down("sm")]: {
     maxHeight: "unset",
     paddingBottom: 40,

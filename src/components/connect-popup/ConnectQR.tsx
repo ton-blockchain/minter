@@ -4,7 +4,7 @@ import { QRCodeSVG } from "qrcode.react";
 import Fade from "@mui/material/Fade";
 import CircularProgress from "@mui/material/CircularProgress";
 import { styled } from "@mui/system";
-import TonhubQr from "assets/tonhub-qr.png";
+import TonhubQr from "assets/icons/tonhub-qr.png";
 import Header from "./Header";
 
 const StyledContainer = styled(Box)({

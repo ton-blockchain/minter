@@ -1,6 +1,5 @@
 import { Box, Typography } from "@mui/material";
 import { styled } from "@mui/system";
-import BaseButton from "components/BaseButton";
 import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
 import { Popup } from "components/Popup";
 import useConnectionStore from "store/connection-store/useConnectionStore";
@@ -10,6 +9,7 @@ import TxLoader from "components/TxLoader";
 import { jettonDeployController } from "lib/deploy-controller";
 import { Address } from "ton";
 import WalletConnection from "services/wallet-connection";
+import { AppButton } from "components/appButton";
 
 function EditMetadata() {
   const { address } = useConnectionStore();
@@ -75,7 +75,7 @@ function EditMetadata() {
               fix the format.
             </Typography>
           </Box>
-          <BaseButton onClick={onSubmit}>Submit</BaseButton>
+          <AppButton onClick={onSubmit}>Submit</AppButton>
         </StyledWarningPopup>
       </Popup>
     </>

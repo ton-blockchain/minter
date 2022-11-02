@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { Address, toNano } from "ton";
 import useConnectionStore from "store/connection-store/useConnectionStore";
-import { Box, Fade, Link, Typography } from "@mui/material";
+import { Box, Fade, IconButton, Link, Typography } from "@mui/material";
 import { jettonDeployController } from "lib/deploy-controller";
 import WalletConnection from "services/wallet-connection";
 import { createDeployParams } from "lib/utils";
 import { ContractDeployer } from "lib/contract-deployer";
 import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
-import { ROUTES } from "consts";
+import { JETTON_DEPLOYER_CONTRACTS_GITHUB, ROUTES } from "consts";
 import TxLoader from "components/TxLoader";
 import useNotification from "hooks/useNotification";
 
@@ -20,6 +20,9 @@ import { getUrlParam } from "utils";
 import { offchainFormSpec, onchainFormSpec } from "./data";
 import Form from "components/Form";
 import { useTheme } from "@mui/material/styles";
+import githubIcon from "assets/icons/github-logo.svg";
+import rightArrow from "assets/icons/right.svg";
+import { StyledGithubIcon } from "components/header/headerMenu/styled";
 
 const isOffchainInternal = getUrlParam("offchainINTERNAL") !== null;
 
@@ -96,9 +99,16 @@ function DeployerPage() {
       </TxLoader>
       <ScreenContent removeBackground>
         <Fade in>
-          <Box mt={6}>
-            <Box mb={4}>
-              <Typography variant="h2">Mint your token</Typography>
+          <Box mt={3}>
+            <Box mb={2}>
+              <Typography
+                sx={{
+                  fontWeight: 800,
+                  color: "#161C28",
+                }}
+                variant="h5">
+                Mint your token
+              </Typography>
             </Box>
             <Box
               sx={{
@@ -116,15 +126,19 @@ function DeployerPage() {
                   border: "0.5px solid rgba(114, 138, 150, 0.24)",
                   boxShadow: "0px 2px 16px rgba(114, 138, 150, 0.08)",
                   borderRadius: "24px",
-                  padding: 4,
+                  padding: 3,
                 }}>
-                <SectionLabel>Create your own new Jetton</SectionLabel>
-                <Form
-                  submitText="Deploy"
-                  disableExample
-                  onSubmit={deployContract}
-                  inputs={formSpec}
-                />
+                <Typography
+                  variant="h5"
+                  mb={1}
+                  sx={{
+                    color: "#161C28",
+                    fontSize: 14,
+                    fontWeight: 800,
+                  }}>
+                  Create your own new Jetton
+                </Typography>
+                <Form submitText="Deploy" onSubmit={deployContract} inputs={formSpec} />
               </Box>
               <Box sx={{ flex: 4 }}>
                 <Description />
@@ -145,11 +159,18 @@ const Spacer = () => {
 
 function Description() {
   return (
-    <StyledDescription sx={{ padding: 4 }}>
+    <StyledDescription sx={{ padding: 3 }}>
       <SectionLabel href="https://github.com/ton-defi-org/jetton-deployer-contracts">
         This is an open source tool
       </SectionLabel>
-      <Typography>
+      <Typography
+        sx={{
+          fontWeight: 600,
+          color: "#728A96",
+          "& a": {
+            textDecoration: "none",
+          },
+        }}>
         Jetton is the fungible{" "}
         <Link
           target="_blank"
@@ -160,12 +181,8 @@ function Description() {
         <Link target="_blank" href="https://ton.org">
           TON blockchain
         </Link>
-        . This tool uses the{" "}
-        <Link href="https://github.com/ton-blockchain/TEPs/blob/master/text/0089-jetton-wallet-discovery.md">
-          discoverable jetton wallet
-        </Link>{" "}
-        protocol. This free educational tool allows you to deploy your own Jetton to mainnet in one
-        click. You will need at least 0.25 TON for deployment fees. <br />
+        . This free educational tool allows you to deploy your own Jetton to mainnet in one click.
+        You will need at least 0.25 TON for deployment fees. <br />
         <Spacer />
         For detailed instructions and in-depth explanations of all fields please see the{" "}
         <Link
@@ -189,14 +206,41 @@ function Description() {
           GitHub Pages
         </Link>
         . <Spacer />
-        Is this deployer safe? Yes! Read{" "}
+        Is this deployer safe? Yes!{" "}
         <Link
           target="_blank"
           href="https://github.com/ton-defi-org/jetton-deployer-contracts#protect-yourself-and-your-users">
-          this
+          Read
         </Link>{" "}
-        to understand why.
+        this to understand.
       </Typography>
+      <IconButton
+        className="github-icon"
+        sx={{ padding: 0, mt: 2 }}
+        href={JETTON_DEPLOYER_CONTRACTS_GITHUB}
+        target="_blank">
+        <StyledGithubIcon src={githubIcon} />
+        <Typography
+          ml={0.75}
+          variant="h5"
+          sx={{
+            color: "#000",
+            fontWeight: 700,
+            fontSize: 16,
+            display: "flex",
+            alignItems: "center",
+          }}>
+          GitHub Repo{" "}
+          <Box
+            ml={1}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+            }}>
+            <img src={rightArrow} alt="Icon" />
+          </Box>
+        </Typography>
+      </IconButton>
     </StyledDescription>
   );
 }

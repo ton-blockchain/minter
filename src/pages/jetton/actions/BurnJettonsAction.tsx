@@ -1,6 +1,4 @@
 import { Typography } from "@mui/material";
-import { BN } from "bn.js";
-import BaseButton from "components/BaseButton";
 import BigNumberDisplay from "components/BigNumberDisplay";
 import NumberInput from "components/NumberInput";
 import { Popup } from "components/Popup";
@@ -11,6 +9,7 @@ import { useState } from "react";
 import WalletConnection from "services/wallet-connection";
 import useJettonStore from "store/jetton-store/useJettonStore";
 import { toNano } from "ton";
+import { AppButton } from "components/appButton";
 
 function BurnJettonsAction() {
   const [amount, setAmount] = useState<number | undefined>(undefined);
@@ -81,12 +80,12 @@ function BurnJettonsAction() {
             value={amount}
             onChange={(value: number) => setAmount(value)}
           />
-          <BaseButton onClick={onBurn}>Submit</BaseButton>
+          <AppButton onClick={onBurn}>Submit</AppButton>
         </>
       </Popup>
-      <BaseButton transparent={true} onClick={() => setOpen(true)}>
+      <AppButton transparent={true} onClick={() => setOpen(true)}>
         Burn
-      </BaseButton>
+      </AppButton>
     </>
   );
 }

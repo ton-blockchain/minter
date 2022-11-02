@@ -1,6 +1,4 @@
 import { Box, styled, TextField, Typography } from "@mui/material";
-import BN from "bn.js";
-import BaseButton from "components/BaseButton";
 import BigNumberDisplay from "components/BigNumberDisplay";
 import NumberInput from "components/NumberInput";
 import TxLoader from "components/TxLoader";
@@ -11,9 +9,10 @@ import WalletConnection from "services/wallet-connection";
 import useConnectionStore from "store/connection-store/useConnectionStore";
 import useJettonStore from "store/jetton-store/useJettonStore";
 import { StyledInput } from "styles/styles";
-import { Address, toNano } from "ton";
+import { toNano } from "ton";
 import { isValidAddress } from "utils";
 import { StyledSectionTitle } from "../Row";
+import { AppButton } from "components/appButton";
 
 const getError = (
   toAddress?: string,
@@ -110,7 +109,7 @@ function TransferAction() {
           value={amount}
         />
       </StyledInputs>
-      <BaseButton onClick={onSubmit}>Transfer</BaseButton>
+      <AppButton onClick={onSubmit}>Transfer</AppButton>
     </StyledContainer>
   );
 }

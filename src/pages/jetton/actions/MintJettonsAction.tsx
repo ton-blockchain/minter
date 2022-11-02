@@ -1,5 +1,4 @@
 import { Typography } from "@mui/material";
-import BaseButton from "components/BaseButton";
 import BigNumberDisplay from "components/BigNumberDisplay";
 import NumberInput from "components/NumberInput";
 import { Popup } from "components/Popup";
@@ -10,6 +9,7 @@ import { useState } from "react";
 import WalletConnection from "services/wallet-connection";
 import useJettonStore from "store/jetton-store/useJettonStore";
 import { Address, toNano } from "ton";
+import { AppButton } from "components/appButton";
 
 function MintJettonsAction() {
   const [amount, setAmount] = useState<number | undefined>(undefined);
@@ -73,12 +73,12 @@ function MintJettonsAction() {
             value={amount}
             onChange={(value: number) => setAmount(value)}
           />
-          <BaseButton onClick={onMint}>Submit</BaseButton>
+          <AppButton onClick={onMint}>Submit</AppButton>
         </>
       </Popup>
-      <BaseButton transparent={true} onClick={() => setOpen(true)}>
+      <AppButton transparent={true} onClick={() => setOpen(true)}>
         Mint
-      </BaseButton>
+      </AppButton>
     </>
   );
 }

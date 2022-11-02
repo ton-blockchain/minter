@@ -1,5 +1,4 @@
 import { Typography } from "@mui/material";
-import BaseButton from "components/BaseButton";
 import TxLoader from "components/TxLoader";
 import useNotification from "hooks/useNotification";
 import { jettonDeployController } from "lib/deploy-controller";
@@ -7,6 +6,7 @@ import { useState } from "react";
 import WalletConnection from "services/wallet-connection";
 import useJettonStore from "store/jetton-store/useJettonStore";
 import { Address } from "ton";
+import { AppButton } from "components/appButton";
 
 function RevokeOwnershipAction() {
   const [isLoading, setIsLoading] = useState(false);
@@ -43,9 +43,9 @@ function RevokeOwnershipAction() {
       <TxLoader open={isLoading}>
         <Typography>Revoking ownership...</Typography>
       </TxLoader>
-      <BaseButton transparent={true} onClick={onClick} loading={isLoading}>
+      <AppButton transparent={true} onClick={onClick} loading={isLoading}>
         Revoke ownership
-      </BaseButton>
+      </AppButton>
     </>
   );
 }

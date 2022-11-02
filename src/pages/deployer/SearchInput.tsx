@@ -1,13 +1,13 @@
 import { FormLabel, InputAdornment, styled, TextField } from "@mui/material";
 import { Box } from "@mui/system";
-import JettonImg from "assets/jetton.svg";
-import BaseButton from "components/BaseButton";
+import JettonImg from "assets/icons/jetton.svg";
 import FieldDescription from "components/FieldDescription";
 import SectionLabel from "components/SectionLabel";
 import { ROUTES } from "consts";
 import React, { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Address } from "ton";
+import { AppButton } from "components/appButton";
 
 const exampleAddress = "EQD-LkpmPTHhPW68cNfc7B83NcfE9JyGegXzAT8LetpQSRSm";
 const StyledContainer = styled(Box)({
@@ -84,14 +84,14 @@ function SearchInput() {
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
-              <img src={JettonImg} />
+              <img src={JettonImg} alt="Jetton" />
             </InputAdornment>
           ),
           endAdornment: (
             <InputAdornment position="end">
-              <BaseButton disabled={!value} onClick={onSubmit}>
+              <AppButton disabled={!value} onClick={onSubmit}>
                 Search
-              </BaseButton>
+              </AppButton>
             </InputAdornment>
           ),
         }}

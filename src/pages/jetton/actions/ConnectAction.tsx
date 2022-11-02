@@ -1,5 +1,5 @@
-import BaseButton from "components/BaseButton";
 import useConnectionStore from "store/connection-store/useConnectionStore";
+import { AppButton } from "components/appButton";
 
 function ConnectAction() {
   const { address, toggleConnect } = useConnectionStore();
@@ -9,9 +9,9 @@ function ConnectAction() {
   }
 
   return (
-    <BaseButton transparent onClick={() => toggleConnect(true)}>
+    <AppButton transparent onClick={() => toggleConnect(true)} background="#0088CC">
       Connect wallet
-    </BaseButton>
+    </AppButton>
   );
 }
 

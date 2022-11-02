@@ -1,7 +1,7 @@
 import { Box, IconButton, Link, styled } from "@mui/material";
 import CopyToClipboard from "react-copy-to-clipboard";
 import useNotification from "hooks/useNotification";
-import CopyImg from "assets/copy.svg";
+import CopyImg from "assets/icons/copy.svg";
 import { useContext } from "react";
 import { EnvContext } from "App";
 import { scannerUrl } from "utils";

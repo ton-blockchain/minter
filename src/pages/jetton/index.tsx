@@ -22,7 +22,16 @@ import SectionLabel from "components/SectionLabel";
 import TransferAction from "./actions/TransferAction";
 import BigNumberDisplay from "components/BigNumberDisplay";
 import UpdateMetadata from "./actions/UpdateMetadata";
-function JettonPage() {
+import {
+  StyledBlock,
+  StyledCategoryFields,
+  StyledContainer,
+  StyledTop,
+  StyledTopImg,
+  StyledTopText,
+} from "pages/jetton/styled";
+
+export const JettonPage = () => {
   const { id }: { id?: string } = useParams();
 
   const { address, isConnecting } = useConnectionStore();
@@ -57,8 +66,7 @@ function JettonPage() {
       <FaultyDeploy />
       <ScreenContent>
         <StyledContainer>
-          <StyledRead>
-            <SectionLabel>Shared Jetton metadata</SectionLabel>
+          <StyledBlock>
             <StyledTop>
               <StyledTopImg>
                 <LoadingImage src={jettonImage} alt="jetton image" loading={jettonLoading} />
@@ -123,9 +131,9 @@ function JettonPage() {
               />
               <UpdateMetadata />
             </StyledCategoryFields>
-          </StyledRead>
+          </StyledBlock>
 
-          <StyledWrite>
+          <StyledBlock>
             <SectionLabel>Connected Jetton wallet</SectionLabel>
             <StyledCategoryFields>
               <Row
@@ -150,89 +158,9 @@ function JettonPage() {
               />
               <TransferAction />
             </StyledCategoryFields>
-          </StyledWrite>
+          </StyledBlock>
         </StyledContainer>
       </ScreenContent>
     </Screen>
   );
-}
-
-export { JettonPage };
-
-const StyledContainer = styled(Box)(({ theme }) => ({
-  display: "flex",
-  gap: 30,
-  width: "100%",
-  [theme.breakpoints.down(1100)]: {
-    flexDirection: "column",
-  },
-}));
-
-export const StyledCategory = styled(Box)(({ theme }) => ({
-  width: "calc(50% - 15px)",
-  padding: "20px 30px 30px 30px",
-  borderRadius: 16,
-  [theme.breakpoints.down(1100)]: {
-    width: "100%",
-    padding: "20px 25px 20px 25px",
-  },
-}));
-
-const StyledCategoryFields = styled(Box)({
-  display: "flex",
-  flexDirection: "column",
-  gap: 20,
-});
-
-const StyledRead = styled(StyledCategory)({
-  background: "rgba(80, 167, 234, 0.05)",
-});
-
-const StyledWrite = styled(StyledCategory)(({ theme }) => ({
-  background: "#F7FAFC",
-  [theme.breakpoints.down("sm")]: {
-    paddingBottom: 140,
-  },
-}));
-
-export const StyledTop = styled(Box)({
-  display: "flex",
-  alignItems: "center",
-  gap: 20,
-  marginBottom: 30,
-});
-
-export const StyledTopText = styled(Box)({
-  color: "#27272E",
-  display: "flex",
-  flexDirection: "column",
-  gap: 3,
-  flex: 1,
-  "& h5": {
-    fontSize: 15,
-    fontWeight: 400,
-  },
-  "& h3": {
-    fontSize: 19,
-    fontWeight: 600,
-  },
-});
-
-const StyledTopImg = styled(Box)(({ theme }) => ({
-  width: 90,
-  height: 90,
-  borderRadius: "50%",
-  overflow: "hidden",
-  background: "rgba(0,0,0, 0.1)",
-  border: "13px solid #D9D9D9",
-  "& img": {
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-  },
-  [theme.breakpoints.down("sm")]: {
-    width: 60,
-    height: 60,
-    border: "2px solid #D9D9D9",
-  },
-}));
+};

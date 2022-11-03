@@ -54,7 +54,9 @@ function DeployerPage() {
 
     let decimals = data.decimals;
     if (data.offchainUri) {
-      let res = await fetchDecimalsOffchain(data.offchainUri);
+      let res = await fetchDecimalsOffchain(
+        data.offchainUri.replace("ipfs://", "https://ipfs.io/ipfs/"),
+      );
       decimals = res.decimals;
     }
 
@@ -65,10 +67,10 @@ function DeployerPage() {
         symbol: data.symbol,
         image: data.tokenImage,
         description: data.description,
-        decimals: data.decimals,
+        decimals: decimals,
       },
       offchainUri: data.offchainUri,
-      amountToMint: new BN(toDecimals(data.mintAmount, data.decimals || DEFAULT_DECIMALS)),
+      amountToMint: new BN(toDecimals(data.mintAmount, decimals || DEFAULT_DECIMALS)),
     };
     setIsLoading(true);
     const deployParams = createDeployParams(params, data.offchainUri);

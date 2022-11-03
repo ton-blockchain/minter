@@ -47,7 +47,7 @@ function MintJettonsAction() {
       setOpen(false);
       const message = (
         <>
-          Successfully minted <BigNumberDisplay value={amount} decimals={decimals} /> {symbol}
+          Successfully minted <BigNumberDisplay value={amount} /> {symbol}
         </>
       );
       getJettonDetails();

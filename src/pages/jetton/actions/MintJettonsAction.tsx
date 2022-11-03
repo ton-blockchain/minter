@@ -34,7 +34,7 @@ function MintJettonsAction() {
       showNotification(`Minimum amount of ${symbol} to mint is 1`, "warning");
       return;
     }
-    const value = toDecimals(amount, decimals);
+    const value = toDecimals(amount, decimals!);
 
     try {
       setIsLoading(true);

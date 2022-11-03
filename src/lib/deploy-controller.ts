@@ -234,7 +234,6 @@ class JettonDeployController {
         source: Address.parse(address),
       }),
     );
-
     await connection.requestTransaction({
       to: contractAddress,
       message: updateMetadataBody(buildJettonOnchainMetadata(data)),

@@ -34,8 +34,8 @@ function BurnJettonsAction() {
       return;
     }
 
-    const valueDecimals = toDecimalsBN(amount, decimals);
-    const balanceDecimals = toDecimalsBN(balance!!.toString(), decimals);
+    const valueDecimals = toDecimalsBN(amount, decimals!);
+    const balanceDecimals = toDecimalsBN(balance!!.toString(), decimals!);
 
     if (valueDecimals.gt(balanceDecimals)) {
       const msg = (

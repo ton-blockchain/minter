@@ -57,7 +57,7 @@ function TransferAction() {
   }
 
   const onSubmit = async () => {
-    const error = getError(toAddress, toDecimalsBN(amount!, decimals), balance, symbol, decimals);
+    const error = getError(toAddress, toDecimalsBN(amount!, decimals!), balance, symbol, decimals);
     if (error) {
       showNotification(error, "warning", undefined, 3000);
       return;
@@ -68,7 +68,7 @@ function TransferAction() {
       const connection = WalletConnection.getConnection();
       await jettonDeployController.transfer(
         connection,
-        new BN(toDecimals(amount!.toString(), decimals)),
+        new BN(toDecimals(amount!.toString(), decimals!)),
         toAddress!,
         connectedWalletAddress!,
         jettonAddress,

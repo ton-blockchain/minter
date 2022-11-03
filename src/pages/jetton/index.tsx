@@ -117,7 +117,7 @@ function JettonPage() {
                 title="Decimals"
                 value={decimals}
                 dataLoading={jettonLoading}
-                message={getSymbolWarning(persistenceType, adminRevokedOwnership)}
+                message={getMetadataWarning(persistenceType, adminRevokedOwnership)}
               />
               <Row
                 title="Total Supply"
@@ -126,7 +126,7 @@ function JettonPage() {
                     <>
                       <BigNumberDisplay
                         value={totalSupply.toString()}
-                        decimals={parseInt(decimals)}
+                        decimals={parseInt(decimals!)}
                       />{" "}
                       {symbol}
                     </>
@@ -136,12 +136,7 @@ function JettonPage() {
                 message={getTotalSupplyWarning(persistenceType, adminRevokedOwnership)}
                 actions={totalSupplyActions}
               />
-              <Row
-                title="Decimals"
-                value={decimals}
-                dataLoading={jettonLoading}
-                message={getMetadataWarning(persistenceType, adminRevokedOwnership)}
-              />
+
               <UpdateMetadata />
             </StyledCategoryFields>
           </StyledRead>

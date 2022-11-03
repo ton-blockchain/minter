@@ -15,7 +15,6 @@ export interface JettonStoreState {
   jettonMaster?: string;
   persistenceType?: persistenceType;
   totalSupply?: BN;
-  decimals: string;
   jettonAddress?: string;
   isJettonDeployerFaultyOnChainData?: boolean;
   jettonLoading: boolean;
@@ -31,13 +30,12 @@ const jettonStateAtom = atom<JettonStoreState>({
     isAdmin: false,
     adminRevokedOwnership: true,
     symbol: undefined,
-    decimals: undefined,
+    decimals: "9",
     name: undefined,
     jettonImage: undefined,
     description: undefined,
     adminAddress: undefined,
     balance: undefined,
-    decimals: "9",
     jettonMaster: undefined,
     totalSupply: undefined,
     jettonAddress: undefined,

@@ -37,7 +37,6 @@ function JettonPage() {
     adminRevokedOwnership,
     balance,
     symbol,
-    decimals,
     name,
     decimals,
     description,

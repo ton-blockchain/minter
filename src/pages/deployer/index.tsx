@@ -10,7 +10,6 @@ import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
 import { ROUTES } from "consts";
 import TxLoader from "components/TxLoader";
 import useNotification from "hooks/useNotification";
-
 import {
   StyledContainer,
   StyledDescription,
@@ -28,10 +27,17 @@ import { getUrlParam, toDecimals } from "utils";
 import { offchainFormSpec, onchainFormSpec } from "./data";
 import Form from "components/Form";
 import BN from "bn.js";
+const DEFAULT_DECIMALS = 9;
 
 const isOffchainInternal = getUrlParam("offchainINTERNAL") !== null;
 
 let formSpec = isOffchainInternal ? offchainFormSpec : onchainFormSpec;
+
+async function fetchDecimalsOffchain(url: string): Promise<{ decimals?: string }> {
+  let res = await fetch(url);
+  let obj = await res.json();
+  return obj;
+}
 
 function DeployerPage() {
   const { showNotification } = useNotification();
@@ -45,6 +51,13 @@ function DeployerPage() {
     if (!address || !connection) {
       throw new Error("Wallet not connected");
     }
+
+    let decimals = data.decimals;
+    if (data.offchainUri) {
+      let res = await fetchDecimalsOffchain(data.offchainUri);
+      decimals = res.decimals;
+    }
+
     const params: JettonDeployParams = {
       owner: Address.parse(address),
       onchainMetaData: {
@@ -55,7 +68,7 @@ function DeployerPage() {
         decimals: data.decimals,
       },
       offchainUri: data.offchainUri,
-      amountToMint: new BN(toDecimals(data.mintAmount, data.decimals)),
+      amountToMint: new BN(toDecimals(data.mintAmount, data.decimals || DEFAULT_DECIMALS)),
     };
     setIsLoading(true);
     const deployParams = createDeployParams(params, data.offchainUri);

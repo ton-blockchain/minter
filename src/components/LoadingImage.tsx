@@ -15,6 +15,7 @@ const StyledContainer = styled(Box)({
   borderRadius: "inherit",
 });
 
+// test
 function LoadingImage({ loading, src, alt = "Image" }: Props) {
   return (
     <StyledContainer>

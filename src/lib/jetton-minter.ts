@@ -36,6 +36,7 @@ const jettonOnChainMetadataSpec: {
   name: "utf8",
   description: "utf8",
   image: "ascii",
+  decimals: "utf8",
   symbol: "utf8",
   image_data: undefined,
   decimals: "utf8",

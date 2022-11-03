@@ -113,6 +113,7 @@ function useJettonStore() {
           totalSupply: result.minter.totalSupply,
           name: result.minter.metadata.name,
           symbol: result.minter.metadata.symbol,
+          decimals: result.minter.metadata.decimals,
           adminRevokedOwnership: _adminAddress === zeroAddress().toFriendly(),
           isAdmin: admin,
           decimals: result.minter.metadata.decimals || "9",

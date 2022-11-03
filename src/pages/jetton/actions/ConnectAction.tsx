@@ -8,11 +8,7 @@ function ConnectAction() {
     return null;
   }
 
-  return (
-    <AppButton transparent onClick={() => toggleConnect(true)} background="#0088CC">
-      Connect wallet
-    </AppButton>
-  );
+  return <AppButton onClick={() => toggleConnect(true)}>Connect wallet</AppButton>;
 }
 
 export default ConnectAction;

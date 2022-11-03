@@ -1,6 +1,5 @@
 import { Typography } from "@mui/material";
 import BigNumberDisplay from "components/BigNumberDisplay";
-import NumberInput from "components/NumberInput";
 import { Popup } from "components/Popup";
 import TxLoader from "components/TxLoader";
 import useNotification from "hooks/useNotification";
@@ -10,6 +9,7 @@ import WalletConnection from "services/wallet-connection";
 import useJettonStore from "store/jetton-store/useJettonStore";
 import { toNano } from "ton";
 import { AppButton } from "components/appButton";
+import { AppNumberInput } from "components/appInput";
 
 function BurnJettonsAction() {
   const [amount, setAmount] = useState<number | undefined>(undefined);
@@ -75,7 +75,7 @@ function BurnJettonsAction() {
       <Popup open={open && !isLoading} onClose={onClose} maxWidth={400}>
         <>
           <Typography className="title">Burn {symbol}</Typography>
-          <NumberInput
+          <AppNumberInput
             label={`Enter ${symbol} amount`}
             value={amount}
             onChange={(value: number) => setAmount(value)}

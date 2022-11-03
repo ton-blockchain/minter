@@ -22,7 +22,7 @@ export const adminActions = [RevokeOwnershipAction];
 
 export const totalSupplyActions = [MintJettonsAction];
 
-export const balanceActions = [ConnectAction, BurnJettonsAction];
+export const balanceActions = [BurnJettonsAction];
 
 export const getAdminMessage = (
   adminAddress?: string,

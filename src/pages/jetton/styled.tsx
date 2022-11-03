@@ -38,6 +38,7 @@ const StyledTop = styled(Box)({
   alignItems: "center",
   gap: 20,
   marginBottom: 30,
+  marginLeft: 20,
 });
 
 const StyledTopText = styled(Box)({

@@ -3,9 +3,10 @@ import { CircularProgress, styled } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 
 interface StyledButtonProps {
-  fontSize: number;
+  fontSize?: number;
   transparent?: boolean;
   background?: string;
+  height?: number;
 }
 
 const StyledButton = styled(LoadingButton)((props: StyledButtonProps) => ({
@@ -14,10 +15,11 @@ const StyledButton = styled(LoadingButton)((props: StyledButtonProps) => ({
   justifyContent: "center",
   gap: 8,
   padding: "0px 16px",
+  margin: "auto",
   maxWidth: 160,
   width: "100%",
-  height: "100%",
-  fontSize: props.fontSize,
+  height: props.height || "100%",
+  fontSize: props.fontSize || 14,
   boxShadow: "none",
   fontWeight: 600,
   borderRadius: 40,
@@ -29,15 +31,12 @@ const StyledButton = styled(LoadingButton)((props: StyledButtonProps) => ({
   },
 }));
 
-interface AppButtonProps {
+interface AppButtonProps extends StyledButtonProps {
   children: ReactNode;
   loading?: boolean;
   disabled?: boolean;
   onClick?: () => void;
   type?: "button" | "submit" | "reset";
-  fontSize?: number;
-  transparent?: boolean;
-  background?: string;
 }
 
 export const AppButton: React.FC<AppButtonProps> = ({
@@ -49,9 +48,11 @@ export const AppButton: React.FC<AppButtonProps> = ({
   fontSize = 14,
   transparent,
   background,
+  height,
 }) => {
   return (
     <StyledButton
+      height={height}
       fontSize={fontSize}
       transparent={transparent}
       background={background}

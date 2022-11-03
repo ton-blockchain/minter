@@ -5,6 +5,8 @@ interface Props {
   children: ReactNode;
 }
 
+//TODO replace with generic AppHeading
+
 function FieldDescription({ children }: Props) {
   return (
     <Typography style={{ fontSize: 14, marginTop: 5, opacity: 0.3, paddingLeft: 13 }}>

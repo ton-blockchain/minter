@@ -99,8 +99,8 @@ function DeployerPage() {
       </TxLoader>
       <ScreenContent removeBackground>
         <Fade in>
-          <Box mt={3}>
-            <Box mb={2}>
+          <Box>
+            <Box mb={2} mt={0}>
               <Typography
                 sx={{
                   fontWeight: 800,

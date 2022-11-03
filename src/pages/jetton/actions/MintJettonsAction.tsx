@@ -1,6 +1,5 @@
 import { Typography } from "@mui/material";
 import BigNumberDisplay from "components/BigNumberDisplay";
-import NumberInput from "components/NumberInput";
 import { Popup } from "components/Popup";
 import TxLoader from "components/TxLoader";
 import useNotification from "hooks/useNotification";
@@ -10,6 +9,7 @@ import WalletConnection from "services/wallet-connection";
 import useJettonStore from "store/jetton-store/useJettonStore";
 import { Address, toNano } from "ton";
 import { AppButton } from "components/appButton";
+import { AppNumberInput } from "components/appInput";
 
 function MintJettonsAction() {
   const [amount, setAmount] = useState<number | undefined>(undefined);
@@ -68,7 +68,7 @@ function MintJettonsAction() {
       <Popup open={open && !isLoading} onClose={onClose} maxWidth={400}>
         <>
           <Typography className="title">Mint {symbol}</Typography>
-          <NumberInput
+          <AppNumberInput
             label={`Enter ${symbol} amount`}
             value={amount}
             onChange={(value: number) => setAmount(value)}

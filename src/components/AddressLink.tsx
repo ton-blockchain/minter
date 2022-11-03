@@ -7,11 +7,6 @@ import { EnvContext } from "App";
 import { scannerUrl } from "utils";
 import theme from "theme";
 
-interface Props {
-  address?: string | null;
-  value?: string | number | JSX.Element;
-}
-
 const StyledContainer = styled(Box)({
   display: "flex",
   alignItems: "center",
@@ -24,7 +19,7 @@ const StyledContainer = styled(Box)({
 });
 
 const StyledImg = styled("img")({
-  width: 20,
+  width: 15,
 });
 
 const StyledLink = styled("div")({
@@ -38,7 +33,13 @@ const StyledLink = styled("div")({
   },
 });
 
-function AddressLink({ address, value }: Props) {
+interface AddressLinkProps {
+  value: string | number | JSX.Element;
+  address?: string | null;
+  showIcon?: boolean;
+}
+
+const AddressLink: React.FC<AddressLinkProps> = ({ address, value, showIcon = true }) => {
   const { showNotification } = useNotification();
   const { isSandbox } = useContext(EnvContext);
 
@@ -53,7 +54,7 @@ function AddressLink({ address, value }: Props) {
           {value || "-"}
         </Link>
       </StyledLink>
-      {address && (
+      {address && showIcon && (
         <CopyToClipboard text={address} onCopy={onCopy}>
           <IconButton>
             <StyledImg src={CopyImg} />
@@ -62,6 +63,6 @@ function AddressLink({ address, value }: Props) {
       )}
     </StyledContainer>
   );
-}
+};
 
 export default AddressLink;

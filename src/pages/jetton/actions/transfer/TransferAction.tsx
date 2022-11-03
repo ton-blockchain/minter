@@ -1,6 +1,4 @@
-import { Box, styled, TextField, Typography } from "@mui/material";
-import BigNumberDisplay from "components/BigNumberDisplay";
-import NumberInput from "components/NumberInput";
+import { Typography } from "@mui/material";
 import TxLoader from "components/TxLoader";
 import useNotification from "hooks/useNotification";
 import { jettonDeployController } from "lib/deploy-controller";
@@ -8,40 +6,14 @@ import { useState } from "react";
 import WalletConnection from "services/wallet-connection";
 import useConnectionStore from "store/connection-store/useConnectionStore";
 import useJettonStore from "store/jetton-store/useJettonStore";
-import { StyledInput } from "styles/styles";
 import { toNano } from "ton";
-import { isValidAddress } from "utils";
-import { StyledSectionTitle } from "../Row";
 import { AppButton } from "components/appButton";
+import { getError } from "./utils";
+import { ButtonWrapper, TransferContent, TransferWrapper } from "./styled";
+import { AppHeading } from "components/appHeading";
+import { AppNumberInput, AppTextInput } from "components/appInput";
 
-const getError = (
-  toAddress?: string,
-  amount?: number,
-  balance?: string,
-  symbol?: string,
-): string | undefined | JSX.Element => {
-  if (!toAddress) {
-    return "Recipient wallet address required";
-  }
-
-  if (toAddress && !isValidAddress(toAddress)) {
-    return "Invalid Recipient wallet address";
-  }
-
-  if (!amount) {
-    return "Transfer amount required";
-  }
-
-  if (toNano(amount).gt(toNano(balance!!))) {
-    return (
-      <>
-        Maximum amount to transfer is <BigNumberDisplay value={balance!!} /> {symbol}
-      </>
-    );
-  }
-};
-
-function TransferAction() {
+export const TransferAction = () => {
   const { balance, symbol, jettonAddress, getJettonDetails, isMyWallet } = useJettonStore();
   const [isLoading, setIsLoading] = useState(false);
   const [toAddress, setToAddress] = useState<string | undefined>(undefined);
@@ -89,51 +61,36 @@ function TransferAction() {
   };
 
   return (
-    <StyledContainer>
+    <TransferWrapper>
       <TxLoader open={isLoading}>
         <Typography>Transfer in progress...</Typography>
       </TxLoader>
-      <StyledSectionTitle>Transfer {symbol}</StyledSectionTitle>
-      <StyledInputs>
-        <StyledInput>
-          <TextField
-            fullWidth
-            label="Recipient wallet address"
-            onChange={(e) => setToAddress(e.target.value)}
-            value={toAddress || ""}
-          />
-        </StyledInput>
-        <NumberInput
+      <AppHeading
+        text={`Transfer ${symbol}`}
+        variant="h4"
+        fontWeight={800}
+        fontSize={20}
+        marginBottom={20}
+        color="#161C28"
+      />
+      <TransferContent>
+        <AppTextInput
+          fullWidth
+          label="Recipient wallet address"
+          value={toAddress}
+          onChange={(e) => setToAddress(e.target.value)}
+        />
+        <AppNumberInput
           label="Amount to transfer"
           onChange={(value: number) => setAmount(value)}
           value={amount}
         />
-      </StyledInputs>
-      <AppButton onClick={onSubmit}>Transfer</AppButton>
-    </StyledContainer>
+      </TransferContent>
+      <ButtonWrapper>
+        <AppButton disabled={!(toAddress && amount)} onClick={onSubmit} height={50}>
+          Transfer SHH
+        </AppButton>
+      </ButtonWrapper>
+    </TransferWrapper>
   );
-}
-
-export default TransferAction;
-
-const StyledContainer = styled(Box)({
-  width: "100%",
-  display: "flex",
-  flexDirection: "column",
-
-  "& .base-button": {
-    height: 40,
-    maxWidth: 200,
-    width: "100%",
-    marginLeft: "auto",
-    marginRight: "auto",
-    marginTop: 20,
-  },
-});
-
-const StyledInputs = styled(Box)({
-  width: "100%",
-  display: "flex",
-  flexDirection: "column",
-  gap: 15,
-});
+};

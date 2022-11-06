@@ -6,6 +6,7 @@ interface StyledButtonProps {
   fontSize?: number;
   transparent?: boolean;
   background?: string;
+  width?: number;
   height?: number;
 }
 
@@ -17,7 +18,7 @@ const StyledButton = styled(LoadingButton)((props: StyledButtonProps) => ({
   padding: "0px 16px",
   margin: "auto",
   maxWidth: 160,
-  width: "100%",
+  width: props.width || "100%",
   height: props.height || "100%",
   fontSize: props.fontSize || 14,
   boxShadow: "none",
@@ -28,6 +29,9 @@ const StyledButton = styled(LoadingButton)((props: StyledButtonProps) => ({
   whiteSpace: "nowrap",
   "& img": {
     maxWidth: 22,
+  },
+  "&:disabled": {
+    background: "#D9D9D9",
   },
 }));
 
@@ -48,10 +52,12 @@ export const AppButton: React.FC<AppButtonProps> = ({
   fontSize = 14,
   transparent,
   background,
+  width,
   height,
 }) => {
   return (
     <StyledButton
+      width={width}
       height={height}
       fontSize={fontSize}
       transparent={transparent}

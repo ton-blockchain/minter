@@ -100,11 +100,12 @@ function DeployerPage() {
       <ScreenContent removeBackground>
         <Fade in>
           <Box>
-            <Box mb={2} mt={0}>
+            <Box mb={3} mt={0}>
               <Typography
                 sx={{
                   fontWeight: 800,
                   color: "#161C28",
+                  fontSize: 48,
                 }}
                 variant="h5">
                 Mint your token

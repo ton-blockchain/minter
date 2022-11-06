@@ -3,7 +3,7 @@ import { Box } from "@mui/system";
 import { APP_GRID } from "consts";
 
 const HeaderWrapper = styled(AppBar)(({ theme }) => ({
-  height: 120,
+  height: 200,
   background: "white",
   border: "0.5px solid rgba(114, 138, 150, 0.24)",
   boxShadow: "0px 2px 16px rgba(114, 138, 150, 0.08)",
@@ -24,7 +24,7 @@ const HeaderContent = styled(Box)(({ theme }) => ({
   maxWidth: APP_GRID,
   width: "100%",
   margin: "0 auto",
-  maxHeight: 60,
+  height: 100,
   [theme.breakpoints.down("lg")]: {
     width: "calc(100% - 50px)",
   },

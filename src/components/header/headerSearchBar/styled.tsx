@@ -6,14 +6,13 @@ const SearchBarWrapper = styled(Box)(({ theme }) => ({
   margin: "auto",
   padding: "0px 17px",
   width: "100%",
-  minHeight: 35,
+  minHeight: 50,
   height: "100%",
   transition: "0.1s all",
   background: "#F7F9FB",
   border: "0.5px solid rgba(114, 138, 150, 0.16)",
-  borderRadius: 20,
-  [theme.breakpoints.down("sm")]: {
-    minHeight: "unset",
+  borderRadius: 40,
+  [theme.breakpoints.down("md")]: {
     height: 40,
   },
 }));
@@ -22,7 +21,7 @@ const SearchBarInput = styled("input")(({ theme }) => ({
   flex: 1,
   marginLeft: 6,
   width: "100%",
-  fontSize: 12,
+  fontSize: 16,
   fontWeight: 500,
   outline: "unset",
   fontFamily: "Mulish",

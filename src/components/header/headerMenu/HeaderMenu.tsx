@@ -35,7 +35,10 @@ const HeaderMenu: React.FC<MenuProps> = () => {
   return (
     <AppMenu>
       <WalletConnector />
-      <IconButton sx={{ padding: 0 }} href={JETTON_DEPLOYER_CONTRACTS_GITHUB} target="_blank">
+      <IconButton
+        sx={{ padding: 0, ml: 1.5 }}
+        href={JETTON_DEPLOYER_CONTRACTS_GITHUB}
+        target="_blank">
         <StyledGithubIcon src={githubIcon} />
         <HeaderTypography variant="h5">GitHub</HeaderTypography>
       </IconButton>

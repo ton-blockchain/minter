@@ -2,9 +2,8 @@ import { Box, styled } from "@mui/material";
 
 const WalletWrapper = styled(Box)({
   position: "relative",
-  maxWidth: 156,
-  minHeight: 35,
-  height: "100%",
+  display: "flex",
+  alignItems: "center",
 
   "& p": {
     paddingRight: 10,

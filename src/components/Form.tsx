@@ -219,7 +219,7 @@ const StyledContainer = styled(Box)({
 
 const StyledInputContainer = styled(Box)(({ error }: { error: boolean }) => ({
   width: "100%",
-  height: 35,
+  height: 45,
   display: "flex",
   alignItems: "center",
   background: "#F7F9FB",
@@ -243,6 +243,7 @@ const StyledInput = styled("input")({
   outline: "none",
   color: "#000",
   fontFamily: "Mulish",
+  fontSize: 16,
   caretColor: "#728A96",
   "&::placeholder": {
     color: "#728A96",

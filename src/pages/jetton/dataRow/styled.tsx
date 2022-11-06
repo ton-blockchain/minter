@@ -10,10 +10,10 @@ const RowMessage = styled(Box)(({ type }: { type: string }) => ({
   fontSize: 12,
   marginTop: 11,
   "& *": {
-    color: type === "success" ? "#2e7d32" : "#EEBD40",
+    color: type === "success" ? "#0EA438" : "#EEBD40",
   },
   "& svg": {
-    color: type === "success" ? "#2e7d32" : "#EEBD40",
+    color: type === "success" ? "#0EA438" : "#EEBD40",
     width: 16,
     position: "relative",
     top: -3,

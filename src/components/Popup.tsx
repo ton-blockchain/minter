@@ -2,6 +2,7 @@ import { Box, IconButton, styled } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import { ReactNode } from "react";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+
 export interface Props {
   open: boolean;
   onClose?: () => void;
@@ -43,35 +44,31 @@ export function Popup({
         style: {
           backgroundColor,
         },
-      }}
-    >
-      <StyledChildren>
+      }}>
+      <Box>
         {!hideCloseButton && (
-          <StyledClose onClick={onClose}>
-            <CloseRoundedIcon style={{ width: 30, height: 30 }} />
-          </StyledClose>
+          <Box sx={{ display: "flex", justifyContent: "end", width: "100%" }}>
+            <StyledClose onClick={onClose}>
+              <CloseRoundedIcon style={{ width: 30, height: 30 }} />
+            </StyledClose>
+          </Box>
         )}
-        {children}
-      </StyledChildren>
+        <StyledChildren px={3} pb={3}>
+          {children}
+        </StyledChildren>
+      </Box>
     </Dialog>
   );
 }
 
 const StyledClose = styled(IconButton)(({ theme }) => ({
-  position: "absolute",
-  top: -50,
-  right: -50,
-  [theme.breakpoints.down("sm")]: {
-    right: -10,
-  },
+  color: "#000",
 }));
 
 const StyledChildren = styled(Box)({
-  position: "relative",
   display: "flex",
   alignItems: "center",
   flexDirection: "column",
-  padding: 30,
   "& .title": {
     texAlign: "center",
     fontWeight: 500,

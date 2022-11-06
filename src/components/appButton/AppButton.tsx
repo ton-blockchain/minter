@@ -62,7 +62,7 @@ export const AppButton: React.FC<AppButtonProps> = ({
       fontSize={fontSize}
       transparent={transparent}
       background={background}
-      className="base-button"
+      className={children !== "Update metadata" ? "base-button" : ""}
       type={type}
       onClick={onClick ? onClick : () => {}}
       variant={transparent ? "outlined" : "contained"}

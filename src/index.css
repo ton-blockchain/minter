@@ -6,7 +6,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: #f7f9fb !important;
   height: 100vh;
-  overflow-y: hidden;
 }
 
 @media screen and (max-height: 850px) {

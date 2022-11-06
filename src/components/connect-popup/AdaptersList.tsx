@@ -23,7 +23,9 @@ const StyledListItemButton = styled(ListItemButton)({
   padding: 0,
 });
 
-const StyledContainer = styled(Box)({});
+const StyledContainer = styled(Box)({
+  paddingTop: 24,
+});
 
 const StyledIcon = styled("img")({
   width: "40px",

@@ -2,7 +2,7 @@ import { Typography } from "@mui/material";
 import TxLoader from "components/TxLoader";
 import useNotification from "hooks/useNotification";
 import { jettonDeployController } from "lib/deploy-controller";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import WalletConnection from "services/wallet-connection";
 import useConnectionStore from "store/connection-store/useConnectionStore";
 import useJettonStore from "store/jetton-store/useJettonStore";
@@ -12,14 +12,16 @@ import { getError } from "./utils";
 import { ButtonWrapper, TransferContent, TransferWrapper } from "./styled";
 import { AppHeading } from "components/appHeading";
 import { AppNumberInput, AppTextInput } from "components/appInput";
+import { JettonActionsContext } from "pages/jetton/context/JettonActionsContext";
 
 export const TransferAction = () => {
   const { balance, symbol, jettonAddress, getJettonDetails, isMyWallet } = useJettonStore();
-  const [isLoading, setIsLoading] = useState(false);
+
   const [toAddress, setToAddress] = useState<string | undefined>(undefined);
   const [amount, setAmount] = useState<number | undefined>(undefined);
   const { showNotification } = useNotification();
   const { address: connectedWalletAddress } = useConnectionStore();
+  const { startAction, finishAction } = useContext(JettonActionsContext);
 
   if (!balance || !jettonAddress || !isMyWallet) {
     return null;
@@ -32,7 +34,7 @@ export const TransferAction = () => {
       return;
     }
 
-    setIsLoading(true);
+    startAction();
     try {
       const connection = WalletConnection.getConnection();
       await jettonDeployController.transfer(
@@ -56,15 +58,12 @@ export const TransferAction = () => {
         showNotification(error.message, "error");
       }
     } finally {
-      setIsLoading(false);
+      finishAction();
     }
   };
 
   return (
     <TransferWrapper>
-      <TxLoader open={isLoading}>
-        <Typography>Transfer in progress...</Typography>
-      </TxLoader>
       <AppHeading
         text={`Transfer ${symbol}`}
         variant="h4"

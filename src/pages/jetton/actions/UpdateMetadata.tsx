@@ -2,7 +2,7 @@ import { Box, Typography } from "@mui/material";
 import { styled } from "@mui/system";
 import { Popup } from "components/Popup";
 import useJettonStore from "store/jetton-store/useJettonStore";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import TxLoader from "components/TxLoader";
 import { onchainFormSpec } from "pages/deployer/data";
 import Form from "components/Form";
@@ -12,6 +12,7 @@ import WalletConnection from "services/wallet-connection";
 import { Address } from "ton";
 import useNotification from "hooks/useNotification";
 import { AppButton } from "components/appButton";
+import { JettonActionsContext } from "pages/jetton/context/JettonActionsContext";
 const inputsName = ["name", "symbol", "tokenImage", "description"];
 
 const getInputs = () => {
@@ -38,7 +39,7 @@ function UpdateMetadata() {
   const store = useJettonStore();
   const { isAdmin, getJettonDetails, jettonMaster } = store;
   const [open, setOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const { startAction, finishAction } = useContext(JettonActionsContext);
   const { showNotification } = useNotification();
 
   if (!isAdmin) {
@@ -46,7 +47,7 @@ function UpdateMetadata() {
   }
 
   const onSubmit = async (values: any) => {
-    setIsLoading(true);
+    startAction();
     try {
       if (!jettonMaster) {
         throw new Error("");
@@ -69,7 +70,8 @@ function UpdateMetadata() {
         showNotification(error.message, "error");
       }
     } finally {
-      setIsLoading(false);
+      finishAction();
+      setOpen(false);
     }
   };
 
@@ -78,9 +80,6 @@ function UpdateMetadata() {
   return (
     <StyledContainer>
       <AppButton onClick={() => setOpen(true)}>Update metadata</AppButton>
-      <TxLoader open={isLoading}>
-        <Typography>Loading...</Typography>
-      </TxLoader>
       <Popup maxWidth={600} open={open} onClose={() => setOpen(false)}>
         <Form
           submitText="Update metadata"

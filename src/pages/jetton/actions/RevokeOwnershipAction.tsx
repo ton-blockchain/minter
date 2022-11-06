@@ -2,14 +2,15 @@ import { Typography } from "@mui/material";
 import TxLoader from "components/TxLoader";
 import useNotification from "hooks/useNotification";
 import { jettonDeployController } from "lib/deploy-controller";
-import { useState } from "react";
+import { useContext } from "react";
 import WalletConnection from "services/wallet-connection";
 import useJettonStore from "store/jetton-store/useJettonStore";
 import { Address } from "ton";
 import { AppButton } from "components/appButton";
+import { JettonActionsContext } from "pages/jetton/context/JettonActionsContext";
 
 function RevokeOwnershipAction() {
-  const [isLoading, setIsLoading] = useState(false);
+  const { actionInProgress, startAction, finishAction } = useContext(JettonActionsContext);
   const { jettonMaster, isAdmin, getJettonDetails, isMyWallet } = useJettonStore();
   const { showNotification } = useNotification();
 
@@ -22,7 +23,7 @@ function RevokeOwnershipAction() {
       if (!jettonMaster) {
         return;
       }
-      setIsLoading(true);
+      startAction();
       await jettonDeployController.burnAdmin(
         Address.parse(jettonMaster),
         WalletConnection.getConnection(),
@@ -34,16 +35,13 @@ function RevokeOwnershipAction() {
         showNotification(error.message, "error");
       }
     } finally {
-      setIsLoading(false);
+      finishAction();
     }
   };
 
   return (
     <>
-      <TxLoader open={isLoading}>
-        <Typography>Revoking ownership...</Typography>
-      </TxLoader>
-      <AppButton transparent={true} onClick={onClick} loading={isLoading}>
+      <AppButton transparent={true} onClick={onClick}>
         Revoke ownership
       </AppButton>
     </>

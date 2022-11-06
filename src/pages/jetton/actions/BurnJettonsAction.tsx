@@ -1,23 +1,24 @@
 import { Typography } from "@mui/material";
 import BigNumberDisplay from "components/BigNumberDisplay";
 import { Popup } from "components/Popup";
-import TxLoader from "components/TxLoader";
 import useNotification from "hooks/useNotification";
 import { jettonDeployController } from "lib/deploy-controller";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import WalletConnection from "services/wallet-connection";
 import useJettonStore from "store/jetton-store/useJettonStore";
 import { toNano } from "ton";
 import { AppButton } from "components/appButton";
 import { AppNumberInput } from "components/appInput";
+import { JettonActionsContext } from "pages/jetton/context/JettonActionsContext";
 
 function BurnJettonsAction() {
   const [amount, setAmount] = useState<number | undefined>(undefined);
   const [open, setOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const { jettonMaster, symbol, getJettonDetails, balance, jettonAddress, isMyWallet } =
     useJettonStore();
   const { showNotification } = useNotification();
+
+  const { actionInProgress, startAction, finishAction } = useContext(JettonActionsContext);
 
   if (!balance || !isMyWallet) {
     return null;
@@ -46,7 +47,7 @@ function BurnJettonsAction() {
     }
 
     try {
-      setIsLoading(true);
+      startAction();
       const connection = WalletConnection.getConnection();
       await jettonDeployController.burnJettons(connection, value, jettonAddress!);
       setOpen(false);
@@ -58,7 +59,7 @@ function BurnJettonsAction() {
         showNotification(error.message, "error");
       }
     } finally {
-      setIsLoading(false);
+      finishAction();
     }
   };
 
@@ -69,10 +70,7 @@ function BurnJettonsAction() {
 
   return (
     <>
-      <TxLoader open={isLoading}>
-        <Typography>Burning...</Typography>
-      </TxLoader>
-      <Popup open={open && !isLoading} onClose={onClose} maxWidth={400}>
+      <Popup open={open && !actionInProgress} onClose={onClose} maxWidth={400}>
         <>
           <Typography className="title">Burn {symbol}</Typography>
           <AppNumberInput

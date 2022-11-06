@@ -88,7 +88,7 @@ export const TransferAction = () => {
       </TransferContent>
       <ButtonWrapper>
         <AppButton disabled={!(toAddress && amount)} onClick={onSubmit} height={50}>
-          Transfer SHH
+          Transfer {symbol}
         </AppButton>
       </ButtonWrapper>
     </TransferWrapper>

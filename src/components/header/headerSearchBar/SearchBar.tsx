@@ -4,18 +4,43 @@ import { useNavigate } from "react-router-dom";
 import { ROUTES } from "consts";
 import { isValidAddress } from "utils";
 import useNotification from "hooks/useNotification";
-import { IndentlessIcon, SearchBarInput, SearchBarWrapper } from "./styled";
+import {
+  CenteringWrapper,
+  IndentlessIcon,
+  SearchBarInput,
+  SearchBarWrapper,
+  SearchResultsItem,
+  SearchResultsWrapper,
+} from "./styled";
+import recentSearch from "assets/icons/recent-search.svg";
+import close from "assets/icons/close.svg";
+import { ClickAwayListener, IconButton, Typography } from "@mui/material";
 
 interface SearchBarProps {
   closeMenu?: () => void;
 }
 
+interface SearchRequest {
+  index: number;
+  value: string;
+}
+
+const SEARCH_HISTORY = "searchHistory";
+
 export const SearchBar: React.FC<SearchBarProps> = ({ closeMenu }) => {
   const [value, setValue] = useState("");
+  const [active, setActive] = useState(false);
+  const [searchResults, setSearchResults] = useState<SearchRequest[]>([]);
+
   const navigate = useNavigate();
   const { showNotification } = useNotification();
 
   const onSubmit = useCallback(async () => {
+    const searchResults = JSON.parse(window.localStorage.getItem(SEARCH_HISTORY) || "[]");
+    const isAlreadyInTheList = searchResults.find((item: SearchRequest) => {
+      return item.value === value;
+    });
+
     if (!value) {
       return;
     }
@@ -26,10 +51,28 @@ export const SearchBar: React.FC<SearchBarProps> = ({ closeMenu }) => {
       return;
     }
 
+    if (isAlreadyInTheList) {
+      setValue("");
+      return;
+    }
+    setSearchResults((prevState) => [...prevState, { index: searchResults.length, value }]);
+
     setValue("");
     closeMenu?.();
     navigate(`${ROUTES.jetton}/${value}`);
   }, [value]);
+
+  const onItemDelete = useCallback(
+    (item: SearchRequest) => {
+      setSearchResults((prev) => prev.filter((result) => result.value !== item.value));
+    },
+    [searchResults],
+  );
+
+  const onItemClick = useCallback((item: SearchRequest) => {
+    setActive(false);
+    navigate(`${ROUTES.jetton}/${item.value}`);
+  }, []);
 
   useEffect(() => {
     const listener = (event: any) => {
@@ -44,17 +87,41 @@ export const SearchBar: React.FC<SearchBarProps> = ({ closeMenu }) => {
     };
   }, [value, onSubmit]);
 
+  useEffect(() => {
+    window.localStorage.setItem(SEARCH_HISTORY, JSON.stringify(searchResults));
+  }, [searchResults]);
+
   return (
-    <SearchBarWrapper>
-      <IndentlessIcon onClick={onSubmit}>
-        <img src={SearchImg} alt="Search Icon" />
-      </IndentlessIcon>
-      <SearchBarInput
-        placeholder="Jetton address"
-        onPaste={(e: any) => setValue(e.target.value)}
-        onChange={(e) => setValue(e.target.value)}
-        value={value}
-      />
-    </SearchBarWrapper>
+    <ClickAwayListener onClickAway={() => setActive(false)}>
+      <SearchBarWrapper>
+        <IndentlessIcon onClick={onSubmit}>
+          <img src={SearchImg} alt="Search Icon" />
+        </IndentlessIcon>
+        <SearchBarInput
+          placeholder="Jetton address"
+          onPaste={(e: any) => setValue(e.target.value)}
+          onChange={(e) => setValue(e.target.value)}
+          value={value}
+          onFocus={() => setActive(true)}
+        />
+        {active && searchResults.length && (
+          <SearchResultsWrapper>
+            {searchResults.map((result) => (
+              <SearchResultsItem>
+                <CenteringWrapper onClick={() => onItemClick(result)}>
+                  <CenteringWrapper mr={1.5}>
+                    <img width={20} height={20} src={recentSearch} alt="Search Icon" />
+                  </CenteringWrapper>
+                  <Typography>{result.value}</Typography>
+                </CenteringWrapper>
+                <IconButton onClick={(e) => onItemDelete(result)}>
+                  <img src={close} alt="Close Icon" width={16} height={16} />
+                </IconButton>
+              </SearchResultsItem>
+            ))}
+          </SearchResultsWrapper>
+        )}
+      </SearchBarWrapper>
+    </ClickAwayListener>
   );
 };

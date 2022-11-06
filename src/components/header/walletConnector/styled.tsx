@@ -23,6 +23,7 @@ const WalletButtonContent = styled(Box)({
 });
 
 const DisconnectButton = styled("button")({
+  zIndex: 1,
   display: "flex",
   alignItems: "center",
   position: "absolute",

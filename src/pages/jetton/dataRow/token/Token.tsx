@@ -97,7 +97,7 @@ export const Token = () => {
           dataLoading={jettonLoading}
           actions={adminActions}
           hasButton={isAdmin && !adminRevokedOwnership}
-          showIcon={false}
+          showIcon={!isAdmin}
         />
         <DataRow
           title="Symbol"

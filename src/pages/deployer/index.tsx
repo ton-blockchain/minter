@@ -13,7 +13,6 @@ import useNotification from "hooks/useNotification";
 
 import { StyledDescription, StyledTxLoaderContent } from "./styles";
 import { Screen, ScreenContent } from "components/Screen";
-import SectionLabel from "components/SectionLabel";
 import analytics, { AnalyticsAction, AnalyticsCategory } from "services/analytics";
 import { JettonDeployParams } from "lib/deploy-controller";
 import { getUrlParam } from "utils";
@@ -131,10 +130,10 @@ function DeployerPage() {
                 }}>
                 <Typography
                   variant="h5"
-                  mb={1}
+                  mb={3}
                   sx={{
                     color: "#161C28",
-                    fontSize: 14,
+                    fontSize: 20,
                     fontWeight: 800,
                   }}>
                   Create your own new Jetton
@@ -161,9 +160,16 @@ const Spacer = () => {
 function Description() {
   return (
     <StyledDescription sx={{ padding: 3 }}>
-      <SectionLabel href="https://github.com/ton-defi-org/jetton-deployer-contracts">
+      <Typography
+        variant="h5"
+        mb={3}
+        sx={{
+          color: "#161C28",
+          fontSize: 20,
+          fontWeight: 800,
+        }}>
         This is an open source tool
-      </SectionLabel>
+      </Typography>
       <Typography
         sx={{
           fontWeight: 600,

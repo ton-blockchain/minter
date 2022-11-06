@@ -20,7 +20,7 @@ const SearchBarWrapper = styled(Box)(({ theme }) => ({
 
 const SearchBarInput = styled("input")(({ theme }) => ({
   flex: 1,
-  marginLeft: 6,
+  marginLeft: 10,
   width: "100%",
   fontSize: 16,
   fontWeight: 500,
@@ -80,6 +80,9 @@ const SearchResultsItem = styled(Box)(() => ({
 }));
 
 const IndentlessIcon = styled(Box)(() => ({
+  display: "flex",
+  alignItems: "center",
+  marginLeft: 14,
   padding: 0,
 }));
 

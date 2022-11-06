@@ -56,7 +56,7 @@ const AddressLink: React.FC<AddressLinkProps> = ({ address, value, showIcon = tr
       </StyledLink>
       {address && showIcon && (
         <CopyToClipboard text={address} onCopy={onCopy}>
-          <IconButton>
+          <IconButton sx={{ mr: 2 }}>
             <StyledImg src={CopyImg} />
           </IconButton>
         </CopyToClipboard>

@@ -16,13 +16,14 @@ const SocialsContent = styled(Box)(({ theme }) => ({
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
-  gap: theme.spacing(1),
+  gap: theme.spacing(1.5),
 }));
 
 const CredentialsWrapper = styled(Box)(({ theme }) => ({
   display: "flex",
   justifyContent: "space-between",
   marginTop: theme.spacing(2),
+  marginBottom: theme.spacing(2),
   color: "#728A96",
   fontSize: 14,
 }));

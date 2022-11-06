@@ -5,6 +5,9 @@ const LogoWrapper = styled(Box)(({ theme }) => ({
   color: "#000",
   alignItems: "center",
   gap: 4,
+  "&:hover": {
+    cursor: "pointer",
+  },
   "& h4": {
     fontSize: 18,
     lineHeight: "20px",

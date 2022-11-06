@@ -67,7 +67,12 @@ function Form({ onSubmit, inputs, disableExample, submitText, defaultValues }: F
       </StyledFormInputs>
       <StyledActionBtn>
         {!address ? (
-          <AppButton type="button" onClick={() => toggleConnect(true)} background="#0088CC">
+          <AppButton
+            height={48}
+            width={160}
+            type="button"
+            onClick={() => toggleConnect(true)}
+            background="#0088CC">
             Connect wallet
           </AppButton>
         ) : (
@@ -94,7 +99,8 @@ const StyledFormInputs = styled(Box)({
 const StyledActionBtn = styled(Box)({
   display: "flex",
   justifyContent: "center",
-  marginTop: 20,
+  marginTop: 30,
+  marginBottom: 10,
   height: 40,
   maxWidth: 344,
   marginLeft: "auto",

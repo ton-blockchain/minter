@@ -1,5 +1,5 @@
 import React from "react";
-import { Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { HoverableIcon } from "components/hoverableIcon/HoverableIcon";
 import {
   CredentialsWrapper,
@@ -22,7 +22,9 @@ export const Footer = () => {
   return (
     <FooterWrapper>
       <SocialsWrapper>
-        <AppLogo />
+        <Box mb={2}>
+          <AppLogo />
+        </Box>
         <SocialsContent>
           <HoverableIcon iconUrl={telegram} hoveredIconUrl={telegramHovered} link="" />
           <HoverableIcon
@@ -36,7 +38,7 @@ export const Footer = () => {
       </SocialsWrapper>
       <Separator />
       <CredentialsWrapper>
-        <Typography variant="body2">© TON Foundation</Typography>
+        <Typography variant="body2">© 2022 TON Foundation</Typography>
         <Typography variant="body2">Support</Typography>
       </CredentialsWrapper>
     </FooterWrapper>

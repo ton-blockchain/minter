@@ -1,5 +1,3 @@
-import { Typography } from "@mui/material";
-import TxLoader from "components/TxLoader";
 import useNotification from "hooks/useNotification";
 import { jettonDeployController } from "lib/deploy-controller";
 import { useContext, useState } from "react";

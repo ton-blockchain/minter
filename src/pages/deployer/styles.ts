@@ -18,21 +18,6 @@ export const StyledContainer = styled(Box)(({ theme }) => ({
   },
 }));
 
-export const StyledLeft = styled(Box)(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  flexDirection: "column",
-  justifyContent: "center",
-  width: 496,
-  gap: 30,
-  [theme.breakpoints.down("lg")]: {
-    width: 396,
-  },
-  [theme.breakpoints.down("md")]: {
-    width: "100%",
-  },
-}));
-
 export const StyledDescription = styled(Box)(({ theme }) => ({
   position: "relative",
   background: "#fff",
@@ -47,15 +32,4 @@ export const StyledDescription = styled(Box)(({ theme }) => ({
       lineHeight: "20px",
     },
   },
-}));
-
-export const StyledRight = styled(Box)(({ theme }) => ({
-  flex: 1,
-  display: "flex",
-  flexDirection: "column",
-  background: "#F7FAFC",
-  borderRadius: 16,
-  padding: "20px 30px 30px 30px",
-  [theme.breakpoints.down("lg")]: {},
-  [theme.breakpoints.down("md")]: {},
 }));

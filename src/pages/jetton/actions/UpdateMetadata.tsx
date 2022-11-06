@@ -1,9 +1,8 @@
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import { styled } from "@mui/system";
 import { Popup } from "components/Popup";
 import useJettonStore from "store/jetton-store/useJettonStore";
 import { useContext, useState } from "react";
-import TxLoader from "components/TxLoader";
 import { onchainFormSpec } from "pages/deployer/data";
 import Form from "components/Form";
 import { JettonStoreState } from "store/jetton-store";

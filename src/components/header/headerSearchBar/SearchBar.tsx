@@ -114,7 +114,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ closeMenu }) => {
                   </CenteringWrapper>
                   <Typography>{result.value}</Typography>
                 </CenteringWrapper>
-                <IconButton onClick={(e) => onItemDelete(result)}>
+                <IconButton onClick={() => onItemDelete(result)}>
                   <img src={close} alt="Close Icon" width={16} height={16} />
                 </IconButton>
               </SearchResultsItem>

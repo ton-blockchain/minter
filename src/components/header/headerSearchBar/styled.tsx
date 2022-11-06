@@ -58,12 +58,12 @@ const SearchResultsWrapper = styled(Box)(({ theme }) => ({
   },
 }));
 
-const CenteringWrapper = styled(Box)(({ theme }) => ({
+const CenteringWrapper = styled(Box)(() => ({
   display: "flex",
   alignItems: "center",
 }));
 
-const SearchResultsItem = styled(Box)(({ theme }) => ({
+const SearchResultsItem = styled(Box)(() => ({
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",

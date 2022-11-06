@@ -61,7 +61,7 @@ export function Popup({
   );
 }
 
-const StyledClose = styled(IconButton)(({ theme }) => ({
+const StyledClose = styled(IconButton)(() => ({
   color: "#000",
 }));
 

@@ -1,5 +1,4 @@
-import { Skeleton, styled } from "@mui/material";
-import { Box } from "@mui/system";
+import { Skeleton } from "@mui/material";
 import React, { ReactNode } from "react";
 
 interface Props {

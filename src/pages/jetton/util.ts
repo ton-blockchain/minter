@@ -1,6 +1,5 @@
 import { persistenceType } from "lib/jetton-minter";
 import BurnJettonsAction from "./actions/BurnJettonsAction";
-import ConnectAction from "./actions/ConnectAction";
 import MintJettonsAction from "./actions/MintJettonsAction";
 import RevokeOwnershipAction from "./actions/RevokeOwnershipAction";
 import { JettonDetailMessage } from "./types";

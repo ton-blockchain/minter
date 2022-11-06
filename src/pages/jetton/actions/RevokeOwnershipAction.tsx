@@ -1,5 +1,3 @@
-import { Typography } from "@mui/material";
-import TxLoader from "components/TxLoader";
 import useNotification from "hooks/useNotification";
 import { jettonDeployController } from "lib/deploy-controller";
 import { useContext } from "react";
@@ -10,7 +8,7 @@ import { AppButton } from "components/appButton";
 import { JettonActionsContext } from "pages/jetton/context/JettonActionsContext";
 
 function RevokeOwnershipAction() {
-  const { actionInProgress, startAction, finishAction } = useContext(JettonActionsContext);
+  const { startAction, finishAction } = useContext(JettonActionsContext);
   const { jettonMaster, isAdmin, getJettonDetails, isMyWallet } = useJettonStore();
   const { showNotification } = useNotification();
 

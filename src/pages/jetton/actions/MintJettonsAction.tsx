@@ -1,7 +1,6 @@
 import { Typography } from "@mui/material";
 import BigNumberDisplay from "components/BigNumberDisplay";
 import { Popup } from "components/Popup";
-import TxLoader from "components/TxLoader";
 import useNotification from "hooks/useNotification";
 import { jettonDeployController } from "lib/deploy-controller";
 import { useContext, useState } from "react";

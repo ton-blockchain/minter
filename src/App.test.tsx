@@ -1,13 +1,6 @@
-import {
-  buildJettonOnchainMetadata,
-  initData,
-  mintBody,
-  readJettonMetadata,
-} from "lib/jetton-minter";
+import { buildJettonOnchainMetadata, readJettonMetadata } from "lib/jetton-minter";
 import { beginCell, Cell } from "ton";
 import axios from "axios";
-import { persistenceType } from "./lib/jetton-minter";
-import { zeroAddress } from "./lib/utils";
 
 jest.mock("axios");
 

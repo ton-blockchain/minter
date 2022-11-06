@@ -4,6 +4,7 @@ import { Box, Link, styled } from "@mui/material";
 interface IconProps {
   iconUrl: string;
   hoveredIconUrl: string;
+  disabled?: boolean;
 }
 
 const Icon = styled(Box)((props: IconProps) => ({ theme }) => ({
@@ -15,8 +16,8 @@ const Icon = styled(Box)((props: IconProps) => ({ theme }) => ({
   background: `url(${props.iconUrl})`,
   "&:hover": {
     transitionDuration: ".25s",
-    background: `url(${props.hoveredIconUrl})`,
-    cursor: "pointer",
+    background: `url(${props.disabled ? props.iconUrl : props.hoveredIconUrl})`,
+    cursor: props.disabled ? "cursor" : "pointer",
   },
 }));
 
@@ -25,7 +26,9 @@ interface HoverableIconProps extends IconProps {
 }
 
 export const HoverableIcon: React.FC<HoverableIconProps> = ({ iconUrl, hoveredIconUrl, link }) => {
-  return (
+  return !link.length ? (
+    <Icon iconUrl={iconUrl} hoveredIconUrl={hoveredIconUrl} disabled />
+  ) : (
     <Link target="_blank" href={link}>
       <Icon iconUrl={iconUrl} hoveredIconUrl={hoveredIconUrl} />
     </Link>

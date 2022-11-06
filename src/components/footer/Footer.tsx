@@ -25,7 +25,11 @@ export const Footer = () => {
         <AppLogo />
         <SocialsContent>
           <HoverableIcon iconUrl={telegram} hoveredIconUrl={telegramHovered} link="" />
-          <HoverableIcon iconUrl={github} hoveredIconUrl={githubHovered} link="" />
+          <HoverableIcon
+            iconUrl={github}
+            hoveredIconUrl={githubHovered}
+            link="https://github.com/ton-blockchain/minter-contract"
+          />
           <HoverableIcon iconUrl={twitter} hoveredIconUrl={twitterHovered} link="" />
           <HoverableIcon iconUrl={mail} hoveredIconUrl={mailHovered} link="" />
         </SocialsContent>

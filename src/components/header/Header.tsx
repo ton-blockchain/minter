@@ -1,6 +1,6 @@
-import { IconButton, useMediaQuery } from "@mui/material";
+import { IconButton, Typography, useMediaQuery } from "@mui/material";
 import { Box } from "@mui/system";
-import { useState } from "react";
+import React, { useState } from "react";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import { HeaderMenu, MobileMenu } from "components/header/headerMenu/HeaderMenu";
 import { AppLogo } from "components/appLogo";
@@ -25,6 +25,34 @@ export const Header = () => {
         </HeaderOptionalContent>
         <Box sx={{ width: "100%" }}>
           <SearchBar closeMenu={() => setMobileMenu(false)} />
+          <Typography
+            sx={{
+              fontSize: 14,
+              marginTop: 5,
+              opacity: 0.3,
+              paddingLeft: 13,
+              color: "black",
+              display: "inline",
+              p: 0,
+              m: 0,
+              ml: 5,
+            }}>
+            Enter an existing Jetton contract address,
+            <Typography
+              sx={{
+                color: "black",
+                display: "inline",
+                fontWeight: 800,
+                "&:hover": {
+                  cursor: "pointer",
+                },
+              }}
+              variant="body2"
+              onClick={() => console.log("ass")}>
+              {" "}
+              example
+            </Typography>
+          </Typography>
         </Box>
         <MobileMenu showMenu={mobileMenu && !matches} closeMenu={() => setMobileMenu(false)} />
       </HeaderContent>

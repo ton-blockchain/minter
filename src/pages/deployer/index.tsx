@@ -208,15 +208,15 @@ function Description() {
         <Spacer />
         Never deploy code that you've never seen before! This deployer is fully open source with all
         smart contract code{" "}
-        <Link target="_blank" href="https://github.com/ton-defi-org/jetton-deployer-contracts">
+        <Link target="_blank" href="https://github.com/ton-blockchain/minter-contract">
           available here
         </Link>
         . The HTML form is also{" "}
-        <Link target="_blank" href="https://github.com/ton-defi-org/jetton-deployer-webclient">
+        <Link target="_blank" href="https://github.com/ton-blockchain/minter">
           open source
         </Link>{" "}
         and served from{" "}
-        <Link target="_blank" href="https://ton-defi-org.github.io/jetton-deployer-webclient">
+        <Link target="_blank" href="https://github.com/ton-blockchain/minter">
           GitHub Pages
         </Link>
         . <Spacer />

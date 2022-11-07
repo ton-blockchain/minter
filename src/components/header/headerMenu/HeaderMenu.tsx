@@ -1,5 +1,4 @@
 import { Drawer, IconButton } from "@mui/material";
-import { JETTON_DEPLOYER_CONTRACTS_GITHUB } from "consts";
 import WalletConnector from "components/header/walletConnector/WalletConnector";
 import githubIcon from "assets/icons/github-logo.svg";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
@@ -37,7 +36,7 @@ const HeaderMenu: React.FC<MenuProps> = () => {
       <WalletConnector />
       <IconButton
         sx={{ padding: 0, ml: 1.5 }}
-        href={JETTON_DEPLOYER_CONTRACTS_GITHUB}
+        href="https://github.com/ton-blockchain/minter"
         target="_blank">
         <StyledGithubIcon src={githubIcon} />
         <HeaderTypography variant="h5">GitHub</HeaderTypography>

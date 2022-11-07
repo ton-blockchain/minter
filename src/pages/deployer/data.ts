@@ -24,7 +24,6 @@ const onchainFormSpec = [
     label: "Jetton decimals",
     description: "The decimal precision of your token (9 is TON default)",
     type: "number",
-    disabled: false,
     validate: checkDecimals,
     default: 9,
     required: true,

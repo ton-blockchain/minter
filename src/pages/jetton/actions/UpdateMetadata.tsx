@@ -16,9 +16,16 @@ import useNotification from "hooks/useNotification";
 const inputsName = ["name", "symbol", "decimals", "tokenImage", "description"];
 
 const getInputs = () => {
-  return onchainFormSpec.filter((specInput) => {
-    return inputsName.includes(specInput.name);
-  });
+  return onchainFormSpec
+    .filter((specInput) => {
+      return inputsName.includes(specInput.name);
+    })
+    .map((specInput) => {
+      return {
+        ...specInput,
+        disabled: specInput.name === "decimals" ? true : undefined,
+      };
+    });
 };
 
 const createDefaults = (state: JettonStoreState) => {

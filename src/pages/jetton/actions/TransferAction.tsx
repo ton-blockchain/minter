@@ -11,7 +11,7 @@ import WalletConnection from "services/wallet-connection";
 import useConnectionStore from "store/connection-store/useConnectionStore";
 import useJettonStore from "store/jetton-store/useJettonStore";
 import { StyledInput } from "styles/styles";
-import { isValidAddress, toDecimals, toDecimalsBN } from "utils";
+import { isValidAddress, toDecimalsBN } from "utils";
 import { StyledSectionTitle } from "../Row";
 
 const getError = (
@@ -68,7 +68,7 @@ function TransferAction() {
       const connection = WalletConnection.getConnection();
       await jettonDeployController.transfer(
         connection,
-        new BN(toDecimals(amount!.toString(), decimals!)),
+        toDecimalsBN(amount!.toString(), decimals!),
         toAddress!,
         connectedWalletAddress!,
         jettonAddress,

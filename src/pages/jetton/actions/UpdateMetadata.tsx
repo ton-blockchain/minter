@@ -12,12 +12,20 @@ import { Address } from "ton";
 import useNotification from "hooks/useNotification";
 import { AppButton } from "components/appButton";
 import { JettonActionsContext } from "pages/jetton/context/JettonActionsContext";
-const inputsName = ["name", "symbol", "tokenImage", "description"];
+
+const inputsName = ["name", "symbol", "decimals", "tokenImage", "description"];
 
 const getInputs = () => {
-  return onchainFormSpec.filter((specInput) => {
-    return inputsName.includes(specInput.name);
-  });
+  return onchainFormSpec
+    .filter((specInput) => {
+      return inputsName.includes(specInput.name);
+    })
+    .map((specInput) => {
+      return {
+        ...specInput,
+        disabled: specInput.name === "decimals" ? true : undefined,
+      };
+    });
 };
 
 const createDefaults = (state: JettonStoreState) => {
@@ -59,6 +67,7 @@ function UpdateMetadata() {
           name: values.name,
           description: values.description,
           image: values.tokenImage,
+          decimals: values.decimals,
         },
         WalletConnection.getConnection(),
       );

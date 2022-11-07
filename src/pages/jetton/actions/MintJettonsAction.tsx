@@ -6,7 +6,8 @@ import { jettonDeployController } from "lib/deploy-controller";
 import { useContext, useState } from "react";
 import WalletConnection from "services/wallet-connection";
 import useJettonStore from "store/jetton-store/useJettonStore";
-import { Address, toNano } from "ton";
+import { Address } from "ton";
+import { toDecimalsBN } from "utils";
 import { AppButton } from "components/appButton";
 import { AppNumberInput } from "components/appInput";
 import { JettonActionsContext } from "pages/jetton/context/JettonActionsContext";
@@ -15,7 +16,8 @@ function MintJettonsAction() {
   const [amount, setAmount] = useState<number | undefined>(undefined);
   const [open, setOpen] = useState(false);
   const { actionInProgress, startAction, finishAction } = useContext(JettonActionsContext);
-  const { jettonMaster, isAdmin, symbol, getJettonDetails, isMyWallet } = useJettonStore();
+  const { jettonMaster, isAdmin, symbol, getJettonDetails, isMyWallet, decimals } =
+    useJettonStore();
   const { showNotification } = useNotification();
 
   if (!isAdmin || !isMyWallet) {
@@ -31,7 +33,7 @@ function MintJettonsAction() {
       showNotification(`Minimum amount of ${symbol} to mint is 1`, "warning");
       return;
     }
-    const value = toNano(amount);
+    const value = toDecimalsBN(amount, decimals!);
 
     try {
       startAction();

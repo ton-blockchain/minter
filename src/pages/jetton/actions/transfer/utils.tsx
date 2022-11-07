@@ -1,12 +1,13 @@
 import { isValidAddress } from "utils";
-import { toNano } from "ton";
+import BN from "bn.js";
 import BigNumberDisplay from "components/BigNumberDisplay";
 
 export const getError = (
   toAddress?: string,
-  amount?: number,
-  balance?: string,
+  amount?: BN,
+  balance?: BN,
   symbol?: string,
+  decimals?: string,
 ): string | undefined | JSX.Element => {
   if (!toAddress) {
     return "Recipient wallet address required";
@@ -20,10 +21,11 @@ export const getError = (
     return "Transfer amount required";
   }
 
-  if (toNano(amount).gt(toNano(balance!!))) {
+  if (amount.gt(balance!!)) {
     return (
       <>
-        Maximum amount to transfer is <BigNumberDisplay value={balance!!} /> {symbol}
+        Maximum amount to transfer is <BigNumberDisplay value={balance!!} decimals={decimals} />{" "}
+        {symbol}
       </>
     );
   }

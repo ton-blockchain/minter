@@ -11,9 +11,11 @@ import { ButtonWrapper, TransferContent, TransferWrapper } from "./styled";
 import { AppHeading } from "components/appHeading";
 import { AppNumberInput, AppTextInput } from "components/appInput";
 import { JettonActionsContext } from "pages/jetton/context/JettonActionsContext";
+import { toDecimalsBN } from "utils";
 
 export const TransferAction = () => {
-  const { balance, symbol, jettonAddress, getJettonDetails, isMyWallet } = useJettonStore();
+  const { balance, symbol, jettonAddress, getJettonDetails, isMyWallet, decimals } =
+    useJettonStore();
 
   const [toAddress, setToAddress] = useState<string | undefined>(undefined);
   const [amount, setAmount] = useState<number | undefined>(undefined);
@@ -26,7 +28,7 @@ export const TransferAction = () => {
   }
 
   const onSubmit = async () => {
-    const error = getError(toAddress, amount, balance, symbol);
+    const error = getError(toAddress, toDecimalsBN(amount!, decimals!), balance, symbol, decimals);
     if (error) {
       showNotification(error, "warning", undefined, 3000);
       return;
@@ -37,7 +39,7 @@ export const TransferAction = () => {
       const connection = WalletConnection.getConnection();
       await jettonDeployController.transfer(
         connection,
-        toNano(amount!),
+        toDecimalsBN(amount!.toString(), decimals!),
         toAddress!,
         connectedWalletAddress!,
         jettonAddress,

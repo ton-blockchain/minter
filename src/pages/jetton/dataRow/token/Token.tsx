@@ -14,7 +14,7 @@ import {
   adminActions,
   getAdminMessage,
   getFaultyMetadataWarning,
-  getSymbolWarning,
+  getMetadataWarning,
   getTotalSupplyWarning,
   totalSupplyActions,
 } from "pages/jetton/util";
@@ -39,6 +39,7 @@ export const Token = () => {
     jettonAddress,
     isJettonDeployerFaultyOnChainData,
     jettonLoading,
+    decimals,
   } = useJettonStore();
 
   return (
@@ -103,14 +104,21 @@ export const Token = () => {
           title="Symbol"
           value={symbol}
           dataLoading={jettonLoading}
-          message={getSymbolWarning(persistenceType, adminRevokedOwnership)}
+          message={getMetadataWarning(persistenceType, adminRevokedOwnership)}
+        />
+        <DataRow
+          title="Decimals"
+          value={decimals}
+          dataLoading={jettonLoading}
+          message={getMetadataWarning(persistenceType, adminRevokedOwnership)}
         />
         <DataRow
           title="Total Supply"
           value={
             totalSupply && (
               <>
-                <BigNumberDisplay value={totalSupply} /> {symbol}
+                <BigNumberDisplay value={totalSupply.toString()} decimals={parseInt(decimals!)} />{" "}
+                {symbol}
               </>
             )
           }

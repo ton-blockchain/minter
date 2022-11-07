@@ -6,15 +6,15 @@ import { jettonDeployController } from "lib/deploy-controller";
 import { useContext, useState } from "react";
 import WalletConnection from "services/wallet-connection";
 import useJettonStore from "store/jetton-store/useJettonStore";
-import { toNano } from "ton";
 import { AppButton } from "components/appButton";
 import { AppNumberInput } from "components/appInput";
 import { JettonActionsContext } from "pages/jetton/context/JettonActionsContext";
+import { toDecimalsBN } from "utils";
 
 function BurnJettonsAction() {
   const [amount, setAmount] = useState<number | undefined>(undefined);
   const [open, setOpen] = useState(false);
-  const { jettonMaster, symbol, getJettonDetails, balance, jettonAddress, isMyWallet } =
+  const { jettonMaster, symbol, getJettonDetails, balance, jettonAddress, isMyWallet, decimals } =
     useJettonStore();
   const { showNotification } = useNotification();
 
@@ -34,9 +34,10 @@ function BurnJettonsAction() {
       return;
     }
 
-    const value = toNano(amount);
+    const valueDecimals = toDecimalsBN(amount, decimals!);
+    const balanceDecimals = toDecimalsBN(balance!!.toString(), decimals!);
 
-    if (value.gt(toNano(balance!!))) {
+    if (valueDecimals.gt(balanceDecimals)) {
       const msg = (
         <>
           Maximum amount to burn is <BigNumberDisplay value={balance} />
@@ -49,7 +50,7 @@ function BurnJettonsAction() {
     try {
       startAction();
       const connection = WalletConnection.getConnection();
-      await jettonDeployController.burnJettons(connection, value, jettonAddress!);
+      await jettonDeployController.burnJettons(connection, valueDecimals, jettonAddress!);
       const message = `Successfully burned ${amount.toLocaleString()} ${symbol}`;
       showNotification(message, "success");
       getJettonDetails();

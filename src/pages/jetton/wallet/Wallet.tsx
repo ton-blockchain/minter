@@ -10,7 +10,7 @@ import ConnectAction from "pages/jetton/actions/ConnectAction";
 import { Box } from "@mui/material";
 
 export const Wallet = () => {
-  const { balance, symbol, jettonLoading, selectedWalletAddress } = useJettonStore();
+  const { balance, symbol, jettonLoading, selectedWalletAddress, decimals } = useJettonStore();
   return (
     <StyledBlock>
       <AppHeading
@@ -34,7 +34,7 @@ export const Wallet = () => {
           value={
             balance && (
               <>
-                <BigNumberDisplay value={balance} /> {symbol}
+                <BigNumberDisplay value={balance} decimals={decimals} /> {symbol}
               </>
             )
           }

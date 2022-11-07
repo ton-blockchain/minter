@@ -34,6 +34,7 @@ export interface JettonDeployParams {
     symbol: string;
     description?: string;
     image?: string;
+    decimals?: string;
   };
   offchainUri?: string;
   owner: Address;
@@ -182,7 +183,7 @@ class JettonDeployController {
         "get_wallet_data",
         [],
         ([amount, _, jettonMasterAddressCell]) => ({
-          balance: (amount as unknown as BN).toString(),
+          balance: amount as unknown as BN,
           jWalletAddress,
           jettonMasterAddress: cellToAddress(jettonMasterAddressCell),
         }),

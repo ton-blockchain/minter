@@ -9,3 +9,10 @@ export const makeElipsisAddress = (address?: string | null, padding?: number): s
 export function checkImageURL(url: string) {
   return url.match(/\.(jpeg|jpg|gif|png|svg)$/) != null;
 }
+
+export function checkDecimals(value: string) {
+  if (value.includes(".")) return false;
+
+  const num = parseInt(value);
+  return num >= 0 && num <= 255;
+}

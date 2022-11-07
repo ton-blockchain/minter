@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Address, toNano } from "ton";
+import { Address } from "ton";
 import useConnectionStore from "store/connection-store/useConnectionStore";
 import { Box, Fade, IconButton, Link, Typography } from "@mui/material";
 import { jettonDeployController } from "lib/deploy-controller";
@@ -10,22 +10,28 @@ import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
 import { JETTON_DEPLOYER_CONTRACTS_GITHUB, ROUTES } from "consts";
 import TxLoader from "components/TxLoader";
 import useNotification from "hooks/useNotification";
-
 import { StyledDescription, StyledTxLoaderContent } from "./styles";
 import { Screen, ScreenContent } from "components/Screen";
 import analytics, { AnalyticsAction, AnalyticsCategory } from "services/analytics";
 import { JettonDeployParams } from "lib/deploy-controller";
-import { getUrlParam } from "utils";
+import { getUrlParam, toDecimalsBN } from "utils";
 import { offchainFormSpec, onchainFormSpec } from "./data";
 import Form from "components/Form";
 import { useTheme } from "@mui/material/styles";
 import githubIcon from "assets/icons/github-logo.svg";
 import rightArrow from "assets/icons/right.svg";
 import { StyledGithubIcon } from "components/header/headerMenu/styled";
+const DEFAULT_DECIMALS = 9;
 
 const isOffchainInternal = getUrlParam("offchainINTERNAL") !== null;
 
 let formSpec = isOffchainInternal ? offchainFormSpec : onchainFormSpec;
+
+async function fetchDecimalsOffchain(url: string): Promise<{ decimals?: string }> {
+  let res = await fetch(url);
+  let obj = await res.json();
+  return obj;
+}
 
 function DeployerPage() {
   const { showNotification } = useNotification();
@@ -40,6 +46,15 @@ function DeployerPage() {
     if (!address || !connection) {
       throw new Error("Wallet not connected");
     }
+
+    let decimals = data.decimals;
+    if (data.offchainUri) {
+      let res = await fetchDecimalsOffchain(
+        data.offchainUri.replace("ipfs://", "https://ipfs.io/ipfs/"),
+      );
+      decimals = res.decimals;
+    }
+
     const params: JettonDeployParams = {
       owner: Address.parse(address),
       onchainMetaData: {
@@ -47,9 +62,10 @@ function DeployerPage() {
         symbol: data.symbol,
         image: data.tokenImage,
         description: data.description,
+        decimals: decimals,
       },
       offchainUri: data.offchainUri,
-      amountToMint: toNano(data.mintAmount),
+      amountToMint: toDecimalsBN(data.mintAmount, decimals ?? DEFAULT_DECIMALS),
     };
     setIsLoading(true);
     const deployParams = createDeployParams(params, data.offchainUri);

@@ -1,15 +1,28 @@
-import { IconButton, Typography, useMediaQuery } from "@mui/material";
+import { IconButton, useMediaQuery } from "@mui/material";
 import { Box } from "@mui/system";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import { HeaderMenu, MobileMenu } from "components/header/headerMenu/HeaderMenu";
 import { AppLogo } from "components/appLogo";
 import { SearchBar } from "components/header/headerSearchBar";
-import { HeaderContent, HeaderOptionalContent, HeaderWrapper } from "./styled";
+import {
+  HeaderContent,
+  HeaderExampleText,
+  HeaderOptionalContent,
+  HeaderWrapper,
+  HeaderExampleLink,
+  HeaderExampleTextWrapper,
+} from "./styled";
+import { EXAMPLE_ADDRESS } from "consts";
 
 export const Header = () => {
   const [mobileMenu, setMobileMenu] = useState(false);
   const matches = useMediaQuery("(min-width:900px)");
+  const [example, setExample] = useState<string | undefined>(undefined);
+
+  const resetExample = useCallback(() => {
+    setExample(undefined);
+  }, []);
 
   return (
     <HeaderWrapper position="static">
@@ -24,35 +37,20 @@ export const Header = () => {
           {matches && <HeaderMenu />}
         </HeaderOptionalContent>
         <Box sx={{ width: "100%" }}>
-          <SearchBar closeMenu={() => setMobileMenu(false)} />
-          <Typography
-            sx={{
-              fontSize: 14,
-              marginTop: 5,
-              opacity: 0.3,
-              paddingLeft: 13,
-              color: "black",
-              display: "inline",
-              p: 0,
-              m: 0,
-              ml: 5,
-            }}>
-            Enter an existing Jetton contract address,
-            <Typography
-              sx={{
-                color: "black",
-                display: "inline",
-                fontWeight: 800,
-                "&:hover": {
-                  cursor: "pointer",
-                },
-              }}
-              variant="body2"
-              onClick={() => console.log("ass")}>
-              {" "}
-              example
-            </Typography>
-          </Typography>
+          <SearchBar
+            example={example}
+            resetExample={resetExample}
+            closeMenu={() => setMobileMenu(false)}
+          />
+          <HeaderExampleTextWrapper>
+            <HeaderExampleText>
+              Enter an existing Jetton contract address.
+              <HeaderExampleLink variant="body2" onClick={() => setExample(EXAMPLE_ADDRESS)}>
+                {" "}
+                example
+              </HeaderExampleLink>
+            </HeaderExampleText>
+          </HeaderExampleTextWrapper>
         </Box>
         <MobileMenu showMenu={mobileMenu && !matches} closeMenu={() => setMobileMenu(false)} />
       </HeaderContent>

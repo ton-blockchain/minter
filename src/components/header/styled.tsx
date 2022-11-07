@@ -1,4 +1,4 @@
-import { AppBar, styled } from "@mui/material";
+import { AppBar, styled, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { APP_GRID } from "consts";
 
@@ -46,4 +46,37 @@ const HeaderOptionalContent = styled(Box)(({ theme }) => ({
   },
 }));
 
-export { HeaderWrapper, HeaderContent, HeaderOptionalContent };
+const HeaderExampleTextWrapper = styled(Box)(({ theme }) => ({
+  marginTop: theme.spacing(0.5),
+  [theme.breakpoints.down("md")]: {
+    display: "none",
+  },
+}));
+
+const HeaderExampleText = styled(Typography)(({ theme }) => ({
+  fontSize: 14,
+  opacity: 0.3,
+  color: "black",
+  display: "inline",
+  padding: 0,
+  margin: 0,
+  marginLeft: theme.spacing(4),
+}));
+
+const HeaderExampleLink = styled(Typography)(() => ({
+  color: "black",
+  display: "inline",
+  fontWeight: 800,
+  "&:hover": {
+    cursor: "pointer",
+  },
+}));
+
+export {
+  HeaderWrapper,
+  HeaderContent,
+  HeaderOptionalContent,
+  HeaderExampleTextWrapper,
+  HeaderExampleText,
+  HeaderExampleLink,
+};

@@ -9,7 +9,7 @@ interface Props {
 
 function FieldDescription({ children }: Props) {
   return (
-    <Typography style={{ fontSize: 14, marginTop: 5, opacity: 0.3, paddingLeft: 13 }}>
+    <Typography style={{ fontSize: 14, marginTop: 5, opacity: 0.3, paddingLeft: 18 }}>
       {children}
     </Typography>
   );

@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import SearchImg from "assets/icons/search.svg";
 import { useNavigate } from "react-router-dom";
-import { ROUTES } from "consts";
+import { ROUTES, SEARCH_HISTORY } from "consts";
 import { isValidAddress } from "utils";
 import useNotification from "hooks/useNotification";
 import {
@@ -18,6 +18,8 @@ import { ClickAwayListener, IconButton, Typography } from "@mui/material";
 
 interface SearchBarProps {
   closeMenu?: () => void;
+  resetExample?: () => void;
+  example?: string;
 }
 
 interface SearchRequest {
@@ -25,9 +27,7 @@ interface SearchRequest {
   value: string;
 }
 
-const SEARCH_HISTORY = "searchHistory";
-
-export const SearchBar: React.FC<SearchBarProps> = ({ closeMenu }) => {
+export const SearchBar: React.FC<SearchBarProps> = ({ example, resetExample, closeMenu }) => {
   const [value, setValue] = useState("");
   const [active, setActive] = useState(false);
   const [searchResults, setSearchResults] = useState<SearchRequest[]>([]);
@@ -76,6 +76,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ closeMenu }) => {
   }, []);
 
   useEffect(() => {
+    resetExample?.();
     const listener = (event: any) => {
       if (event.code === "Enter" || event.code === "NumpadEnter") {
         event.preventDefault();
@@ -88,6 +89,10 @@ export const SearchBar: React.FC<SearchBarProps> = ({ closeMenu }) => {
       document.removeEventListener("keydown", listener);
     };
   }, [value, onSubmit]);
+
+  useEffect(() => {
+    example && setValue(example);
+  }, [example]);
 
   useEffect(() => {
     window.localStorage.setItem(SEARCH_HISTORY, JSON.stringify(searchResults));

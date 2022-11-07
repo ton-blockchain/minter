@@ -50,7 +50,6 @@ function BurnJettonsAction() {
       startAction();
       const connection = WalletConnection.getConnection();
       await jettonDeployController.burnJettons(connection, value, jettonAddress!);
-      setOpen(false);
       const message = `Successfully burned ${amount.toLocaleString()} ${symbol}`;
       showNotification(message, "success");
       getJettonDetails();
@@ -60,6 +59,7 @@ function BurnJettonsAction() {
       }
     } finally {
       finishAction();
+      setOpen(false);
     }
   };
 

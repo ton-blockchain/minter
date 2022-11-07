@@ -84,7 +84,7 @@ export const Token = () => {
         />
         <DataRow
           title="Admin"
-          value={adminRevokedOwnership ? "Empty address" : adminAddress}
+          value={adminRevokedOwnership ? "" : adminAddress}
           address={adminAddress}
           description="Account address that can mint tokens freely and change metadata"
           message={getAdminMessage(

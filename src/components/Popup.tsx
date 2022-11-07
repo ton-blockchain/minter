@@ -12,6 +12,7 @@ export interface Props {
   className?: string;
   maxWidth: number;
   hideCloseButton?: boolean;
+  paddingTop?: boolean;
 }
 
 export function Popup({
@@ -23,6 +24,7 @@ export function Popup({
   className = "",
   maxWidth,
   hideCloseButton,
+  paddingTop,
 }: Props) {
   return (
     <Dialog
@@ -49,11 +51,13 @@ export function Popup({
         {!hideCloseButton && (
           <Box sx={{ display: "flex", justifyContent: "end", width: "100%" }}>
             <StyledClose onClick={onClose}>
-              <CloseRoundedIcon style={{ width: 30, height: 30 }} />
+              <CloseRoundedIcon style={{ width: 23, height: 23 }} />
             </StyledClose>
           </Box>
         )}
-        <StyledChildren p={3}>{children}</StyledChildren>
+        <StyledChildren px={3} pb={3} pt={paddingTop ? 3 : 0}>
+          {children}
+        </StyledChildren>
       </Box>
     </Dialog>
   );

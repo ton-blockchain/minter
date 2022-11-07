@@ -6,6 +6,7 @@ const SearchBarWrapper = styled(Box)(({ theme }) => ({
   alignItems: "center",
   margin: "auto",
   padding: "0px 17px",
+  paddingRight: 10,
   width: "100%",
   minHeight: 50,
   height: "100%",
@@ -46,7 +47,7 @@ const SearchResultsWrapper = styled(Box)(({ theme }) => ({
   padding: `${theme.spacing(1)}, ${theme.spacing(2)}`,
   zIndex: 99,
 
-  background: "#F7F9FB",
+  background: "rgba(232,233,235)",
   border: "0.5px solid rgba(114, 138, 150, 0.16)",
   borderRadius: 16,
   width: "100%",
@@ -73,9 +74,10 @@ const SearchResultsItem = styled(Box)(() => ({
   fontWeight: 500,
   height: 30,
   padding: "20px 30px 20px 50px",
+  transitionDuration: ".15s",
   "&:hover": {
     cursor: "pointer",
-    background: "rgba(232,233,235,.25)",
+    background: "rgb(225,227,230)",
   },
 }));
 

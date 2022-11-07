@@ -15,6 +15,7 @@ import {
 import recentSearch from "assets/icons/recent-search.svg";
 import close from "assets/icons/close.svg";
 import { ClickAwayListener, IconButton, Typography } from "@mui/material";
+import { AppButton } from "components/appButton";
 
 interface SearchBarProps {
   closeMenu?: () => void;
@@ -101,7 +102,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ example, resetExample, clo
   return (
     <ClickAwayListener onClickAway={() => setActive(false)}>
       <SearchBarWrapper>
-        <IndentlessIcon onClick={onSubmit}>
+        <IndentlessIcon>
           <img src={SearchImg} alt="Search Icon" />
         </IndentlessIcon>
         <SearchBarInput
@@ -110,8 +111,12 @@ export const SearchBar: React.FC<SearchBarProps> = ({ example, resetExample, clo
           onChange={(e) => setValue(e.target.value)}
           value={value}
           onFocus={() => setActive(true)}
+          spellCheck={false}
         />
-        {active && searchResults.length && (
+        <AppButton height={34} onClick={onSubmit}>
+          Search
+        </AppButton>
+        {active && !!searchResults.length && (
           <SearchResultsWrapper>
             {searchResults.map((result) => (
               <SearchResultsItem>

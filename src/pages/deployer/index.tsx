@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Address, toNano } from "ton";
+import { Address } from "ton";
 import useConnectionStore from "store/connection-store/useConnectionStore";
 import { Fade, Link, Typography } from "@mui/material";
 import { jettonDeployController } from "lib/deploy-controller";
@@ -23,10 +23,9 @@ import SearchInput from "./SearchInput";
 import SectionLabel from "components/SectionLabel";
 import analytics, { AnalyticsAction, AnalyticsCategory } from "services/analytics";
 import { JettonDeployParams } from "../../lib/deploy-controller";
-import { getUrlParam, toDecimals } from "utils";
+import { getUrlParam, toDecimalsBN } from "utils";
 import { offchainFormSpec, onchainFormSpec } from "./data";
 import Form from "components/Form";
-import BN from "bn.js";
 const DEFAULT_DECIMALS = 9;
 
 const isOffchainInternal = getUrlParam("offchainINTERNAL") !== null;
@@ -70,7 +69,7 @@ function DeployerPage() {
         decimals: decimals,
       },
       offchainUri: data.offchainUri,
-      amountToMint: new BN(toDecimals(data.mintAmount, decimals || DEFAULT_DECIMALS)),
+      amountToMint: toDecimalsBN(data.mintAmount, decimals ?? DEFAULT_DECIMALS),
     };
     setIsLoading(true);
     const deployParams = createDeployParams(params, data.offchainUri);

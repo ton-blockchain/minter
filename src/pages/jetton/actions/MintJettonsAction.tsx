@@ -11,7 +11,7 @@ import { useState } from "react";
 import WalletConnection from "services/wallet-connection";
 import useJettonStore from "store/jetton-store/useJettonStore";
 import { Address } from "ton";
-import { fromDecimals, toDecimals } from "utils";
+import { toDecimalsBN } from "utils";
 
 function MintJettonsAction() {
   const [amount, setAmount] = useState<number | undefined>(undefined);
@@ -34,16 +34,12 @@ function MintJettonsAction() {
       showNotification(`Minimum amount of ${symbol} to mint is 1`, "warning");
       return;
     }
-    const value = toDecimals(amount, decimals!);
+    const value = toDecimalsBN(amount, decimals!);
 
     try {
       setIsLoading(true);
       const connection = WalletConnection.getConnection();
-      await jettonDeployController.mint(
-        connection,
-        Address.parse(jettonMaster),
-        new BN(value.toString()),
-      );
+      await jettonDeployController.mint(connection, Address.parse(jettonMaster), value);
       setOpen(false);
       const message = (
         <>

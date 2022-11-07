@@ -235,8 +235,6 @@ class JettonDeployController {
       }),
     );
 
-    console.log(updateMetadataBody(buildJettonOnchainMetadata(data)));
-
     await connection.requestTransaction({
       to: contractAddress,
       message: updateMetadataBody(buildJettonOnchainMetadata(data)),

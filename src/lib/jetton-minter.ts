@@ -51,8 +51,6 @@ export function buildJettonOnchainMetadata(data: { [s: string]: string | undefin
   const KEYLEN = 256;
   const dict = beginDict(KEYLEN);
 
-  console.log(data);
-
   Object.entries(data).forEach(([k, v]: [string, string | undefined]) => {
     if (!jettonOnChainMetadataSpec[k as JettonMetaDataKeys])
       throw new Error(`Unsupported onchain key: ${k}`);

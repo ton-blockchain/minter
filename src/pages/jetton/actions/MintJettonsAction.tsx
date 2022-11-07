@@ -1,4 +1,5 @@
 import { Typography } from "@mui/material";
+import BN from "bn.js";
 import BaseButton from "components/BaseButton";
 import BigNumberDisplay from "components/BigNumberDisplay";
 import NumberInput from "components/NumberInput";
@@ -9,13 +10,15 @@ import { jettonDeployController } from "lib/deploy-controller";
 import { useState } from "react";
 import WalletConnection from "services/wallet-connection";
 import useJettonStore from "store/jetton-store/useJettonStore";
-import { Address, toNano } from "ton";
+import { Address } from "ton";
+import { toDecimalsBN } from "utils";
 
 function MintJettonsAction() {
   const [amount, setAmount] = useState<number | undefined>(undefined);
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { jettonMaster, isAdmin, symbol, getJettonDetails, isMyWallet } = useJettonStore();
+  const { jettonMaster, isAdmin, symbol, getJettonDetails, isMyWallet, decimals } =
+    useJettonStore();
   const { showNotification } = useNotification();
 
   if (!isAdmin || !isMyWallet) {
@@ -31,7 +34,7 @@ function MintJettonsAction() {
       showNotification(`Minimum amount of ${symbol} to mint is 1`, "warning");
       return;
     }
-    const value = toNano(amount);
+    const value = toDecimalsBN(amount, decimals!);
 
     try {
       setIsLoading(true);

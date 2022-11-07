@@ -22,7 +22,13 @@ enum OPS {
   Burn = 0x595f07bc,
 }
 
-export type JettonMetaDataKeys = "name" | "description" | "image" | "symbol" | "image_data";
+export type JettonMetaDataKeys =
+  | "name"
+  | "description"
+  | "image"
+  | "symbol"
+  | "image_data"
+  | "decimals";
 
 const jettonOnChainMetadataSpec: {
   [key in JettonMetaDataKeys]: "utf8" | "ascii" | undefined;
@@ -30,6 +36,7 @@ const jettonOnChainMetadataSpec: {
   name: "utf8",
   description: "utf8",
   image: "ascii",
+  decimals: "utf8",
   symbol: "utf8",
   image_data: undefined,
 };

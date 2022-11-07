@@ -5,7 +5,7 @@ import {
   balanceActions,
   getAdminMessage,
   getFaultyMetadataWarning,
-  getSymbolWarning,
+  getMetadataWarning,
   getTotalSupplyWarning,
   totalSupplyActions,
 } from "./util";
@@ -38,6 +38,7 @@ function JettonPage() {
     balance,
     symbol,
     name,
+    decimals,
     description,
     jettonMaster,
     persistenceType,
@@ -110,14 +111,24 @@ function JettonPage() {
                 title="Symbol"
                 value={symbol}
                 dataLoading={jettonLoading}
-                message={getSymbolWarning(persistenceType, adminRevokedOwnership)}
+                message={getMetadataWarning(persistenceType, adminRevokedOwnership)}
+              />
+              <Row
+                title="Decimals"
+                value={decimals}
+                dataLoading={jettonLoading}
+                message={getMetadataWarning(persistenceType, adminRevokedOwnership)}
               />
               <Row
                 title="Total Supply"
                 value={
                   totalSupply && (
                     <>
-                      <BigNumberDisplay value={totalSupply} /> {symbol}
+                      <BigNumberDisplay
+                        value={totalSupply.toString()}
+                        decimals={parseInt(decimals!)}
+                      />{" "}
+                      {symbol}
                     </>
                   )
                 }
@@ -125,6 +136,7 @@ function JettonPage() {
                 message={getTotalSupplyWarning(persistenceType, adminRevokedOwnership)}
                 actions={totalSupplyActions}
               />
+
               <UpdateMetadata />
             </StyledCategoryFields>
           </StyledRead>
@@ -144,7 +156,7 @@ function JettonPage() {
                 value={
                   balance && (
                     <>
-                      <BigNumberDisplay value={balance} /> {symbol}
+                      <BigNumberDisplay value={balance} decimals={decimals} /> {symbol}
                     </>
                   )
                 }

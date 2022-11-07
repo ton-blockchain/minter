@@ -58,6 +58,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ closeMenu }) => {
     setSearchResults((prevState) => [...prevState, { index: searchResults.length, value }]);
 
     setValue("");
+    setActive(false);
     closeMenu?.();
     navigate(`${ROUTES.jetton}/${value}`);
   }, [value]);
@@ -78,6 +79,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ closeMenu }) => {
     const listener = (event: any) => {
       if (event.code === "Enter" || event.code === "NumpadEnter") {
         event.preventDefault();
+        event.target.blur();
         onSubmit();
       }
     };

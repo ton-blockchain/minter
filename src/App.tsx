@@ -23,7 +23,6 @@ const AppWrapper = styled(Box)(() => ({
 const ScreensWrapper = styled(Box)(({ theme }) => ({
   maxWidth: APP_GRID,
   width: "calc(100% - 50px)",
-  height: "100%",
   marginLeft: "auto",
   marginRight: "auto",
   "*::-webkit-scrollbar": {

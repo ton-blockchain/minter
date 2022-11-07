@@ -59,7 +59,7 @@ function ConnectPopup() {
   };
 
   return (
-    <Popup open={showConnect} onClose={close} maxWidth={400} hideCloseButton>
+    <Popup open={showConnect} onClose={close} maxWidth={360} hideCloseButton>
       <SyledContainer>
         <AdaptersList adapters={providers} onClose={close} open={!showQr} select={onSelect} />
         <QR open={showQr} link={sessionLink} onClose={onCancel} />

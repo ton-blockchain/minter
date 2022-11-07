@@ -23,10 +23,6 @@ const StyledListItemButton = styled(ListItemButton)({
   padding: 0,
 });
 
-const StyledContainer = styled(Box)({
-  paddingTop: 24,
-});
-
 const StyledIcon = styled("img")({
   width: "40px",
   height: "40px",
@@ -81,7 +77,7 @@ function AdaptersList({ onClose, select, open, adapters }: Props) {
 
   return (
     <Fade in>
-      <StyledContainer>
+      <Box>
         <Header title="Select Wallet" onClose={onClose} />
         <StyledList>
           {adapters
@@ -104,7 +100,7 @@ function AdaptersList({ onClose, select, open, adapters }: Props) {
               );
             })}
         </StyledList>
-      </StyledContainer>
+      </Box>
     </Fade>
   );
 }

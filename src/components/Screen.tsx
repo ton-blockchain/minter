@@ -20,7 +20,7 @@ const StyledContent = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down("sm")]: {
     maxHeight: "unset",
     paddingBottom: 40,
-    paddingTop: 80,
+    paddingTop: 40,
   },
 }));
 

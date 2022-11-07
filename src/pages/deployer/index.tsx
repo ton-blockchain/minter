@@ -105,6 +105,13 @@ function DeployerPage() {
                   fontWeight: 800,
                   color: "#161C28",
                   fontSize: 48,
+                  [theme.breakpoints.down("md")]: {
+                    fontSize: 30,
+                    textAlign: "center",
+                  },
+                  [theme.breakpoints.down("sm")]: {
+                    fontSize: 24,
+                  },
                 }}
                 variant="h5">
                 Mint your token

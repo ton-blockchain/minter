@@ -53,9 +53,7 @@ export function Popup({
             </StyledClose>
           </Box>
         )}
-        <StyledChildren px={3} pb={3}>
-          {children}
-        </StyledChildren>
+        <StyledChildren p={3}>{children}</StyledChildren>
       </Box>
     </Dialog>
   );

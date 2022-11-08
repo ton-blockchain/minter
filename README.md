@@ -1,6 +1,6 @@
 # Jetton Deployer - Webclient
 
-An open source Jetton deployer webapp, based on [jetton contracts starter template](https://github.com/ton-defi-org/jetton-deployer-contracts).
+An open source Jetton deployer webapp, based on [jetton contracts starter template](https://github.com/ton-blockchain/minter-contract).
 
 ## How to use
 
@@ -33,7 +33,8 @@ Open `http://localhost:3000`
 
 ## Is this tool safe?
 
-Yes. See https://github.com/ton-defi-org/jetton-deployer-contracts#qa-is-this-contract-deployer-safe
+Yes. See https://github.com/ton-blockchain/minter-contract
 
 # License
+
 MIT

@@ -5,11 +5,9 @@ import RevokeOwnershipAction from "./actions/RevokeOwnershipAction";
 import { JettonDetailMessage } from "./types";
 export { BigNumber } from "bignumber.js";
 
-const commonGithubUrl =
-  "https://github.com/ton-defi-org/jetton-deployer-contracts#protect-yourself-and-your-users";
+const commonGithubUrl = "https://github.com/ton-blockchain/minter-contract";
 
-const offChainGithubUrl =
-  "https://github.com/ton-defi-org/jetton-deployer-contracts#jetton-metadata-field-best-practices";
+const offChainGithubUrl = "https://github.com/ton-blockchain/minter-contract";
 
 export const getFaultyMetadataWarning = (isAdminRevokedOwnership?: boolean) => {
   if (isAdminRevokedOwnership) {

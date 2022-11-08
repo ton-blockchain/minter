@@ -14,7 +14,7 @@ import {
 } from "./styled";
 import recentSearch from "assets/icons/recent-search.svg";
 import close from "assets/icons/close.svg";
-import { Backdrop, ClickAwayListener, IconButton, Typography } from "@mui/material";
+import { Backdrop, ClickAwayListener, Fade, IconButton, Typography } from "@mui/material";
 import { AppButton } from "components/appButton";
 
 interface SearchBarProps {
@@ -68,6 +68,10 @@ export const SearchBar: React.FC<SearchBarProps> = ({ example, resetExample, clo
     [searchResults],
   );
 
+  const onHistoryClear = useCallback(() => {
+    setSearchResults([]);
+  }, []);
+
   const onItemClick = useCallback((item: SearchRequest) => {
     setActive(false);
     navigate(`${ROUTES.jetton}/${item.value}`);
@@ -116,13 +120,15 @@ export const SearchBar: React.FC<SearchBarProps> = ({ example, resetExample, clo
             spellCheck={false}
           />
           {!!value.length && (
-            <IconButton onClick={() => setValue("")}>
-              <img src={close} alt="Close Icon" width={18} height={18} />
-            </IconButton>
+            <>
+              <IconButton onClick={() => setValue("")}>
+                <img src={close} alt="Close Icon" width={18} height={18} />
+              </IconButton>
+              <AppButton height={34} width={40} onClick={onSubmit}>
+                Go
+              </AppButton>
+            </>
           )}
-          <AppButton height={34} width={40} onClick={onSubmit} transparent>
-            Go
-          </AppButton>
           {active && !!searchResults.length && (
             <SearchResultsWrapper>
               {searchResults.map((result) => (
@@ -138,6 +144,11 @@ export const SearchBar: React.FC<SearchBarProps> = ({ example, resetExample, clo
                   </IconButton>
                 </SearchResultsItem>
               ))}
+              <CenteringWrapper mt={2} mb={1} ml={1} sx={{ width: "fit-content" }}>
+                <AppButton onClick={onHistoryClear} height={34} transparent>
+                  Clear History
+                </AppButton>
+              </CenteringWrapper>
             </SearchResultsWrapper>
           )}
         </SearchBarWrapper>

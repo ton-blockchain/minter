@@ -18,7 +18,7 @@ export const Footer = () => {
   return (
     <FooterWrapper>
       <SocialsWrapper>
-        <Box mb={2}>
+        <Box>
           <AppLogo />
         </Box>
         <SocialsContent>

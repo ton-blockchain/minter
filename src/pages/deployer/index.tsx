@@ -215,9 +215,7 @@ function Description() {
         You will need at least 0.25 TON for deployment fees. <br />
         <Spacer />
         For detailed instructions and in-depth explanations of all fields please see the{" "}
-        <Link
-          target="_blank"
-          href="https://github.com/ton-defi-org/jetton-deployer-contracts#jetton-metadata-field-best-practices">
+        <Link target="_blank" href="https://github.com/ton-blockchain/minter-contract">
           GitHub README
         </Link>
         . It includes several best practice recommendations so please take a look.
@@ -237,9 +235,7 @@ function Description() {
         </Link>
         . <Spacer />
         Is this deployer safe? Yes!{" "}
-        <Link
-          target="_blank"
-          href="https://github.com/ton-defi-org/jetton-deployer-contracts#protect-yourself-and-your-users">
+        <Link target="_blank" href="https://github.com/ton-blockchain/minter-contract">
           Read
         </Link>{" "}
         this to understand.

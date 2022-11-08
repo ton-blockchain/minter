@@ -63,7 +63,7 @@ const AppMenu = styled(Box)(({ theme }) => ({
 const HeaderTypography = styled(Typography)(({ theme }) => ({
   color: "#000",
   fontWeight: 700,
-  fontSize: 18,
+  fontSize: 16,
   marginLeft: theme.spacing(0.75),
 }));
 

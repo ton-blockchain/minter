@@ -21,6 +21,7 @@ import { useTheme } from "@mui/material/styles";
 import githubIcon from "assets/icons/github-logo.svg";
 import rightArrow from "assets/icons/right.svg";
 import { StyledGithubIcon } from "components/header/headerMenu/styled";
+
 const DEFAULT_DECIMALS = 9;
 
 const isOffchainInternal = getUrlParam("offchainINTERNAL") !== null;
@@ -245,9 +246,9 @@ function Description() {
         sx={{ padding: 0, mt: 2 }}
         href={JETTON_DEPLOYER_CONTRACTS_GITHUB}
         target="_blank">
-        <StyledGithubIcon src={githubIcon} />
+        <StyledGithubIcon width={20} height={20} src={githubIcon} />
         <Typography
-          ml={0.75}
+          ml={1}
           variant="h5"
           sx={{
             color: "#000",
@@ -257,15 +258,22 @@ function Description() {
             alignItems: "center",
           }}>
           GitHub Repo{" "}
-          <Box
-            ml={1}
-            sx={{
-              display: "flex",
-              alignItems: "center",
-            }}>
-            <img src={rightArrow} alt="Icon" />
-          </Box>
         </Typography>
+        <Box
+          ml={1}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            position: "relative",
+          }}>
+          <img
+            width={14}
+            height={14}
+            style={{ position: "absolute", top: "-6px" }}
+            src={rightArrow}
+            alt="Icon"
+          />
+        </Box>
       </IconButton>
     </StyledDescription>
   );

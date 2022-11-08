@@ -52,11 +52,8 @@ export const SearchBar: React.FC<SearchBarProps> = ({ example, resetExample, clo
       return;
     }
 
-    if (isAlreadyInTheList) {
-      setValue("");
-      return;
-    }
-    setSearchResults((prevState) => [...prevState, { index: searchResults.length, value }]);
+    !isAlreadyInTheList &&
+      setSearchResults((prevState) => [...prevState, { index: searchResults.length, value }]);
 
     setValue("");
     setActive(false);
@@ -113,7 +110,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ example, resetExample, clo
           onFocus={() => setActive(true)}
           spellCheck={false}
         />
-        <AppButton height={34} onClick={onSubmit}>
+        <AppButton height={34} onClick={onSubmit} transparent>
           Search
         </AppButton>
         {active && !!searchResults.length && (

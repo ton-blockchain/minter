@@ -14,7 +14,7 @@ import {
 } from "./styled";
 import recentSearch from "assets/icons/recent-search.svg";
 import close from "assets/icons/close.svg";
-import { ClickAwayListener, IconButton, Typography } from "@mui/material";
+import { Backdrop, ClickAwayListener, IconButton, Typography } from "@mui/material";
 import { AppButton } from "components/appButton";
 
 interface SearchBarProps {
@@ -98,39 +98,50 @@ export const SearchBar: React.FC<SearchBarProps> = ({ example, resetExample, clo
 
   return (
     <ClickAwayListener onClickAway={() => setActive(false)}>
-      <SearchBarWrapper>
-        <IndentlessIcon>
-          <img src={SearchImg} alt="Search Icon" />
-        </IndentlessIcon>
-        <SearchBarInput
-          placeholder="Jetton address"
-          onPaste={(e: any) => setValue(e.target.value)}
-          onChange={(e) => setValue(e.target.value)}
-          value={value}
-          onFocus={() => setActive(true)}
-          spellCheck={false}
-        />
-        <AppButton height={34} onClick={onSubmit} transparent>
-          Search
-        </AppButton>
-        {active && !!searchResults.length && (
-          <SearchResultsWrapper>
-            {searchResults.map((result) => (
-              <SearchResultsItem>
-                <CenteringWrapper onClick={() => onItemClick(result)}>
-                  <CenteringWrapper mr={1.5}>
-                    <img width={20} height={20} src={recentSearch} alt="Search Icon" />
+      <>
+        <Backdrop
+          sx={{ color: "#fff", zIndex: 2, overflow: "hidden" }}
+          open={active}
+          onClick={() => setActive(false)}></Backdrop>
+        <SearchBarWrapper>
+          <IndentlessIcon>
+            <img src={SearchImg} width={18} height={18} alt="Search Icon" />
+          </IndentlessIcon>
+          <SearchBarInput
+            placeholder="Jetton address"
+            onPaste={(e: any) => setValue(e.target.value)}
+            onChange={(e) => setValue(e.target.value)}
+            value={value}
+            onFocus={() => setActive(true)}
+            spellCheck={false}
+          />
+          {!!value.length && (
+            <IconButton onClick={() => setValue("")}>
+              <img src={close} alt="Close Icon" width={18} height={18} />
+            </IconButton>
+          )}
+          <AppButton height={34} width={40} onClick={onSubmit} transparent>
+            Go
+          </AppButton>
+          {active && !!searchResults.length && (
+            <SearchResultsWrapper>
+              {searchResults.map((result) => (
+                <SearchResultsItem>
+                  <CenteringWrapper onClick={() => onItemClick(result)}>
+                    <CenteringWrapper mr={1.5}>
+                      <img width={18} height={18} src={recentSearch} alt="Search Icon" />
+                    </CenteringWrapper>
+                    <Typography>{result.value}</Typography>
                   </CenteringWrapper>
-                  <Typography>{result.value}</Typography>
-                </CenteringWrapper>
-                <IconButton onClick={() => onItemDelete(result)}>
-                  <img src={close} alt="Close Icon" width={16} height={16} />
-                </IconButton>
-              </SearchResultsItem>
-            ))}
-          </SearchResultsWrapper>
-        )}
-      </SearchBarWrapper>
+                  <IconButton onClick={() => onItemDelete(result)}>
+                    <img src={close} alt="Close Icon" width={18} height={18} />
+                  </IconButton>
+                </SearchResultsItem>
+              ))}
+            </SearchResultsWrapper>
+          )}
+        </SearchBarWrapper>
+      </>
     </ClickAwayListener>
   );
 };

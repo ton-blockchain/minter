@@ -1,6 +1,7 @@
 import { styled, Box } from "@mui/material";
 
 const SearchBarWrapper = styled(Box)(({ theme }) => ({
+  zIndex: 3,
   position: "relative",
   display: "flex",
   alignItems: "center",
@@ -73,7 +74,7 @@ const SearchResultsItem = styled(Box)(() => ({
   color: "#000",
   fontWeight: 500,
   height: 30,
-  padding: "20px 30px 20px 50px",
+  padding: "20px 24px 20px 30px",
   transitionDuration: ".15s",
   "&:hover": {
     cursor: "pointer",

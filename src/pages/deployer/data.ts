@@ -21,7 +21,7 @@ const onchainFormSpec = [
   },
   {
     name: "decimals",
-    label: "Jetton decimals",
+    label: "Jetton Decimals",
     description: "The decimal precision of your token (9 is TON default).",
     type: "number",
     validate: checkDecimals,
@@ -31,7 +31,7 @@ const onchainFormSpec = [
   },
   {
     name: "mintAmount",
-    label: "Amount to Mint",
+    label: "Tokens to Mint",
     description: "Number of initial tokens to mint and send to your wallet address (float).",
     type: "number",
     default: 21000000,

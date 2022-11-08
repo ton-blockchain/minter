@@ -168,6 +168,7 @@ function Input({
               <NumberFormat
                 value={value}
                 name={name}
+                placeholder={label}
                 customInput={StyledInput}
                 type="text"
                 thousandSeparator=","

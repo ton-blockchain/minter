@@ -11,7 +11,6 @@ const StyledScreen = styled(Box)({
   display: "flex",
   alignItems: "center",
   flexDirection: "column",
-  marginTop: 50,
 });
 
 const StyledContent = styled(Box)(({ theme }) => ({

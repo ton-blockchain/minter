@@ -122,6 +122,7 @@ function DeployerPage() {
                   fontWeight: 800,
                   color: "#161C28",
                   fontSize: 48,
+                  marginTop: 5,
                   [theme.breakpoints.down("md")]: {
                     fontSize: 30,
                     textAlign: "center",

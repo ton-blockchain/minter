@@ -49,7 +49,7 @@ const onchainFormSpec = [
   {
     name: "tokenImage",
     label: "Jetton Logo URL",
-    description: "URL of 256x256 pixel PNG image of token logo.",
+    description: "URL of 256x256 pixel PNG image of token logo with transparent background.",
     type: "string",
     required: false,
     validate: checkImageURL,

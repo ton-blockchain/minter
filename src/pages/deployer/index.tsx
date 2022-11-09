@@ -23,7 +23,6 @@ import analytics, { AnalyticsAction, AnalyticsCategory } from "services/analytic
 import { getUrlParam, toDecimalsBN } from "utils";
 import { offchainFormSpec, onchainFormSpec } from "./data";
 import Form from "components/Form";
-import { useTheme } from "@mui/material/styles";
 import { GithubButton } from "pages/deployer/githubButton";
 
 const DEFAULT_DECIMALS = 9;
@@ -200,13 +199,13 @@ function Description() {
           GitHub Pages
         </Link>
         . <Spacer />
-        Is this deployer safe? Yes!{" "}
+        Is this deployer safe? Yes! Read{" "}
         <Link
           target="_blank"
           href="https://github.com/ton-blockchain/minter-contract#protect-yourself-and-your-users">
-          Read
+          this
         </Link>{" "}
-        this to understand.
+        to understand why.
       </Typography>
       <GithubButton />
     </StyledDescription>

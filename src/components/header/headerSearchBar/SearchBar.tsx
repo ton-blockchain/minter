@@ -9,6 +9,7 @@ import close from "assets/icons/close.svg";
 import { Backdrop, ClickAwayListener, IconButton } from "@mui/material";
 import { AppButton } from "components/appButton";
 import { HeaderSearchResults } from "components/header/headerSearchResults";
+import { useLocalStorage } from "hooks/useLocalStorage";
 
 interface SearchBarProps {
   closeMenu?: () => void;
@@ -25,13 +26,15 @@ export const SearchBar: React.FC<SearchBarProps> = ({ example, resetExample, clo
   const [value, setValue] = useState("");
   const [active, setActive] = useState(false);
   const [searchResults, setSearchResults] = useState<SearchRequest[]>([]);
+  const { storedValue: searchDupResults, setValue: setSearchDupResults } = useLocalStorage<
+    SearchRequest[]
+  >(SEARCH_HISTORY, []);
 
   const navigate = useNavigate();
   const { showNotification } = useNotification();
 
-  const onSubmit = useCallback(async () => {
-    const searchResults = JSON.parse(window.localStorage.getItem(SEARCH_HISTORY) ?? "[]");
-    const isAlreadyInTheList = searchResults.find((item: SearchRequest) => {
+  const onSubmit = async () => {
+    const isAlreadyInTheList = searchDupResults.find((item) => {
       return item.value === value;
     });
 
@@ -45,13 +48,13 @@ export const SearchBar: React.FC<SearchBarProps> = ({ example, resetExample, clo
     }
 
     !isAlreadyInTheList &&
-      setSearchResults((prevState) => [...prevState, { index: searchResults.length, value }]);
+      setSearchResults((prevState) => [...prevState, { index: searchDupResults?.length, value }]);
 
     setValue("");
     setActive(false);
     closeMenu?.();
     navigate(`${ROUTES.jetton}/${value}`);
-  }, [value]);
+  };
 
   const onItemDelete = useCallback(
     (e: React.MouseEvent, item: SearchRequest) => {
@@ -90,7 +93,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ example, resetExample, clo
   }, [example]);
 
   useEffect(() => {
-    window.localStorage.setItem(SEARCH_HISTORY, JSON.stringify(searchResults));
+    setSearchDupResults(searchResults);
   }, [searchResults]);
 
   return (

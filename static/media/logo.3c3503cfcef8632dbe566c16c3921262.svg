@@ -1,0 +1,17 @@
+<svg width="30" height="30" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="18" cy="18" r="18" fill="#0088CC"/>
+<mask id="mask0_119_256" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="6" y="6" width="24" height="24">
+<circle cx="18" cy="18" r="11.5" fill="white" stroke="white"/>
+</mask>
+<g mask="url(#mask0_119_256)">
+<rect x="18" y="1.0293" width="8" height="8" transform="rotate(45 18 1.0293)" fill="white"/>
+<rect x="23.657" y="6.68604" width="8" height="8" transform="rotate(45 23.657 6.68604)" fill="#E1F5FF"/>
+<rect x="29.3137" y="12.3428" width="8" height="8" transform="rotate(45 29.3137 12.3428)" fill="#B2E1F8"/>
+<rect x="23.657" y="18" width="8" height="8" transform="rotate(45 23.657 18)" fill="#E1F5FF"/>
+<rect x="18" y="12.3428" width="8" height="8" transform="rotate(45 18 12.3428)" fill="#0088CC"/>
+<rect x="12.3433" y="6.68604" width="8" height="8" transform="rotate(45 12.3433 6.68604)" fill="#E1F5FF"/>
+<rect x="6.68628" y="12.3428" width="8" height="8" transform="rotate(45 6.68628 12.3428)" fill="#B2E1F8"/>
+<rect x="12.3433" y="18" width="8" height="8" transform="rotate(45 12.3433 18)" fill="#E1F5FF"/>
+<rect x="18" y="23.6567" width="8" height="8" transform="rotate(45 18 23.6567)" fill="white"/>
+</g>
+</svg>

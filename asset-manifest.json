@@ -1,25 +1,29 @@
 {
   "files": {
-    "main.css": "/static/css/main.c2672f2a.css",
-    "main.js": "/static/js/main.63ccc6eb.js",
+    "main.css": "/static/css/main.fc5705ca.css",
+    "main.js": "/static/js/main.36d3bc1e.js",
     "static/js/787.d1d4a2c2.chunk.js": "/static/js/787.d1d4a2c2.chunk.js",
     "static/media/tonhub.png": "/static/media/tonhub.a222cde6645afb15181c.png",
     "static/media/tonhub-qr.png": "/static/media/tonhub-qr.784951e3cfb200389674.png",
     "static/media/chrome.svg": "/static/media/chrome.167f7ab746641de40862642e809305c6.svg",
-    "static/media/logo.svg": "/static/media/logo.9ff4dc99a8ef1918694a36a6be25c004.svg",
+    "static/media/recent-search.svg": "/static/media/recent-search.a6b8355c0a4b6929c6ac8c75e1eb2917.svg",
     "index.html": "/index.html",
-    "static/media/jetton.svg": "/static/media/jetton.f5764d0009ff14fc2baf27423cda2157.svg",
-    "static/media/github.svg": "/static/media/github.eb44db579f9ef70481782e3e52e0da79.svg",
-    "static/media/wallet-blue.svg": "/static/media/wallet-blue.25c383711f7918dfbc750ee2a074ba45.svg",
-    "static/media/wallet.svg": "/static/media/wallet.5e5dd13c88a74653fbf6f61cd7fc5f01.svg",
+    "static/media/github-hover.svg": "/static/media/github-hover.870bbe85a6f01d68b7caa163d14fbe75.svg",
+    "static/media/github.svg": "/static/media/github.b02f639a3bcaa4242e6795fb18643708.svg",
+    "static/media/github-logo.svg": "/static/media/github-logo.6e72cb08bb30325ad500a6e80cae2ba6.svg",
+    "static/media/logo.svg": "/static/media/logo.3c3503cfcef8632dbe566c16c3921262.svg",
     "static/media/copy.svg": "/static/media/copy.4f00c4ea8406c876d91eea345cfa1764.svg",
+    "static/media/telegram-hover.svg": "/static/media/telegram-hover.25b9e93734be961d9a67b221f9f60f73.svg",
+    "static/media/telegram.svg": "/static/media/telegram.dd1710a7ba0df53e0dfaeb3850d5fdd6.svg",
     "static/media/search.svg": "/static/media/search.7751a28837d3d87d75961623117dc43c.svg",
-    "main.c2672f2a.css.map": "/static/css/main.c2672f2a.css.map",
-    "main.63ccc6eb.js.map": "/static/js/main.63ccc6eb.js.map",
+    "static/media/right.svg": "/static/media/right.a5a9967ade5803e357829fd887f00899.svg",
+    "static/media/close.svg": "/static/media/close.fd4f52334074b7c94a6d151d92ae564c.svg",
+    "main.fc5705ca.css.map": "/static/css/main.fc5705ca.css.map",
+    "main.36d3bc1e.js.map": "/static/js/main.36d3bc1e.js.map",
     "787.d1d4a2c2.chunk.js.map": "/static/js/787.d1d4a2c2.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.c2672f2a.css",
-    "static/js/main.63ccc6eb.js"
+    "static/css/main.fc5705ca.css",
+    "static/js/main.36d3bc1e.js"
   ]
 }

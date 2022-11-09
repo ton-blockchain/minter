@@ -4,9 +4,8 @@ import { useContext, useState } from "react";
 import WalletConnection from "services/wallet-connection";
 import useConnectionStore from "store/connection-store/useConnectionStore";
 import useJettonStore from "store/jetton-store/useJettonStore";
-import { toNano } from "ton";
 import { AppButton } from "components/appButton";
-import { getError } from "./utils";
+import { validateTransfer } from "./utils";
 import { ButtonWrapper, TransferContent, TransferWrapper } from "./styled";
 import { AppHeading } from "components/appHeading";
 import { AppNumberInput, AppTextInput } from "components/appInput";
@@ -28,7 +27,13 @@ export const TransferAction = () => {
   }
 
   const onSubmit = async () => {
-    const error = getError(toAddress, toDecimalsBN(amount!, decimals!), balance, symbol, decimals);
+    const error = validateTransfer(
+      toAddress,
+      toDecimalsBN(amount!, decimals!),
+      balance,
+      symbol,
+      decimals,
+    );
     if (error) {
       showNotification(error, "warning", undefined, 3000);
       return;

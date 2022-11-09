@@ -2,7 +2,7 @@ import { isValidAddress } from "utils";
 import BN from "bn.js";
 import BigNumberDisplay from "components/BigNumberDisplay";
 
-export const getError = (
+export const validateTransfer = (
   toAddress?: string,
   amount?: BN,
   balance?: BN,

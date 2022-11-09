@@ -1,26 +1,30 @@
 import { useState } from "react";
 import { Address } from "ton";
 import useConnectionStore from "store/connection-store/useConnectionStore";
-import { Box, Fade, IconButton, Link, Typography } from "@mui/material";
-import { jettonDeployController } from "lib/deploy-controller";
+import { Box, Fade, Link, Typography } from "@mui/material";
+import { jettonDeployController, JettonDeployParams } from "lib/deploy-controller";
 import WalletConnection from "services/wallet-connection";
 import { createDeployParams } from "lib/utils";
 import { ContractDeployer } from "lib/contract-deployer";
 import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
-import { JETTON_DEPLOYER_CONTRACTS_GITHUB, ROUTES } from "consts";
+import { ROUTES } from "consts";
 import TxLoader from "components/TxLoader";
 import useNotification from "hooks/useNotification";
-import { StyledDescription, StyledTxLoaderContent } from "./styles";
+import {
+  FormHeading,
+  FormWrapper,
+  ScreenHeading,
+  StyledDescription,
+  StyledTxLoaderContent,
+  SubHeadingWrapper,
+} from "./styles";
 import { Screen, ScreenContent } from "components/Screen";
 import analytics, { AnalyticsAction, AnalyticsCategory } from "services/analytics";
-import { JettonDeployParams } from "lib/deploy-controller";
 import { getUrlParam, toDecimalsBN } from "utils";
 import { offchainFormSpec, onchainFormSpec } from "./data";
 import Form from "components/Form";
 import { useTheme } from "@mui/material/styles";
-import githubIcon from "assets/icons/github-logo.svg";
-import rightArrow from "assets/icons/right.svg";
-import { StyledGithubIcon } from "components/header/headerMenu/styled";
+import { GithubButton } from "pages/deployer/githubButton";
 
 const DEFAULT_DECIMALS = 9;
 
@@ -39,7 +43,6 @@ function DeployerPage() {
   const { address } = useConnectionStore();
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const theme = useTheme();
 
   async function deployContract(data: any) {
     const connection = WalletConnection.getConnection();
@@ -117,58 +120,17 @@ function DeployerPage() {
         <Fade in>
           <Box>
             <Box mb={3} mt={0}>
-              <Typography
-                sx={{
-                  fontWeight: 800,
-                  color: "#161C28",
-                  fontSize: 48,
-                  marginTop: 5,
-                  [theme.breakpoints.down("md")]: {
-                    fontSize: 30,
-                    textAlign: "center",
-                  },
-                  [theme.breakpoints.down("sm")]: {
-                    fontSize: 24,
-                  },
-                }}
-                variant="h5">
-                Mint your token
-              </Typography>
+              <ScreenHeading variant="h5">Mint your token</ScreenHeading>
             </Box>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "stretch",
-                gap: 5,
-                [theme.breakpoints.down("lg")]: {
-                  flexDirection: "column",
-                },
-              }}>
-              <Box
-                sx={{
-                  flex: 5,
-                  background: "#FFFFFF",
-                  border: "0.5px solid rgba(114, 138, 150, 0.24)",
-                  boxShadow: "0px 2px 16px rgba(114, 138, 150, 0.08)",
-                  borderRadius: "24px",
-                  padding: 3,
-                }}>
-                <Typography
-                  variant="h5"
-                  mb={3}
-                  sx={{
-                    color: "#161C28",
-                    fontSize: 20,
-                    fontWeight: 800,
-                  }}>
-                  Create your own new Jetton
-                </Typography>
+            <FormWrapper>
+              <SubHeadingWrapper>
+                <FormHeading variant="h5">Create your own new Jetton</FormHeading>
                 <Form submitText="Deploy" onSubmit={deployContract} inputs={formSpec} />
-              </Box>
+              </SubHeadingWrapper>
               <Box sx={{ flex: 4 }}>
                 <Description />
               </Box>
-            </Box>
+            </FormWrapper>
           </Box>
         </Fade>
       </ScreenContent>
@@ -217,7 +179,9 @@ function Description() {
         You will need at least 0.25 TON for deployment fees. <br />
         <Spacer />
         For detailed instructions and in-depth explanations of all fields please see the{" "}
-        <Link target="_blank" href="https://github.com/ton-blockchain/minter-contract">
+        <Link
+          target="_blank"
+          href="https://github.com/ton-blockchain/minter-contract#jetton-metadata-field-best-practices">
           GitHub README
         </Link>
         . It includes several best practice recommendations so please take a look.
@@ -237,45 +201,14 @@ function Description() {
         </Link>
         . <Spacer />
         Is this deployer safe? Yes!{" "}
-        <Link target="_blank" href="https://github.com/ton-blockchain/minter-contract">
+        <Link
+          target="_blank"
+          href="https://github.com/ton-blockchain/minter-contract#protect-yourself-and-your-users">
           Read
         </Link>{" "}
         this to understand.
       </Typography>
-      <IconButton
-        className="github-icon"
-        sx={{ padding: 0, mt: 2 }}
-        href={JETTON_DEPLOYER_CONTRACTS_GITHUB}
-        target="_blank">
-        <StyledGithubIcon width={20} height={20} src={githubIcon} />
-        <Typography
-          ml={1}
-          variant="h5"
-          sx={{
-            color: "#000",
-            fontWeight: 700,
-            fontSize: 16,
-            display: "flex",
-            alignItems: "center",
-          }}>
-          GitHub Repo{" "}
-        </Typography>
-        <Box
-          ml={1}
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            position: "relative",
-          }}>
-          <img
-            width={14}
-            height={14}
-            style={{ position: "absolute", top: "-6px" }}
-            src={rightArrow}
-            alt="Icon"
-          />
-        </Box>
-      </IconButton>
+      <GithubButton />
     </StyledDescription>
   );
 }

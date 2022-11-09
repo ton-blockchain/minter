@@ -4,18 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { ROUTES, SEARCH_HISTORY } from "consts";
 import { isValidAddress } from "utils";
 import useNotification from "hooks/useNotification";
-import {
-  CenteringWrapper,
-  IndentlessIcon,
-  SearchBarInput,
-  SearchBarWrapper,
-  SearchResultsItem,
-  SearchResultsWrapper,
-} from "./styled";
-import recentSearch from "assets/icons/recent-search.svg";
+import { IndentlessIcon, SearchBarInput, SearchBarWrapper } from "./styled";
 import close from "assets/icons/close.svg";
-import { Backdrop, ClickAwayListener, Fade, IconButton, Typography } from "@mui/material";
+import { Backdrop, ClickAwayListener, IconButton } from "@mui/material";
 import { AppButton } from "components/appButton";
+import { HeaderSearchResults } from "components/header/headerSearchResults";
 
 interface SearchBarProps {
   closeMenu?: () => void;
@@ -23,7 +16,7 @@ interface SearchBarProps {
   example?: string;
 }
 
-interface SearchRequest {
+export interface SearchRequest {
   index: number;
   value: string;
 }
@@ -37,7 +30,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ example, resetExample, clo
   const { showNotification } = useNotification();
 
   const onSubmit = useCallback(async () => {
-    const searchResults = JSON.parse(window.localStorage.getItem(SEARCH_HISTORY) || "[]");
+    const searchResults = JSON.parse(window.localStorage.getItem(SEARCH_HISTORY) ?? "[]");
     const isAlreadyInTheList = searchResults.find((item: SearchRequest) => {
       return item.value === value;
     });
@@ -48,7 +41,6 @@ export const SearchBar: React.FC<SearchBarProps> = ({ example, resetExample, clo
 
     if (!isValidAddress(value)) {
       showNotification("Invalid jetton address", "error");
-      setValue("");
       return;
     }
 
@@ -62,7 +54,8 @@ export const SearchBar: React.FC<SearchBarProps> = ({ example, resetExample, clo
   }, [value]);
 
   const onItemDelete = useCallback(
-    (item: SearchRequest) => {
+    (e: React.MouseEvent, item: SearchRequest) => {
+      e.stopPropagation();
       setSearchResults((prev) => prev.filter((result) => result.value !== item.value));
     },
     [searchResults],
@@ -130,26 +123,12 @@ export const SearchBar: React.FC<SearchBarProps> = ({ example, resetExample, clo
             </>
           )}
           {active && !!searchResults.length && (
-            <SearchResultsWrapper>
-              {searchResults.map((result) => (
-                <SearchResultsItem>
-                  <CenteringWrapper onClick={() => onItemClick(result)}>
-                    <CenteringWrapper mr={1.5}>
-                      <img width={18} height={18} src={recentSearch} alt="Search Icon" />
-                    </CenteringWrapper>
-                    <Typography>{result.value}</Typography>
-                  </CenteringWrapper>
-                  <IconButton onClick={() => onItemDelete(result)}>
-                    <img src={close} alt="Close Icon" width={18} height={18} />
-                  </IconButton>
-                </SearchResultsItem>
-              ))}
-              <CenteringWrapper mt={2} mb={1} ml={1} sx={{ width: "fit-content" }}>
-                <AppButton onClick={onHistoryClear} height={34} transparent>
-                  Clear History
-                </AppButton>
-              </CenteringWrapper>
-            </SearchResultsWrapper>
+            <HeaderSearchResults
+              searchResults={searchResults}
+              onHistoryClear={onHistoryClear}
+              onItemClick={onItemClick}
+              onItemDelete={onItemDelete}
+            />
           )}
         </SearchBarWrapper>
       </>

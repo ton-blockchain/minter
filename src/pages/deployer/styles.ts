@@ -1,6 +1,6 @@
-import { Box, styled } from "@mui/material";
+import { Box, styled, Typography } from "@mui/material";
 
-export const StyledTxLoaderContent = styled(Box)({
+const StyledTxLoaderContent = styled(Box)({
   textAlign: "center",
   "& p": {
     fontSize: 18,
@@ -8,7 +8,7 @@ export const StyledTxLoaderContent = styled(Box)({
   },
 });
 
-export const StyledContainer = styled(Box)(({ theme }) => ({
+const StyledContainer = styled(Box)(({ theme }) => ({
   display: "flex",
   alignItems: "stretch",
   gap: 30,
@@ -18,7 +18,7 @@ export const StyledContainer = styled(Box)(({ theme }) => ({
   },
 }));
 
-export const StyledDescription = styled(Box)(({ theme }) => ({
+const StyledDescription = styled(Box)(({ theme }) => ({
   position: "relative",
   background: "#fff",
   borderRadius: 16,
@@ -33,3 +33,52 @@ export const StyledDescription = styled(Box)(({ theme }) => ({
     },
   },
 }));
+
+const ScreenHeading = styled(Typography)(({ theme }) => ({
+  fontWeight: 800,
+  color: "#161C28",
+  fontSize: 48,
+  marginTop: theme.spacing(5),
+  [theme.breakpoints.down("md")]: {
+    fontSize: 30,
+    textAlign: "center",
+  },
+  [theme.breakpoints.down("sm")]: {
+    fontSize: 24,
+  },
+}));
+
+const FormWrapper = styled(Box)(({ theme }) => ({
+  display: "flex",
+  alignItems: "stretch",
+  gap: theme.spacing(5),
+  [theme.breakpoints.down("lg")]: {
+    flexDirection: "column",
+  },
+}));
+
+const SubHeadingWrapper = styled(Box)(({ theme }) => ({
+  flex: 5,
+  background: "#FFFFFF",
+  border: "0.5px solid rgba(114, 138, 150, 0.24)",
+  boxShadow: "0px 2px 16px rgba(114, 138, 150, 0.08)",
+  borderRadius: "24px",
+  padding: theme.spacing(3),
+}));
+
+const FormHeading = styled(Typography)(({ theme }) => ({
+  color: "#161C28",
+  fontSize: 20,
+  fontWeight: 800,
+  marginBottom: theme.spacing(3),
+}));
+
+export {
+  StyledDescription,
+  StyledContainer,
+  StyledTxLoaderContent,
+  ScreenHeading,
+  FormWrapper,
+  SubHeadingWrapper,
+  FormHeading,
+};

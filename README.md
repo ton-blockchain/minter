@@ -33,7 +33,7 @@ Open `http://localhost:3000`
 
 ## Is this tool safe?
 
-Yes. See https://github.com/ton-blockchain/minter-contract
+Yes. See https://github.com/ton-blockchain/minter-contract#qa-is-this-contract-deployer-safe
 
 # License
 

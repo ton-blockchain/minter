@@ -4,7 +4,7 @@ const StyledContainer = styled(Box)(({ theme }) => ({
   display: "flex",
   gap: 30,
   width: "100%",
-  marginTop: theme.spacing(11.5),
+  marginTop: theme.spacing(9),
   [theme.breakpoints.down(1100)]: {
     flexDirection: "column",
   },

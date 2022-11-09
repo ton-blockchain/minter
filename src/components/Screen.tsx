@@ -16,12 +16,10 @@ const StyledScreen = styled(Box)({
 const StyledContent = styled(Box)(({ theme }) => ({
   width: "100%",
   borderRadius: "20px",
-  maxHeight: "calc(100vh - 150px)",
-  overflow: "auto",
   [theme.breakpoints.down("sm")]: {
     maxHeight: "unset",
     paddingBottom: 40,
-    paddingTop: 80,
+    paddingTop: 40,
   },
 }));
 

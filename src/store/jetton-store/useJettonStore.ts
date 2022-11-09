@@ -6,7 +6,7 @@ import { useRecoilState, useResetRecoilState } from "recoil";
 import WalletConnection from "services/wallet-connection";
 import { Address } from "ton";
 import { jettonStateAtom } from ".";
-import QuestiomMarkImg from "assets/question.png";
+import QuestiomMarkImg from "assets/icons/question.png";
 import { useCallback } from "react";
 import useNotification from "hooks/useNotification";
 import { useParams } from "react-router-dom";

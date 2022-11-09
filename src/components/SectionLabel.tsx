@@ -2,9 +2,7 @@ import { Link, styled, Typography } from "@mui/material";
 import { ReactNode } from "react";
 
 const StyledContainer = styled(Typography)({
-  marginBottom: 25,
-  position: "relative",
-  left: "-10px",
+  marginBottom: 15,
   fontSize: 14,
   fontWeight: 600,
   "& a": {

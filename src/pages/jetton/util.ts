@@ -1,16 +1,15 @@
 import { persistenceType } from "lib/jetton-minter";
 import BurnJettonsAction from "./actions/BurnJettonsAction";
-import ConnectAction from "./actions/ConnectAction";
 import MintJettonsAction from "./actions/MintJettonsAction";
 import RevokeOwnershipAction from "./actions/RevokeOwnershipAction";
 import { JettonDetailMessage } from "./types";
 export { BigNumber } from "bignumber.js";
 
 const commonGithubUrl =
-  "https://github.com/ton-defi-org/jetton-deployer-contracts#protect-yourself-and-your-users";
+  "https://github.com/ton-blockchain/minter-contract#protect-yourself-and-your-users";
 
 const offChainGithubUrl =
-  "https://github.com/ton-defi-org/jetton-deployer-contracts#jetton-metadata-field-best-practices";
+  "https://github.com/ton-blockchain/minter-contract#jetton-metadata-field-best-practices";
 
 export const getFaultyMetadataWarning = (isAdminRevokedOwnership?: boolean) => {
   if (isAdminRevokedOwnership) {
@@ -23,7 +22,7 @@ export const adminActions = [RevokeOwnershipAction];
 
 export const totalSupplyActions = [MintJettonsAction];
 
-export const balanceActions = [ConnectAction, BurnJettonsAction];
+export const balanceActions = [BurnJettonsAction];
 
 export const getAdminMessage = (
   adminAddress?: string,

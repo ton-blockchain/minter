@@ -7,9 +7,20 @@ import { Route, Routes } from "react-router-dom";
 import { DeployerPage, JettonPage } from "pages";
 import ConnectPopup from "components/connect-popup";
 import analytics from "services/analytics";
+import { Footer } from "components/footer";
+import { Header } from "components/header";
 
 analytics.init();
-const StyledApp = styled(Box)(({ theme }) => ({
+
+const AppWrapper = styled(Box)(() => ({
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "space-between",
+  height: "100vh",
+  overflowY: "scroll",
+}));
+
+const ScreensWrapper = styled(Box)(({ theme }) => ({
   maxWidth: APP_GRID,
   width: "calc(100% - 50px)",
   marginLeft: "auto",
@@ -33,7 +44,7 @@ export const EnvContext = createContext({
   isTestnet: false,
 });
 
-function App() {
+const App = () => {
   const { connectOnLoad } = useConnectionStore();
 
   useEffect(() => {
@@ -41,22 +52,27 @@ function App() {
   }, []);
 
   return (
-    <StyledApp>
+    <AppWrapper>
+      <Header />
       <EnvContext.Provider
         value={{
           isSandbox: window.location.search.includes("sandbox"),
           isTestnet: window.location.search.includes("testnet"),
-        }}
-      >
-        <Routes>
-          <Route path={ROUTES.deployer} element={<DeployerPage />} />
-          <Route path={ROUTES.jettonId} element={<JettonPage />} />
-          <Route path={ROUTES.jetton} element={<JettonPage />} />
-        </Routes>
+        }}>
+        <ScreensWrapper>
+          <Routes>
+            <Route path={ROUTES.deployer} element={<DeployerPage />} />
+            <Route path={ROUTES.jettonId} element={<JettonPage />} />
+            <Route path={ROUTES.jetton} element={<JettonPage />} />
+          </Routes>
+        </ScreensWrapper>
       </EnvContext.Provider>
       <ConnectPopup />
-    </StyledApp>
+      <Box mt={5} mb={2}>
+        <Footer />
+      </Box>
+    </AppWrapper>
   );
-}
+};
 
 export default App;

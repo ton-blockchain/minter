@@ -1,13 +1,13 @@
-import BaseButton from "components/BaseButton";
 import useNotification from "hooks/useNotification";
 import { useForm } from "react-hook-form";
 import useConnectionStore from "store/connection-store/useConnectionStore";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { Control, Controller } from "react-hook-form";
 import { styled } from "@mui/material";
 import { useRef } from "react";
 import FieldDescription from "components/FieldDescription";
 import NumberFormat from "react-number-format";
+import { AppButton } from "components/appButton";
 
 interface FormProps {
   onSubmit: (values: any) => Promise<void>;
@@ -65,14 +65,18 @@ function Form({ onSubmit, inputs, disableExample, submitText, defaultValues }: F
           );
         })}
       </StyledFormInputs>
-
       <StyledActionBtn>
         {!address ? (
-          <BaseButton type="button" onClick={() => toggleConnect(true)}>
+          <AppButton
+            height={48}
+            width={160}
+            type="button"
+            onClick={() => toggleConnect(true)}
+            background="#0088CC">
             Connect wallet
-          </BaseButton>
+          </AppButton>
         ) : (
-          <BaseButton type="submit">{submitText}</BaseButton>
+          <AppButton type="submit">{submitText}</AppButton>
         )}
       </StyledActionBtn>
     </StyledForm>
@@ -93,8 +97,11 @@ const StyledFormInputs = styled(Box)({
 });
 
 const StyledActionBtn = styled(Box)({
-  marginTop: 40,
-  height: 46,
+  display: "flex",
+  justifyContent: "center",
+  marginTop: 30,
+  marginBottom: 10,
+  height: 40,
   maxWidth: 344,
   marginLeft: "auto",
   marginRight: "auto",
@@ -161,6 +168,7 @@ function Input({
               <NumberFormat
                 value={value}
                 name={name}
+                placeholder={label}
                 customInput={StyledInput}
                 type="text"
                 thousandSeparator=","
@@ -187,15 +195,27 @@ function Input({
                 }}
               />
             )}
-            {!disabled && !disableExample && (
-              <BaseButton transparent onClick={onClick}>
-                Example
-              </BaseButton>
-            )}
           </StyledInputContainer>
         )}
       />
-      <FieldDescription>{description}</FieldDescription>
+      <FieldDescription>
+        {description}
+        {!disabled && !disableExample && (
+          <Typography
+            sx={{
+              display: "inline",
+              fontWeight: 800,
+              "&:hover": {
+                cursor: "pointer",
+              },
+            }}
+            variant="body2"
+            onClick={() => onExamleClick()}>
+            {" "}
+            example
+          </Typography>
+        )}
+      </FieldDescription>
     </StyledContainer>
   );
 }
@@ -206,13 +226,13 @@ const StyledContainer = styled(Box)({
 
 const StyledInputContainer = styled(Box)(({ error }: { error: boolean }) => ({
   width: "100%",
-  height: 46,
+  height: 45,
   display: "flex",
   alignItems: "center",
-  background: "#EDF2F7",
-  borderRadius: 10,
+  background: "#F7F9FB",
+  border: "0.5px solid rgba(114, 138, 150, 0.16)",
+  borderRadius: 40,
   paddingRight: 5,
-  border: error ? "1px solid #F06360" : "1px solid transparent",
   transition: "0.2s all",
   "& .base-button": {
     height: "calc(100% - 10px)",
@@ -226,12 +246,15 @@ const StyledInput = styled("input")({
   height: "100%",
   border: "unset",
   textIndent: 16,
-  fontSize: 16,
   background: "transparent",
   outline: "none",
-  color: "unset",
+  color: "#000",
+  fontFamily: "Mulish",
+  fontSize: 16,
+  caretColor: "#728A96",
   "&::placeholder": {
-    color: "#7A828A",
+    color: "#728A96",
+    fontFamily: "Mulish",
     transition: "0.2s all",
   },
   "&:focus": {

@@ -1,9 +1,18 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+  font-family: "Mulish", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
     "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #f7f9fb !important;
+  height: 100vh;
+}
+
+@media screen and (max-height: 850px) {
+  body {
+    height: 100%;
+    overflow-y: scroll;
+  }
 }
 
 code {
@@ -13,6 +22,7 @@ code {
 .MuiTooltip-tooltip {
   margin-top: 0 !important;
 }
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;

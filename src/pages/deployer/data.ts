@@ -4,7 +4,7 @@ const onchainFormSpec = [
   {
     name: "name",
     label: "Jetton Name",
-    description: "Your project unabbreviated name with spaces (usually 1-3 words)",
+    description: "Your project unabbreviated name with spaces (usually 1-3 words).",
     type: "text",
     default: "Bitcoin Cash",
     required: true,
@@ -13,7 +13,7 @@ const onchainFormSpec = [
   {
     name: "symbol",
     label: "Jetton Symbol",
-    description: "Currency symbol appearing in balance (usually 3-5 uppercase chars)",
+    description: "Currency symbol appearing in balance (usually 3-5 uppercase chars).",
     type: "text",
     default: "BCH",
     required: true,
@@ -21,8 +21,8 @@ const onchainFormSpec = [
   },
   {
     name: "decimals",
-    label: "Jetton decimals",
-    description: "The decimal precision of your token (9 is TON default)",
+    label: "Jetton Decimals",
+    description: "The decimal precision of your token (9 is TON default).",
     type: "number",
     validate: checkDecimals,
     default: 9,
@@ -31,8 +31,8 @@ const onchainFormSpec = [
   },
   {
     name: "mintAmount",
-    label: "Amount to Mint",
-    description: "Number of initial tokens to mint and send to your wallet address (float)",
+    label: "Tokens to Mint",
+    description: "Number of initial tokens to mint and send to your wallet address (float).",
     type: "number",
     default: 21000000,
     required: true,
@@ -41,15 +41,15 @@ const onchainFormSpec = [
   {
     name: "description",
     label: "Description",
-    description: "Optional freeform sentence explaining about your project",
+    description: "Optional sentence explaining about your project.",
     type: "string",
     default: "Low fee peer-to-peer electronic cash alternative to Bitcoin",
   },
 
   {
     name: "tokenImage",
-    label: "Jetton Logo URI",
-    description: "URL of 256x256 pixel PNG image of token logo with transparent background",
+    label: "Jetton Logo URL",
+    description: "URL of 256x256 pixel PNG image of token logo with transparent background.",
     type: "string",
     required: false,
     validate: checkImageURL,

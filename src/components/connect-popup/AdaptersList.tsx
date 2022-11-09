@@ -1,8 +1,8 @@
 import { ListItem, List, ListItemButton, Box, Typography, Fade } from "@mui/material";
 import { useTheme, Theme } from "@mui/material/styles";
 import { styled } from "@mui/system";
-import TonhubImg from "assets/tonhub.png";
-import ChromeExtImg from "assets/chrome.svg";
+import TonhubImg from "assets/icons/tonhub.png";
+import ChromeExtImg from "assets/icons/chrome.svg";
 import { Providers } from "lib/env-profiles";
 import { isMobile } from "react-device-detect";
 import Header from "./Header";
@@ -22,8 +22,6 @@ const StyledList = styled(List)({
 const StyledListItemButton = styled(ListItemButton)({
   padding: 0,
 });
-
-const StyledContainer = styled(Box)({});
 
 const StyledIcon = styled("img")({
   width: "40px",
@@ -79,7 +77,7 @@ function AdaptersList({ onClose, select, open, adapters }: Props) {
 
   return (
     <Fade in>
-      <StyledContainer>
+      <Box>
         <Header title="Select Wallet" onClose={onClose} />
         <StyledList>
           {adapters
@@ -102,7 +100,7 @@ function AdaptersList({ onClose, select, open, adapters }: Props) {
               );
             })}
         </StyledList>
-      </StyledContainer>
+      </Box>
     </Fade>
   );
 }

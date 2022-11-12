@@ -45,6 +45,7 @@ const ScreenHeading = styled(Typography)(({ theme }) => ({
   },
   [theme.breakpoints.down("sm")]: {
     fontSize: 24,
+    marginTop: theme.spacing(8),
   },
 }));
 

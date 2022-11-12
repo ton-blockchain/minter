@@ -43,6 +43,7 @@ const HeaderOptionalContent = styled(Box)(({ theme }) => ({
   height: "100%",
   [theme.breakpoints.down("md")]: {
     justifyContent: "flex-start",
+    height: "initial",
   },
 }));
 

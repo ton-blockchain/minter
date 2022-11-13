@@ -30,7 +30,7 @@ const CredentialsWrapper = styled(Box)(({ theme }) => ({
     flexDirection: "column",
     alignItems: "center",
     "& > *": {
-      marginBottom: theme.spacing(1),
+      marginBottom: `${theme.spacing(1)} !important`,
     },
   },
 }));

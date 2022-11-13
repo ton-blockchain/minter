@@ -55,15 +55,13 @@ const CenteringWrapper = styled(Box)(() => ({
 }));
 
 const FooterContributedText = styled(Typography)(({ theme }) => ({
+  marginLeft: theme.spacing(0.35),
   marginRight: theme.spacing(0.4),
   fontSize: 12,
 }));
 
-const FooterLinkText = styled(Typography)(({ theme }) => ({
+const FooterLinkText = styled(CenteringWrapper)(({ theme }) => ({
   marginLeft: theme.spacing(0.35),
-  fontSize: 12,
-  fontFamily: "Poppins",
-  letterSpacing: ".1em",
 }));
 
 export {

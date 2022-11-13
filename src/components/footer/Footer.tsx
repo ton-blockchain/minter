@@ -18,6 +18,7 @@ import github from "assets/icons/github.svg";
 import githubHovered from "assets/icons/github-hover.svg";
 import { AppLogo } from "components/appLogo";
 import orbs from "assets/icons/orbs.svg";
+import orbsText from "assets/icons/orbs-text.svg";
 
 export const Footer = () => {
   return (
@@ -43,11 +44,14 @@ export const Footer = () => {
       <CredentialsWrapper>
         <Typography variant="body2">© 2022 TON Foundation</Typography>
         <CenteringWrapper>
-          <FooterContributedText variant="body2">contributed by: </FooterContributedText>
+          <FooterContributedText variant="body2">contributed </FooterContributedText>
           <FooterLink target="_blank" href="https://www.orbs.com/">
             <img src={orbs} alt="Orbs logo" width={16} height={16} />
-            <FooterLinkText variant="body2">ORBS</FooterLinkText>
+            <FooterLinkText>
+              <img src={orbsText} alt="Orbs" width={29} height={18} />
+            </FooterLinkText>
           </FooterLink>
+          <FooterContributedText variant="body2">with 💜</FooterContributedText>
         </CenteringWrapper>
         <FooterLink target="_blank" href="https://t.me/+YDnoBue1Dz81ZTMy">
           <Typography variant="body2">Support</Typography>

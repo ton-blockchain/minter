@@ -6,7 +6,6 @@ import {
   CredentialsWrapper,
   FooterContributedText,
   FooterLink,
-  FooterLinkText,
   FooterWrapper,
   Separator,
   SocialsContent,
@@ -17,8 +16,7 @@ import telegramHovered from "assets/icons/telegram-hover.svg";
 import github from "assets/icons/github.svg";
 import githubHovered from "assets/icons/github-hover.svg";
 import { AppLogo } from "components/appLogo";
-import orbs from "assets/icons/orbs.svg";
-import orbsText from "assets/icons/orbs-text.svg";
+import heart from "assets/icons/heart.svg";
 
 export const Footer = () => {
   return (
@@ -44,14 +42,14 @@ export const Footer = () => {
       <CredentialsWrapper>
         <Typography variant="body2">© 2022 TON Foundation</Typography>
         <CenteringWrapper>
-          <FooterContributedText variant="body2">contributed </FooterContributedText>
-          <FooterLink target="_blank" href="https://www.orbs.com/">
-            <img src={orbs} alt="Orbs logo" width={16} height={16} />
-            <FooterLinkText>
-              <img src={orbsText} alt="Orbs" width={29} height={18} />
-            </FooterLinkText>
-          </FooterLink>
-          <FooterContributedText variant="body2">with 💜</FooterContributedText>
+          <FooterContributedText variant="body2">
+            Contributed with {` `}
+            <img src={heart} alt="Orbs logo" width={9} height={7} />
+            {` `} by {` `}
+            <FooterLink sx={{ color: "#CF84D1" }} target="_blank" href="https://www.orbs.com/">
+              orbs
+            </FooterLink>
+          </FooterContributedText>
         </CenteringWrapper>
         <FooterLink target="_blank" href="https://t.me/+YDnoBue1Dz81ZTMy">
           <Typography variant="body2">Support</Typography>

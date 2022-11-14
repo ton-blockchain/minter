@@ -1,16 +1,16 @@
 import { Box, Link, styled, Typography } from "@mui/material";
 import { APP_GRID } from "consts";
 
-const FooterWrapper = styled(Box)(() => ({
+const FooterWrapper = styled(Box)({
   maxWidth: APP_GRID,
   width: "calc(100% - 50px)",
   margin: "auto",
-}));
+});
 
-const SocialsWrapper = styled(Box)(() => ({
+const SocialsWrapper = styled(Box)({
   display: "flex",
   justifyContent: "space-between",
-}));
+});
 
 const SocialsContent = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -35,34 +35,28 @@ const CredentialsWrapper = styled(Box)(({ theme }) => ({
   },
 }));
 
-const Separator = styled("hr")(() => ({
+const Separator = styled("hr")({
   height: "1px",
   backgroundColor: "#e6e6e6",
   border: "none",
-}));
+});
 
-const FooterLink = styled(Link)(() => ({
-  display: "flex",
+const FooterLink = styled(Link)({
+  display: "inline-flex",
   alignItems: "center",
   color: "inherit",
   textDecoration: "none",
-}));
+});
 
-const CenteringWrapper = styled(Box)(() => ({
+const CenteringWrapper = styled(Box)({
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
-}));
+});
 
-const FooterContributedText = styled(Typography)(({ theme }) => ({
-  marginLeft: theme.spacing(0.35),
-  marginRight: theme.spacing(0.4),
+const FooterContributedText = styled(Typography)({
   fontSize: 12,
-}));
-
-const FooterLinkText = styled(CenteringWrapper)(({ theme }) => ({
-  marginLeft: theme.spacing(0.35),
-}));
+});
 
 export {
   FooterWrapper,
@@ -72,6 +66,5 @@ export {
   CredentialsWrapper,
   FooterLink,
   CenteringWrapper,
-  FooterLinkText,
   FooterContributedText,
 };

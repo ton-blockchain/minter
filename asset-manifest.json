@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.fc5705ca.css",
-    "main.js": "/static/js/main.6016c845.js",
+    "main.js": "/static/js/main.03e05b68.js",
     "static/js/787.d1d4a2c2.chunk.js": "/static/js/787.d1d4a2c2.chunk.js",
     "static/media/tonhub.png": "/static/media/tonhub.a222cde6645afb15181c.png",
     "static/media/tonhub-qr.png": "/static/media/tonhub-qr.784951e3cfb200389674.png",
@@ -15,15 +15,16 @@
     "static/media/copy.svg": "/static/media/copy.4f00c4ea8406c876d91eea345cfa1764.svg",
     "static/media/telegram-hover.svg": "/static/media/telegram-hover.25b9e93734be961d9a67b221f9f60f73.svg",
     "static/media/telegram.svg": "/static/media/telegram.dd1710a7ba0df53e0dfaeb3850d5fdd6.svg",
+    "static/media/heart.svg": "/static/media/heart.9a734106f0aada91efd41aa0067889e8.svg",
     "static/media/search.svg": "/static/media/search.7751a28837d3d87d75961623117dc43c.svg",
     "static/media/right.svg": "/static/media/right.a5a9967ade5803e357829fd887f00899.svg",
     "static/media/close.svg": "/static/media/close.fd4f52334074b7c94a6d151d92ae564c.svg",
     "main.fc5705ca.css.map": "/static/css/main.fc5705ca.css.map",
-    "main.6016c845.js.map": "/static/js/main.6016c845.js.map",
+    "main.03e05b68.js.map": "/static/js/main.03e05b68.js.map",
     "787.d1d4a2c2.chunk.js.map": "/static/js/787.d1d4a2c2.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.fc5705ca.css",
-    "static/js/main.6016c845.js"
+    "static/js/main.03e05b68.js"
   ]
 }

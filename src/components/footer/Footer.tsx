@@ -50,7 +50,7 @@ export const Footer = () => {
             Contributed with {` `}
             <img src={heart} alt="Orbs logo" width={9} height={7} />
             {` `} by {` `}
-            <FooterLink sx={{ color: "#CF84D1" }} target="_blank" href="https://www.orbs.com/">
+            <FooterLink sx={{ color: "#CF84D1" }} target="_blank" href="https://orbs.com/">
               Orbs
             </FooterLink>
           </FooterContributedText>

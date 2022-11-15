@@ -6,6 +6,8 @@ import {
   CredentialsWrapper,
   FooterContributedText,
   FooterLink,
+  FooterTextBoxLeft,
+  FooterTextBoxRight,
   FooterWrapper,
   Separator,
   SocialsContent,
@@ -40,7 +42,9 @@ export const Footer = () => {
       </SocialsWrapper>
       <Separator />
       <CredentialsWrapper>
-        <Typography variant="body2">© 2022 TON Foundation</Typography>
+        <FooterTextBoxLeft>
+          <Typography variant="body2">© 2022 TON Foundation</Typography>
+        </FooterTextBoxLeft>
         <ContributedWrapper>
           <FooterContributedText variant="body2">
             Contributed with {` `}
@@ -51,9 +55,11 @@ export const Footer = () => {
             </FooterLink>
           </FooterContributedText>
         </ContributedWrapper>
-        <FooterLink target="_blank" href="https://t.me/+YDnoBue1Dz81ZTMy">
-          <Typography variant="body2">Support</Typography>
-        </FooterLink>
+        <FooterTextBoxRight>
+          <FooterLink target="_blank" href="https://t.me/+YDnoBue1Dz81ZTMy">
+            <Typography variant="body2">Support</Typography>
+          </FooterLink>
+        </FooterTextBoxRight>
       </CredentialsWrapper>
     </FooterWrapper>
   );

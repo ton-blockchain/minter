@@ -21,17 +21,19 @@ const SocialsContent = styled(Box)(({ theme }) => ({
 
 const CredentialsWrapper = styled(Box)(({ theme }) => ({
   display: "flex",
+  flexWrap: "wrap",
   justifyContent: "space-between",
   marginTop: theme.spacing(2),
   marginBottom: theme.spacing(2),
   color: "#728A96",
   fontSize: 14,
   [theme.breakpoints.down("md")]: {
-    flexDirection: "column",
-    alignItems: "left",
     "& > *": {
       marginBottom: `${theme.spacing(1)} !important`,
     },
+  },
+  [theme.breakpoints.down("sm")]: {
+    flexDirection: "column",
   },
 }));
 
@@ -41,12 +43,15 @@ const Separator = styled("hr")({
   border: "none",
 });
 
-const FooterLink = styled(Link)({
+const FooterLink = styled(Link)(({ theme }) => ({
   display: "inline-flex",
   alignItems: "center",
   color: "inherit",
   textDecoration: "none",
-});
+  [theme.breakpoints.down("md")]: {
+    justifyContent: "flex-end",
+  },
+}));
 
 const CenteringWrapper = styled(Box)({
   display: "flex",
@@ -60,7 +65,35 @@ const FooterContributedText = styled(Typography)({
 
 const ContributedWrapper = styled(CenteringWrapper)(({ theme }) => ({
   [theme.breakpoints.down("md")]: {
+    minWidth: "100%",
+    flex: 2,
     order: 3,
+  },
+}));
+
+const FooterTextBox = styled(CenteringWrapper)(({ theme }) => ({
+  [theme.breakpoints.down("md")]: {
+    minWidth: "50%",
+  },
+}));
+
+const FooterTextBoxLeft = styled(FooterTextBox)(({ theme }) => ({
+  [theme.breakpoints.down("md")]: {
+    justifyContent: "start",
+  },
+  [theme.breakpoints.down("sm")]: {
+    justifyContent: "center",
+    minWidth: "100%",
+  },
+}));
+
+const FooterTextBoxRight = styled(FooterTextBox)(({ theme }) => ({
+  [theme.breakpoints.down("md")]: {
+    justifyContent: "end",
+  },
+  [theme.breakpoints.down("sm")]: {
+    justifyContent: "center",
+    minWidth: "100%",
   },
 }));
 
@@ -74,4 +107,7 @@ export {
   CenteringWrapper,
   FooterContributedText,
   ContributedWrapper,
+  FooterTextBox,
+  FooterTextBoxLeft,
+  FooterTextBoxRight,
 };

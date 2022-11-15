@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Typography } from "@mui/material";
 import { HoverableIcon } from "components/hoverableIcon/HoverableIcon";
 import {
-  CenteringWrapper,
+  ContributedWrapper,
   CredentialsWrapper,
   FooterContributedText,
   FooterLink,
@@ -41,16 +41,16 @@ export const Footer = () => {
       <Separator />
       <CredentialsWrapper>
         <Typography variant="body2">© 2022 TON Foundation</Typography>
-        <CenteringWrapper>
+        <ContributedWrapper>
           <FooterContributedText variant="body2">
             Contributed with {` `}
             <img src={heart} alt="Orbs logo" width={9} height={7} />
             {` `} by {` `}
             <FooterLink sx={{ color: "#CF84D1" }} target="_blank" href="https://www.orbs.com/">
-              orbs
+              Orbs
             </FooterLink>
           </FooterContributedText>
-        </CenteringWrapper>
+        </ContributedWrapper>
         <FooterLink target="_blank" href="https://t.me/+YDnoBue1Dz81ZTMy">
           <Typography variant="body2">Support</Typography>
         </FooterLink>

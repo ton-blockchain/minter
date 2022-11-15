@@ -26,9 +26,9 @@ const CredentialsWrapper = styled(Box)(({ theme }) => ({
   marginBottom: theme.spacing(2),
   color: "#728A96",
   fontSize: 14,
-  [theme.breakpoints.down("lg")]: {
+  [theme.breakpoints.down("md")]: {
     flexDirection: "column",
-    alignItems: "center",
+    alignItems: "left",
     "& > *": {
       marginBottom: `${theme.spacing(1)} !important`,
     },
@@ -58,6 +58,12 @@ const FooterContributedText = styled(Typography)({
   fontSize: 12,
 });
 
+const ContributedWrapper = styled(CenteringWrapper)(({ theme }) => ({
+  [theme.breakpoints.down("md")]: {
+    order: 3,
+  },
+}));
+
 export {
   FooterWrapper,
   SocialsWrapper,
@@ -67,4 +73,5 @@ export {
   FooterLink,
   CenteringWrapper,
   FooterContributedText,
+  ContributedWrapper,
 };

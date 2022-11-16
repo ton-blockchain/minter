@@ -1,4 +1,4 @@
-# Jetton Deployer - Webclient
+# Minter - Webclient
 
 An open source Jetton deployer webapp, based on [jetton contracts starter template](https://github.com/ton-blockchain/minter-contract).
 

@@ -3,6 +3,7 @@ import { useTheme, Theme } from "@mui/material/styles";
 import { styled } from "@mui/system";
 import TonhubImg from "assets/icons/tonhub.png";
 import ChromeExtImg from "assets/icons/chrome.svg";
+import OpenMaskImg from "assets/icons/openmask-logo.svg";
 import { Providers } from "lib/env-profiles";
 import { isMobile } from "react-device-detect";
 import Header from "./Header";
@@ -65,6 +66,12 @@ const adapterConfig = {
     icon: ChromeExtImg,
     mobileCompatible: false,
     description: "TON Wallet Plugin for Google Chrome",
+  },
+  [Providers.OPEN_MASK]: {
+    name: "OpenMask",
+    icon: OpenMaskImg,
+    mobileCompatible: false,
+    description: "A TON Wallet in your Browser",
   },
 };
 

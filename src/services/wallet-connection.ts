@@ -5,6 +5,7 @@ import {
 } from "@ton-defi.org/ton-connection";
 import { Environments, EnvProfiles, Providers } from "lib/env-profiles";
 import { Address } from "ton";
+import { OpenMaskWalletProvider } from "./open-mask-provider";
 
 class WalletConnection {
   private static connection?: TonConnection;
@@ -41,6 +42,9 @@ class WalletConnection {
         break;
       case Providers.EXTENSION:
         prov = new ChromeExtensionWalletProvider();
+        break;
+      case Providers.OPEN_MASK:
+        prov = new OpenMaskWalletProvider();
         break;
       default:
         throw new Error("UNKNOWN PROVIDER");

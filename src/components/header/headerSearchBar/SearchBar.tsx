@@ -112,7 +112,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ example, resetExample, clo
             onPaste={(e: any) => setValue(e.target.value)}
             onChange={(e) => setValue(e.target.value)}
             value={value}
-            onFocus={() => setActive(true)}
+            onFocus={() => searchResults.length && setActive(true)}
             spellCheck={false}
           />
           {!!value.length && (

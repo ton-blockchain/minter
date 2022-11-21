@@ -15,7 +15,6 @@ analytics.init();
 const AppWrapper = styled(Box)(() => ({
   display: "flex",
   flexDirection: "column",
-  justifyContent: "space-between",
   height: "100vh",
   overflowY: "scroll",
 }));
@@ -68,7 +67,10 @@ const App = () => {
         </ScreensWrapper>
       </EnvContext.Provider>
       <ConnectPopup />
-      <Box mt={5} mb={2}>
+      <Box
+        mt={5}
+        mb={2}
+        sx={{ display: "flex", flex: 1, alignItems: "flex-end", justifyContent: "center" }}>
         <Footer />
       </Box>
     </AppWrapper>

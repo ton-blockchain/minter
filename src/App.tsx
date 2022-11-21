@@ -19,6 +19,13 @@ const AppWrapper = styled(Box)(() => ({
   overflowY: "scroll",
 }));
 
+const FooterBox = styled(Box)(() => ({
+  display: "flex",
+  flex: 1,
+  alignItems: "flex-end",
+  justifyContent: "center",
+}));
+
 const ScreensWrapper = styled(Box)(({ theme }) => ({
   maxWidth: APP_GRID,
   width: "calc(100% - 50px)",
@@ -67,12 +74,9 @@ const App = () => {
         </ScreensWrapper>
       </EnvContext.Provider>
       <ConnectPopup />
-      <Box
-        mt={5}
-        mb={2}
-        sx={{ display: "flex", flex: 1, alignItems: "flex-end", justifyContent: "center" }}>
+      <FooterBox mt={5} mb={2}>
         <Footer />
-      </Box>
+      </FooterBox>
     </AppWrapper>
   );
 };

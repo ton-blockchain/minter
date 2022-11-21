@@ -38,7 +38,7 @@ const ScreenHeading = styled(Typography)(({ theme }) => ({
   fontWeight: 800,
   color: "#161C28",
   fontSize: 48,
-  marginTop: theme.spacing(5),
+  marginTop: theme.spacing(9),
   [theme.breakpoints.down("md")]: {
     fontSize: 30,
     textAlign: "center",

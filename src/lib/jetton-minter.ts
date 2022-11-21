@@ -3,6 +3,7 @@ import { Cell, beginCell, Address, beginDict, Slice, toNano } from "ton";
 
 import walletHex from "./contracts/jetton-wallet.compiled.json";
 import minterHex from "./contracts/jetton-minter.compiled.json";
+// @ts-ignore
 import { Sha256 } from "@aws-crypto/sha256-js";
 import axios from "axios";
 

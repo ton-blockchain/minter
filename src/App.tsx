@@ -15,9 +15,15 @@ analytics.init();
 const AppWrapper = styled(Box)(() => ({
   display: "flex",
   flexDirection: "column",
-  justifyContent: "space-between",
   height: "100vh",
   overflowY: "scroll",
+}));
+
+const FooterBox = styled(Box)(() => ({
+  display: "flex",
+  flex: 1,
+  alignItems: "flex-end",
+  justifyContent: "center",
 }));
 
 const ScreensWrapper = styled(Box)(({ theme }) => ({
@@ -68,9 +74,9 @@ const App = () => {
         </ScreensWrapper>
       </EnvContext.Provider>
       <ConnectPopup />
-      <Box mt={5} mb={2}>
+      <FooterBox mt={5} mb={2}>
         <Footer />
-      </Box>
+      </FooterBox>
     </AppWrapper>
   );
 };

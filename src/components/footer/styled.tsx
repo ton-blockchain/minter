@@ -4,7 +4,6 @@ import { APP_GRID } from "consts";
 const FooterWrapper = styled(Box)({
   maxWidth: APP_GRID,
   width: "calc(100% - 50px)",
-  margin: "auto",
 });
 
 const SocialsWrapper = styled(Box)({

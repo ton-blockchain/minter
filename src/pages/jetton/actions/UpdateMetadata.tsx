@@ -2,7 +2,7 @@ import { Box } from "@mui/material";
 import { styled } from "@mui/system";
 import { Popup } from "components/Popup";
 import useJettonStore from "store/jetton-store/useJettonStore";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { onchainFormSpec } from "pages/deployer/data";
 import Form from "components/Form";
 import { JettonStoreState } from "store/jetton-store";
@@ -11,7 +11,8 @@ import WalletConnection from "services/wallet-connection";
 import { Address } from "ton";
 import useNotification from "hooks/useNotification";
 import { AppButton } from "components/appButton";
-import { JettonActionsContext } from "pages/jetton/context/JettonActionsContext";
+import { useSetRecoilState } from "recoil";
+import { jettonActionsState } from "pages/jetton/actions/jettonActions";
 
 const inputsName = ["name", "symbol", "decimals", "tokenImage", "description"];
 
@@ -46,7 +47,7 @@ function UpdateMetadata() {
   const store = useJettonStore();
   const { isAdmin, getJettonDetails, jettonMaster } = store;
   const [open, setOpen] = useState(false);
-  const { startAction, finishAction } = useContext(JettonActionsContext);
+  const setActionInProgress = useSetRecoilState(jettonActionsState);
   const { showNotification } = useNotification();
 
   if (!isAdmin) {
@@ -54,7 +55,7 @@ function UpdateMetadata() {
   }
 
   const onSubmit = async (values: any) => {
-    startAction();
+    setActionInProgress(true);
     try {
       if (!jettonMaster) {
         throw new Error("");
@@ -78,7 +79,7 @@ function UpdateMetadata() {
         showNotification(error.message, "error");
       }
     } finally {
-      finishAction();
+      setActionInProgress(false);
       setOpen(false);
     }
   };

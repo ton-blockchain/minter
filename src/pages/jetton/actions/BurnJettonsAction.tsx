@@ -3,13 +3,14 @@ import BigNumberDisplay from "components/BigNumberDisplay";
 import { Popup } from "components/Popup";
 import useNotification from "hooks/useNotification";
 import { jettonDeployController } from "lib/deploy-controller";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import WalletConnection from "services/wallet-connection";
 import useJettonStore from "store/jetton-store/useJettonStore";
 import { AppButton } from "components/appButton";
 import { AppNumberInput } from "components/appInput";
-import { JettonActionsContext } from "pages/jetton/context/JettonActionsContext";
 import { toDecimalsBN } from "utils";
+import { useRecoilState } from "recoil";
+import { jettonActionsState } from "pages/jetton/actions/jettonActions";
 
 function BurnJettonsAction() {
   const [amount, setAmount] = useState<number | undefined>(undefined);
@@ -17,8 +18,7 @@ function BurnJettonsAction() {
   const { jettonMaster, symbol, getJettonDetails, balance, jettonAddress, isMyWallet, decimals } =
     useJettonStore();
   const { showNotification } = useNotification();
-
-  const { actionInProgress, startAction, finishAction } = useContext(JettonActionsContext);
+  const [actionInProgress, setActionInProgress] = useRecoilState(jettonActionsState);
 
   if (!balance || !isMyWallet) {
     return null;
@@ -48,7 +48,7 @@ function BurnJettonsAction() {
     }
 
     try {
-      startAction();
+      setActionInProgress(true);
       const connection = WalletConnection.getConnection();
       await jettonDeployController.burnJettons(connection, valueDecimals, jettonAddress!);
       const message = `Successfully burned ${amount.toLocaleString()} ${symbol}`;
@@ -59,7 +59,7 @@ function BurnJettonsAction() {
         showNotification(error.message, "error");
       }
     } finally {
-      finishAction();
+      setActionInProgress(false);
       setOpen(false);
     }
   };

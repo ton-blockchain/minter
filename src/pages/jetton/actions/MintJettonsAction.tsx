@@ -3,19 +3,21 @@ import BigNumberDisplay from "components/BigNumberDisplay";
 import { Popup } from "components/Popup";
 import useNotification from "hooks/useNotification";
 import { jettonDeployController } from "lib/deploy-controller";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import WalletConnection from "services/wallet-connection";
 import useJettonStore from "store/jetton-store/useJettonStore";
 import { Address } from "ton";
 import { toDecimalsBN } from "utils";
 import { AppButton } from "components/appButton";
 import { AppNumberInput } from "components/appInput";
-import { JettonActionsContext } from "pages/jetton/context/JettonActionsContext";
+import { useRecoilState } from "recoil";
+import { jettonActionsState } from "pages/jetton/actions/jettonActions";
 
 function MintJettonsAction() {
   const [amount, setAmount] = useState<number | undefined>(undefined);
   const [open, setOpen] = useState(false);
-  const { actionInProgress, startAction, finishAction } = useContext(JettonActionsContext);
+  const [actionInProgress, setActionInProgress] = useRecoilState(jettonActionsState);
+
   const { jettonMaster, isAdmin, symbol, getJettonDetails, isMyWallet, decimals } =
     useJettonStore();
   const { showNotification } = useNotification();
@@ -36,7 +38,7 @@ function MintJettonsAction() {
     const value = toDecimalsBN(amount, decimals!);
 
     try {
-      startAction();
+      setActionInProgress(true);
       const connection = WalletConnection.getConnection();
       await jettonDeployController.mint(connection, Address.parse(jettonMaster), value);
       setOpen(false);
@@ -53,7 +55,7 @@ function MintJettonsAction() {
         showNotification(error.message, "error");
       }
     } finally {
-      finishAction();
+      setActionInProgress(false);
       setOpen(false);
     }
   };

@@ -70,6 +70,7 @@ function Form({ onSubmit, inputs, disableExample, submitText, defaultValues }: F
           <AppButton
             height={44}
             width={150}
+            fontWeight={700}
             type="button"
             onClick={() => toggleConnect(true)}
             background="#0088CC">

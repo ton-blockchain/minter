@@ -9,7 +9,7 @@ function ConnectAction() {
   }
 
   return (
-    <AppButton width={150} height={44} onClick={() => toggleConnect(true)}>
+    <AppButton fontWeight={700} width={150} height={44} onClick={() => toggleConnect(true)}>
       Connect wallet
     </AppButton>
   );

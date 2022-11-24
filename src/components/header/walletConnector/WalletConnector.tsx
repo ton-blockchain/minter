@@ -38,7 +38,7 @@ const WalletConnector = () => {
         </AppButton>
       ) : (
         <AppButton width={150} height={44} onClick={() => toggleConnect(true)}>
-          <WalletButtonContent>Connect Wallet</WalletButtonContent>
+          <WalletButtonContent fontWeight={700}>Connect Wallet</WalletButtonContent>
         </AppButton>
       )}
       {showDisconnect && (

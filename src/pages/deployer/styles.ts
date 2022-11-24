@@ -26,7 +26,7 @@ const StyledDescription = styled(Box)(({ theme }) => ({
   boxShadow: "0px 2px 16px rgb(114 138 150 / 8%)",
 
   "& p": {
-    fontSize: 15,
+    fontSize: 16,
     lineHeight: "24px",
   },
   [theme.breakpoints.down("md")]: {

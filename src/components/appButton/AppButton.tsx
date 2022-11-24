@@ -4,6 +4,7 @@ import LoadingButton from "@mui/lab/LoadingButton";
 
 interface StyledButtonProps {
   fontSize?: number;
+  fontWeight?: number;
   transparent?: boolean;
   background?: string;
   width?: number;
@@ -22,7 +23,7 @@ const StyledButton = styled(LoadingButton)((props: StyledButtonProps) => ({
   height: props.height || "100%",
   fontSize: props.fontSize || 14,
   boxShadow: "none",
-  fontWeight: 600,
+  fontWeight: props.fontWeight || 600,
   borderRadius: 40,
   border: props.transparent ? "1px solid #50A7EA" : "",
   background: props.background || "",
@@ -54,12 +55,14 @@ export const AppButton: React.FC<AppButtonProps> = ({
   background,
   width,
   height,
+  fontWeight,
 }) => {
   return (
     <StyledButton
       width={width}
       height={height}
       fontSize={fontSize}
+      fontWeight={fontWeight}
       transparent={transparent}
       background={background}
       className={children !== "Update metadata" ? "base-button" : ""}

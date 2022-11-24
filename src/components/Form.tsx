@@ -58,9 +58,10 @@ function Form({ onSubmit, inputs, disableExample, submitText, defaultValues }: F
               control={control}
               label={spec.label}
               defaultValue={spec.default || ""}
-              onExamleClick={() => onExampleClick(spec.name as never, spec.default as never)}
+              onExampleClick={() => onExampleClick(spec.name as never, spec.default as never)}
               disabled={spec.disabled}
               errorMessage={spec.errorMessage}
+              validate={spec.validate}
             />
           );
         })}
@@ -117,7 +118,7 @@ interface InputProps {
   control: Control;
   name: string;
   defaultValue: string | number;
-  onExamleClick: () => void;
+  onExampleClick: () => void;
   type?: any;
   required?: boolean;
   clearErrors: any;
@@ -135,19 +136,15 @@ function Input({
   error,
   label,
   name,
-  onExamleClick,
+  onExampleClick,
   type = "string",
   clearErrors,
   disabled,
   errorMessage,
   disableExample = false,
+  validate,
 }: InputProps) {
   const ref = useRef<any>();
-
-  const onClick = () => {
-    onExamleClick();
-    clearErrors(name);
-  };
 
   const onFocus = () => {
     clearErrors(name);
@@ -174,6 +171,10 @@ function Input({
                 thousandSeparator=","
                 onValueChange={({ value }) => {
                   onChange(value);
+                }}
+                isAllowed={(values) => {
+                  if (validate) return validate(values.value);
+                  return true;
                 }}
                 onFocus={onFocus}
                 disabled={disabled}
@@ -210,7 +211,7 @@ function Input({
               },
             }}
             variant="body2"
-            onClick={() => onExamleClick()}>
+            onClick={() => onExampleClick()}>
             {" "}
             example
           </Typography>

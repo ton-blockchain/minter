@@ -65,7 +65,7 @@ function DeployerPage() {
         symbol: data.symbol,
         image: data.tokenImage,
         description: data.description,
-        decimals: decimals,
+        decimals: parseInt(decimals).toFixed(0),
       },
       offchainUri: data.offchainUri,
       amountToMint: toDecimalsBN(data.mintAmount, decimals ?? DEFAULT_DECIMALS),

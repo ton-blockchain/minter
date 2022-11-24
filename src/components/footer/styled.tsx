@@ -1,4 +1,4 @@
-import { Box, Link, styled, Typography } from "@mui/material";
+import { Box, Link, styled } from "@mui/material";
 import { APP_GRID } from "consts";
 
 const FooterWrapper = styled(Box)({
@@ -58,10 +58,6 @@ const CenteringWrapper = styled(Box)({
   alignItems: "center",
 });
 
-const FooterContributedText = styled(Typography)({
-  fontSize: 12,
-});
-
 const ContributedWrapper = styled(CenteringWrapper)(({ theme }) => ({
   [theme.breakpoints.down("md")]: {
     minWidth: "100%",
@@ -104,7 +100,6 @@ export {
   CredentialsWrapper,
   FooterLink,
   CenteringWrapper,
-  FooterContributedText,
   ContributedWrapper,
   FooterTextBox,
   FooterTextBoxLeft,

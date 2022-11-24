@@ -30,14 +30,14 @@ const WalletConnector = () => {
   return (
     <WalletWrapper>
       {address ? (
-        <AppButton width={135} height={36} transparent onClick={() => setShowDisconnect(true)}>
+        <AppButton width={150} height={44} transparent onClick={() => setShowDisconnect(true)}>
           <WalletButtonContent>
             {makeElipsisAddress(address, 4)}
             {showDisconnect ? <ArrowDropUp /> : <ArrowDropDownIcon />}
           </WalletButtonContent>
         </AppButton>
       ) : (
-        <AppButton width={135} height={36} onClick={() => toggleConnect(true)}>
+        <AppButton width={150} height={44} onClick={() => toggleConnect(true)}>
           <WalletButtonContent>Connect Wallet</WalletButtonContent>
         </AppButton>
       )}

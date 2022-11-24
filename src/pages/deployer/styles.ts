@@ -22,6 +22,9 @@ const StyledDescription = styled(Box)(({ theme }) => ({
   position: "relative",
   background: "#fff",
   borderRadius: 16,
+  border: "0.5px solid rgba(114, 138, 150, 0.24)",
+  boxShadow: "0px 2px 16px rgb(114 138 150 / 8%)",
+
   "& p": {
     fontSize: 15,
     lineHeight: "24px",
@@ -37,14 +40,12 @@ const StyledDescription = styled(Box)(({ theme }) => ({
 const ScreenHeading = styled(Typography)(({ theme }) => ({
   fontWeight: 800,
   color: "#161C28",
-  fontSize: 48,
-  marginTop: theme.spacing(9),
+  fontSize: 44,
   [theme.breakpoints.down("md")]: {
-    fontSize: 30,
+    fontSize: 28,
     textAlign: "center",
   },
   [theme.breakpoints.down("sm")]: {
-    fontSize: 24,
     marginTop: theme.spacing(8),
   },
 }));

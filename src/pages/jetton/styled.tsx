@@ -36,7 +36,6 @@ const StyledBlock = styled(StyledCategory)({
 
 const StyledTop = styled(Box)({
   display: "flex",
-  alignItems: "center",
   gap: 20,
   marginBottom: 30,
   marginLeft: 20,

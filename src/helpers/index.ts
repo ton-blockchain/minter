@@ -11,6 +11,7 @@ export function checkImageURL(url: string) {
 }
 
 export function checkDecimals(value: string) {
+  if (!value) return true;
   if (value.includes(".")) return false;
 
   const num = parseInt(value);

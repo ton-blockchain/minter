@@ -67,7 +67,7 @@ function UpdateMetadata() {
           name: values.name,
           description: values.description,
           image: values.tokenImage,
-          decimals: values.decimals,
+          decimals: parseInt(values.decimals).toFixed(0),
         },
         WalletConnection.getConnection(),
       );

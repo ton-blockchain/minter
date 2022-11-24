@@ -9,7 +9,7 @@ const LogoWrapper = styled(Box)(({ theme }) => ({
     cursor: "pointer",
   },
   "& h4": {
-    fontSize: 18,
+    fontSize: 20,
     lineHeight: "20px",
     fontWeight: 800,
   },

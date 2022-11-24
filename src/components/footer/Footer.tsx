@@ -4,7 +4,6 @@ import { HoverableIcon } from "components/hoverableIcon/HoverableIcon";
 import {
   ContributedWrapper,
   CredentialsWrapper,
-  FooterContributedText,
   FooterLink,
   FooterTextBoxLeft,
   FooterTextBoxRight,
@@ -46,14 +45,14 @@ export const Footer = () => {
           <Typography variant="body2">© 2022 TON Foundation</Typography>
         </FooterTextBoxLeft>
         <ContributedWrapper>
-          <FooterContributedText variant="body2">
+          <Typography variant="body2">
             Contributed with {` `}
             <img src={heart} alt="Orbs logo" width={9} height={7} />
             {` `} by {` `}
             <FooterLink sx={{ color: "#CF84D1" }} target="_blank" href="https://orbs.com/">
               Orbs
             </FooterLink>
-          </FooterContributedText>
+          </Typography>
         </ContributedWrapper>
         <FooterTextBoxRight>
           <FooterLink target="_blank" href="https://t.me/+YDnoBue1Dz81ZTMy">

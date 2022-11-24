@@ -8,7 +8,7 @@ import {
 } from "pages/jetton/styled";
 import LoadingImage from "components/LoadingImage";
 import LoadingContainer from "components/LoadingContainer";
-import { Box } from "@mui/material";
+import { Box, Tooltip } from "@mui/material";
 import Alert from "@mui/material/Alert";
 import {
   adminActions,
@@ -56,14 +56,28 @@ export const Token = () => {
           </LoadingContainer>
           <LoadingContainer loading={jettonLoading} loaderWidth="150px">
             {description && (
-              <Box sx={{ maxWidth: 300 }}>
-                <AppHeading
-                  text={description}
-                  variant="h5"
-                  fontWeight={500}
-                  fontSize={16}
-                  color="#728A96"
-                />
+              <Box sx={{ maxWidth: 300, maxHeight: 60 }}>
+                {description.length > 100 ? (
+                  <Tooltip arrow title={description}>
+                    <Box>
+                      <AppHeading
+                        text={description.slice(0, 100) + "..."}
+                        variant="h5"
+                        fontWeight={500}
+                        fontSize={16}
+                        color="#728A96"
+                      />
+                    </Box>
+                  </Tooltip>
+                ) : (
+                  <AppHeading
+                    text={description}
+                    variant="h5"
+                    fontWeight={500}
+                    fontSize={16}
+                    color="#728A96"
+                  />
+                )}
               </Box>
             )}
           </LoadingContainer>

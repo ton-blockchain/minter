@@ -68,15 +68,18 @@ function Form({ onSubmit, inputs, disableExample, submitText, defaultValues }: F
       <StyledActionBtn>
         {!address ? (
           <AppButton
-            height={48}
-            width={160}
+            height={44}
+            width={150}
+            fontWeight={700}
             type="button"
             onClick={() => toggleConnect(true)}
             background="#0088CC">
             Connect wallet
           </AppButton>
         ) : (
-          <AppButton type="submit">{submitText}</AppButton>
+          <AppButton width={150} height={44} type="submit">
+            {submitText}
+          </AppButton>
         )}
       </StyledActionBtn>
     </StyledForm>
@@ -97,16 +100,13 @@ const StyledFormInputs = styled(Box)({
 });
 
 const StyledActionBtn = styled(Box)({
-  display: "flex",
-  justifyContent: "center",
   marginTop: 30,
   marginBottom: 10,
-  height: 40,
-  maxWidth: 344,
   marginLeft: "auto",
   marginRight: "auto",
   width: "100%",
   "& .base-button": {
+    maxWidth: 150,
     width: "100%",
   },
 });

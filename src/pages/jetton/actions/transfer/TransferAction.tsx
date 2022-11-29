@@ -1,6 +1,6 @@
 import useNotification from "hooks/useNotification";
 import { jettonDeployController } from "lib/deploy-controller";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import WalletConnection from "services/wallet-connection";
 import useConnectionStore from "store/connection-store/useConnectionStore";
 import useJettonStore from "store/jetton-store/useJettonStore";
@@ -9,8 +9,9 @@ import { validateTransfer } from "./utils";
 import { ButtonWrapper, TransferContent, TransferWrapper } from "./styled";
 import { AppHeading } from "components/appHeading";
 import { AppNumberInput, AppTextInput } from "components/appInput";
-import { JettonActionsContext } from "pages/jetton/context/JettonActionsContext";
 import { toDecimalsBN } from "utils";
+import { useSetRecoilState } from "recoil";
+import { jettonActionsState } from "pages/jetton/actions/jettonActions";
 
 export const TransferAction = () => {
   const { balance, symbol, jettonAddress, getJettonDetails, isMyWallet, decimals } =
@@ -20,7 +21,7 @@ export const TransferAction = () => {
   const [amount, setAmount] = useState<number | undefined>(undefined);
   const { showNotification } = useNotification();
   const { address: connectedWalletAddress } = useConnectionStore();
-  const { startAction, finishAction } = useContext(JettonActionsContext);
+  const setActionInProgress = useSetRecoilState(jettonActionsState);
 
   if (!balance || !jettonAddress || !isMyWallet) {
     return null;
@@ -39,7 +40,7 @@ export const TransferAction = () => {
       return;
     }
 
-    startAction();
+    setActionInProgress(true);
     try {
       const connection = WalletConnection.getConnection();
       await jettonDeployController.transfer(
@@ -63,7 +64,7 @@ export const TransferAction = () => {
         showNotification(error.message, "error");
       }
     } finally {
-      finishAction();
+      setActionInProgress(false);
     }
   };
 

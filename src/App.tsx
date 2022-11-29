@@ -4,7 +4,7 @@ import { createContext, useEffect } from "react";
 import useConnectionStore from "store/connection-store/useConnectionStore";
 import { APP_GRID, ROUTES } from "consts";
 import { Route, Routes } from "react-router-dom";
-import { DeployerPage, JettonPage } from "pages";
+import { DeployerPage, Jetton } from "pages";
 import ConnectPopup from "components/connect-popup";
 import analytics from "services/analytics";
 import { Footer } from "components/footer";
@@ -68,8 +68,8 @@ const App = () => {
         <ScreensWrapper>
           <Routes>
             <Route path={ROUTES.deployer} element={<DeployerPage />} />
-            <Route path={ROUTES.jettonId} element={<JettonPage />} />
-            <Route path={ROUTES.jetton} element={<JettonPage />} />
+            <Route path={ROUTES.jettonId} element={<Jetton />} />
+            <Route path={ROUTES.jetton} element={<Jetton />} />
           </Routes>
         </ScreensWrapper>
       </EnvContext.Provider>

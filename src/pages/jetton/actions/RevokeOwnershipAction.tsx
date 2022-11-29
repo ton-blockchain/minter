@@ -1,14 +1,14 @@
 import useNotification from "hooks/useNotification";
 import { jettonDeployController } from "lib/deploy-controller";
-import { useContext } from "react";
 import WalletConnection from "services/wallet-connection";
 import useJettonStore from "store/jetton-store/useJettonStore";
 import { Address } from "ton";
 import { AppButton } from "components/appButton";
-import { JettonActionsContext } from "pages/jetton/context/JettonActionsContext";
+import { useSetRecoilState } from "recoil";
+import { jettonActionsState } from "pages/jetton/actions/jettonActions";
 
 function RevokeOwnershipAction() {
-  const { startAction, finishAction } = useContext(JettonActionsContext);
+  const setActionInProgress = useSetRecoilState(jettonActionsState);
   const { jettonMaster, isAdmin, getJettonDetails, isMyWallet } = useJettonStore();
   const { showNotification } = useNotification();
 
@@ -21,7 +21,7 @@ function RevokeOwnershipAction() {
       if (!jettonMaster) {
         return;
       }
-      startAction();
+      setActionInProgress(true);
       await jettonDeployController.burnAdmin(
         Address.parse(jettonMaster),
         WalletConnection.getConnection(),
@@ -33,7 +33,7 @@ function RevokeOwnershipAction() {
         showNotification(error.message, "error");
       }
     } finally {
-      finishAction();
+      setActionInProgress(false);
     }
   };
 

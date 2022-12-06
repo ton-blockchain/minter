@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect } from "react";
 import SearchImg from "assets/icons/search.svg";
 import { useNavigate } from "react-router-dom";
-import { ROUTES, SEARCH_HISTORY } from "consts";
+import { ROUTES } from "consts";
 import { isValidAddress } from "utils";
 import useNotification from "hooks/useNotification";
 import { IndentlessIcon, SearchBarInput, SearchBarWrapper } from "./styled";
@@ -9,7 +9,22 @@ import close from "assets/icons/close.svg";
 import { Backdrop, ClickAwayListener, IconButton } from "@mui/material";
 import { AppButton } from "components/appButton";
 import { HeaderSearchResults } from "components/header/headerSearchResults";
-import { useLocalStorage } from "hooks/useLocalStorage";
+import { atom, useRecoilState } from "recoil";
+
+interface SearchBarAtomProps {
+  value: string;
+  active: boolean;
+  searchResults: SearchRequest[];
+}
+
+const searchBarAtom = atom<SearchBarAtomProps>({
+  key: "searchBar",
+  default: {
+    value: "",
+    active: false,
+    searchResults: [],
+  },
+});
 
 interface SearchBarProps {
   closeMenu?: () => void;
@@ -23,53 +38,69 @@ export interface SearchRequest {
 }
 
 export const SearchBar: React.FC<SearchBarProps> = ({ example, resetExample, closeMenu }) => {
-  const [value, setValue] = useState("");
-  const [active, setActive] = useState(false);
-  const [searchResults, setSearchResults] = useState<SearchRequest[]>([]);
-  const { storedValue: searchDupResults, setValue: setSearchDupResults } = useLocalStorage<
-    SearchRequest[]
-  >(SEARCH_HISTORY, []);
+  const [searchBar, setSearchBar] = useRecoilState(searchBarAtom);
 
   const navigate = useNavigate();
   const { showNotification } = useNotification();
 
   const onSubmit = async () => {
-    const isAlreadyInTheList = searchDupResults.find((item) => {
-      return item.value === value;
+    const isAlreadyInTheList = searchBar.searchResults.find((item) => {
+      return item.value === searchBar.value;
     });
 
-    if (!value) {
+    if (!searchBar.value) {
       return;
     }
 
-    if (!isValidAddress(value)) {
+    if (!isValidAddress(searchBar.value)) {
       showNotification("Invalid jetton address", "error");
       return;
     }
 
     !isAlreadyInTheList &&
-      setSearchResults((prevState) => [...prevState, { index: searchDupResults?.length, value }]);
+      setSearchBar((old) => ({
+        ...old,
+        searchResults: [
+          ...searchBar.searchResults,
+          { index: searchBar.searchResults?.length, value: searchBar.value },
+        ],
+      }));
 
-    setValue("");
-    setActive(false);
+    setSearchBar((old) => ({
+      ...old,
+      value: "",
+      active: false,
+    }));
+
     closeMenu?.();
-    navigate(`${ROUTES.jetton}/${value}`);
+    navigate(`${ROUTES.jetton}/${searchBar.value}`);
   };
 
   const onItemDelete = useCallback(
     (e: React.MouseEvent, item: SearchRequest) => {
       e.stopPropagation();
-      setSearchResults((prev) => prev.filter((result) => result.value !== item.value));
+      setSearchBar((old) => ({
+        ...old,
+        searchResults: searchBar.searchResults.filter((prevItem) => prevItem.value !== item.value),
+      }));
     },
-    [searchResults],
+    [searchBar.searchResults],
   );
 
   const onHistoryClear = useCallback(() => {
-    setSearchResults([]);
+    setSearchBar((old) => ({
+      ...old,
+      searchResults: [],
+    }));
   }, []);
 
   const onItemClick = useCallback((item: SearchRequest) => {
-    setActive(false);
+    setSearchBar((old) => ({
+      ...old,
+      value: "",
+      active: false,
+    }));
+
     navigate(`${ROUTES.jetton}/${item.value}`);
   }, []);
 
@@ -86,38 +117,71 @@ export const SearchBar: React.FC<SearchBarProps> = ({ example, resetExample, clo
     return () => {
       document.removeEventListener("keydown", listener);
     };
-  }, [value, onSubmit]);
+  }, [searchBar.value, onSubmit]);
 
   useEffect(() => {
-    example && setValue(example);
+    example &&
+      setSearchBar((old) => ({
+        ...old,
+        value: example,
+      }));
   }, [example]);
 
-  useEffect(() => {
-    setSearchDupResults(searchResults);
-  }, [searchResults]);
-
   return (
-    <ClickAwayListener onClickAway={() => setActive(false)}>
+    <ClickAwayListener
+      onClickAway={() =>
+        setSearchBar((old) => ({
+          ...old,
+          active: false,
+        }))
+      }>
       <>
         <Backdrop
           sx={{ color: "#fff", zIndex: 2, overflow: "hidden" }}
-          open={active}
-          onClick={() => setActive(false)}></Backdrop>
+          open={searchBar.active}
+          onClick={() =>
+            setSearchBar((old) => ({
+              ...old,
+              active: false,
+            }))
+          }></Backdrop>
         <SearchBarWrapper>
           <IndentlessIcon>
             <img src={SearchImg} width={18} height={18} alt="Search Icon" />
           </IndentlessIcon>
           <SearchBarInput
             placeholder="Jetton address"
-            onPaste={(e: any) => setValue(e.target.value)}
-            onChange={(e) => setValue(e.target.value)}
-            value={value}
-            onFocus={() => searchResults.length && setActive(true)}
+            onPaste={(e: any) =>
+              setSearchBar((old) => ({
+                ...old,
+                value: e.target.value,
+              }))
+            }
+            onChange={(e) =>
+              setSearchBar((old) => ({
+                ...old,
+                value: e.target.value,
+              }))
+            }
+            value={searchBar.value}
+            onFocus={() =>
+              searchBar.searchResults?.length &&
+              setSearchBar((old) => ({
+                ...old,
+                active: true,
+              }))
+            }
             spellCheck={false}
           />
-          {!!value.length && (
+          {!!searchBar.value.length && (
             <>
-              <IconButton onClick={() => setValue("")}>
+              <IconButton
+                onClick={() =>
+                  setSearchBar((old) => ({
+                    ...old,
+                    value: "",
+                  }))
+                }>
                 <img src={close} alt="Close Icon" width={18} height={18} />
               </IconButton>
               <AppButton height={34} width={40} onClick={onSubmit}>
@@ -125,9 +189,9 @@ export const SearchBar: React.FC<SearchBarProps> = ({ example, resetExample, clo
               </AppButton>
             </>
           )}
-          {active && !!searchResults.length && (
+          {searchBar.active && !!searchBar.searchResults?.length && (
             <HeaderSearchResults
-              searchResults={searchResults}
+              searchResults={searchBar.searchResults}
               onHistoryClear={onHistoryClear}
               onItemClick={onItemClick}
               onItemDelete={onItemDelete}

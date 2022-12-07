@@ -127,6 +127,17 @@ export const SearchBar: React.FC<SearchBarProps> = ({ example, resetExample, clo
       }));
   }, [example]);
 
+  useEffect(() => {
+    setSearchBar((old) => ({
+      ...old,
+      searchResults: JSON.parse(window.localStorage.getItem("searchBarResults") || "[]"),
+    }));
+  }, []);
+
+  useEffect(() => {
+    window.localStorage.setItem("searchBarResults", JSON.stringify(searchBar.searchResults));
+  }, [searchBar.searchResults]);
+
   return (
     <ClickAwayListener
       onClickAway={() =>

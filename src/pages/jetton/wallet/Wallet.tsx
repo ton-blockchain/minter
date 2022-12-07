@@ -12,7 +12,7 @@ import { Box } from "@mui/material";
 export const Wallet = () => {
   const { balance, symbol, jettonLoading, selectedWalletAddress, decimals } = useJettonStore();
   return (
-    <StyledBlock>
+    <StyledBlock sx={{ width: "40%" }}>
       <AppHeading
         text="Connected Jetton wallet"
         variant="h4"

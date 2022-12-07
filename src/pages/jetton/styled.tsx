@@ -17,7 +17,7 @@ const StyledCategory = styled(Box)(({ theme }) => ({
   width: "calc(50% - 15px)",
   padding: "20px 30px 30px 30px",
   borderRadius: 16,
-  [theme.breakpoints.down(1100)]: {
+  [theme.breakpoints.down("lg")]: {
     width: "100%",
     padding: "20px 25px 20px 25px",
   },

@@ -43,7 +43,7 @@ export const Token = () => {
   } = useJettonStore();
 
   return (
-    <StyledBlock>
+    <StyledBlock sx={{ width: "60%" }}>
       <StyledTop>
         <StyledTopImg>
           <LoadingImage src={jettonImage} alt="jetton image" loading={jettonLoading} />

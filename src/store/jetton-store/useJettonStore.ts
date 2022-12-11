@@ -51,10 +51,7 @@ function useJettonStore() {
     try {
       connection = WalletConnection.getConnection();
     } catch (error) {
-      connection = new TonConnection(
-        new ChromeExtensionWalletProvider(),
-        EnvProfiles[Environments.MAINNET].rpcApi,
-      );
+      connection = new TonConnection(new ChromeExtensionWalletProvider());
     }
 
     try {

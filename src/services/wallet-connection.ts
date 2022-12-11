@@ -4,7 +4,7 @@ import {
   TonhubProvider,
   OpenMaskWalletProvider,
 } from "@ton-defi.org/ton-connection";
-import { Environments, EnvProfiles, Providers } from "lib/env-profiles";
+import { Providers } from "lib/env-profiles";
 import { Address } from "ton";
 
 class WalletConnection {
@@ -14,13 +14,14 @@ class WalletConnection {
 
   public static getConnection() {
     if (!this.connection) {
-      throw new Error("Connectiong missing");
+      throw new Error("Connection missing");
     }
     return this.connection;
   }
 
   public static isContractDeployed(contractAddr: Address) {
-    return this.connection?._tonClient.isContractDeployed(contractAddr);
+    return false; // TODO fix
+    // return this.connection?._tonClient.isContractDeployed(contractAddr);
   }
 
   public static async connect(
@@ -50,10 +51,7 @@ class WalletConnection {
         throw new Error("UNKNOWN PROVIDER");
     }
 
-    this.connection = new TonConnection(
-      prov,
-      EnvProfiles[isTestnet ? Environments.SANDBOX : Environments.MAINNET].rpcApi,
-    );
+    this.connection = new TonConnection(prov);
     return this.connection.connect();
   }
 }

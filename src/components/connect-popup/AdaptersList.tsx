@@ -61,6 +61,12 @@ const adapterConfig = {
     mobileCompatible: true,
     description: "A mobile wallet in your pocket",
   },
+  [Providers.TONKEEPER]: {
+    name: "Tonkeeper",
+    icon: ChromeExtImg, // TODO
+    mobileCompatible: true,
+    description: "Tonkeeper", // TODO
+  },
   [Providers.EXTENSION]: {
     name: "Google Chrome Plugin",
     icon: ChromeExtImg,

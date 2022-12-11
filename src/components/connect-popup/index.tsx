@@ -34,7 +34,7 @@ function ConnectPopup() {
       }
     };
     try {
-      if ((provider === Providers.TON_HUB || provider === Providers.TONKEEPER) && !isMobile) {
+      if (provider === Providers.TON_HUB && !isMobile) {
         setShowQr(true);
       }
       await connect(provider, onSessionLinkCreated);

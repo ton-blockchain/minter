@@ -2,10 +2,10 @@ import {
   ChromeExtensionWalletProvider,
   TonConnection,
   TonhubProvider,
+  OpenMaskWalletProvider,
 } from "@ton-defi.org/ton-connection";
 import { Environments, EnvProfiles, Providers } from "lib/env-profiles";
 import { Address } from "ton";
-import { OpenMaskWalletProvider } from "./open-mask-provider";
 
 class WalletConnection {
   private static connection?: TonConnection;

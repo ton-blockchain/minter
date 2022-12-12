@@ -56,7 +56,7 @@ class WalletConnection {
           //   icon: "https://minter.ton.org/favicon.ico",
           //   url: "https://minter.ton.org",
           // },
-          manifestUrl: "https://api.npoint.io/d3986bc30ce1d4849962",
+          manifestUrl: "https://minter.ton.org/tonconnect-manifest.json",
           onSessionLinkReady: (l) => {
             console.log(l);
             onLinkReady(l);

@@ -1,5 +1,7 @@
 {
   "url": "https://minter.ton.org",
   "name": "Minter",
-  "iconUrl": "https://minter.ton.org/favicon.ico"
+  "iconUrl": "https://minter.ton.org/favicon.ico",
+  "termsOfUseUrl": "https://minter.ton.org",
+  "privacyPolicyUrl": "https://minter.ton.org"
 }

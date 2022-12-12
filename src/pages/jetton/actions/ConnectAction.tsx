@@ -8,7 +8,11 @@ function ConnectAction() {
     return null;
   }
 
-  return <AppButton onClick={() => toggleConnect(true)}>Connect wallet</AppButton>;
+  return (
+    <AppButton fontWeight={700} width={150} height={44} onClick={() => toggleConnect(true)}>
+      Connect wallet
+    </AppButton>
+  );
 }
 
 export default ConnectAction;

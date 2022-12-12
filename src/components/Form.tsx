@@ -58,9 +58,10 @@ function Form({ onSubmit, inputs, disableExample, submitText, defaultValues }: F
               control={control}
               label={spec.label}
               defaultValue={spec.default || ""}
-              onExamleClick={() => onExampleClick(spec.name as never, spec.default as never)}
+              onExampleClick={() => onExampleClick(spec.name as never, spec.default as never)}
               disabled={spec.disabled}
               errorMessage={spec.errorMessage}
+              validate={spec.validate}
             />
           );
         })}
@@ -68,15 +69,18 @@ function Form({ onSubmit, inputs, disableExample, submitText, defaultValues }: F
       <StyledActionBtn>
         {!address ? (
           <AppButton
-            height={48}
-            width={160}
+            height={44}
+            width={150}
+            fontWeight={700}
             type="button"
             onClick={() => toggleConnect(true)}
             background="#0088CC">
             Connect wallet
           </AppButton>
         ) : (
-          <AppButton type="submit">{submitText}</AppButton>
+          <AppButton width={150} height={44} type="submit">
+            {submitText}
+          </AppButton>
         )}
       </StyledActionBtn>
     </StyledForm>
@@ -97,16 +101,13 @@ const StyledFormInputs = styled(Box)({
 });
 
 const StyledActionBtn = styled(Box)({
-  display: "flex",
-  justifyContent: "center",
   marginTop: 30,
   marginBottom: 10,
-  height: 40,
-  maxWidth: 344,
   marginLeft: "auto",
   marginRight: "auto",
   width: "100%",
   "& .base-button": {
+    maxWidth: 150,
     width: "100%",
   },
 });
@@ -117,7 +118,7 @@ interface InputProps {
   control: Control;
   name: string;
   defaultValue: string | number;
-  onExamleClick: () => void;
+  onExampleClick: () => void;
   type?: any;
   required?: boolean;
   clearErrors: any;
@@ -135,19 +136,15 @@ function Input({
   error,
   label,
   name,
-  onExamleClick,
+  onExampleClick,
   type = "string",
   clearErrors,
   disabled,
   errorMessage,
   disableExample = false,
+  validate,
 }: InputProps) {
   const ref = useRef<any>();
-
-  const onClick = () => {
-    onExamleClick();
-    clearErrors(name);
-  };
 
   const onFocus = () => {
     clearErrors(name);
@@ -174,6 +171,10 @@ function Input({
                 thousandSeparator=","
                 onValueChange={({ value }) => {
                   onChange(value);
+                }}
+                isAllowed={(values) => {
+                  if (validate) return validate(values.value);
+                  return true;
                 }}
                 onFocus={onFocus}
                 disabled={disabled}
@@ -210,7 +211,7 @@ function Input({
               },
             }}
             variant="body2"
-            onClick={() => onExamleClick()}>
+            onClick={() => onExampleClick()}>
             {" "}
             example
           </Typography>

@@ -1,4 +1,4 @@
-import { Box, Link, styled, Typography } from "@mui/material";
+import { Box, Link, styled } from "@mui/material";
 import { APP_GRID } from "consts";
 
 const FooterWrapper = styled(Box)({
@@ -31,9 +31,6 @@ const CredentialsWrapper = styled(Box)(({ theme }) => ({
       marginBottom: `${theme.spacing(1)} !important`,
     },
   },
-  [theme.breakpoints.down("sm")]: {
-    flexDirection: "column",
-  },
 }));
 
 const Separator = styled("hr")({
@@ -58,10 +55,6 @@ const CenteringWrapper = styled(Box)({
   alignItems: "center",
 });
 
-const FooterContributedText = styled(Typography)({
-  fontSize: 12,
-});
-
 const ContributedWrapper = styled(CenteringWrapper)(({ theme }) => ({
   [theme.breakpoints.down("md")]: {
     minWidth: "100%",
@@ -80,10 +73,7 @@ const FooterTextBoxLeft = styled(FooterTextBox)(({ theme }) => ({
   [theme.breakpoints.down("md")]: {
     justifyContent: "start",
   },
-  [theme.breakpoints.down("sm")]: {
-    justifyContent: "center",
-    minWidth: "100%",
-  },
+  [theme.breakpoints.down("sm")]: {},
 }));
 
 const FooterTextBoxRight = styled(FooterTextBox)(({ theme }) => ({
@@ -91,8 +81,7 @@ const FooterTextBoxRight = styled(FooterTextBox)(({ theme }) => ({
     justifyContent: "end",
   },
   [theme.breakpoints.down("sm")]: {
-    justifyContent: "center",
-    minWidth: "100%",
+    minWidth: 70,
   },
 }));
 
@@ -104,7 +93,6 @@ export {
   CredentialsWrapper,
   FooterLink,
   CenteringWrapper,
-  FooterContributedText,
   ContributedWrapper,
   FooterTextBox,
   FooterTextBoxLeft,

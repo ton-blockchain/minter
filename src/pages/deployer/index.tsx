@@ -65,7 +65,7 @@ function DeployerPage() {
         symbol: data.symbol,
         image: data.tokenImage,
         description: data.description,
-        decimals: decimals,
+        decimals: parseInt(decimals).toFixed(0),
       },
       offchainUri: data.offchainUri,
       amountToMint: toDecimalsBN(data.mintAmount, decimals ?? DEFAULT_DECIMALS),
@@ -118,7 +118,7 @@ function DeployerPage() {
       <ScreenContent removeBackground>
         <Fade in>
           <Box>
-            <Box mb={3} mt={0}>
+            <Box mb={3} mt={3.75}>
               <ScreenHeading variant="h5">Mint your token</ScreenHeading>
             </Box>
             <FormWrapper>
@@ -158,10 +158,11 @@ function Description() {
       </Typography>
       <Typography
         sx={{
-          fontWeight: 600,
+          fontWeight: 400,
           color: "#728A96",
           "& a": {
             textDecoration: "none",
+            fontWeight: 500,
           },
         }}>
         Jetton is the fungible{" "}

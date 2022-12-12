@@ -3,8 +3,9 @@ import {
   TonConnection,
   TonhubProvider,
   TonkeeperProvider,
+  OpenMaskWalletProvider,
 } from "@ton-defi.org/ton-connection";
-import { Environments, EnvProfiles, Providers } from "lib/env-profiles";
+import { Providers } from "lib/env-profiles";
 import { Address } from "ton";
 
 class WalletConnection {
@@ -50,16 +51,19 @@ class WalletConnection {
             bridgeUrl: "https://bridge.tonapi.io/bridge",
             universalLink: "https://app.tonkeeper.com/ton-connect/",
           },
-          dappMetaData: {
-            name: "Minter",
-            icon: "https://minter.ton.org/favicon.ico",
-            url: "https://minter.ton.org",
-          },
+          // dappMetaData: {
+          //   name: "Minter",
+          //   icon: "https://minter.ton.org/favicon.ico",
+          //   url: "https://minter.ton.org",
+          // },
+
           onSessionLinkReady: (l) => {
             console.log(l);
             onLinkReady(l);
           },
         });
+      case Providers.OPEN_MASK:
+        prov = new OpenMaskWalletProvider();
         break;
       default:
         throw new Error("UNKNOWN PROVIDER");

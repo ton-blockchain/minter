@@ -38,12 +38,14 @@ function ConnectPopup() {
         setShowQr(true);
       }
       await connect(provider, onSessionLinkCreated);
-      toggleConnect(false);
+      console.log("after ze connect");
+      // toggleConnect(false);
     } catch (error) {
+      console.log(error);
       resetState();
     } finally {
-      setShowQr(false);
-      setSessionLink(null);
+      // setShowQr(false);
+      // setSessionLink(null);
     }
   };
 

@@ -46,6 +46,7 @@ function useConnectionStore() {
         adapterId: provider,
       }));
     } catch (error) {
+      console.error(error);
     } finally {
       setConnectionState((prevState) => ({
         ...prevState,

@@ -56,12 +56,13 @@ class WalletConnection {
           //   icon: "https://minter.ton.org/favicon.ico",
           //   url: "https://minter.ton.org",
           // },
-
+          manifestUrl: "https://api.npoint.io/d3986bc30ce1d4849962",
           onSessionLinkReady: (l) => {
             console.log(l);
             onLinkReady(l);
           },
         });
+        break;
       case Providers.OPEN_MASK:
         prov = new OpenMaskWalletProvider();
         break;

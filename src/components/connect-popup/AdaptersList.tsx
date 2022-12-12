@@ -63,7 +63,7 @@ const adapterConfig = {
   },
   [Providers.TONKEEPER]: {
     name: "Tonkeeper",
-    icon: ChromeExtImg, // TODO
+    icon: "https://tonkeeper.com/assets/tonconnect-icon.png", // TODO
     mobileCompatible: true,
     description: "Tonkeeper", // TODO
   },

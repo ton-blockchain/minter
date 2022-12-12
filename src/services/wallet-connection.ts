@@ -49,13 +49,8 @@ class WalletConnection {
         prov = new TonkeeperProvider({
           connectionDetails: {
             bridgeUrl: "https://bridge.tonapi.io/bridge",
-            universalLink: "https://app.tonkeeper.com/ton-connect/",
+            universalLink: "https://app.tonkeeper.com/ton-connect",
           },
-          // dappMetaData: {
-          //   name: "Minter",
-          //   icon: "https://minter.ton.org/favicon.ico",
-          //   url: "https://minter.ton.org",
-          // },
           manifestUrl: "https://minter.ton.org/tonconnect-manifest.json",
           onSessionLinkReady: (l) => {
             console.log(l);

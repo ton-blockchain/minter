@@ -9,8 +9,10 @@ import { jettonActionsState } from "pages/jetton/actions/jettonActions";
 import { useState } from "react";
 import { CenteringWrapper } from "components/footer/styled";
 import { Popup } from "components/Popup";
-import { Link, Typography } from "@mui/material";
+import { IconButton, Typography } from "@mui/material";
+import bullet from "assets/icons/bullet.svg";
 import { Box } from "@mui/system";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
 function RevokeOwnershipAction() {
   const setActionInProgress = useSetRecoilState(jettonActionsState);
@@ -50,40 +52,41 @@ function RevokeOwnershipAction() {
 
   return (
     <>
-      <Popup open={showAlert} maxWidth="80%" onClose={() => setShowAlert(false)}>
-        <Typography className="title">Revoke Ownership</Typography>
-        <Typography>
-          This operation will revoke your admin rights of the token <b>{symbol}</b>. This means you
-          will not be able to:
+      <Popup open={showAlert} maxWidth={600} hideCloseButton onClose={() => setShowAlert(false)}>
+        <Box mt={3} mx={3} sx={{ display: "flex", justifyContent: "flex-end", width: "100%" }}>
+          <IconButton onClick={() => setShowAlert(false)} sx={{ padding: 0, color: "#000" }}>
+            <CloseRoundedIcon style={{ width: 23, height: 23 }} />
+          </IconButton>
+        </Box>
+        <Typography sx={{ fontWeight: 800, fontSize: 20, marginBottom: 3 }}>
+          Revoke Ownership
         </Typography>
-        <ul
-          style={{
-            fontSize: 14,
-          }}>
-          <li>Change your logo URL</li>
-          <li>
+        <Typography sx={{ alignSelf: "baseline" }}>
+          This operation will revoke your admin rights of the <br /> token <b>{symbol}</b>. This
+          means you will not be able to:
+        </Typography>
+        <ul style={{ alignSelf: "baseline", listStyleImage: `url(${bullet})`, paddingLeft: 20 }}>
+          <li style={{ marginBottom: 15 }}>Change your logo</li>
+          <li style={{ marginBottom: 15 }}>
             Mint more <b>{symbol}</b>
           </li>
-          <li>Change the token's name</li>
-          <li>Change the token's description</li>
-          <li>
-            <Link
-              sx={{ textDecoration: "none" }}
-              href="https://github.com/ton-blockchain/minter-contract#jetton-metadata-field-best-practices">
-              Read more
-            </Link>
-          </li>
+          <li style={{ marginBottom: 15 }}>Change the token's name</li>
+          <li style={{ marginBottom: 15 }}>Change the token's description</li>
         </ul>
         <Box sx={{ alignSelf: "baseline" }}>
-          <Typography textAlign="left">
-            You should revoke ownership only after all metadata has been finalized.
+          <Typography textAlign="left" sx={{ fontWeight: 700 }}>
+            Revoke ownership only after all metadata has been finalized
           </Typography>
         </Box>
-        <CenteringWrapper sx={{ alignSelf: "end" }}>
-          <Box mr={1}>
-            <AppButton onClick={() => setShowAlert(false)}>Cancel</AppButton>
+        <CenteringWrapper>
+          <Box mr={4}>
+            <AppButton transparent width={100} onClick={() => setShowAlert(false)}>
+              Cancel
+            </AppButton>
           </Box>
-          <AppButton onClick={onSubmit}>Submit</AppButton>
+          <AppButton width={100} onClick={onSubmit}>
+            Revoke
+          </AppButton>
         </CenteringWrapper>
       </Popup>
       <AppButton transparent={true} onClick={onClick}>

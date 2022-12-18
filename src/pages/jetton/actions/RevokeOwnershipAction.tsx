@@ -66,7 +66,7 @@ function RevokeOwnershipAction() {
           means you will not be able to:
         </Typography>
         <ul style={{ alignSelf: "baseline", listStyleImage: `url(${bullet})`, paddingLeft: 20 }}>
-          <li style={{ marginBottom: 15 }}>Change your logo</li>
+          <li style={{ marginBottom: 15 }}>Change the token logo</li>
           <li style={{ marginBottom: 15 }}>
             Mint more <b>{symbol}</b>
           </li>

@@ -22,7 +22,7 @@ import { Screen, ScreenContent } from "components/Screen";
 import analytics, { AnalyticsAction, AnalyticsCategory } from "services/analytics";
 import { getUrlParam, toDecimalsBN } from "utils";
 import { offchainFormSpec, onchainFormSpec } from "./data";
-import Form from "components/Form";
+import { Form } from "components/form";
 import { GithubButton } from "pages/deployer/githubButton";
 
 const DEFAULT_DECIMALS = 9;

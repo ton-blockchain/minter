@@ -28,6 +28,7 @@ const HeadingText = styled(Typography)((props: HeadingTextProps) => ({
   fontWeight: props.fontWeight || 400,
   color: props.color || "#000",
   textAlign: props.textAlign,
+  wordBreak: "break-all",
 }));
 
 interface AppHeadingProps extends HeadingWrapperProps, HeadingTextProps {

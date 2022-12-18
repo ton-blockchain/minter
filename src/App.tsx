@@ -5,7 +5,7 @@ import useConnectionStore from "store/connection-store/useConnectionStore";
 import { APP_GRID, ROUTES } from "consts";
 import { Route, Routes } from "react-router-dom";
 import { DeployerPage, Jetton } from "pages";
-import ConnectPopup from "components/connect-popup";
+import ConnectPopup from "components/connectPopup";
 import analytics from "services/analytics";
 import { Footer } from "components/footer";
 import { Header } from "components/header";

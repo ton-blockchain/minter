@@ -43,7 +43,7 @@ export const Footer = () => {
       <Separator />
       <CredentialsWrapper>
         <FooterTextBoxLeft>
-          <Typography variant="body2">© 2022</Typography>
+          <Typography variant="body2">© 2022 TON Foundation</Typography>
         </FooterTextBoxLeft>
         <ContributedWrapper>
           <Typography variant="body2">Contributed with</Typography>

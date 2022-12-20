@@ -34,6 +34,7 @@ const HeadingText = styled(Typography)((props: HeadingTextProps) => ({
 interface AppHeadingProps extends HeadingWrapperProps, HeadingTextProps {
   text: string;
   variant: Variant;
+  limitText?: number;
 }
 
 export const AppHeading: React.FC<AppHeadingProps> = ({
@@ -46,6 +47,7 @@ export const AppHeading: React.FC<AppHeadingProps> = ({
   textAlign,
   text,
   variant,
+  limitText,
 }) => {
   return (
     <HeadingWrapper marginLeft={marginLeft} marginTop={marginTop} marginBottom={marginBottom}>
@@ -55,7 +57,7 @@ export const AppHeading: React.FC<AppHeadingProps> = ({
         fontWeight={fontWeight}
         color={color}
         textAlign={textAlign}>
-        {text}
+        {limitText ? text.slice(0, limitText) + "..." : text}
       </HeadingText>
     </HeadingWrapper>
   );

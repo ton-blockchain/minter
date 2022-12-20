@@ -15,13 +15,13 @@ interface LogoAlertPopupProps {
 export const LogoAlertPopup = ({ showPopup, close, onValidate }: LogoAlertPopupProps) => {
   return (
     <Popup open={showPopup} onClose={close} maxWidth={592}>
-      <PopupTitle>Are you sure?</PopupTitle>
+      <PopupTitle>Token logo is broken</PopupTitle>
       <Typography sx={{ alignSelf: "baseline" }} mb={0.5}>
-        Your token <span style={{ fontWeight: 700 }}>does not have a working logo</span>
+        Your token <span style={{ fontWeight: 700 }}>does not have a working logo.</span>
       </Typography>
       <Typography sx={{ alignSelf: "baseline", lineHeight: 2 }}>
         You can fix this later by editing the token's metadata, as long as you're <br />
-        still the token admin
+        still the token admin.
       </Typography>
       <Box sx={{ alignSelf: "baseline" }} mx={2} mt={1}>
         <PopupLink

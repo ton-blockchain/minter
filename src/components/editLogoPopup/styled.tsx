@@ -40,7 +40,7 @@ const LogoTextAreaWrapper = styled(Box)({
   background: "#F7F9FB",
   border: "0.5px solid rgba(114, 138, 150, 0.16)",
   transition: "0.2s all",
-  borderRadius: "12px",
+  borderRadius: "24px", //40
   overflowWrap: "anywhere",
 });
 
@@ -55,9 +55,12 @@ const LogoTextArea = styled("textarea")({
   fontFamily: "Mulish",
   fontSize: 16,
   caretColor: "#728A96",
-  borderRadius: "12px",
+  borderRadius: "24px",
   padding: "10px 20px",
   maxHeight: 97,
+  "::-webkit-scrollbar": {
+    display: "none",
+  },
 });
 
 export { LogoTextArea, LogoTextAreaWrapper, PopupTitle, PopupContent, PopupDescription, PopupLink };

@@ -57,27 +57,18 @@ export const Token = () => {
           <LoadingContainer loading={jettonLoading} loaderWidth="150px">
             {description && (
               <Box sx={{ maxWidth: 300, maxHeight: 60 }}>
-                {description.length > 80 ? (
-                  <Tooltip arrow title={description}>
-                    <Box>
-                      <AppHeading
-                        text={description.slice(0, 80) + "..."}
-                        variant="h4"
-                        fontWeight={500}
-                        fontSize={16}
-                        color="#728A96"
-                      />
-                    </Box>
-                  </Tooltip>
-                ) : (
-                  <AppHeading
-                    text={description}
-                    variant="h4"
-                    fontWeight={500}
-                    fontSize={16}
-                    color="#728A96"
-                  />
-                )}
+                <Tooltip arrow title={description}>
+                  <Box>
+                    <AppHeading
+                      text={description}
+                      limitText={80}
+                      variant="h4"
+                      fontWeight={500}
+                      fontSize={16}
+                      color="#728A96"
+                    />
+                  </Box>
+                </Tooltip>
               </Box>
             )}
           </LoadingContainer>
@@ -88,7 +79,6 @@ export const Token = () => {
           {getFaultyMetadataWarning(adminRevokedOwnership)}
         </Alert>
       )}
-
       <StyledCategoryFields>
         <DataRow
           description="On-chain smart contract address of the Jetton parent (jetton-minter.fc)"

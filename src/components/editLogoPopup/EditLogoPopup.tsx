@@ -19,14 +19,20 @@ interface EditLogoPopupProps {
   showPopup: boolean;
   tokenImage: any;
   close: () => void;
+  showExample?: boolean;
 }
 
-export const EditLogoPopup = ({ showPopup, tokenImage, close }: EditLogoPopupProps) => {
-  const { jettonLogo, setLogoUrl, setTempUrl } = useJettonLogo();
+export const EditLogoPopup = ({
+  showPopup,
+  tokenImage,
+  showExample,
+  close,
+}: EditLogoPopupProps) => {
+  const { jettonLogo, setLogoUrl } = useJettonLogo();
+  const [tempUrl, setTempUrl] = useState("");
   const [inputFocus, setInputFocus] = useState(false);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
-
-  useAutosizeTextArea(textAreaRef.current, jettonLogo.tempUrl);
+  useAutosizeTextArea(textAreaRef.current, tempUrl);
 
   const handleChange = (evt: React.ChangeEvent<HTMLTextAreaElement>) => {
     const val = evt.target?.value;
@@ -43,23 +49,32 @@ export const EditLogoPopup = ({ showPopup, tokenImage, close }: EditLogoPopupPro
       <PopupTitle>Edit logo</PopupTitle>
       <Box sx={{ width: "100%" }}>
         <PopupContent>
-          {!inputFocus && !jettonLogo.tempUrl && (
-            <img alt="Link icon" src={linkIcon} style={{ position: "absolute", left: 25 }} />
+          {!inputFocus && !tempUrl && (
+            <img alt="Link icon" src={linkIcon} style={{ position: "absolute", left: 35 }} />
           )}
           <LogoTextAreaWrapper>
             <LogoTextArea
               spellCheck={false}
               onFocus={() => setInputFocus(true)}
               onBlur={() => setInputFocus(false)}
-              value={jettonLogo.tempUrl}
+              value={tempUrl}
               onChange={handleChange}
               ref={textAreaRef}
               rows={1}
             />
           </LogoTextAreaWrapper>
         </PopupContent>
-        <PopupDescription>{tokenImage.description}</PopupDescription>
-        <Box mx={2} mt={!jettonLogo.tempUrl ? 0 : 1}>
+        <PopupDescription>
+          {tokenImage.description}{" "}
+          {showExample && (
+            <span
+              onClick={() => setTempUrl("https://bitcoincash-example.github.io/website/logo.png")}
+              style={{ fontWeight: 700, cursor: "pointer" }}>
+              example
+            </span>
+          )}
+        </PopupDescription>
+        <Box mx={2} mt={!tempUrl ? 0 : 1} sx={{ display: "inline-flex" }}>
           <PopupLink
             href="https://github.com/ton-blockchain/minter-contract#jetton-metadata-field-best-practices"
             target="_blank">
@@ -69,13 +84,13 @@ export const EditLogoPopup = ({ showPopup, tokenImage, close }: EditLogoPopupPro
         </Box>
         <Box>
           <AppButton
-            disabled={!jettonLogo.tempUrl}
+            disabled={!tempUrl}
             height={44}
             width={118}
             fontWeight={700}
             type="button"
             onClick={() => {
-              setLogoUrl(jettonLogo.tempUrl);
+              setLogoUrl(tempUrl);
               close();
             }}
             background="#0088CC">

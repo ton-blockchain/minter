@@ -11,7 +11,6 @@ import { ROUTES } from "consts";
 import TxLoader from "components/TxLoader";
 import useNotification from "hooks/useNotification";
 import {
-  FormHeading,
   FormWrapper,
   ScreenHeading,
   StyledDescription,
@@ -123,7 +122,6 @@ function DeployerPage() {
             </Box>
             <FormWrapper>
               <SubHeadingWrapper>
-                <FormHeading variant="h5">Create your own new Jetton</FormHeading>
                 <Form submitText="Deploy" onSubmit={deployContract} inputs={formSpec} />
               </SubHeadingWrapper>
               <Box sx={{ flex: 4 }}>

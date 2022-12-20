@@ -1,36 +1,35 @@
 import { useEffect } from "react";
-import coinLogoHover from "assets/icons/coin-logo-hover.svg";
 import coinLogo from "assets/icons/coin-logo.svg";
 import { atom, useRecoilState } from "recoil";
-import jet from "assets/icons/logo.svg";
+import useJettonStore from "store/jetton-store/useJettonStore";
+import { useParams } from "react-router-dom";
+import brokenImage from "assets/icons/question.png";
+
+const defaultState = {
+  iconHover: false,
+  logoUrl: "",
+  image: coinLogo,
+  isLoading: false,
+  hasError: false,
+};
 
 const jettonLogoState = atom({
   key: "jettonLogo",
-  default: {
-    iconHover: false,
-    logoUrl: "",
-    imageValidationError: false,
-    image: "",
-    tempUrl: "",
-  },
+  default: defaultState,
 });
 
 export const useJettonLogo = () => {
   const [jettonLogo, setJettonLogo] = useRecoilState(jettonLogoState);
+  const { jettonImage } = useJettonStore();
+  const { id }: { id?: string } = useParams();
+
+  const resetJetton = () => setJettonLogo(defaultState);
 
   const setLogoUrl = (val: string) =>
     setJettonLogo((prev) => {
       return {
         ...prev,
         logoUrl: val,
-      };
-    });
-
-  const setTempUrl = (val: string) =>
-    setJettonLogo((prev) => {
-      return {
-        ...prev,
-        tempUrl: val,
       };
     });
 
@@ -50,29 +49,46 @@ export const useJettonLogo = () => {
       };
     });
 
-  const setImageValidationError = (val: boolean) =>
+  const setIsLoading = (val: boolean) =>
     setJettonLogo((prev) => {
       return {
         ...prev,
-        imageValidationError: val,
+        isLoading: val,
       };
     });
 
-  useEffect(() => {
-    if (jettonLogo.iconHover) {
-      setImage(coinLogoHover);
-    } else if (jettonLogo.logoUrl && !jettonLogo.imageValidationError) {
-      setImage(jettonLogo.logoUrl);
-    } else if (jettonLogo.imageValidationError) {
-      setImage(jet);
-    } else {
-      setImage(coinLogo);
-    }
-  }, [jettonLogo.iconHover, jettonLogo.logoUrl, jettonLogo.imageValidationError]);
+  const setHasError = (val: boolean) =>
+    setJettonLogo((prev) => {
+      return {
+        ...prev,
+        hasError: val,
+      };
+    });
+
+  const fetchImage = (url: string) => {
+    const image = new Image();
+    image.src = url;
+    image.onload = () => {
+      setIsLoading(false);
+      setImage(url);
+    };
+    image.onerror = () => {
+      setHasError(true);
+      setIsLoading(false);
+      setImage(brokenImage);
+    };
+  };
 
   useEffect(() => {
-    setImageValidationError(false);
+    setHasError(false);
+    setIsLoading(true);
+    jettonLogo.logoUrl && fetchImage(jettonLogo.logoUrl);
   }, [jettonLogo.logoUrl]);
 
-  return { jettonLogo, setLogoUrl, setImageValidationError, setIconHover, setTempUrl };
+  useEffect(() => {
+    id ? jettonImage && setLogoUrl(jettonImage) : resetJetton();
+    return () => resetJetton();
+  }, [id]);
+
+  return { jettonLogo, setLogoUrl, setIconHover, resetJetton };
 };

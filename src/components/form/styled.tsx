@@ -1,7 +1,7 @@
 import { Box, styled, Typography } from "@mui/material";
 
 const StyledForm = styled("form")({
-  width: "100%",
+  overflow: "hidden",
 });
 
 const StyledFormInputs = styled(Box)({

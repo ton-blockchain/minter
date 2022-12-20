@@ -2,7 +2,7 @@ import useNotification from "hooks/useNotification";
 import { useForm } from "react-hook-form";
 import useConnectionStore from "store/connection-store/useConnectionStore";
 import { Box, Tooltip } from "@mui/material";
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { AppButton } from "components/appButton";
 import { CenteringWrapper } from "components/header/headerSearchBar/styled";
 import { EditLogoPopup } from "components/editLogoPopup";
@@ -16,6 +16,10 @@ import {
 import { Input } from "components/form/input";
 import { LogoAlertPopup } from "components/logoAlertPopup";
 import { useJettonLogo } from "hooks/useJettonLogo";
+import coinLogoHover from "assets/icons/coin-logo-hover.svg";
+import { useParams } from "react-router-dom";
+import { StyledTopImg } from "pages/jetton/styled";
+import LoadingImage from "components/LoadingImage";
 
 interface FormProps {
   onSubmit: (values: any) => Promise<void>;
@@ -28,9 +32,10 @@ interface FormProps {
 export function Form({ onSubmit, inputs, disableExample, submitText, defaultValues }: FormProps) {
   const { showNotification } = useNotification();
   const { address, toggleConnect } = useConnectionStore();
-  const { jettonLogo, setIconHover, setImageValidationError } = useJettonLogo();
+  const { jettonLogo, setIconHover } = useJettonLogo();
   const [logoAlertPopup, setLogoAlertPopup] = useState(false);
   const [editLogoPopup, setEditLogoPopup] = useState(false);
+  const { id } = useParams();
   const tokenImage = inputs.filter((i) => i.name === "tokenImage")?.[0];
   const { control, handleSubmit, formState, setValue, clearErrors, watch, getValues } = useForm({
     mode: "onSubmit",
@@ -39,7 +44,6 @@ export function Form({ onSubmit, inputs, disableExample, submitText, defaultValu
   });
 
   const errors = formState.errors as any;
-
   const onFormError = (value: any) => {
     const firstError = value[Object.keys(value)[0]];
     if (!firstError) {
@@ -66,45 +70,61 @@ export function Form({ onSubmit, inputs, disableExample, submitText, defaultValu
   return (
     <StyledForm
       onSubmit={handleSubmit(() => {
-        if (!jettonLogo.logoUrl || jettonLogo.imageValidationError) {
+        if (!jettonLogo.logoUrl) {
           setLogoAlertPopup(true);
           return;
         }
         onSubmit(getValues());
       }, onFormError)}>
-      <EditLogoPopup showPopup={editLogoPopup} tokenImage={tokenImage} close={closeEditLogoPopup} />
+      <EditLogoPopup
+        showExample={!id}
+        showPopup={editLogoPopup}
+        tokenImage={tokenImage}
+        close={closeEditLogoPopup}
+      />
       <LogoAlertPopup
         showPopup={logoAlertPopup}
         close={closeAlertLogoPopup}
         onValidate={handleSubmit(onSubmit, onFormError)}
       />
-      <Box sx={{ display: "flex" }} my={3}>
-        <CenteringWrapper>
+      <Box sx={{ display: "flex" }} mb={3}>
+        <CenteringWrapper sx={{ position: "relative" }}>
           <img
-            alt="Jetton icon"
-            style={{ cursor: "pointer" }}
-            onError={() => jettonLogo.logoUrl?.length && setImageValidationError(true)}
+            alt="Hover icon"
+            style={{
+              cursor: "pointer",
+              position: "absolute",
+              left: 0,
+              top: 0,
+              opacity: jettonLogo.iconHover ? 0.5 : 0,
+              zIndex: 1,
+            }}
             onClick={() => setEditLogoPopup(true)}
             onMouseEnter={() => setIconHover(true)}
             onMouseLeave={() => setIconHover(false)}
-            src={jettonLogo.image}
+            src={coinLogoHover}
             width={101}
             height={101}
           />
+          <StyledTopImg>
+            <LoadingImage
+              src={jettonLogo.image}
+              loading={jettonLogo.isLoading}
+              alt="jetton image"
+            />
+          </StyledTopImg>
         </CenteringWrapper>
         <Box ml={3}>
           <JettonFormTitle>
-            {jettonData?.name || "Jetton name"}({jettonData?.symbol || "Symbol"})
+            {jettonData?.name || "Jetton name"} ({jettonData?.symbol || "Symbol"})
           </JettonFormTitle>
           <JettonFormDescription>
             {jettonData.description?.length > 80 ? (
               <Tooltip arrow title={jettonData.description}>
                 <Box sx={{ maxHeight: 100 }}>{jettonData.description.slice(0, 80) + "..."}</Box>
               </Tooltip>
-            ) : jettonData?.description ? (
-              jettonData.description
             ) : (
-              "Project unabbreviated name with spaces (1-3 words)"
+              jettonData?.description || "Description"
             )}
           </JettonFormDescription>
         </Box>

@@ -35,20 +35,14 @@ export function useAddressHistory() {
   };
 
   const onSubmit = () => {
-    const isAlreadyInTheList = addresses.find((item) => {
-      return item === addressInput.value;
-    });
-
-    if (!addressInput.value || isAlreadyInTheList) {
-      return;
-    }
+    if (!addressInput.value) return;
 
     if (!isValidAddress(addressInput.value)) {
       showNotification("Invalid jetton address", "error");
       return;
     }
 
-    setAddresses((prev) => [addressInput.value, ...prev]);
+    setAddresses((prev) => [addressInput.value, ...prev.filter((a) => a !== addressInput.value)]);
     setValue("");
     setActive(false);
 

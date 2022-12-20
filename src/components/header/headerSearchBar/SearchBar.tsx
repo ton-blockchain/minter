@@ -37,6 +37,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ example, resetExample, clo
         event.preventDefault();
         event.target.blur();
         onSubmit();
+        closeMenu?.();
       }
     };
     document.addEventListener("keydown", listener);

@@ -8,12 +8,11 @@ import recentSearch from "assets/icons/recent-search.svg";
 import { IconButton, Typography } from "@mui/material";
 import close from "assets/icons/close.svg";
 import { AppButton } from "components/appButton";
-import { SearchRequest } from "components/header/headerSearchBar";
 
 interface HeaderSearchResultsProps {
-  searchResults: SearchRequest[];
-  onItemClick: (item: SearchRequest) => void;
-  onItemDelete: (e: React.MouseEvent, item: SearchRequest) => void;
+  searchResults: string[];
+  onItemClick: (item: string) => void;
+  onItemDelete: (e: any, item: string) => void;
   onHistoryClear: () => void;
 }
 
@@ -31,7 +30,7 @@ export const HeaderSearchResults: React.FC<HeaderSearchResultsProps> = ({
             <CenteringWrapper mr={1.5}>
               <img width={18} height={18} src={recentSearch} alt="Search Icon" />
             </CenteringWrapper>
-            <Typography>{result.value}</Typography>
+            <Typography>{result}</Typography>
           </CenteringWrapper>
           <IconButton onClick={(e) => onItemDelete(e, result)}>
             <img src={close} alt="Close Icon" width={18} height={18} />

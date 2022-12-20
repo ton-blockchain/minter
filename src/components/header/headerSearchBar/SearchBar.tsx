@@ -1,30 +1,11 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useEffect } from "react";
 import SearchImg from "assets/icons/search.svg";
-import { useNavigate } from "react-router-dom";
-import { ROUTES } from "consts";
-import { isValidAddress } from "utils";
-import useNotification from "hooks/useNotification";
 import { IndentlessIcon, SearchBarInput, SearchBarWrapper } from "./styled";
 import close from "assets/icons/close.svg";
 import { Backdrop, ClickAwayListener, IconButton } from "@mui/material";
 import { AppButton } from "components/appButton";
 import { HeaderSearchResults } from "components/header/headerSearchResults";
-import { atom, useRecoilState } from "recoil";
-
-interface SearchBarAtomProps {
-  value: string;
-  active: boolean;
-  searchResults: SearchRequest[];
-}
-
-const searchBarAtom = atom<SearchBarAtomProps>({
-  key: "searchBar",
-  default: {
-    value: "",
-    active: false,
-    searchResults: [],
-  },
-});
+import { useAddressHistory } from "hooks/useAddressHistory";
 
 interface SearchBarProps {
   closeMenu?: () => void;
@@ -32,77 +13,22 @@ interface SearchBarProps {
   example?: string;
 }
 
-export interface SearchRequest {
-  index: number;
-  value: string;
-}
-
 export const SearchBar: React.FC<SearchBarProps> = ({ example, resetExample, closeMenu }) => {
-  const [searchBar, setSearchBar] = useRecoilState(searchBarAtom);
+  const {
+    addresses,
+    onAddressClick,
+    resetAddresses,
+    removeAddress,
+    onSubmit,
+    setActive,
+    setValue,
+    addressInput,
+  } = useAddressHistory();
 
-  const navigate = useNavigate();
-  const { showNotification } = useNotification();
-
-  const onSubmit = async () => {
-    const isAlreadyInTheList = searchBar.searchResults.find((item) => {
-      return item.value === searchBar.value;
-    });
-
-    if (!searchBar.value) {
-      return;
-    }
-
-    if (!isValidAddress(searchBar.value)) {
-      showNotification("Invalid jetton address", "error");
-      return;
-    }
-
-    !isAlreadyInTheList &&
-      setSearchBar((old) => ({
-        ...old,
-        searchResults: [
-          ...searchBar.searchResults,
-          { index: searchBar.searchResults?.length, value: searchBar.value },
-        ],
-      }));
-
-    setSearchBar((old) => ({
-      ...old,
-      value: "",
-      active: false,
-    }));
-
-    closeMenu?.();
-    navigate(`${ROUTES.jetton}/${searchBar.value}`);
+  const onAddressRemove = (e: any, address: string) => {
+    e.stopPropagation();
+    removeAddress(address);
   };
-
-  const onItemDelete = useCallback(
-    (e: React.MouseEvent, item: SearchRequest) => {
-      e.stopPropagation();
-      setSearchBar((old) => ({
-        ...old,
-        searchResults: searchBar.searchResults.filter((prevItem) => prevItem.value !== item.value),
-      }));
-    },
-    [searchBar.searchResults],
-  );
-
-  const onHistoryClear = useCallback(() => {
-    setSearchBar((old) => ({
-      ...old,
-      searchResults: [],
-    }));
-  }, []);
-
-  const onItemClick = useCallback((item: SearchRequest) => {
-    setSearchBar((old) => ({
-      ...old,
-      value: "",
-      active: false,
-    }));
-
-    navigate(`${ROUTES.jetton}/${item.value}`);
-  }, []);
 
   useEffect(() => {
     resetExample?.();
@@ -117,95 +43,53 @@ export const SearchBar: React.FC<SearchBarProps> = ({ example, resetExample, clo
     return () => {
       document.removeEventListener("keydown", listener);
     };
-  }, [searchBar.value, onSubmit]);
+  }, [addressInput.value, onSubmit]);
 
   useEffect(() => {
-    example &&
-      setSearchBar((old) => ({
-        ...old,
-        value: example,
-      }));
+    example && setValue(example);
   }, [example]);
 
-  useEffect(() => {
-    setSearchBar((old) => ({
-      ...old,
-      searchResults: JSON.parse(window.localStorage.getItem("searchBarResults") || "[]"),
-    }));
-  }, []);
-
-  useEffect(() => {
-    window.localStorage.setItem("searchBarResults", JSON.stringify(searchBar.searchResults));
-  }, [searchBar.searchResults]);
-
   return (
-    <ClickAwayListener
-      onClickAway={() =>
-        setSearchBar((old) => ({
-          ...old,
-          active: false,
-        }))
-      }>
+    <ClickAwayListener onClickAway={() => setActive(false)}>
       <>
         <Backdrop
           sx={{ color: "#fff", zIndex: 2, overflow: "hidden" }}
-          open={searchBar.active}
-          onClick={() =>
-            setSearchBar((old) => ({
-              ...old,
-              active: false,
-            }))
-          }></Backdrop>
+          open={addressInput.active}
+          onClick={() => setActive(false)}></Backdrop>
         <SearchBarWrapper>
           <IndentlessIcon>
             <img src={SearchImg} width={18} height={18} alt="Search Icon" />
           </IndentlessIcon>
           <SearchBarInput
             placeholder="Jetton address"
-            onPaste={(e: any) =>
-              setSearchBar((old) => ({
-                ...old,
-                value: e.target.value,
-              }))
-            }
-            onChange={(e) =>
-              setSearchBar((old) => ({
-                ...old,
-                value: e.target.value,
-              }))
-            }
-            value={searchBar.value}
-            onFocus={() =>
-              searchBar.searchResults?.length &&
-              setSearchBar((old) => ({
-                ...old,
-                active: true,
-              }))
-            }
+            onPaste={(e: any) => setValue(e.target.value)}
+            onChange={(e) => setValue(e.target.value)}
+            value={addressInput.value}
+            onFocus={() => addresses?.length && setActive(true)}
             spellCheck={false}
           />
-          {!!searchBar.value.length && (
+          {!!addressInput.value.length && (
             <>
-              <IconButton
-                onClick={() =>
-                  setSearchBar((old) => ({
-                    ...old,
-                    value: "",
-                  }))
-                }>
+              <IconButton onClick={() => setValue("")}>
                 <img src={close} alt="Close Icon" width={18} height={18} />
               </IconButton>
-              <AppButton height={34} width={40} onClick={onSubmit}>
+              <AppButton
+                height={34}
+                width={40}
+                onClick={() => {
+                  onSubmit();
+                  closeMenu?.();
+                }}>
                 Go
               </AppButton>
             </>
           )}
-          {searchBar.active && !!searchBar.searchResults?.length && (
+          {addressInput.active && !!addresses?.length && (
             <HeaderSearchResults
-              searchResults={searchBar.searchResults}
-              onHistoryClear={onHistoryClear}
-              onItemClick={onItemClick}
-              onItemDelete={onItemDelete}
+              searchResults={addresses}
+              onHistoryClear={resetAddresses}
+              onItemClick={onAddressClick}
+              onItemDelete={onAddressRemove}
             />
           )}
         </SearchBarWrapper>

@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Box } from "@mui/material";
-import linkIcon from "assets/icons/link-icon.svg";
 import { AppButton } from "components/appButton";
 import { Popup } from "components/Popup";
 import openLink from "assets/icons/link-open.svg";
@@ -49,9 +48,6 @@ export const EditLogoPopup = ({
       <PopupTitle>Edit logo</PopupTitle>
       <Box sx={{ width: "100%" }}>
         <PopupContent>
-          {!inputFocus && !tempUrl && (
-            <img alt="Link icon" src={linkIcon} style={{ position: "absolute", left: 35 }} />
-          )}
           <LogoTextAreaWrapper>
             <LogoTextArea
               spellCheck={false}

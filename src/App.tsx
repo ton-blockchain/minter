@@ -74,7 +74,7 @@ const App = () => {
         </ScreensWrapper>
       </EnvContext.Provider>
       <ConnectPopup />
-      <FooterBox mt={5} mb={2}>
+      <FooterBox mt={5}>
         <Footer />
       </FooterBox>
     </AppWrapper>

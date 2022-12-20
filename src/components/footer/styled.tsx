@@ -31,9 +31,6 @@ const CredentialsWrapper = styled(Box)(({ theme }) => ({
       marginBottom: `${theme.spacing(1)} !important`,
     },
   },
-  [theme.breakpoints.down("sm")]: {
-    flexDirection: "column",
-  },
 }));
 
 const Separator = styled("hr")({
@@ -76,10 +73,7 @@ const FooterTextBoxLeft = styled(FooterTextBox)(({ theme }) => ({
   [theme.breakpoints.down("md")]: {
     justifyContent: "start",
   },
-  [theme.breakpoints.down("sm")]: {
-    justifyContent: "center",
-    minWidth: "100%",
-  },
+  [theme.breakpoints.down("sm")]: {},
 }));
 
 const FooterTextBoxRight = styled(FooterTextBox)(({ theme }) => ({
@@ -87,8 +81,7 @@ const FooterTextBoxRight = styled(FooterTextBox)(({ theme }) => ({
     justifyContent: "end",
   },
   [theme.breakpoints.down("sm")]: {
-    justifyContent: "center",
-    minWidth: "100%",
+    minWidth: 70,
   },
 }));
 

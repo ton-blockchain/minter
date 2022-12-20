@@ -167,7 +167,7 @@ export function Form({ onSubmit, inputs, disableExample, submitText, defaultValu
             Connect wallet
           </AppButton>
         ) : (
-          <AppButton width={150} height={44} type="submit">
+          <AppButton disabled={jettonLogo.isLoading} width={150} height={44} type="submit">
             {submitText}
           </AppButton>
         )}

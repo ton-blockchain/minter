@@ -65,7 +65,6 @@ const StyledTopImg = styled(Box)(({ theme }) => ({
   borderRadius: "50%",
   overflow: "hidden",
   background: "rgba(0,0,0, 0.1)",
-  border: "13px solid #D9D9D9",
   "& img": {
     width: "100%",
     height: "100%",

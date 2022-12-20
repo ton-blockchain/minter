@@ -10,9 +10,15 @@ interface LogoAlertPopupProps {
   showPopup: boolean;
   close: () => void;
   onValidate: any;
+  isUpdateText: boolean;
 }
 
-export const LogoAlertPopup = ({ showPopup, close, onValidate }: LogoAlertPopupProps) => {
+export const LogoAlertPopup = ({
+  showPopup,
+  close,
+  onValidate,
+  isUpdateText,
+}: LogoAlertPopupProps) => {
   return (
     <Popup open={showPopup} onClose={close} maxWidth={592}>
       <PopupTitle>Token logo is broken</PopupTitle>
@@ -45,7 +51,7 @@ export const LogoAlertPopup = ({ showPopup, close, onValidate }: LogoAlertPopupP
         </CenteringWrapper>
         <AppButton
           height={44}
-          width={98}
+          width={isUpdateText ? 140 : 98}
           fontWeight={700}
           type="button"
           onClick={() => {
@@ -53,7 +59,7 @@ export const LogoAlertPopup = ({ showPopup, close, onValidate }: LogoAlertPopupP
             close();
           }}
           background="#0088CC">
-          Deploy
+          {isUpdateText ? "Update Metadata" : "Deploy"}
         </AppButton>
       </CenteringWrapper>
     </Popup>

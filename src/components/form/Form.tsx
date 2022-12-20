@@ -70,7 +70,7 @@ export function Form({ onSubmit, inputs, disableExample, submitText, defaultValu
   return (
     <StyledForm
       onSubmit={handleSubmit(() => {
-        if (!jettonLogo.logoUrl) {
+        if (!jettonLogo.logoUrl || jettonLogo.hasError) {
           setLogoAlertPopup(true);
           return;
         }
@@ -83,6 +83,7 @@ export function Form({ onSubmit, inputs, disableExample, submitText, defaultValu
         close={closeEditLogoPopup}
       />
       <LogoAlertPopup
+        isUpdateText={!!id}
         showPopup={logoAlertPopup}
         close={closeAlertLogoPopup}
         onValidate={handleSubmit(onSubmit, onFormError)}

@@ -17,9 +17,9 @@ import { Box } from "@mui/system";
 function RevokeOwnershipAction() {
   const setActionInProgress = useSetRecoilState(jettonActionsState);
   const [showAlert, setShowAlert] = useState(false);
-  const { jettonMaster, isAdmin, getJettonDetails, isMyWallet, symbol } = useJettonStore();
+  const { jettonMaster, isAdmin, getJettonDetails, isMyWallet, symbol, isImageBroken } =
+    useJettonStore();
   const { showNotification } = useNotification();
-
   if (!isAdmin || !isMyWallet) {
     return null;
   }
@@ -49,7 +49,6 @@ function RevokeOwnershipAction() {
       setActionInProgress(false);
     }
   };
-
   return (
     <>
       <Popup open={showAlert} maxWidth={600} onClose={() => setShowAlert(false)}>
@@ -77,18 +76,20 @@ function RevokeOwnershipAction() {
             }}>
             <li style={{ marginBottom: 10 }}>
               <span style={{ paddingLeft: 5 }}>Change the token logo</span>
-              <CenteringWrapper ml="5px" sx={{ justifyContent: "flex-start" }}>
-                <img
-                  src={error}
-                  width={10}
-                  height={10}
-                  alt="Error icon"
-                  style={{ marginRight: 5 }}
-                />
-                <span style={{ color: "#FC5656", fontSize: 12, fontWeight: 500 }}>
-                  Logo is broken. You won’t be able to change this after revoking.
-                </span>
-              </CenteringWrapper>
+              {isImageBroken && (
+                <CenteringWrapper ml="5px" sx={{ justifyContent: "flex-start" }}>
+                  <img
+                    src={error}
+                    width={10}
+                    height={10}
+                    alt="Error icon"
+                    style={{ marginRight: 5 }}
+                  />
+                  <span style={{ color: "#FC5656", fontSize: 12, fontWeight: 500 }}>
+                    Logo is broken. You won’t be able to change this after revoking.
+                  </span>
+                </CenteringWrapper>
+              )}
             </li>
             <li style={{ marginBottom: 10 }}>
               <span style={{ paddingLeft: 5 }}>

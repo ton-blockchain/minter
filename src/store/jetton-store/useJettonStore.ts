@@ -1,6 +1,5 @@
 import { TonConnection, ChromeExtensionWalletProvider } from "@ton-defi.org/ton-connection";
 import { jettonDeployController } from "lib/deploy-controller";
-import { EnvProfiles, Environments } from "lib/env-profiles";
 import { zeroAddress } from "lib/utils";
 import { useRecoilState, useResetRecoilState } from "recoil";
 import WalletConnection from "services/wallet-connection";
@@ -12,7 +11,6 @@ import useNotification from "hooks/useNotification";
 import { useParams } from "react-router-dom";
 import useConnectionStore from "store/connection-store/useConnectionStore";
 import { getUrlParam, isValidAddress } from "utils";
-import { BN } from "bn.js";
 
 function useJettonStore() {
   const [state, setState] = useRecoilState(jettonStateAtom);
@@ -79,6 +77,12 @@ function useJettonStore() {
       let image: string | undefined;
 
       if (result.minter.metadata.image) {
+        const img = new Image();
+        img.src = result.minter.metadata.image;
+        img.onerror = () => {
+          setState((prev) => ({ ...prev, isImageBroken: true }));
+        };
+
         image = result.minter.metadata.image;
       } else if (result.minter.metadata.image_data) {
         try {

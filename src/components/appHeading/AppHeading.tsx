@@ -57,7 +57,7 @@ export const AppHeading: React.FC<AppHeadingProps> = ({
         fontWeight={fontWeight}
         color={color}
         textAlign={textAlign}>
-        {limitText ? text.slice(0, limitText) + "..." : text}
+        {limitText ? text.slice(0, limitText) + `${text.length >= limitText ? "..." : ""}` : text}
       </HeadingText>
     </HeadingWrapper>
   );

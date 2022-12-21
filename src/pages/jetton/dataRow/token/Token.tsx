@@ -55,22 +55,18 @@ export const Token = () => {
             )}
           </LoadingContainer>
           <LoadingContainer loading={jettonLoading} loaderWidth="150px">
-            {description && (
+            <Tooltip arrow title={description && description?.length > 80 ? description : ""}>
               <Box sx={{ maxWidth: 300, maxHeight: 60 }}>
-                <Tooltip arrow title={description}>
-                  <Box>
-                    <AppHeading
-                      text={description}
-                      limitText={80}
-                      variant="h4"
-                      fontWeight={500}
-                      fontSize={16}
-                      color="#728A96"
-                    />
-                  </Box>
-                </Tooltip>
+                <AppHeading
+                  text={description || "Description"}
+                  limitText={80}
+                  variant="h4"
+                  fontWeight={500}
+                  fontSize={16}
+                  color="#728A96"
+                />
               </Box>
-            )}
+            </Tooltip>
           </LoadingContainer>
         </StyledTopText>
       </StyledTop>

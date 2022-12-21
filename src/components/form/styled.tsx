@@ -30,11 +30,4 @@ const JettonFormTitle = styled(Typography)({
   marginBottom: 0.5,
 });
 
-const JettonFormDescription = styled(Typography)({
-  color: "#728A96",
-  fontSize: "16px",
-  wordBreak: "break-all",
-  maxWidth: 350,
-});
-
-export { StyledForm, StyledFormInputs, StyledActionBtn, JettonFormTitle, JettonFormDescription };
+export { StyledForm, StyledFormInputs, StyledActionBtn, JettonFormTitle };

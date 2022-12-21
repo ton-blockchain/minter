@@ -7,7 +7,6 @@ import { AppButton } from "components/appButton";
 import { CenteringWrapper } from "components/header/headerSearchBar/styled";
 import { EditLogoPopup } from "components/editLogoPopup";
 import {
-  JettonFormDescription,
   JettonFormTitle,
   StyledActionBtn,
   StyledForm,
@@ -20,6 +19,7 @@ import coinLogoHover from "assets/icons/coin-logo-hover.svg";
 import { useParams } from "react-router-dom";
 import { StyledTopImg } from "pages/jetton/styled";
 import LoadingImage from "components/LoadingImage";
+import { AppHeading } from "components/appHeading";
 
 interface FormProps {
   onSubmit: (values: any) => Promise<void>;
@@ -119,15 +119,24 @@ export function Form({ onSubmit, inputs, disableExample, submitText, defaultValu
           <JettonFormTitle>
             {jettonData?.name || "Jetton name"} ({jettonData?.symbol || "Symbol"})
           </JettonFormTitle>
-          <JettonFormDescription>
-            {jettonData.description?.length > 80 ? (
-              <Tooltip arrow title={jettonData.description}>
-                <Box sx={{ maxHeight: 100 }}>{jettonData.description.slice(0, 80) + "..."}</Box>
-              </Tooltip>
-            ) : (
-              jettonData?.description || "Description"
-            )}
-          </JettonFormDescription>
+          <Tooltip
+            arrow
+            title={
+              jettonData.description && jettonData.description?.length > 80
+                ? jettonData.description
+                : ""
+            }>
+            <Box sx={{ maxWidth: 300, maxHeight: 60 }}>
+              <AppHeading
+                text={jettonData.description || "Description"}
+                limitText={80}
+                variant="h4"
+                fontWeight={500}
+                fontSize={16}
+                color="#728A96"
+              />
+            </Box>
+          </Tooltip>
         </Box>
       </Box>
       <StyledFormInputs>

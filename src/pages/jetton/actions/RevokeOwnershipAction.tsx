@@ -9,10 +9,10 @@ import { jettonActionsState } from "pages/jetton/actions/jettonActions";
 import { useState } from "react";
 import { CenteringWrapper } from "components/footer/styled";
 import { Popup } from "components/Popup";
-import { IconButton, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import bullet from "assets/icons/bullet.svg";
+import error from "assets/icons/error-notification.svg";
 import { Box } from "@mui/system";
-import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
 function RevokeOwnershipAction() {
   const setActionInProgress = useSetRecoilState(jettonActionsState);
@@ -52,34 +52,62 @@ function RevokeOwnershipAction() {
 
   return (
     <>
-      <Popup open={showAlert} maxWidth={600} hideCloseButton onClose={() => setShowAlert(false)}>
-        <Box mt={3} mx={3} sx={{ display: "flex", justifyContent: "flex-end", width: "100%" }}>
-          <IconButton onClick={() => setShowAlert(false)} sx={{ padding: 0, color: "#000" }}>
-            <CloseRoundedIcon style={{ width: 23, height: 23 }} />
-          </IconButton>
-        </Box>
-        <Typography sx={{ fontWeight: 800, fontSize: 20, marginBottom: 3 }}>
-          Revoke Ownership
-        </Typography>
-        <Typography sx={{ alignSelf: "baseline" }}>
-          This operation will revoke your admin rights of the <br /> token <b>{symbol}</b>. This
-          means you will not be able to:
-        </Typography>
-        <ul style={{ alignSelf: "baseline", listStyleImage: `url(${bullet})`, paddingLeft: 20 }}>
-          <li style={{ marginBottom: 15 }}>Change the token logo</li>
-          <li style={{ marginBottom: 15 }}>
-            Mint more <b>{symbol}</b>
-          </li>
-          <li style={{ marginBottom: 15 }}>Change the token's name</li>
-          <li style={{ marginBottom: 15 }}>Change the token's description</li>
-        </ul>
-        <Box sx={{ alignSelf: "baseline" }}>
+      <Popup open={showAlert} maxWidth={600} onClose={() => setShowAlert(false)}>
+        <Box ml={3} mt={-1} mb={-0.6} sx={{ alignSelf: "baseline", color: "#464646" }}>
+          <Typography
+            sx={{
+              color: "#161C28",
+              fontWeight: 800,
+              fontSize: 20,
+              marginBottom: 3.2,
+              textAlign: "center",
+            }}>
+            Revoke Ownership
+          </Typography>
+          <Typography sx={{ fontWeight: 500, marginBottom: 2.2 }}>
+            This operation will revoke your admin rights of the <br /> token{" "}
+            <span style={{ fontWeight: 900 }}>{symbol}</span>. This means you will not be able to:
+          </Typography>
+          <ul
+            style={{
+              listStyleImage: `url(${bullet})`,
+              paddingLeft: 20,
+              fontWeight: 500,
+              marginBottom: 0,
+            }}>
+            <li style={{ marginBottom: 10 }}>
+              <span style={{ paddingLeft: 5 }}>Change the token logo</span>
+              <CenteringWrapper ml="5px" sx={{ justifyContent: "flex-start" }}>
+                <img
+                  src={error}
+                  width={10}
+                  height={10}
+                  alt="Error icon"
+                  style={{ marginRight: 5 }}
+                />
+                <span style={{ color: "#FC5656", fontSize: 12, fontWeight: 500 }}>
+                  Logo is broken. You won’t be able to change this after revoking.
+                </span>
+              </CenteringWrapper>
+            </li>
+            <li style={{ marginBottom: 10 }}>
+              <span style={{ paddingLeft: 5 }}>
+                Mint more <span style={{ fontWeight: 900 }}>{symbol}</span>
+              </span>
+            </li>
+            <li style={{ marginBottom: 10 }}>
+              <span style={{ paddingLeft: 5 }}>Change the token name</span>
+            </li>
+            <li style={{ marginBottom: 10 }}>
+              <span style={{ paddingLeft: 5 }}>Change the token description</span>
+            </li>
+          </ul>
           <Typography textAlign="left" sx={{ fontWeight: 700 }}>
-            Revoke ownership only after all metadata has been finalized
+            You should revoke ownership only after metadata has been finalized
           </Typography>
         </Box>
         <CenteringWrapper>
-          <Box mr={4}>
+          <Box mr={4.2}>
             <AppButton transparent width={100} onClick={() => setShowAlert(false)}>
               Cancel
             </AppButton>

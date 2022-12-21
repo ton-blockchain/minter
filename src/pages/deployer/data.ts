@@ -26,6 +26,7 @@ const onchainFormSpec = [
     type: "number",
     validate: checkDecimals,
     default: 9,
+    showDefault: true,
     required: true,
     errorMessage: "Decimals amount from 0 to 255 is required", // https://github.com/ton-blockchain/TEPs/blob/master/text/0064-token-data-standard.md#jetton-metadata-attributes
   },

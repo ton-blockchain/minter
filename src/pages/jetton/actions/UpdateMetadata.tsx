@@ -4,7 +4,7 @@ import { Popup } from "components/Popup";
 import useJettonStore from "store/jetton-store/useJettonStore";
 import { useState } from "react";
 import { onchainFormSpec } from "pages/deployer/data";
-import Form from "components/Form";
+import { Form } from "components/form";
 import { JettonStoreState } from "store/jetton-store";
 import { jettonDeployController } from "lib/deploy-controller";
 import WalletConnection from "services/wallet-connection";

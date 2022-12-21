@@ -26,7 +26,7 @@ const StyledLink = styled("div")({
   whiteSpace: "nowrap",
   overflow: "hidden",
   textOverflow: "ellipsis",
-  width: "80%",
+  width: "95%",
   color: "#0688CC!important",
   [theme.breakpoints.down("sm")]: {
     fontSize: 14,

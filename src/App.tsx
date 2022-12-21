@@ -3,12 +3,13 @@ import { Box } from "@mui/system";
 import { createContext, useEffect } from "react";
 import useConnectionStore from "store/connection-store/useConnectionStore";
 import { APP_GRID, ROUTES } from "consts";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import { DeployerPage, Jetton } from "pages";
-import ConnectPopup from "components/connect-popup";
+import ConnectPopup from "components/connectPopup";
 import analytics from "services/analytics";
 import { Footer } from "components/footer";
 import { Header } from "components/header";
+import { useJettonLogo } from "hooks/useJettonLogo";
 
 analytics.init();
 
@@ -52,6 +53,12 @@ export const EnvContext = createContext({
 
 const App = () => {
   const { connectOnLoad } = useConnectionStore();
+  const { resetJetton } = useJettonLogo();
+  const location = useLocation();
+
+  useEffect(() => {
+    resetJetton();
+  }, [location.pathname]);
 
   useEffect(() => {
     connectOnLoad();

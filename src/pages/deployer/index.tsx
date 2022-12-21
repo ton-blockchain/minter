@@ -11,7 +11,6 @@ import { ROUTES } from "consts";
 import TxLoader from "components/TxLoader";
 import useNotification from "hooks/useNotification";
 import {
-  FormHeading,
   FormWrapper,
   ScreenHeading,
   StyledDescription,
@@ -22,7 +21,7 @@ import { Screen, ScreenContent } from "components/Screen";
 import analytics, { AnalyticsAction, AnalyticsCategory } from "services/analytics";
 import { getUrlParam, toDecimalsBN } from "utils";
 import { offchainFormSpec, onchainFormSpec } from "./data";
-import Form from "components/Form";
+import { Form } from "components/form";
 import { GithubButton } from "pages/deployer/githubButton";
 
 const DEFAULT_DECIMALS = 9;
@@ -123,7 +122,6 @@ function DeployerPage() {
             </Box>
             <FormWrapper>
               <SubHeadingWrapper>
-                <FormHeading variant="h5">Create your own new Jetton</FormHeading>
                 <Form submitText="Deploy" onSubmit={deployContract} inputs={formSpec} />
               </SubHeadingWrapper>
               <Box sx={{ flex: 4 }}>

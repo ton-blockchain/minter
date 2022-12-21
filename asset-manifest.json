@@ -1,9 +1,10 @@
 {
   "files": {
     "main.css": "/static/css/main.fc5705ca.css",
-    "main.js": "/static/js/main.bdb3c77f.js",
+    "main.js": "/static/js/main.5e8a169f.js",
     "static/js/787.d1d4a2c2.chunk.js": "/static/js/787.d1d4a2c2.chunk.js",
     "static/media/tonhub.png": "/static/media/tonhub.a222cde6645afb15181c.png",
+    "static/media/orbs.svg": "/static/media/orbs.0f1186d9548085158bfc9ddc129dd972.svg",
     "static/media/tonhub-qr.png": "/static/media/tonhub-qr.784951e3cfb200389674.png",
     "static/media/coin-logo.svg": "/static/media/coin-logo.be193ced0ab3174318408cbda298ed18.svg",
     "static/media/chrome.svg": "/static/media/chrome.167f7ab746641de40862642e809305c6.svg",
@@ -24,11 +25,11 @@
     "static/media/right.svg": "/static/media/right.a5a9967ade5803e357829fd887f00899.svg",
     "static/media/close.svg": "/static/media/close.fd4f52334074b7c94a6d151d92ae564c.svg",
     "main.fc5705ca.css.map": "/static/css/main.fc5705ca.css.map",
-    "main.bdb3c77f.js.map": "/static/js/main.bdb3c77f.js.map",
+    "main.5e8a169f.js.map": "/static/js/main.5e8a169f.js.map",
     "787.d1d4a2c2.chunk.js.map": "/static/js/787.d1d4a2c2.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.fc5705ca.css",
-    "static/js/main.bdb3c77f.js"
+    "static/js/main.5e8a169f.js"
   ]
 }

@@ -6,6 +6,8 @@ import useNotification from "hooks/useNotification";
 import { ROUTES } from "consts";
 import { recoilPersist } from "recoil-persist";
 import { Address } from "ton";
+import { useEffect } from "react";
+import { useJettonAddress } from "hooks/useJettonAddress";
 
 const { persistAtom } = recoilPersist();
 
@@ -20,6 +22,7 @@ export function useAddressHistory() {
   const { setActive, setValue, addressInput } = useAddressInput();
   const navigate = useNavigate();
   const { showNotification } = useNotification();
+  const { id } = useJettonAddress();
 
   const resetAddresses = () => {
     setAddresses([]);
@@ -49,13 +52,17 @@ export function useAddressHistory() {
     const transformedAddress = Address.parse(address!).toFriendly();
 
     setAddresses((prev: string[]) =>
-      [transformedAddress, ...prev.filter((a) => a !== transformedAddress)].slice(0, 3),
+      [transformedAddress, ...prev.filter((a) => a !== transformedAddress)].slice(0, 20),
     );
     setValue("");
     setActive(false);
 
     navigate(`${ROUTES.jetton}/${transformedAddress}`);
   };
+
+  useEffect(() => {
+    id && setAddresses((prev: string[]) => [id, ...prev.filter((a) => a !== id)].slice(0, 20));
+  }, []);
 
   return {
     addresses,

@@ -3,7 +3,7 @@ import { Box } from "@mui/system";
 import { createContext, useEffect } from "react";
 import useConnectionStore from "store/connection-store/useConnectionStore";
 import { APP_GRID, ROUTES } from "consts";
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Outlet, Route, Routes, useLocation } from "react-router-dom";
 import { DeployerPage, Jetton } from "pages";
 import ConnectPopup from "components/connectPopup";
 import analytics from "services/analytics";
@@ -27,11 +27,7 @@ const FooterBox = styled(Box)(() => ({
   justifyContent: "center",
 }));
 
-const ScreensWrapper = styled(Box)(({ theme }) => ({
-  maxWidth: APP_GRID,
-  width: "calc(100% - 50px)",
-  marginLeft: "auto",
-  marginRight: "auto",
+const ScreensWrapper = styled(Box)({
   "*::-webkit-scrollbar": {
     display: "none",
   },
@@ -41,6 +37,14 @@ const ScreensWrapper = styled(Box)(({ theme }) => ({
   "*::-webkit-scrollbar-thumb": {
     display: "none",
   },
+});
+
+const FlexibleBox = styled(Box)(({ theme }) => ({
+  maxWidth: APP_GRID,
+  width: "calc(100% - 50px)",
+  marginLeft: "auto",
+  marginRight: "auto",
+
   [theme.breakpoints.down("sm")]: {
     width: "calc(100% - 30px)",
   },
@@ -50,6 +54,19 @@ export const EnvContext = createContext({
   isSandbox: false,
   isTestnet: false,
 });
+
+interface ContentWrapperProps {
+  children?: any;
+}
+
+const ContentWrapper = ({ children }: ContentWrapperProps) => {
+  return (
+    <FlexibleBox>
+      {children}
+      <Outlet />
+    </FlexibleBox>
+  );
+};
 
 const App = () => {
   const { connectOnLoad } = useConnectionStore();
@@ -66,7 +83,6 @@ const App = () => {
 
   return (
     <AppWrapper>
-      <Header />
       <EnvContext.Provider
         value={{
           isSandbox: window.location.search.includes("sandbox"),
@@ -74,9 +90,13 @@ const App = () => {
         }}>
         <ScreensWrapper>
           <Routes>
-            <Route path={ROUTES.deployer} element={<DeployerPage />} />
-            <Route path={ROUTES.jettonId} element={<Jetton />} />
-            <Route path={ROUTES.jetton} element={<Jetton />} />
+            <Route path="/" element={<Header />}>
+              <Route path="/" element={<ContentWrapper />}>
+                <Route path={ROUTES.deployer} element={<DeployerPage />} />
+                <Route path={ROUTES.jettonId} element={<Jetton />} />
+                <Route path={ROUTES.jetton} element={<Jetton />} />
+              </Route>
+            </Route>
           </Routes>
         </ScreensWrapper>
       </EnvContext.Provider>

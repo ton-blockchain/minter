@@ -2,8 +2,8 @@ import { useEffect } from "react";
 import coinLogo from "assets/icons/coin-logo.svg";
 import { atom, useRecoilState } from "recoil";
 import useJettonStore from "store/jetton-store/useJettonStore";
-import { useParams } from "react-router-dom";
 import brokenImage from "assets/icons/question.png";
+import { useJettonAddress } from "hooks/useJettonAddress";
 
 const defaultState = {
   iconHover: false,
@@ -21,7 +21,7 @@ const jettonLogoState = atom({
 export const useJettonLogo = () => {
   const [jettonLogo, setJettonLogo] = useRecoilState(jettonLogoState);
   const { jettonImage } = useJettonStore();
-  const { id }: { id?: string } = useParams();
+  const { id } = useJettonAddress();
 
   const resetJetton = () => setJettonLogo(defaultState);
 

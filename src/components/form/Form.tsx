@@ -16,10 +16,10 @@ import { Input } from "components/form/input";
 import { LogoAlertPopup } from "components/logoAlertPopup";
 import { useJettonLogo } from "hooks/useJettonLogo";
 import coinLogoHover from "assets/icons/coin-logo-hover.svg";
-import { useParams } from "react-router-dom";
 import { StyledTopImg } from "pages/jetton/styled";
 import LoadingImage from "components/LoadingImage";
 import { AppHeading } from "components/appHeading";
+import { useJettonAddress } from "hooks/useJettonAddress";
 
 interface FormProps {
   onSubmit: (values: any) => Promise<void>;
@@ -35,7 +35,7 @@ export function Form({ onSubmit, inputs, disableExample, submitText, defaultValu
   const { jettonLogo, setIconHover } = useJettonLogo();
   const [logoAlertPopup, setLogoAlertPopup] = useState(false);
   const [editLogoPopup, setEditLogoPopup] = useState(false);
-  const { id } = useParams();
+  const { id } = useJettonAddress();
   const tokenImage = inputs.filter((i) => i.name === "tokenImage")?.[0];
   const { control, handleSubmit, formState, setValue, clearErrors, watch, getValues } = useForm({
     mode: "onSubmit",

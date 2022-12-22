@@ -1,8 +1,5 @@
 import { Box } from "@mui/material";
-import { styled } from "@mui/system";
-import { Popup } from "components/Popup";
 import useJettonStore from "store/jetton-store/useJettonStore";
-import { useState } from "react";
 import { onchainFormSpec } from "pages/deployer/data";
 import { Form } from "components/form";
 import { JettonStoreState } from "store/jetton-store";
@@ -10,7 +7,6 @@ import { jettonDeployController } from "lib/deploy-controller";
 import WalletConnection from "services/wallet-connection";
 import { Address } from "ton";
 import useNotification from "hooks/useNotification";
-import { AppButton } from "components/appButton";
 import { useSetRecoilState } from "recoil";
 import { jettonActionsState } from "pages/jetton/actions/jettonActions";
 
@@ -43,10 +39,13 @@ const createDefaults = (state: JettonStoreState) => {
 
 const inputs = getInputs();
 
-function UpdateMetadata() {
+interface UpdateMetadataProps {
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+function UpdateMetadata({ setOpen }: UpdateMetadataProps) {
   const store = useJettonStore();
   const { isAdmin, getJettonDetails, jettonMaster } = store;
-  const [open, setOpen] = useState(false);
   const setActionInProgress = useSetRecoilState(jettonActionsState);
   const { showNotification } = useNotification();
 
@@ -87,23 +86,17 @@ function UpdateMetadata() {
   const defaultValues = createDefaults(store);
 
   return (
-    <StyledContainer>
-      <AppButton onClick={() => setOpen(true)}>Update metadata</AppButton>
-      <Popup maxWidth={600} open={open} onClose={() => setOpen(false)}>
-        <Form
-          submitText="Update metadata"
-          disableExample={true}
-          onSubmit={onSubmit}
-          inputs={inputs}
-          defaultValues={defaultValues}
-        />
-      </Popup>
-    </StyledContainer>
+    <Box sx={{ maxWidth: 600 }}>
+      <Form
+        submitText="Save"
+        disableExample={true}
+        onSubmit={onSubmit}
+        inputs={inputs}
+        defaultValues={defaultValues}
+        onCancel={() => setOpen(false)}
+      />
+    </Box>
   );
 }
 
 export default UpdateMetadata;
-
-export const StyledContainer = styled(Box)({
-  height: 40,
-});

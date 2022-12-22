@@ -9,7 +9,9 @@ import { Address } from "ton";
 import { useEffect } from "react";
 import { useJettonAddress } from "hooks/useJettonAddress";
 
-const { persistAtom } = recoilPersist();
+const { persistAtom } = recoilPersist({
+  key: "addressHistory",
+});
 
 const addressHistoryState = atom({
   key: "addressHistory",
@@ -24,6 +26,9 @@ export function useAddressHistory() {
   const { showNotification } = useNotification();
   const { id } = useJettonAddress();
 
+  const addAddress = (address: string) =>
+    setAddresses((prev: string[]) => [address, ...prev.filter((a) => a !== address)].slice(0, 20));
+
   const resetAddresses = () => {
     setAddresses([]);
     setActive(false);
@@ -36,7 +41,7 @@ export function useAddressHistory() {
     setActive(false);
     setValue("");
 
-    setAddresses((prev: string[]) => [address, ...prev.filter((a) => a !== address)]);
+    addAddress(address);
 
     navigate(`${ROUTES.jetton}/${address}`);
   };
@@ -51,9 +56,7 @@ export function useAddressHistory() {
 
     const transformedAddress = Address.parse(address!).toFriendly();
 
-    setAddresses((prev: string[]) =>
-      [transformedAddress, ...prev.filter((a) => a !== transformedAddress)].slice(0, 20),
-    );
+    addAddress(transformedAddress);
     setValue("");
     setActive(false);
 
@@ -61,7 +64,7 @@ export function useAddressHistory() {
   };
 
   useEffect(() => {
-    id && setAddresses((prev: string[]) => [id, ...prev.filter((a) => a !== id)].slice(0, 20));
+    id && addAddress(id);
   }, []);
 
   return {

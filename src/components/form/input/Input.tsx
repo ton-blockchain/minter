@@ -21,6 +21,7 @@ interface InputProps {
   description: string;
   disableExample?: boolean;
   zeroPadding?: boolean;
+  showDefault?: boolean;
 }
 
 export function Input({
@@ -38,19 +39,19 @@ export function Input({
   disableExample = false,
   validate,
   zeroPadding,
+  showDefault,
 }: InputProps) {
   const ref = useRef<any>();
 
   const onFocus = () => {
     clearErrors(name);
   };
-
   return (
     <StyledContainer>
       <Controller
         name={name}
         control={control}
-        defaultValue={disabled ? defaultValue : ""}
+        defaultValue={showDefault ? defaultValue : ""}
         rules={{
           required: errorMessage,
         }}

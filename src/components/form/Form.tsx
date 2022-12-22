@@ -149,7 +149,7 @@ export function Form({
       <StyledFormInputs>
         {inputs
           .filter((i) => i.name !== "tokenImage")
-          .filter((i) => onCancel && i.name !== "decimals")
+          .filter((i) => !i.disabled)
           .map((spec: any, index: number) => {
             return (
               <Input

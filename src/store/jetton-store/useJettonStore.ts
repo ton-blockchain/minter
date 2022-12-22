@@ -8,17 +8,16 @@ import { jettonStateAtom } from ".";
 import QuestiomMarkImg from "assets/icons/question.png";
 import { useCallback } from "react";
 import useNotification from "hooks/useNotification";
-import { useParams } from "react-router-dom";
 import useConnectionStore from "store/connection-store/useConnectionStore";
 import { getUrlParam, isValidAddress } from "utils";
+import { useJettonAddress } from "hooks/useJettonAddress";
 
 function useJettonStore() {
   const [state, setState] = useRecoilState(jettonStateAtom);
   const reset = useResetRecoilState(jettonStateAtom);
   const { showNotification } = useNotification();
   const { address: connectedWalletAddress, disconnect } = useConnectionStore();
-
-  const { id }: { id?: string } = useParams();
+  const { id } = useJettonAddress();
 
   const getJettonDetails = useCallback(async () => {
     let queryAddress = getUrlParam("address");
@@ -71,8 +70,6 @@ function useJettonStore() {
       }
       const _adminAddress = result.minter.admin.toFriendly();
       const admin = isMyWallet && _adminAddress === connectedWalletAddress;
-
-      // console.log({ result });
 
       let image: string | undefined;
 

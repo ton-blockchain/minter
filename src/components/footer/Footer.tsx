@@ -2,6 +2,7 @@ import React from "react";
 import { Box, Typography } from "@mui/material";
 import { HoverableIcon } from "components/hoverableIcon/HoverableIcon";
 import {
+  CenteringWrapper,
   ContributedWrapper,
   CredentialsWrapper,
   FooterLink,
@@ -46,20 +47,22 @@ export const Footer = () => {
           <Typography variant="body2">© 2022 TON Foundation</Typography>
         </FooterTextBoxLeft>
         <ContributedWrapper>
-          <Typography variant="body2">Contributed with</Typography>
-          <Box mx={0.5}>
-            <img src={heart} alt="Orbs logo" width={12} height={12} />
-          </Box>
-          <Typography variant="body2">by</Typography>
-          <Box mx={0.5}>
-            <img src={orbsLogo} alt="Orbs logo" width={12} height={12} />
-          </Box>
-          <FooterLink
-            sx={{ color: "#5E75E8", display: "flex", alignItems: "center" }}
-            target="_blank"
-            href="https://orbs.com/">
-            Orbs
-          </FooterLink>
+          <Typography variant="body2" sx={{ display: "flex", alignItems: "center" }}>
+            Contributed with
+            <CenteringWrapper mx={0.4}>
+              <img src={heart} alt="Orbs logo" width={12} height={12} />
+            </CenteringWrapper>
+            by
+            <CenteringWrapper mx={0.4}>
+              <img src={orbsLogo} alt="Orbs logo" width={12} height={12} />
+            </CenteringWrapper>
+            <FooterLink
+              sx={{ color: "#5E75E8", display: "flex", alignItems: "center" }}
+              target="_blank"
+              href="https://orbs.com/">
+              Orbs
+            </FooterLink>
+          </Typography>
         </ContributedWrapper>
         <FooterTextBoxRight>
           <FooterLink target="_blank" href="https://t.me/+YDnoBue1Dz81ZTMy">

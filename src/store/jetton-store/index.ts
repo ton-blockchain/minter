@@ -9,6 +9,7 @@ export interface JettonStoreState {
   decimals?: string;
   name?: string;
   jettonImage?: string;
+  isImageBroken?: boolean;
   description?: string;
   adminAddress?: string;
   balance?: BN;
@@ -33,6 +34,7 @@ const jettonStateAtom = atom<JettonStoreState>({
     decimals: "9",
     name: undefined,
     jettonImage: undefined,
+    isImageBroken: false,
     description: undefined,
     adminAddress: undefined,
     balance: undefined,

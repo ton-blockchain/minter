@@ -23,6 +23,7 @@ import BigNumberDisplay from "components/BigNumberDisplay";
 import UpdateMetadata from "pages/jetton/actions/UpdateMetadata";
 import useJettonStore from "store/jetton-store/useJettonStore";
 import { AppHeading } from "components/appHeading";
+import brokenImage from "assets/icons/question.png";
 
 export const Token = () => {
   const {
@@ -40,13 +41,18 @@ export const Token = () => {
     isJettonDeployerFaultyOnChainData,
     jettonLoading,
     decimals,
+    isImageBroken,
   } = useJettonStore();
 
   return (
     <StyledBlock sx={{ width: "calc(55% - 15px)" }}>
       <StyledTop>
         <StyledTopImg>
-          <LoadingImage src={jettonImage} alt="jetton image" loading={jettonLoading} />
+          <LoadingImage
+            src={!isImageBroken ? jettonImage : brokenImage}
+            alt="jetton image"
+            loading={jettonLoading}
+          />
         </StyledTopImg>
         <StyledTopText>
           <LoadingContainer loading={jettonLoading} loaderWidth="80px">

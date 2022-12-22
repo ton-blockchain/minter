@@ -160,6 +160,7 @@ export function Form({ onSubmit, inputs, disableExample, submitText, defaultValu
                 disabled={spec.disabled}
                 errorMessage={spec.errorMessage}
                 validate={spec.validate}
+                showDefault={spec.showDefault}
               />
             );
           })}

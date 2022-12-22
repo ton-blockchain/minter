@@ -74,6 +74,12 @@ function useJettonStore() {
       let image: string | undefined;
 
       if (result.minter.metadata.image) {
+        const img = new Image();
+        img.src = result.minter.metadata.image;
+        img.onerror = () => {
+          setState((prev) => ({ ...prev, isImageBroken: true }));
+        };
+
         image = result.minter.metadata.image;
       } else if (result.minter.metadata.image_data) {
         try {

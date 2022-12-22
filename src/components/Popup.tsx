@@ -10,7 +10,7 @@ export interface Props {
   backgroundColor?: string;
   blur?: boolean;
   className?: string;
-  maxWidth: number;
+  maxWidth: number | string;
   hideCloseButton?: boolean;
   paddingTop?: boolean;
 }

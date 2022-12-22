@@ -11,12 +11,14 @@ import TxLoader from "components/TxLoader";
 import { Typography } from "@mui/material";
 import { useRecoilValue } from "recoil";
 import { jettonActionsState } from "pages/jetton/actions/jettonActions";
+import { useJettonAddress } from "hooks/useJettonAddress";
 
 export const Jetton = () => {
   const { id }: { id?: string } = useParams();
   const { address, isConnecting } = useConnectionStore();
   const actionInProgress = useRecoilValue(jettonActionsState);
   const { getJettonDetails } = useJettonStore();
+  useJettonAddress();
 
   useEffect(() => {
     if (id && !isConnecting) {

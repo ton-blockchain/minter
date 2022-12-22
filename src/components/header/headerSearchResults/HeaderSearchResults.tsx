@@ -25,7 +25,7 @@ export const HeaderSearchResults: React.FC<HeaderSearchResultsProps> = ({
   return (
     <SearchResultsWrapper>
       {searchResults.map((result) => (
-        <SearchResultsItem onClick={() => onItemClick(result)}>
+        <SearchResultsItem key={result} onClick={() => onItemClick(result)}>
           <CenteringWrapper>
             <CenteringWrapper mr={1.5}>
               <img width={18} height={18} src={recentSearch} alt="Search Icon" />

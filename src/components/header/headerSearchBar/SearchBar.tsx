@@ -36,7 +36,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ example, resetExample, clo
       if (event.code === "Enter" || event.code === "NumpadEnter") {
         event.preventDefault();
         event.target.blur();
-        onSubmit();
+        onSubmit(addressInput.value);
         closeMenu?.();
       }
     };
@@ -78,7 +78,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ example, resetExample, clo
                 height={34}
                 width={40}
                 onClick={() => {
-                  onSubmit();
+                  onSubmit(addressInput.value);
                   closeMenu?.();
                 }}>
                 Go

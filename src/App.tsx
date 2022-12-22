@@ -10,6 +10,7 @@ import analytics from "services/analytics";
 import { Footer } from "components/footer";
 import { Header } from "components/header";
 import { useJettonLogo } from "hooks/useJettonLogo";
+import { useJettonAddress } from "hooks/useJettonAddress";
 
 analytics.init();
 
@@ -55,6 +56,7 @@ const App = () => {
   const { connectOnLoad } = useConnectionStore();
   const { resetJetton } = useJettonLogo();
   const location = useLocation();
+  useJettonAddress();
 
   useEffect(() => {
     resetJetton();

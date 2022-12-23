@@ -70,10 +70,6 @@ class WalletConnection {
     }
 
     this.connection = new TonConnection(prov);
-    console.log("hi");
-    // @ts-ignore
-    console.log(await prov.connector.getWallets());
-    console.log("hi2");
     return this.connection.connect();
   }
 }

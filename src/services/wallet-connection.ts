@@ -55,11 +55,6 @@ class WalletConnection {
           onSessionLinkReady: (l) => {
             onLinkReady(l);
           },
-          storage: {
-            getItem: async (key) => localStorage.getItem(key),
-            setItem: async (key, value) => localStorage.setItem(key, value),
-            removeItem: async (key) => localStorage.removeItem(key),
-          },
         });
         break;
       case Providers.OPEN_MASK:

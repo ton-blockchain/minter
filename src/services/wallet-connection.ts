@@ -53,8 +53,12 @@ class WalletConnection {
           },
           manifestUrl: "https://minter.ton.org/tonconnect-manifest.json",
           onSessionLinkReady: (l) => {
-            console.log(l);
             onLinkReady(l);
+          },
+          storage: {
+            getItem: async (key) => localStorage.getItem(key),
+            setItem: async (key, value) => localStorage.setItem(key, value),
+            removeItem: async (key) => localStorage.removeItem(key),
           },
         });
         break;
@@ -66,6 +70,10 @@ class WalletConnection {
     }
 
     this.connection = new TonConnection(prov);
+    console.log("hi");
+    // @ts-ignore
+    console.log(await prov.connector.getWallets());
+    console.log("hi2");
     return this.connection.connect();
   }
 }

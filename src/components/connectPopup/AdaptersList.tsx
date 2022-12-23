@@ -59,26 +59,22 @@ const adapterConfig = {
     name: "Tonhub",
     icon: TonhubImg,
     mobileCompatible: true,
-    description: "A mobile wallet in your pocket",
   },
   [Providers.TONKEEPER]: {
     name: "Tonkeeper",
     icon: "https://tonkeeper.com/assets/tonconnect-icon.png", // TODO
     mobileCompatible: true,
-    description: "Tonkeeper", // TODO
   },
 
   [Providers.EXTENSION]: {
     name: "Google Chrome Plugin",
     icon: ChromeExtImg,
     mobileCompatible: false,
-    description: "TON Wallet Plugin for Google Chrome",
   },
   [Providers.OPEN_MASK]: {
     name: "OpenMask",
     icon: OpenMaskImg,
     mobileCompatible: false,
-    description: "A TON Wallet in your Browser",
   },
 };
 
@@ -98,8 +94,7 @@ function AdaptersList({ onClose, select, open, adapters }: Props) {
             .filter((a) => !isMobile || adapterConfig[a.type].mobileCompatible)
             .map((adapter) => {
               const { type } = adapter;
-              // @ts-ignore todo sy
-              const { icon, name, description } = adapterConfig[type];
+              const { icon, name } = adapterConfig[type];
 
               return (
                 <StyledListItem disablePadding key={type}>
@@ -107,7 +102,6 @@ function AdaptersList({ onClose, select, open, adapters }: Props) {
                     <StyledIcon src={icon} />
                     <StyledListItemRight theme={theme}>
                       <Typography variant="h5">{name}</Typography>
-                      <Typography>{description}</Typography>
                     </StyledListItemRight>
                   </StyledListItemButton>
                 </StyledListItem>

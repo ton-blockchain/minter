@@ -111,7 +111,7 @@ function DeployerPage() {
     <Screen>
       <TxLoader open={isLoading}>
         <StyledTxLoaderContent>
-          <Typography>Deploying...</Typography>
+          <Typography>Deploying... Check your wallet for a transaction</Typography>
         </StyledTxLoaderContent>
       </TxLoader>
       <ScreenContent removeBackground>

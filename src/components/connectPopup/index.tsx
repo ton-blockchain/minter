@@ -21,9 +21,11 @@ const SyledContainer = styled(Box)({
 function ConnectPopup() {
   const [sessionLink, setSessionLink] = useState<string | null>(null);
   const [showQr, setShowQr] = useState(false);
+  const [selectedProvider, setSelectedProvider] = useState<Providers | null>(null);
   const { connect, resetState, toggleConnect, showConnect } = useConnectionStore();
 
   const onSelect = async (provider: Providers) => {
+    setSelectedProvider(provider);
     setSessionLink(null);
     const onSessionLinkCreated = (value: string) => {
       if (isMobile) {
@@ -38,14 +40,13 @@ function ConnectPopup() {
         setShowQr(true);
       }
       await connect(provider, onSessionLinkCreated);
-      console.log("after ze connect");
-      // toggleConnect(false);
+      toggleConnect(false);
     } catch (error) {
       console.log(error);
       resetState();
     } finally {
-      // setShowQr(false);
-      // setSessionLink(null);
+      setShowQr(false);
+      setSessionLink(null);
     }
   };
 
@@ -64,7 +65,12 @@ function ConnectPopup() {
     <Popup open={showConnect} onClose={close} maxWidth={360} hideCloseButton paddingTop>
       <SyledContainer>
         <AdaptersList adapters={providers} onClose={close} open={!showQr} select={onSelect} />
-        <QR open={showQr} link={sessionLink} onClose={onCancel} />
+        <QR
+          open={showQr}
+          walletName={selectedProvider ?? ""}
+          link={sessionLink}
+          onClose={onCancel}
+        />
       </SyledContainer>
     </Popup>
   );

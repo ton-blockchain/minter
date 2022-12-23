@@ -16,10 +16,10 @@ export enum Providers {
   OPEN_MASK = "open_mask",
 }
 export const providers: { type: Providers }[] = [
-  { type: Providers.TON_HUB },
-  { type: Providers.EXTENSION },
   { type: Providers.TONKEEPER },
+  { type: Providers.TON_HUB },
   { type: Providers.OPEN_MASK },
+  { type: Providers.EXTENSION },
 ];
 
 export const EnvProfiles = {

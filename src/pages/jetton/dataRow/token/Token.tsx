@@ -23,6 +23,7 @@ import BigNumberDisplay from "components/BigNumberDisplay";
 import UpdateMetadata from "pages/jetton/actions/UpdateMetadata";
 import useJettonStore from "store/jetton-store/useJettonStore";
 import { AppHeading } from "components/appHeading";
+import brokenImage from "assets/icons/question.png";
 
 export const Token = () => {
   const {
@@ -40,13 +41,18 @@ export const Token = () => {
     isJettonDeployerFaultyOnChainData,
     jettonLoading,
     decimals,
+    isImageBroken,
   } = useJettonStore();
 
   return (
-    <StyledBlock>
+    <StyledBlock sx={{ width: "calc(55% - 15px)" }}>
       <StyledTop>
         <StyledTopImg>
-          <LoadingImage src={jettonImage} alt="jetton image" loading={jettonLoading} />
+          <LoadingImage
+            src={!isImageBroken ? jettonImage : brokenImage}
+            alt="jetton image"
+            loading={jettonLoading}
+          />
         </StyledTopImg>
         <StyledTopText>
           <LoadingContainer loading={jettonLoading} loaderWidth="80px">
@@ -55,31 +61,18 @@ export const Token = () => {
             )}
           </LoadingContainer>
           <LoadingContainer loading={jettonLoading} loaderWidth="150px">
-            {description && (
+            <Tooltip arrow title={description && description?.length > 80 ? description : ""}>
               <Box sx={{ maxWidth: 300, maxHeight: 60 }}>
-                {description.length > 100 ? (
-                  <Tooltip arrow title={description}>
-                    <Box>
-                      <AppHeading
-                        text={description.slice(0, 100) + "..."}
-                        variant="h5"
-                        fontWeight={500}
-                        fontSize={16}
-                        color="#728A96"
-                      />
-                    </Box>
-                  </Tooltip>
-                ) : (
-                  <AppHeading
-                    text={description}
-                    variant="h5"
-                    fontWeight={500}
-                    fontSize={16}
-                    color="#728A96"
-                  />
-                )}
+                <AppHeading
+                  text={description || "Description"}
+                  limitText={80}
+                  variant="h4"
+                  fontWeight={500}
+                  fontSize={16}
+                  color="#728A96"
+                />
               </Box>
-            )}
+            </Tooltip>
           </LoadingContainer>
         </StyledTopText>
       </StyledTop>
@@ -88,7 +81,6 @@ export const Token = () => {
           {getFaultyMetadataWarning(adminRevokedOwnership)}
         </Alert>
       )}
-
       <StyledCategoryFields>
         <DataRow
           description="On-chain smart contract address of the Jetton parent (jetton-minter.fc)"

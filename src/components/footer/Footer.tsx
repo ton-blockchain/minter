@@ -2,6 +2,7 @@ import React from "react";
 import { Box, Typography } from "@mui/material";
 import { HoverableIcon } from "components/hoverableIcon/HoverableIcon";
 import {
+  CenteringWrapper,
   ContributedWrapper,
   CredentialsWrapper,
   FooterLink,
@@ -15,6 +16,7 @@ import {
 import telegram from "assets/icons/telegram.svg";
 import telegramHovered from "assets/icons/telegram-hover.svg";
 import github from "assets/icons/github.svg";
+import orbsLogo from "assets/icons/orbs.svg";
 import githubHovered from "assets/icons/github-hover.svg";
 import { AppLogo } from "components/appLogo";
 import heart from "assets/icons/heart.svg";
@@ -45,11 +47,19 @@ export const Footer = () => {
           <Typography variant="body2">© 2022 TON Foundation</Typography>
         </FooterTextBoxLeft>
         <ContributedWrapper>
-          <Typography variant="body2">
-            Contributed with {` `}
-            <img src={heart} alt="Orbs logo" width={9} height={7} />
-            {` `} by {` `}
-            <FooterLink sx={{ color: "#CF84D1" }} target="_blank" href="https://orbs.com/">
+          <Typography variant="body2" sx={{ display: "flex", alignItems: "center" }}>
+            Contributed with
+            <CenteringWrapper mx={0.4}>
+              <img src={heart} alt="Orbs logo" width={12} height={12} />
+            </CenteringWrapper>
+            by
+            <CenteringWrapper mx={0.4}>
+              <img src={orbsLogo} alt="Orbs logo" width={12} height={12} />
+            </CenteringWrapper>
+            <FooterLink
+              sx={{ color: "#5E75E8", display: "flex", alignItems: "center" }}
+              target="_blank"
+              href="https://orbs.com/">
               Orbs
             </FooterLink>
           </Typography>

@@ -116,7 +116,7 @@ function useJettonStore() {
           decimals: result.minter.metadata.decimals || "9",
           adminAddress: _adminAddress,
           balance: result.jettonWallet ? result.jettonWallet.balance : undefined,
-          jettonAddress: result.jettonWallet?.jWalletAddress.toFriendly(),
+          jettonWalletAddress: result.jettonWallet?.jWalletAddress.toFriendly(),
           jettonMaster: jettonAddress,
           isMyWallet,
           selectedWalletAddress: address,

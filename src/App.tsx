@@ -90,6 +90,7 @@ const App = () => {
         }}>
         <ScreensWrapper>
           <Routes>
+            <Route path="*" element={<Header isInvalidPath />} />
             <Route path="/" element={<Header />}>
               <Route path="/" element={<ContentWrapper />}>
                 <Route path={ROUTES.deployer} element={<DeployerPage />} />

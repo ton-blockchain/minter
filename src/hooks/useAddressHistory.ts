@@ -24,7 +24,7 @@ export function useAddressHistory() {
   const { setActive, setValue, addressInput } = useAddressInput();
   const navigate = useNavigate();
   const { showNotification } = useNotification();
-  const { id } = useJettonAddress();
+  const { id, isAddressEmpty } = useJettonAddress();
 
   const addAddress = (address: string) =>
     setAddresses((prev: string[]) => [address, ...prev.filter((a) => a !== address)].slice(0, 20));
@@ -64,6 +64,12 @@ export function useAddressHistory() {
   };
 
   useEffect(() => {
+    if (
+      (!isAddressEmpty && !id) ||
+      (!id && window.location.pathname === ROUTES.jetton + "/") ||
+      window.location.pathname === ROUTES.jetton
+    )
+      showNotification("Invalid jetton address", "error");
     id && addAddress(id);
   }, []);
 

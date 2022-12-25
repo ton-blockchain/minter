@@ -1,7 +1,7 @@
 import useNotification from "hooks/useNotification";
 import { useForm } from "react-hook-form";
 import useConnectionStore from "store/connection-store/useConnectionStore";
-import { Box, Tooltip } from "@mui/material";
+import { Box, Tooltip, useMediaQuery } from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
 import { AppButton } from "components/appButton";
 import { CenteringWrapper } from "components/header/headerSearchBar/styled";
@@ -36,6 +36,7 @@ export function Form({ onSubmit, inputs, disableExample, submitText, defaultValu
   const [logoAlertPopup, setLogoAlertPopup] = useState(false);
   const [editLogoPopup, setEditLogoPopup] = useState(false);
   const { id } = useJettonAddress();
+  const matches = useMediaQuery("(max-width:599px)");
   const tokenImage = inputs.filter((i) => i.name === "tokenImage")?.[0];
   const { control, handleSubmit, formState, setValue, clearErrors, watch, getValues } = useForm({
     mode: "onSubmit",
@@ -89,25 +90,25 @@ export function Form({ onSubmit, inputs, disableExample, submitText, defaultValu
         onValidate={handleSubmit(onSubmit, onFormError)}
       />
       <Box sx={{ display: "flex" }} mb={3}>
-        <CenteringWrapper sx={{ position: "relative" }}>
-          <img
-            alt="Hover icon"
-            style={{
-              cursor: "pointer",
-              position: "absolute",
-              left: 0,
-              top: 0,
-              opacity: jettonLogo.iconHover ? 0.5 : 0,
-              zIndex: 1,
-            }}
-            onClick={() => setEditLogoPopup(true)}
-            onMouseEnter={() => setIconHover(true)}
-            onMouseLeave={() => setIconHover(false)}
-            src={coinLogoHover}
-            width={101}
-            height={101}
-          />
-          <StyledTopImg>
+        <CenteringWrapper>
+          <StyledTopImg sx={{ position: "relative" }}>
+            <img
+              alt="Hover icon"
+              style={{
+                cursor: "pointer",
+                position: "absolute",
+                left: matches ? -1 : 0,
+                top: matches ? -1 : 0,
+                opacity: jettonLogo.iconHover ? 0.5 : 0,
+                zIndex: 1,
+                width: matches ? 60 : 101,
+                height: matches ? 60 : 101,
+              }}
+              onClick={() => setEditLogoPopup(true)}
+              onMouseEnter={() => setIconHover(true)}
+              onMouseLeave={() => setIconHover(false)}
+              src={coinLogoHover}
+            />
             <LoadingImage
               src={jettonLogo.image}
               loading={jettonLogo.isLoading}

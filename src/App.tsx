@@ -3,7 +3,7 @@ import { Box } from "@mui/system";
 import { createContext, useEffect } from "react";
 import useConnectionStore from "store/connection-store/useConnectionStore";
 import { APP_GRID, ROUTES } from "consts";
-import { Outlet, Route, Routes, useLocation } from "react-router-dom";
+import { Navigate, Outlet, Route, Routes, useLocation } from "react-router-dom";
 import { DeployerPage, Jetton } from "pages";
 import ConnectPopup from "components/connectPopup";
 import analytics from "services/analytics";
@@ -11,6 +11,7 @@ import { Footer } from "components/footer";
 import { Header } from "components/header";
 import { useJettonLogo } from "hooks/useJettonLogo";
 import useNotification from "hooks/useNotification";
+import { useJettonAddress } from "hooks/useJettonAddress";
 
 analytics.init();
 
@@ -83,6 +84,8 @@ const App = () => {
   const { connectOnLoad } = useConnectionStore();
   const { resetJetton } = useJettonLogo();
   const location = useLocation();
+  const { isAddressEmpty, jettonAddress } = useJettonAddress();
+  const { showNotification } = useNotification();
 
   useEffect(() => {
     resetJetton();
@@ -90,6 +93,12 @@ const App = () => {
 
   useEffect(() => {
     connectOnLoad();
+    const isIncorrectAddress = !isAddressEmpty && !jettonAddress;
+    const isEmptyAddress =
+      (!jettonAddress && location.pathname === ROUTES.jetton + "/") ||
+      location.pathname === ROUTES.jetton;
+
+    if (isIncorrectAddress || isEmptyAddress) showNotification("Invalid jetton address", "error");
   }, []);
 
   return (
@@ -106,6 +115,7 @@ const App = () => {
               element={
                 <>
                   <Header />
+                  <Navigate to="/" />
                   <PageNotFound />
                 </>
               }
@@ -114,7 +124,6 @@ const App = () => {
               <Route path="/" element={<ContentWrapper />}>
                 <Route path={ROUTES.deployer} element={<DeployerPage />} />
                 <Route path={ROUTES.jettonId} element={<Jetton />} />
-                <Route path={ROUTES.jetton} element={<Jetton />} />
               </Route>
             </Route>
           </Routes>

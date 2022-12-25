@@ -1,6 +1,6 @@
 import { atom, useRecoilState } from "recoil";
 import { useAddressInput } from "hooks/useAddressInput";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { isValidAddress } from "utils";
 import useNotification from "hooks/useNotification";
 import { ROUTES } from "consts";
@@ -24,8 +24,7 @@ export function useAddressHistory() {
   const { setActive, setValue, addressInput } = useAddressInput();
   const navigate = useNavigate();
   const { showNotification } = useNotification();
-  const { jettonAddress, isAddressEmpty } = useJettonAddress();
-  const location = useLocation();
+  const { jettonAddress } = useJettonAddress();
 
   const addAddress = (address: string) =>
     setAddresses((prev: string[]) => [address, ...prev.filter((a) => a !== address)].slice(0, 20));
@@ -65,12 +64,6 @@ export function useAddressHistory() {
   };
 
   useEffect(() => {
-    const isIncorrectAddress = !isAddressEmpty && !jettonAddress;
-    const isEmptyAddress =
-      (!jettonAddress && location.pathname === ROUTES.jetton + "/") ||
-      location.pathname === ROUTES.jetton;
-
-    if (isIncorrectAddress || isEmptyAddress) showNotification("Invalid jetton address", "error");
     jettonAddress && addAddress(jettonAddress);
   }, []);
 

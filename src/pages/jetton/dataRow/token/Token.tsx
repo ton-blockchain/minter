@@ -56,9 +56,13 @@ export const Token = () => {
         </StyledTopImg>
         <StyledTopText>
           <LoadingContainer loading={jettonLoading} loaderWidth="80px">
-            {name && (
-              <AppHeading text={name} variant="h2" fontWeight={800} fontSize={20} color="#161C28" />
-            )}
+            <AppHeading
+              text={name || "Jetton name (Symbol)"}
+              variant="h2"
+              fontWeight={800}
+              fontSize={20}
+              color="#161C28"
+            />
           </LoadingContainer>
           <LoadingContainer loading={jettonLoading} loaderWidth="150px">
             <Tooltip arrow title={description && description?.length > 80 ? description : ""}>

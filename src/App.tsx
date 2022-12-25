@@ -10,6 +10,7 @@ import analytics from "services/analytics";
 import { Footer } from "components/footer";
 import { Header } from "components/header";
 import { useJettonLogo } from "hooks/useJettonLogo";
+import useNotification from "hooks/useNotification";
 
 analytics.init();
 
@@ -55,6 +56,16 @@ export const EnvContext = createContext({
   isTestnet: false,
 });
 
+const PageNotFound = () => {
+  const { showNotification } = useNotification();
+
+  useEffect(() => {
+    showNotification("Page not found", "error");
+  }, []);
+
+  return <Box />;
+};
+
 interface ContentWrapperProps {
   children?: any;
 }
@@ -90,7 +101,15 @@ const App = () => {
         }}>
         <ScreensWrapper>
           <Routes>
-            <Route path="*" element={<Header isInvalidPath />} />
+            <Route
+              path="*"
+              element={
+                <>
+                  <Header />
+                  <PageNotFound />
+                </>
+              }
+            />
             <Route path="/" element={<Header />}>
               <Route path="/" element={<ContentWrapper />}>
                 <Route path={ROUTES.deployer} element={<DeployerPage />} />

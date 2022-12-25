@@ -16,13 +16,13 @@ export const Jetton = () => {
   const { address, isConnecting } = useConnectionStore();
   const actionInProgress = useRecoilValue(jettonActionsState);
   const { getJettonDetails } = useJettonStore();
-  const { id } = useJettonAddress();
+  const { jettonAddress } = useJettonAddress();
 
   useEffect(() => {
-    if (id && !isConnecting) {
+    if (jettonAddress && !isConnecting) {
       getJettonDetails();
     }
-  }, [id, getJettonDetails, address, isConnecting]);
+  }, [jettonAddress, getJettonDetails, address, isConnecting]);
 
   return (
     <Screen>

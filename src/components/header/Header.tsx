@@ -15,17 +15,11 @@ import {
 } from "./styled";
 import { EXAMPLE_ADDRESS } from "consts";
 import { Outlet, useLocation } from "react-router-dom";
-import useNotification from "hooks/useNotification";
 
-interface HeaderProps {
-  isInvalidPath?: boolean;
-}
-
-export const Header = ({ isInvalidPath }: HeaderProps) => {
+export const Header = () => {
   const [mobileMenu, setMobileMenu] = useState(false);
   const matches = useMediaQuery("(min-width:900px)");
   const [example, setExample] = useState<string | undefined>(undefined);
-  const { showNotification } = useNotification();
 
   const location = useLocation();
   const topRef = useRef<null | HTMLDivElement>(null);
@@ -37,10 +31,6 @@ export const Header = ({ isInvalidPath }: HeaderProps) => {
   useEffect(() => {
     topRef.current?.scrollIntoView();
   }, [location]);
-
-  useEffect(() => {
-    isInvalidPath && showNotification("Invalid jetton address", "error");
-  }, []);
 
   return (
     <>

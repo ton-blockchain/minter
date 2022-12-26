@@ -124,7 +124,12 @@ function useJettonStore() {
       });
     } catch (error) {
       if (error instanceof Error) {
-        showNotification(error.message, "error");
+        showNotification(
+          !!error.message.match(/exit_code: (11|32)/g)
+            ? `Unable to query. This is probably not a Jetton Contract (${error.message})`
+            : error.message,
+          "error",
+        );
       }
     } finally {
       setState((prevState) => ({

@@ -27,7 +27,7 @@ export const Jetton = () => {
   return (
     <Screen>
       <TxLoader open={actionInProgress}>
-        <Typography>Loading...</Typography>
+        <Typography>Loading... Check your wallet for a pending transaction</Typography>
       </TxLoader>
       <FaultyDeploy />
       <ScreenContent>

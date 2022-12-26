@@ -25,9 +25,10 @@ interface Props {
   onClose: () => void;
   link: string | null;
   open: boolean;
+  walletName: string;
 }
 
-function QR({ onClose, link, open }: Props) {
+function QR({ onClose, link, open, walletName }: Props) {
   if (!open) {
     return null;
   }
@@ -35,7 +36,7 @@ function QR({ onClose, link, open }: Props) {
   return (
     <Fade in>
       <StyledContainer>
-        <Header title="Connect to tonhub" onClose={onClose} />
+        <Header title={`Connect to ${walletName}`} onClose={onClose} />
         <StyledQrBox>
           {link ? (
             <span>

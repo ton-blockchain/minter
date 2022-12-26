@@ -12,12 +12,14 @@ export enum Environments {
 export enum Providers {
   TON_HUB = "tonhub",
   EXTENSION = "ton_wallet",
+  TONKEEPER = "tonkeeper",
   OPEN_MASK = "open_mask",
 }
 export const providers: { type: Providers }[] = [
+  { type: Providers.TONKEEPER },
   { type: Providers.TON_HUB },
-  { type: Providers.EXTENSION },
   { type: Providers.OPEN_MASK },
+  { type: Providers.EXTENSION },
 ];
 
 export const EnvProfiles = {

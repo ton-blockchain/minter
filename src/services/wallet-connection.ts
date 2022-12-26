@@ -2,6 +2,7 @@ import {
   ChromeExtensionWalletProvider,
   TonConnection,
   TonhubProvider,
+  TonkeeperProvider,
   OpenMaskWalletProvider,
 } from "@ton-defi.org/ton-connection";
 import { Providers } from "lib/env-profiles";
@@ -44,6 +45,14 @@ class WalletConnection {
       case Providers.EXTENSION:
         prov = new ChromeExtensionWalletProvider();
         break;
+      case Providers.TONKEEPER:
+        prov = new TonkeeperProvider({
+          manifestUrl: "https://minter.ton.org/tonconnect-manifest.json",
+          onSessionLinkReady: (l) => {
+            onLinkReady(l);
+          },
+        });
+        break;
       case Providers.OPEN_MASK:
         prov = new OpenMaskWalletProvider();
         break;
@@ -53,6 +62,10 @@ class WalletConnection {
 
     this.connection = new TonConnection(prov);
     return this.connection.connect();
+  }
+
+  public static async disconnect() {
+    await this.connection?.disconnect();
   }
 }
 

@@ -67,7 +67,7 @@ function useConnectionStore() {
     }
   };
 
-  const disconnect = () => {
+  const disconnect = async () => {
     setConnectionState((prevState) => ({
       ...prevState,
       address: null,
@@ -75,6 +75,7 @@ function useConnectionStore() {
       adapterId: null,
     }));
     localStorage.removeItem(LOCAL_STORAGE_PROVIDER);
+    await WalletConnection.disconnect();
   };
 
   return {

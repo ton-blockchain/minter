@@ -64,7 +64,7 @@ export const Token = () => {
               <LoadingContainer loading={jettonLoading} loaderWidth="80px">
                 {name && (
                   <AppHeading
-                    text={name}
+                    text={`${name} ${symbol && `(${symbol})`}`}
                     variant="h2"
                     fontWeight={800}
                     fontSize={20}

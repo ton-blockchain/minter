@@ -125,7 +125,7 @@ function useJettonStore() {
     } catch (error) {
       if (error instanceof Error) {
         showNotification(
-          !!error.message.search(/exit_code: (11|32)/g)
+          !!error.message.match(/exit_code: (11|32)/g)
             ? `Unable to query. This is probably not a Jetton Contract (${error.message})`
             : error.message,
           "error",

@@ -6,7 +6,6 @@ import {
   OpenMaskWalletProvider,
 } from "@ton-defi.org/ton-connection";
 import { Providers } from "lib/env-profiles";
-import { disconnect } from "process";
 import { Address } from "ton";
 
 class WalletConnection {

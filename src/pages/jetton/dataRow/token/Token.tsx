@@ -25,6 +25,8 @@ import useJettonStore from "store/jetton-store/useJettonStore";
 import { AppHeading } from "components/appHeading";
 import brokenImage from "assets/icons/question.png";
 import { AppButton } from "components/appButton";
+import pen from "assets/icons/pen.svg";
+import { CenteringWrapper } from "components/footer/styled";
 
 export const Token = () => {
   const {
@@ -58,7 +60,7 @@ export const Token = () => {
                 loading={jettonLoading}
               />
             </StyledTopImg>
-            <StyledTopText>
+            <StyledTopText marginLeft="4px" marginTop="3px">
               <LoadingContainer loading={jettonLoading} loaderWidth="80px">
                 {name && (
                   <AppHeading
@@ -72,7 +74,7 @@ export const Token = () => {
               </LoadingContainer>
               <LoadingContainer loading={jettonLoading} loaderWidth="150px">
                 <Tooltip arrow title={description && description?.length > 80 ? description : ""}>
-                  <Box sx={{ maxWidth: 300, maxHeight: 60 }}>
+                  <Box marginTop=".5px" sx={{ maxWidth: 300, maxHeight: 60 }}>
                     <AppHeading
                       text={description || "Description"}
                       limitText={80}
@@ -88,7 +90,16 @@ export const Token = () => {
             {isAdmin && !adminRevokedOwnership && !jettonLoading && (
               <Box sx={{ alignSelf: "start" }}>
                 <AppButton width={113} height={32} transparent onClick={() => setOpenEdit(true)}>
-                  Edit token
+                  <CenteringWrapper>
+                    <img
+                      src={pen}
+                      alt="Pen Icon"
+                      width={15}
+                      height={15}
+                      style={{ marginRight: 4 }}
+                    />
+                    Edit token
+                  </CenteringWrapper>
                 </AppButton>
               </Box>
             )}

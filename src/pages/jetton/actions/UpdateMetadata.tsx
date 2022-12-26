@@ -1,4 +1,3 @@
-import { Box } from "@mui/material";
 import useJettonStore from "store/jetton-store/useJettonStore";
 import { onchainFormSpec } from "pages/deployer/data";
 import { Form } from "components/form";
@@ -86,16 +85,14 @@ function UpdateMetadata({ setOpen }: UpdateMetadataProps) {
   const defaultValues = createDefaults(store);
 
   return (
-    <Box sx={{ maxWidth: 600 }}>
-      <Form
-        submitText="Save"
-        disableExample={true}
-        onSubmit={onSubmit}
-        inputs={inputs}
-        defaultValues={defaultValues}
-        onCancel={() => setOpen(false)}
-      />
-    </Box>
+    <Form
+      submitText="Save"
+      disableExample={true}
+      onSubmit={onSubmit}
+      inputs={inputs}
+      defaultValues={defaultValues}
+      onCancel={() => setOpen(false)}
+    />
   );
 }
 

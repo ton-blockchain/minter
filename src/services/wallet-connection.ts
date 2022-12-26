@@ -47,10 +47,6 @@ class WalletConnection {
         break;
       case Providers.TONKEEPER:
         prov = new TonkeeperProvider({
-          connectionDetails: {
-            bridgeUrl: "https://bridge.tonapi.io/bridge",
-            universalLink: "https://app.tonkeeper.com/ton-connect",
-          },
           manifestUrl: "https://minter.ton.org/tonconnect-manifest.json",
           onSessionLinkReady: (l) => {
             onLinkReady(l);
@@ -66,6 +62,10 @@ class WalletConnection {
 
     this.connection = new TonConnection(prov);
     return this.connection.connect();
+  }
+
+  public static async disconnect() {
+    await this.connection?.disconnect();
   }
 }
 

@@ -11,7 +11,6 @@ import { Footer } from "components/footer";
 import { Header } from "components/header";
 import { useJettonLogo } from "hooks/useJettonLogo";
 import useNotification from "hooks/useNotification";
-import { useJettonAddress } from "hooks/useJettonAddress";
 
 analytics.init();
 
@@ -84,8 +83,6 @@ const App = () => {
   const { connectOnLoad } = useConnectionStore();
   const { resetJetton } = useJettonLogo();
   const location = useLocation();
-  const { isAddressEmpty, jettonAddress } = useJettonAddress();
-  const { showNotification } = useNotification();
 
   useEffect(() => {
     resetJetton();
@@ -93,12 +90,6 @@ const App = () => {
 
   useEffect(() => {
     connectOnLoad();
-    const isIncorrectAddress = !isAddressEmpty && !jettonAddress;
-    const isEmptyAddress =
-      (!jettonAddress && location.pathname === ROUTES.jetton + "/") ||
-      location.pathname === ROUTES.jetton;
-
-    if (isIncorrectAddress || isEmptyAddress) showNotification("Invalid jetton address", "error");
   }, []);
 
   return (

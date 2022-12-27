@@ -15,8 +15,15 @@ import { jettonActionsState } from "pages/jetton/actions/jettonActions";
 function BurnJettonsAction() {
   const [amount, setAmount] = useState<number | undefined>(undefined);
   const [open, setOpen] = useState(false);
-  const { jettonMaster, symbol, getJettonDetails, balance, jettonAddress, isMyWallet, decimals } =
-    useJettonStore();
+  const {
+    jettonMaster,
+    symbol,
+    getJettonDetails,
+    balance,
+    jettonWalletAddress,
+    isMyWallet,
+    decimals,
+  } = useJettonStore();
   const { showNotification } = useNotification();
   const [actionInProgress, setActionInProgress] = useRecoilState(jettonActionsState);
 
@@ -50,7 +57,7 @@ function BurnJettonsAction() {
     try {
       setActionInProgress(true);
       const connection = WalletConnection.getConnection();
-      await jettonDeployController.burnJettons(connection, valueDecimals, jettonAddress!);
+      await jettonDeployController.burnJettons(connection, valueDecimals, jettonWalletAddress!);
       const message = `Successfully burned ${amount.toLocaleString()} ${symbol}`;
       showNotification(message, "success");
       getJettonDetails();

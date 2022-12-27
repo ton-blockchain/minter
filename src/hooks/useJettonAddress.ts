@@ -8,16 +8,16 @@ export const useJettonAddress = () => {
   const { id }: { id?: string } = useParams();
   let isAddressValid = isValidAddress(id || "", "Invalid jetton address");
 
-  let verifiedAddress = isAddressValid ? Address.parse(id!).toFriendly() : null;
+  let jettonAddress = isAddressValid ? Address.parse(id!).toFriendly() : null;
 
   useEffect(() => {
-    if (id && verifiedAddress && verifiedAddress !== id) {
-      navigate(`/jetton/${verifiedAddress}`, { replace: true });
+    if (id && jettonAddress && jettonAddress !== id) {
+      navigate(`/jetton/${jettonAddress}`, { replace: true });
     }
   }, [id]);
 
   return {
-    id: verifiedAddress,
+    jettonAddress,
     isAddressEmpty: !id,
   };
 };

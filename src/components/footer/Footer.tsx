@@ -20,6 +20,7 @@ import orbsLogo from "assets/icons/orbs.svg";
 import githubHovered from "assets/icons/github-hover.svg";
 import { AppLogo } from "components/appLogo";
 import heart from "assets/icons/heart.svg";
+import { Outlet } from "react-router-dom";
 
 export const Footer = () => {
   return (
@@ -70,6 +71,7 @@ export const Footer = () => {
           </FooterLink>
         </FooterTextBoxRight>
       </CredentialsWrapper>
+      <Outlet />
     </FooterWrapper>
   );
 };

@@ -40,7 +40,7 @@ export const Token = () => {
     jettonMaster,
     persistenceType,
     totalSupply,
-    jettonAddress,
+    jettonWalletAddress,
     isJettonDeployerFaultyOnChainData,
     jettonLoading,
     decimals,
@@ -123,7 +123,7 @@ export const Token = () => {
               address={adminAddress}
               description="Account address that can mint tokens freely and change metadata"
               message={getAdminMessage(
-                jettonAddress,
+                jettonWalletAddress,
                 symbol,
                 adminRevokedOwnership,
                 isAdmin,

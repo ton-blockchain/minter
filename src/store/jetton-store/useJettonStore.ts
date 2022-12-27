@@ -17,7 +17,7 @@ function useJettonStore() {
   const reset = useResetRecoilState(jettonStateAtom);
   const { showNotification } = useNotification();
   const { address: connectedWalletAddress, disconnect } = useConnectionStore();
-  const { id } = useJettonAddress();
+  const { jettonAddress } = useJettonAddress();
 
   const getJettonDetails = useCallback(async () => {
     let queryAddress = getUrlParam("address");
@@ -36,12 +36,12 @@ function useJettonStore() {
 
     reset();
 
-    if (!id || !isValidAddress(id)) {
+    if (!jettonAddress || !isValidAddress(jettonAddress)) {
       showNotification("Invalid jetton address", "error");
       return;
     }
 
-    const parsedJettonMaster = Address.parse(id);
+    const parsedJettonMaster = Address.parse(jettonAddress);
 
     let connection;
 
@@ -116,8 +116,8 @@ function useJettonStore() {
           decimals: result.minter.metadata.decimals || "9",
           adminAddress: _adminAddress,
           balance: result.jettonWallet ? result.jettonWallet.balance : undefined,
-          jettonAddress: result.jettonWallet?.jWalletAddress.toFriendly(),
-          jettonMaster: id,
+          jettonWalletAddress: result.jettonWallet?.jWalletAddress.toFriendly(),
+          jettonMaster: jettonAddress,
           isMyWallet,
           selectedWalletAddress: address,
         };
@@ -137,7 +137,7 @@ function useJettonStore() {
         jettonLoading: false,
       }));
     }
-  }, [setState, showNotification, connectedWalletAddress, id, reset]);
+  }, [setState, showNotification, connectedWalletAddress, jettonAddress, reset]);
 
   return {
     ...state,

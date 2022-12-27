@@ -43,7 +43,7 @@ export function Form({
   const { jettonLogo, setIconHover } = useJettonLogo();
   const [logoAlertPopup, setLogoAlertPopup] = useState(false);
   const [editLogoPopup, setEditLogoPopup] = useState(false);
-  const { id } = useJettonAddress();
+  const { jettonAddress } = useJettonAddress();
   const matches = useMediaQuery("(max-width:599px)");
   const tokenImage = inputs.filter((i) => i.name === "tokenImage")?.[0];
   const { control, handleSubmit, formState, setValue, clearErrors, watch, getValues } = useForm({
@@ -85,13 +85,13 @@ export function Form({
         onSubmit(getValues());
       }, onFormError)}>
       <EditLogoPopup
-        showExample={!id}
+        showExample={!jettonAddress}
         showPopup={editLogoPopup}
         tokenImage={tokenImage}
         close={closeEditLogoPopup}
       />
       <LogoAlertPopup
-        isUpdateText={!!id}
+        isUpdateText={!!jettonAddress}
         showPopup={logoAlertPopup}
         close={closeAlertLogoPopup}
         onValidate={handleSubmit(onSubmit, onFormError)}

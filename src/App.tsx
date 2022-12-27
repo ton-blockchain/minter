@@ -3,13 +3,14 @@ import { Box } from "@mui/system";
 import { createContext, useEffect } from "react";
 import useConnectionStore from "store/connection-store/useConnectionStore";
 import { APP_GRID, ROUTES } from "consts";
-import { Outlet, Route, Routes, useLocation } from "react-router-dom";
+import { Navigate, Outlet, Route, Routes, useLocation } from "react-router-dom";
 import { DeployerPage, Jetton } from "pages";
 import ConnectPopup from "components/connectPopup";
 import analytics from "services/analytics";
 import { Footer } from "components/footer";
 import { Header } from "components/header";
 import { useJettonLogo } from "hooks/useJettonLogo";
+import useNotification from "hooks/useNotification";
 
 analytics.init();
 
@@ -55,6 +56,16 @@ export const EnvContext = createContext({
   isTestnet: false,
 });
 
+const PageNotFound = () => {
+  const { showNotification } = useNotification();
+
+  useEffect(() => {
+    showNotification("Page not found", "error");
+  }, []);
+
+  return <Box />;
+};
+
 interface ContentWrapperProps {
   children?: any;
 }
@@ -90,11 +101,20 @@ const App = () => {
         }}>
         <ScreensWrapper>
           <Routes>
+            <Route
+              path="*"
+              element={
+                <>
+                  <Header />
+                  <Navigate to="/" />
+                  <PageNotFound />
+                </>
+              }
+            />
             <Route path="/" element={<Header />}>
               <Route path="/" element={<ContentWrapper />}>
                 <Route path={ROUTES.deployer} element={<DeployerPage />} />
                 <Route path={ROUTES.jettonId} element={<Jetton />} />
-                <Route path={ROUTES.jetton} element={<Jetton />} />
               </Route>
             </Route>
           </Routes>

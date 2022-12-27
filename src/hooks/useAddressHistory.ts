@@ -24,7 +24,7 @@ export function useAddressHistory() {
   const { setActive, setValue, addressInput } = useAddressInput();
   const navigate = useNavigate();
   const { showNotification } = useNotification();
-  const { id } = useJettonAddress();
+  const { jettonAddress } = useJettonAddress();
 
   const addAddress = (address: string) =>
     setAddresses((prev: string[]) => [address, ...prev.filter((a) => a !== address)].slice(0, 20));
@@ -64,7 +64,7 @@ export function useAddressHistory() {
   };
 
   useEffect(() => {
-    id && addAddress(id);
+    jettonAddress && addAddress(jettonAddress);
   }, []);
 
   return {

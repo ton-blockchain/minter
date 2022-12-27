@@ -27,9 +27,17 @@ interface FormProps {
   disableExample?: boolean;
   submitText: string;
   defaultValues?: {};
+  onCancel?: () => void;
 }
 
-export function Form({ onSubmit, inputs, disableExample, submitText, defaultValues }: FormProps) {
+export function Form({
+  onSubmit,
+  inputs,
+  disableExample,
+  submitText,
+  defaultValues,
+  onCancel,
+}: FormProps) {
   const { showNotification } = useNotification();
   const { address, toggleConnect } = useConnectionStore();
   const { jettonLogo, setIconHover } = useJettonLogo();
@@ -43,7 +51,6 @@ export function Form({ onSubmit, inputs, disableExample, submitText, defaultValu
     reValidateMode: "onChange",
     defaultValues,
   });
-
   const errors = formState.errors as any;
   const onFormError = (value: any) => {
     const firstError = value[Object.keys(value)[0]];
@@ -143,6 +150,7 @@ export function Form({ onSubmit, inputs, disableExample, submitText, defaultValu
       <StyledFormInputs>
         {inputs
           .filter((i) => i.name !== "tokenImage")
+          .filter((i) => !i.disabled)
           .map((spec: any, index: number) => {
             return (
               <Input
@@ -178,9 +186,24 @@ export function Form({ onSubmit, inputs, disableExample, submitText, defaultValu
             Connect wallet
           </AppButton>
         ) : (
-          <AppButton disabled={jettonLogo.isLoading} width={150} height={44} type="submit">
-            {submitText}
-          </AppButton>
+          <CenteringWrapper sx={{ justifyContent: "center" }}>
+            {onCancel && (
+              <Box sx={{ width: 96, height: 44 }}>
+                <AppButton
+                  disabled={jettonLogo.isLoading}
+                  transparent
+                  onClick={onCancel}
+                  type="button">
+                  Cancel
+                </AppButton>
+              </Box>
+            )}
+            <Box sx={{ width: 110, height: 44 }} ml={2}>
+              <AppButton disabled={jettonLogo.isLoading} type="submit">
+                {submitText}
+              </AppButton>
+            </Box>
+          </CenteringWrapper>
         )}
       </StyledActionBtn>
     </StyledForm>

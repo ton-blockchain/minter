@@ -28,6 +28,10 @@ const JettonFormTitle = styled(Typography)({
   fontSize: 20,
   fontWeight: 800,
   marginBottom: 0.5,
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
+  maxWidth: 300,
 });
 
 export { StyledForm, StyledFormInputs, StyledActionBtn, JettonFormTitle };

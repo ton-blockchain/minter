@@ -2,6 +2,7 @@ import { Box, styled } from "@mui/material";
 
 const StyledContainer = styled(Box)({
   width: "100%",
+  overflow: "auto",
 });
 
 const StyledInputContainer = styled(Box)(({ error }: { error: boolean }) => ({

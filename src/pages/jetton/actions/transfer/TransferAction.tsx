@@ -14,7 +14,7 @@ import { useSetRecoilState } from "recoil";
 import { jettonActionsState } from "pages/jetton/actions/jettonActions";
 
 export const TransferAction = () => {
-  const { balance, symbol, jettonAddress, getJettonDetails, isMyWallet, decimals } =
+  const { balance, symbol, jettonWalletAddress, getJettonDetails, isMyWallet, decimals } =
     useJettonStore();
 
   const [toAddress, setToAddress] = useState<string | undefined>(undefined);
@@ -23,7 +23,7 @@ export const TransferAction = () => {
   const { address: connectedWalletAddress } = useConnectionStore();
   const setActionInProgress = useSetRecoilState(jettonActionsState);
 
-  if (!balance || !jettonAddress || !isMyWallet) {
+  if (!balance || !jettonWalletAddress || !isMyWallet) {
     return null;
   }
 
@@ -48,7 +48,7 @@ export const TransferAction = () => {
         toDecimalsBN(amount!.toString(), decimals!),
         toAddress!,
         connectedWalletAddress!,
-        jettonAddress,
+        jettonWalletAddress,
       );
       setToAddress(undefined);
       setAmount(undefined);

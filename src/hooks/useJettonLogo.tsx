@@ -21,7 +21,7 @@ const jettonLogoState = atom({
 export const useJettonLogo = () => {
   const [jettonLogo, setJettonLogo] = useRecoilState(jettonLogoState);
   const { jettonImage } = useJettonStore();
-  const { id } = useJettonAddress();
+  const { jettonAddress } = useJettonAddress();
 
   const resetJetton = () => setJettonLogo(defaultState);
 
@@ -86,9 +86,9 @@ export const useJettonLogo = () => {
   }, [jettonLogo.logoUrl]);
 
   useEffect(() => {
-    id ? jettonImage && setLogoUrl(jettonImage) : resetJetton();
+    jettonAddress ? jettonImage && setLogoUrl(jettonImage) : resetJetton();
     return () => resetJetton();
-  }, [id]);
+  }, [jettonAddress]);
 
   return { jettonLogo, setLogoUrl, setIconHover, resetJetton };
 };

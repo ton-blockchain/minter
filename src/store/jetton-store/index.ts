@@ -16,7 +16,7 @@ export interface JettonStoreState {
   jettonMaster?: string;
   persistenceType?: persistenceType;
   totalSupply?: BN;
-  jettonAddress?: string;
+  jettonWalletAddress?: string;
   isJettonDeployerFaultyOnChainData?: boolean;
   jettonLoading: boolean;
   isMyWallet: boolean;
@@ -40,7 +40,7 @@ const jettonStateAtom = atom<JettonStoreState>({
     balance: undefined,
     jettonMaster: undefined,
     totalSupply: undefined,
-    jettonAddress: undefined,
+    jettonWalletAddress: undefined,
     isJettonDeployerFaultyOnChainData: false,
     isMyWallet: false,
     selectedWalletAddress: undefined,

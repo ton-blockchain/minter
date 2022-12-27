@@ -11,18 +11,24 @@ import { Typography } from "@mui/material";
 import { useRecoilValue } from "recoil";
 import { jettonActionsState } from "pages/jetton/actions/jettonActions";
 import { useJettonAddress } from "hooks/useJettonAddress";
+import useNotification from "hooks/useNotification";
 
 export const Jetton = () => {
   const { address, isConnecting } = useConnectionStore();
   const actionInProgress = useRecoilValue(jettonActionsState);
   const { getJettonDetails } = useJettonStore();
-  const { id } = useJettonAddress();
+  const { isAddressEmpty, jettonAddress } = useJettonAddress();
+  const { showNotification } = useNotification();
 
   useEffect(() => {
-    if (id && !isConnecting) {
+    if (jettonAddress && !isConnecting) {
       getJettonDetails();
     }
-  }, [id, getJettonDetails, address, isConnecting]);
+  }, [jettonAddress, getJettonDetails, address, isConnecting]);
+
+  useEffect(() => {
+    !isAddressEmpty && !jettonAddress && showNotification("Invalid jetton address", "error");
+  }, []);
 
   return (
     <Screen>

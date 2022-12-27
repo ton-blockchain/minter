@@ -16,7 +16,7 @@ function useJettonStore() {
   const [state, setState] = useRecoilState(jettonStateAtom);
   const reset = useResetRecoilState(jettonStateAtom);
   const { showNotification } = useNotification();
-  const { address: connectedWalletAddress, disconnect } = useConnectionStore();
+  const { address: connectedWalletAddress } = useConnectionStore();
   const { jettonAddress } = useJettonAddress();
 
   const getJettonDetails = useCallback(async () => {
@@ -26,9 +26,6 @@ function useJettonStore() {
       window.history.replaceState(null, "", window.location.pathname);
       queryAddress = null;
       showNotification("Invalid jetton address in query param", "error", undefined, 5000);
-    }
-    if (queryAddress) {
-      disconnect();
     }
 
     const address = queryAddress || connectedWalletAddress;

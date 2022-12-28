@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { AppHeading } from "components/appHeading";
 import { StyledBlock, StyledCategoryFields } from "pages/jetton/styled";
 import { DataRow } from "pages/jetton/dataRow";
@@ -16,12 +16,6 @@ export const Wallet = () => {
   const { balance, symbol, jettonLoading, selectedWalletAddress, decimals } = useJettonStore();
   const [params, setParams] = useSearchParams();
   const [showPopup, setShowPopup] = useState(false);
-  const { getJettonDetails } = useJettonStore();
-
-  //TODO move to proper part of the app and update only balance and c
-  useEffect(() => {
-    getJettonDetails();
-  }, [params]);
 
   return (
     <StyledBlock sx={{ width: "calc(45% - 15px)" }}>

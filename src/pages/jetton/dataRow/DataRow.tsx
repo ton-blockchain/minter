@@ -13,7 +13,7 @@ import {
 import { MessageRenderer } from "pages/jetton/dataRow/utils";
 import { AppHeading } from "components/appHeading";
 
-interface DataRowProps {
+export interface DataRowProps {
   title: string;
   value?: string | null | number | JSX.Element;
   message?: JettonDetailMessage | undefined;
@@ -23,6 +23,7 @@ interface DataRowProps {
   description?: string;
   hasButton?: boolean;
   showIcon?: boolean;
+  children?: React.ReactNode;
 }
 
 export const DataRow: React.FC<DataRowProps> = ({
@@ -35,10 +36,11 @@ export const DataRow: React.FC<DataRowProps> = ({
   address,
   hasButton,
   showIcon = true,
+  children,
 }) => {
   return (
     <Box>
-      <RowTitle variant="h6">{title}</RowTitle>
+      <RowTitle variant="h6">{children ? children : title}</RowTitle>
       <RowContent>
         <RowValueDisplayer>
           <LoadingContainer loading={dataLoading} loaderHeight="50%">

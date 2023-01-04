@@ -10,7 +10,7 @@
     "@mui/icons-material": "^5.8.2",
     "@mui/lab": "^5.0.0-alpha.85",
     "@mui/material": "^5.8.2",
-    "@orbs-network/ton-gateway": "^2.1.0",
+    "@orbs-network/ton-access": "^2.2.2",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^13.5.0",

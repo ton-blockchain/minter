@@ -24,6 +24,7 @@ export interface DataRowProps {
   hasButton?: boolean;
   showIcon?: boolean;
   children?: React.ReactNode;
+  regularAddress?: boolean;
 }
 
 export const DataRow: React.FC<DataRowProps> = ({
@@ -37,6 +38,7 @@ export const DataRow: React.FC<DataRowProps> = ({
   hasButton,
   showIcon = true,
   children,
+  regularAddress,
 }) => {
   return (
     <Box>
@@ -46,7 +48,12 @@ export const DataRow: React.FC<DataRowProps> = ({
           <LoadingContainer loading={dataLoading} loaderHeight="50%">
             <RowValueSection hasButton={hasButton}>
               {address && value ? (
-                <AddressLink address={address} value={value} showIcon={showIcon} />
+                <AddressLink
+                  address={address}
+                  value={value}
+                  showIcon={showIcon}
+                  regularAddress={regularAddress}
+                />
               ) : (
                 <Typography>{value || "-"}</Typography>
               )}

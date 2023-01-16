@@ -26,8 +26,6 @@ export const useJettonLogo = () => {
 
   const setLogoUrl = (val: string) =>
     setJettonLogo((prev) => {
-      // console.log(isJettonImageEmpty)
-      // console.log(isJettonImageEmpty ? '' : val)
       return {
         ...prev,
         logoUrl: val,

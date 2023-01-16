@@ -37,9 +37,15 @@ interface AddressLinkProps {
   value: string | number | JSX.Element;
   address?: string | null;
   showIcon?: boolean;
+  regularAddress?: boolean;
 }
 
-const AddressLink: React.FC<AddressLinkProps> = ({ address, value, showIcon = true }) => {
+const AddressLink: React.FC<AddressLinkProps> = ({
+  address,
+  value,
+  showIcon = true,
+  regularAddress,
+}) => {
   const { showNotification } = useNotification();
   const { isSandbox } = useContext(EnvContext);
 
@@ -50,7 +56,7 @@ const AddressLink: React.FC<AddressLinkProps> = ({ address, value, showIcon = tr
   return (
     <StyledContainer className="address-link">
       <StyledLink>
-        <Link target="_blank" href={`${scannerUrl(isSandbox)}/${address}`}>
+        <Link target="_blank" href={`${scannerUrl(isSandbox, regularAddress)}/${address}`}>
           {value || "-"}
         </Link>
       </StyledLink>

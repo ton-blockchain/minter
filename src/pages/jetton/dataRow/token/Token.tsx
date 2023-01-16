@@ -133,6 +133,7 @@ export const Token = () => {
               actions={adminActions}
               hasButton={isAdmin && !adminRevokedOwnership}
               showIcon={!isAdmin}
+              regularAddress
             />
             <DataRow
               title="Symbol"

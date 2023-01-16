@@ -33,6 +33,7 @@ export const Wallet = () => {
           value={selectedWalletAddress}
           dataLoading={jettonLoading}
           address={selectedWalletAddress}
+          regularAddress
           description="Connected wallet public address, can be shared to receive jetton transfers"
           children={
             <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>

@@ -22,11 +22,12 @@ export const useJettonLogo = () => {
   const [jettonLogo, setJettonLogo] = useRecoilState(jettonLogoState);
   const { jettonImage } = useJettonStore();
   const { jettonAddress } = useJettonAddress();
-
   const resetJetton = () => setJettonLogo(defaultState);
 
   const setLogoUrl = (val: string) =>
     setJettonLogo((prev) => {
+      // console.log(isJettonImageEmpty)
+      // console.log(isJettonImageEmpty ? '' : val)
       return {
         ...prev,
         logoUrl: val,

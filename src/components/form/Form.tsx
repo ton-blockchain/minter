@@ -75,6 +75,22 @@ export function Form({
     setValue("tokenImage", jettonLogo.logoUrl);
   }, [jettonLogo.logoUrl]);
 
+  useEffect(() => {
+    //@ts-ignore
+    const mintAmount = getValues()?.mintAmount || "";
+    let [fullNumbers = "", decimals = ""] = mintAmount.split(".");
+    let decimalsArr = decimals.split("");
+    //@ts-ignore
+    if (decimalsArr.length > Number(getValues().decimals)) {
+      //@ts-ignore
+      decimalsArr = decimalsArr.slice(0, getValues().decimals);
+      const res = [...fullNumbers.slice(""), ".", ...decimalsArr].join("");
+      //@ts-ignore
+      setValue("mintAmount", res);
+    }
+    //@ts-ignore
+  }, [getValues().mintAmount, getValues().decimals]);
+
   return (
     <StyledForm
       onSubmit={handleSubmit(() => {
@@ -152,6 +168,8 @@ export function Form({
           .filter((i) => i.name !== "tokenImage")
           .filter((i) => !i.disabled)
           .map((spec: any, index: number) => {
+            // @ts-ignore
+            const disabled = spec.name === "mintAmount" ? !getValues()?.decimals : spec.disabled;
             return (
               <Input
                 disableExample={disableExample}
@@ -166,7 +184,7 @@ export function Form({
                 label={spec.label}
                 defaultValue={spec.default || ""}
                 onExampleClick={() => onExampleClick(spec.name as never, spec.default as never)}
-                disabled={spec.disabled}
+                disabled={disabled}
                 errorMessage={spec.errorMessage}
                 validate={spec.validate}
                 showDefault={spec.showDefault}

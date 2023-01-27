@@ -5,7 +5,9 @@ import Fade from "@mui/material/Fade";
 import CircularProgress from "@mui/material/CircularProgress";
 import { styled } from "@mui/system";
 import TonhubQr from "assets/icons/tonhub-qr.png";
+import TonkeeperQr from "assets/icons/tonkeeper-qr.png";
 import Header from "./Header";
+import { Providers } from "lib/env-profiles";
 
 const StyledContainer = styled(Box)({
   display: "flex",
@@ -48,7 +50,7 @@ function QR({ onClose, link, open, walletName }: Props) {
                 level={"L"}
                 includeMargin={false}
                 imageSettings={{
-                  src: TonhubQr,
+                  src: walletName === Providers.TON_HUB ? TonhubQr : TonkeeperQr,
                   height: 50,
                   width: 50,
                   excavate: true,

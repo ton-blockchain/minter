@@ -7,6 +7,7 @@ import OpenMaskImg from "assets/icons/openmask-logo.svg";
 import { Providers } from "lib/env-profiles";
 import { isMobile } from "react-device-detect";
 import Header from "./Header";
+import { useNetwork } from "../../lib/hooks/useNetwork";
 
 const StyledListItem = styled(ListItem)({
   background: "white",
@@ -55,31 +56,35 @@ interface Props {
 
 const adapterConfig = {
   [Providers.TON_HUB]: {
-    // TODO sy
     name: "Tonhub",
     icon: TonhubImg,
     mobileCompatible: true,
+    testnetCompatible: false, // When TC2 is available this distinction becomes obsolete
   },
   [Providers.TONKEEPER]: {
     name: "Tonkeeper",
     icon: "https://tonkeeper.com/assets/tonconnect-icon.png", // TODO
     mobileCompatible: true,
+    testnetCompatible: true,
   },
 
   [Providers.EXTENSION]: {
     name: "Google Chrome Plugin",
     icon: ChromeExtImg,
     mobileCompatible: false,
+    testnetCompatible: true,
   },
   [Providers.OPEN_MASK]: {
     name: "OpenMask",
     icon: OpenMaskImg,
     mobileCompatible: false,
+    testnetCompatible: true,
   },
 };
 
 function AdaptersList({ onClose, select, open, adapters }: Props) {
   const theme = useTheme();
+  const { network } = useNetwork();
 
   if (!open) {
     return null;
@@ -91,7 +96,11 @@ function AdaptersList({ onClose, select, open, adapters }: Props) {
         <Header title="Select Wallet" onClose={onClose} />
         <StyledList>
           {adapters
-            .filter((a) => !isMobile || adapterConfig[a.type].mobileCompatible)
+            .filter(
+              (a) =>
+                (!isMobile || adapterConfig[a.type].mobileCompatible) &&
+                (network === "mainnet" || adapterConfig[a.type].testnetCompatible),
+            )
             .map((adapter) => {
               const { type } = adapter;
               const { icon, name } = adapterConfig[type];

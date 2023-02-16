@@ -1,7 +1,10 @@
 import { TonClient } from "ton";
 import { getHttpEndpoint } from "@orbs-network/ton-access";
+import { getNetwork } from "./hooks/useNetwork";
 
-const endpointP = getHttpEndpoint();
+const endpointP = getHttpEndpoint({
+  network: getNetwork(new URLSearchParams(window.location.search)),
+});
 
 async function _getClient() {
   return new TonClient({

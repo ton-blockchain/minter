@@ -1,6 +1,5 @@
 import { atom, useRecoilState } from "recoil";
 import { useAddressInput } from "hooks/useAddressInput";
-import { useNavigate } from "react-router-dom";
 import { isValidAddress } from "utils";
 import useNotification from "hooks/useNotification";
 import { ROUTES } from "consts";
@@ -8,6 +7,7 @@ import { recoilPersist } from "recoil-persist";
 import { Address } from "ton";
 import { useEffect } from "react";
 import { useJettonAddress } from "hooks/useJettonAddress";
+import { useNavigatePreserveQuery } from "lib/hooks/useNavigatePreserveQuery";
 
 const { persistAtom } = recoilPersist({
   key: "addressHistory",
@@ -22,7 +22,7 @@ const addressHistoryState = atom({
 export function useAddressHistory() {
   const [addresses, setAddresses] = useRecoilState(addressHistoryState);
   const { setActive, setValue, addressInput } = useAddressInput();
-  const navigate = useNavigate();
+  const navigate = useNavigatePreserveQuery();
   const { showNotification } = useNotification();
   const { jettonAddress } = useJettonAddress();
 

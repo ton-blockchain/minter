@@ -22,7 +22,8 @@ export const CheckWalletBalancePopup = ({ showPopup, close }: CheckWalletBalance
 
   const searchForWallet = useCallback(() => {
     if (isValidAddress(search)) {
-      setParams("address=" + search);
+      params.append("address", search);
+      setParams(params);
       close();
       setSearch("");
     } else {

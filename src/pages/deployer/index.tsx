@@ -6,7 +6,7 @@ import { jettonDeployController, JettonDeployParams } from "lib/deploy-controlle
 import WalletConnection from "services/wallet-connection";
 import { createDeployParams } from "lib/utils";
 import { ContractDeployer } from "lib/contract-deployer";
-import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
+import { Link as ReactRouterLink } from "react-router-dom";
 import { ROUTES } from "consts";
 import TxLoader from "components/TxLoader";
 import useNotification from "hooks/useNotification";
@@ -23,6 +23,7 @@ import { getUrlParam, toDecimalsBN } from "utils";
 import { offchainFormSpec, onchainFormSpec } from "./data";
 import { Form } from "components/form";
 import { GithubButton } from "pages/deployer/githubButton";
+import { useNavigatePreserveQuery } from "lib/hooks/useNavigatePreserveQuery";
 
 const DEFAULT_DECIMALS = 9;
 
@@ -40,7 +41,7 @@ function DeployerPage() {
   const { showNotification } = useNotification();
   const { address } = useConnectionStore();
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
+  const navigate = useNavigatePreserveQuery();
 
   async function deployContract(data: any) {
     const connection = WalletConnection.getConnection();

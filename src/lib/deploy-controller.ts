@@ -209,6 +209,12 @@ class JettonDeployController {
     };
   }
 
+  async getJettonMinterCode(contractAddress: Address) {
+    const client = getClient();
+    const code = (await (await client).getContractState(contractAddress)).code!;
+    return code;
+  }
+
   async fixFaultyJetton(
     contractAddress: Address,
     data: {

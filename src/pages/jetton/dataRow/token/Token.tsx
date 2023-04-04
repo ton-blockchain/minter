@@ -45,6 +45,7 @@ export const Token = () => {
     jettonLoading,
     decimals,
     isImageBroken,
+    isCodeOld,
   } = useJettonStore();
   const [openEdit, setOpenEdit] = useState(false);
 
@@ -99,6 +100,22 @@ export const Token = () => {
                       style={{ marginRight: 4 }}
                     />
                     Edit token
+                  </CenteringWrapper>
+                </AppButton>
+              </Box>
+            )}
+            {isCodeOld && !jettonLoading && (
+              <Box sx={{ alignSelf: "start" }}>
+                <AppButton width={113} height={32} transparent onClick={() => setOpenEdit(true)}>
+                  <CenteringWrapper>
+                    <img
+                      src={pen}
+                      alt="Pen Icon"
+                      width={15}
+                      height={15}
+                      style={{ marginRight: 4 }}
+                    />
+                    Migration
                   </CenteringWrapper>
                 </AppButton>
               </Box>

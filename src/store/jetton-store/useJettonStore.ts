@@ -3,7 +3,7 @@ import { jettonDeployController } from "lib/deploy-controller";
 import { zeroAddress } from "lib/utils";
 import { useRecoilState, useResetRecoilState } from "recoil";
 import WalletConnection from "services/wallet-connection";
-import { Address } from "ton";
+import { Address, Cell } from "ton";
 import { jettonStateAtom } from ".";
 import QuestiomMarkImg from "assets/icons/question.png";
 import { useCallback } from "react";
@@ -11,6 +11,7 @@ import useNotification from "hooks/useNotification";
 import useConnectionStore from "store/connection-store/useConnectionStore";
 import { getUrlParam, isValidAddress } from "utils";
 import { useJettonAddress } from "hooks/useJettonAddress";
+import { JETTON_MINTER_CODE } from "lib/jetton-minter";
 
 function useJettonStore() {
   const [state, setState] = useRecoilState(jettonStateAtom);
@@ -98,6 +99,10 @@ function useJettonStore() {
         }
       }
 
+      const minterCode = Cell.fromBoc(
+        await jettonDeployController.getJettonMinterCode(parsedJettonMaster),
+      )[0];
+
       setState((prevState) => {
         return {
           ...prevState,
@@ -117,6 +122,7 @@ function useJettonStore() {
           jettonMaster: jettonAddress,
           isMyWallet,
           selectedWalletAddress: address,
+          isCodeOld: !minterCode.equals(JETTON_MINTER_CODE),
         };
       });
     } catch (error) {

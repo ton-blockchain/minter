@@ -21,6 +21,7 @@ export interface JettonStoreState {
   jettonLoading: boolean;
   isMyWallet: boolean;
   selectedWalletAddress?: string | null;
+  isCodeOld: boolean;
 }
 
 const jettonStateAtom = atom<JettonStoreState>({
@@ -44,6 +45,7 @@ const jettonStateAtom = atom<JettonStoreState>({
     isJettonDeployerFaultyOnChainData: false,
     isMyWallet: false,
     selectedWalletAddress: undefined,
+    isCodeOld: false,
   },
 });
 

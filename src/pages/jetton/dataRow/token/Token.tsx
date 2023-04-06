@@ -49,11 +49,7 @@ export const Token = () => {
     isCodeOld,
   } = useJettonStore();
   const [openEdit, setOpenEdit] = useState(false);
-  const [openMigration, setOpenMigration] = useState(false);
-
-  const handleMigrationClick = () => {
-    setOpenMigration(!openMigration);
-  };
+  const [openMigrationPopup, setOpenMigrationPopup] = useState(false);
 
   return (
     <StyledBlock sx={{ width: "calc(55% - 15px)" }}>
@@ -110,11 +106,15 @@ export const Token = () => {
                 </AppButton>
               </Box>
             )}
-            <MigrationPopup open={openMigration} onClose={handleMigrationClick} />
+            <MigrationPopup open={openMigrationPopup} setOpen={setOpenMigrationPopup} />
             {
               /* isAdmin && */ isCodeOld && !jettonLoading && (
                 <Box sx={{ alignSelf: "start" }}>
-                  <AppButton width={113} height={32} transparent onClick={handleMigrationClick}>
+                  <AppButton
+                    width={113}
+                    height={32}
+                    transparent
+                    onClick={() => setOpenMigrationPopup(true)}>
                     <CenteringWrapper>
                       <img
                         src={pen}

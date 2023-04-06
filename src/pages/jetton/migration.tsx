@@ -5,13 +5,24 @@ import { Popup } from "components/Popup";
 import { Typography } from "@mui/material";
 import bullet from "assets/icons/bullet.svg";
 import { Box } from "@mui/system";
+import { useState } from "react";
 
-export const MigrationPopup = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
+export function MigrationPopup({
+  open,
+  setOpen,
+}: {
+  open: boolean;
+  setOpen: (arg0: boolean) => void;
+}) {
   const { symbol } = useJettonStore();
 
+  const onClose = () => {
+    setOpen(false);
+  };
+
   const onSubmit = () => {
-    console.log("onSubmit");
     onClose();
+    console.log(123);
   };
 
   return (
@@ -65,10 +76,15 @@ export const MigrationPopup = ({ open, onClose }: { open: boolean; onClose: () =
             Cancel
           </AppButton>
         </Box>
-        <AppButton width={100} onClick={onSubmit}>
+        <AppButton
+          width={100}
+          onClick={() => {
+            onClose();
+            onSubmit();
+          }}>
           Migration
         </AppButton>
       </CenteringWrapper>
     </Popup>
   );
-};
+}

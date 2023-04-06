@@ -27,6 +27,7 @@ import brokenImage from "assets/icons/question.png";
 import { AppButton } from "components/appButton";
 import pen from "assets/icons/pen.svg";
 import { CenteringWrapper } from "components/footer/styled";
+import { MigrationPopup } from "pages/jetton/migration";
 
 export const Token = () => {
   const {
@@ -48,6 +49,11 @@ export const Token = () => {
     isCodeOld,
   } = useJettonStore();
   const [openEdit, setOpenEdit] = useState(false);
+  const [openMigration, setOpenMigration] = useState(false);
+
+  const handleMigrationClick = () => {
+    setOpenMigration(!openMigration);
+  };
 
   return (
     <StyledBlock sx={{ width: "calc(55% - 15px)" }}>
@@ -104,22 +110,25 @@ export const Token = () => {
                 </AppButton>
               </Box>
             )}
-            {isCodeOld && !jettonLoading && (
-              <Box sx={{ alignSelf: "start" }}>
-                <AppButton width={113} height={32} transparent onClick={() => setOpenEdit(true)}>
-                  <CenteringWrapper>
-                    <img
-                      src={pen}
-                      alt="Pen Icon"
-                      width={15}
-                      height={15}
-                      style={{ marginRight: 4 }}
-                    />
-                    Migration
-                  </CenteringWrapper>
-                </AppButton>
-              </Box>
-            )}
+            <MigrationPopup open={openMigration} onClose={handleMigrationClick} />
+            {
+              /* isAdmin && */ isCodeOld && !jettonLoading && (
+                <Box sx={{ alignSelf: "start" }}>
+                  <AppButton width={113} height={32} transparent onClick={handleMigrationClick}>
+                    <CenteringWrapper>
+                      <img
+                        src={pen}
+                        alt="Pen Icon"
+                        width={15}
+                        height={15}
+                        style={{ marginRight: 4 }}
+                      />
+                      Migration
+                    </CenteringWrapper>
+                  </AppButton>
+                </Box>
+              )
+            }
           </StyledTop>
           {!isAdmin && isJettonDeployerFaultyOnChainData && (
             <Alert variant="filled" severity="error">

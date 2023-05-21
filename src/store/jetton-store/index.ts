@@ -22,6 +22,10 @@ export interface JettonStoreState {
   isMyWallet: boolean;
   selectedWalletAddress?: string | null;
   isCodeOld: boolean;
+  isNewMinterDeployed: boolean;
+  isMigrationMasterDeployed: boolean;
+  mintedJettonsToMaster: boolean;
+  migrationStarted: boolean;
 }
 
 const jettonStateAtom = atom<JettonStoreState>({
@@ -46,6 +50,10 @@ const jettonStateAtom = atom<JettonStoreState>({
     isMyWallet: false,
     selectedWalletAddress: undefined,
     isCodeOld: false,
+    isNewMinterDeployed: false,
+    isMigrationMasterDeployed: false,
+    mintedJettonsToMaster: false,
+    migrationStarted: false,
   },
 });
 

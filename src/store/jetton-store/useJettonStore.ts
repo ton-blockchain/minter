@@ -20,6 +20,46 @@ function useJettonStore() {
   const { address: connectedWalletAddress } = useConnectionStore();
   const { jettonAddress } = useJettonAddress();
 
+  const setNewMinterDeployed = useCallback(
+    (newValue: boolean) => {
+      setState((prevState) => ({
+        ...prevState,
+        isNewMinterDeployed: newValue,
+      }));
+    },
+    [setState],
+  );
+
+  const setMigrationMasterDeployed = useCallback(
+    (newValue: boolean) => {
+      setState((prevState) => ({
+        ...prevState,
+        isMigrationMasterDeployed: newValue,
+      }));
+    },
+    [setState],
+  );
+
+  const setMintedJettonsToMaster = useCallback(
+    (newValue: boolean) => {
+      setState((prevState) => ({
+        ...prevState,
+        mintedJettonsToMaster: newValue,
+      }));
+    },
+    [setState],
+  );
+
+  const setMigrationStarted = useCallback(
+    (newValue: boolean) => {
+      setState((prevState) => ({
+        ...prevState,
+        migrationStarted: newValue,
+      }));
+    },
+    [setState],
+  );
+
   const getJettonDetails = useCallback(async () => {
     let queryAddress = getUrlParam("address");
 
@@ -103,6 +143,10 @@ function useJettonStore() {
         await jettonDeployController.getJettonMinterCode(parsedJettonMaster),
       )[0];
 
+      const isNewMinterDeployed = false; // TODO
+      const isMigrationMasterDeployed = false; // TODO
+      const mintedJettonsToMaster = false; // TODO
+
       setState((prevState) => {
         return {
           ...prevState,
@@ -123,6 +167,10 @@ function useJettonStore() {
           isMyWallet,
           selectedWalletAddress: address,
           isCodeOld: !minterCode.equals(JETTON_MINTER_CODE),
+          isNewMinterDeployed,
+          isMigrationMasterDeployed,
+          mintedJettonsToMaster,
+          migrationStarted: false,
         };
       });
     } catch (error) {
@@ -146,6 +194,10 @@ function useJettonStore() {
     ...state,
     getJettonDetails,
     reset,
+    setNewMinterDeployed,
+    setMigrationMasterDeployed,
+    setMintedJettonsToMaster,
+    setMigrationStarted,
   };
 }
 

@@ -5,7 +5,6 @@ import { Popup } from "components/Popup";
 import { Typography } from "@mui/material";
 import bullet from "assets/icons/bullet.svg";
 import { Box } from "@mui/system";
-import { useState } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useNavigate } from "react-router-dom";
@@ -17,10 +16,17 @@ export function MigrationPopup({
   open: boolean;
   setOpen: (arg0: boolean) => void;
 }) {
-  const { symbol } = useJettonStore();
-  const [progress, setProgress] = useState([false, false, false]);
-  const [migrationStarted, setMigrationStarted] = useState(false);
-  const [showRedirectButton, setShowRedirectButton] = useState(false);
+  const {
+    symbol,
+    isNewMinterDeployed,
+    isMigrationMasterDeployed,
+    mintedJettonsToMaster,
+    migrationStarted,
+    setNewMinterDeployed,
+    setMigrationMasterDeployed,
+    setMintedJettonsToMaster,
+    setMigrationStarted,
+  } = useJettonStore();
 
   const navigate = useNavigate();
 
@@ -35,11 +41,17 @@ export function MigrationPopup({
     setTimeout(() => sendTransaction(2), 3900);
   };
 
-  const deployNewJetton = async () => {};
+  const deployNewJetton = async () => {
+    setNewMinterDeployed(true);
+  };
 
-  const deployMigrationMaster = async () => {};
+  const deployMigrationMaster = async () => {
+    setMigrationMasterDeployed(true);
+  };
 
-  const mintJettonsToMaster = async () => {};
+  const mintJettonsToMaster = async () => {
+    setMintedJettonsToMaster(true);
+  };
 
   const sendTransaction = async (index: number) => {
     switch (index) {
@@ -55,19 +67,43 @@ export function MigrationPopup({
       default:
         break;
     }
-
-    // Update the progress state
-    setProgress((prevProgress) => {
-      const newProgress = [...prevProgress];
-      newProgress[index] = true;
-      return newProgress;
-    });
-
-    // If this is the last transaction, show the redirect button
-    if (index === 2) {
-      setShowRedirectButton(true);
-    }
   };
+
+  function TransactionProgress() {
+    return (
+      <div>
+        <Typography
+          sx={{
+            color: "#161C28",
+            fontWeight: 800,
+            fontSize: 20,
+            marginBottom: 3.2,
+            textAlign: "center",
+          }}>
+          Migration process
+        </Typography>
+
+        <Typography sx={{ color: "red", marginBottom: 2 }}>
+          Do not close this page until you finish the process.
+        </Typography>
+
+        <Box display="flex" alignItems="center" sx={{ gap: 2, marginBottom: 2 }}>
+          <Spinner spinning={!isNewMinterDeployed} />
+          <Typography variant="body1">Deploy new Jetton Minter</Typography>
+        </Box>
+
+        <Box display="flex" alignItems="center" sx={{ gap: 2, marginBottom: 2 }}>
+          <Spinner spinning={!isMigrationMasterDeployed} />
+          <Typography variant="body1">Deploy the Migration Master</Typography>
+        </Box>
+
+        <Box display="flex" alignItems="center" sx={{ gap: 2, marginBottom: 2 }}>
+          <Spinner spinning={!mintedJettonsToMaster} />
+          <Typography variant="body1">Mint tokens to the Migration Master</Typography>
+        </Box>
+      </div>
+    );
+  }
 
   const redirectToNewPage = () => {
     const newJettonAddress = "EQAGPPuLtcu8BimtY8TFVrpJ-E36akEFZHexCSD_BNQl_QrW";
@@ -138,8 +174,8 @@ export function MigrationPopup({
         </>
       ) : (
         <>
-          <TransactionProgress progress={progress} />
-          {showRedirectButton && (
+          <TransactionProgress />
+          {isNewMinterDeployed && isMigrationMasterDeployed && mintedJettonsToMaster && (
             <AppButton
               width={200}
               onClick={() => {
@@ -152,38 +188,6 @@ export function MigrationPopup({
         </>
       )}
     </Popup>
-  );
-}
-
-function TransactionProgress({ progress }: { progress: boolean[] }) {
-  return (
-    <div>
-      <Typography
-        sx={{
-          color: "#161C28",
-          fontWeight: 800,
-          fontSize: 20,
-          marginBottom: 3.2,
-          textAlign: "center",
-        }}>
-        Migration process
-      </Typography>
-
-      <Typography sx={{ color: "red", marginBottom: 2 }}>
-        Do not close this page until you finish the process.
-      </Typography>
-
-      {progress.map((done, index) => (
-        <Box
-          key={index}
-          display="flex"
-          alignItems="center"
-          sx={{ gap: 2, marginBottom: done && index === progress.length - 1 ? -1 : 2 }}>
-          <Spinner spinning={!done} />
-          <Typography variant="body1">Transaction {index + 1}</Typography>
-        </Box>
-      ))}
-    </div>
   );
 }
 

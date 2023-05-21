@@ -1,6 +1,6 @@
 import { TonConnection, ChromeExtensionWalletProvider } from "@ton-defi.org/ton-connection";
-import { jettonDeployController } from "lib/deploy-controller";
-import { zeroAddress } from "lib/utils";
+import { JettonDeployParams, jettonDeployController } from "lib/deploy-controller";
+import { createDeployParams, zeroAddress } from "lib/utils";
 import { useRecoilState, useResetRecoilState } from "recoil";
 import WalletConnection from "services/wallet-connection";
 import { Address, Cell } from "ton";
@@ -12,6 +12,8 @@ import useConnectionStore from "store/connection-store/useConnectionStore";
 import { getUrlParam, isValidAddress } from "utils";
 import { useJettonAddress } from "hooks/useJettonAddress";
 import { JETTON_MINTER_CODE } from "lib/jetton-minter";
+import { BN } from "bn.js";
+import { ContractDeployer } from "lib/contract-deployer";
 
 function useJettonStore() {
   const [state, setState] = useRecoilState(jettonStateAtom);
@@ -143,23 +145,25 @@ function useJettonStore() {
         await jettonDeployController.getJettonMinterCode(parsedJettonMaster),
       )[0];
 
-      const isNewMinterDeployed = false; // TODO
-      const isMigrationMasterDeployed = false; // TODO
-      const mintedJettonsToMaster = false; // TODO
+      const name = result.minter.metadata.name;
+      const symbol = result.minter.metadata.symbol;
+      const jettonImage = image ?? QuestiomMarkImg;
+      const description = result.minter.metadata.description;
+      const decimals = result.minter.metadata.decimals || "9";
 
       setState((prevState) => {
         return {
           ...prevState,
           isJettonDeployerFaultyOnChainData: result.minter.isJettonDeployerFaultyOnChainData,
           persistenceType: result.minter.persistenceType,
-          description: result.minter.metadata.description,
-          jettonImage: image ?? QuestiomMarkImg,
+          description,
+          jettonImage,
           totalSupply: result.minter.totalSupply,
-          name: result.minter.metadata.name,
-          symbol: result.minter.metadata.symbol,
+          name,
+          symbol,
           adminRevokedOwnership: _adminAddress === zeroAddress().toFriendly(),
           isAdmin: admin,
-          decimals: result.minter.metadata.decimals || "9",
+          decimals,
           adminAddress: _adminAddress,
           balance: result.jettonWallet ? result.jettonWallet.balance : undefined,
           jettonWalletAddress: result.jettonWallet?.jWalletAddress.toFriendly(),
@@ -167,12 +171,29 @@ function useJettonStore() {
           isMyWallet,
           selectedWalletAddress: address,
           isCodeOld: !minterCode.equals(JETTON_MINTER_CODE),
-          isNewMinterDeployed,
-          isMigrationMasterDeployed,
-          mintedJettonsToMaster,
-          migrationStarted: false,
         };
       });
+
+      if (address) {
+        const params: JettonDeployParams = {
+          owner: Address.parse(address),
+          onchainMetaData: {
+            name: name!,
+            symbol: symbol!,
+            image: jettonImage,
+            description: description,
+            decimals: parseInt(decimals!).toFixed(0),
+          },
+          amountToMint: new BN(0),
+        };
+        const deployParams = createDeployParams(params);
+        const contractAddress = new ContractDeployer().addressForContract(deployParams);
+        const isNewMinterDeployed = WalletConnection.isContractDeployed(contractAddress);
+        setState((prevState) => ({
+          ...prevState,
+          isNewMinterDeployed,
+        }));
+      }
     } catch (error) {
       if (error instanceof Error) {
         showNotification(

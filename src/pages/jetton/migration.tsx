@@ -8,6 +8,8 @@ import { Box } from "@mui/system";
 import CircularProgress from "@mui/material/CircularProgress";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useNavigate } from "react-router-dom";
+import WalletConnection from "services/wallet-connection";
+import useConnectionStore from "store/connection-store/useConnectionStore";
 
 export function MigrationPopup({
   open,
@@ -27,6 +29,7 @@ export function MigrationPopup({
     setMintedJettonsToMaster,
     setMigrationStarted,
   } = useJettonStore();
+  const { address } = useConnectionStore();
 
   const navigate = useNavigate();
 
@@ -35,6 +38,10 @@ export function MigrationPopup({
   };
 
   const onSubmit = async () => {
+    const connection = WalletConnection.getConnection();
+    if (!address || !connection) {
+      throw new Error("Wallet not connected");
+    }
     setMigrationStarted(true);
     if (!isNewMinterDeployed) await deployNewJetton();
     if (!isMigrationMasterDeployed) await deployMigrationMaster();

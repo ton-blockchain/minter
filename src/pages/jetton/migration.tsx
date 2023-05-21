@@ -34,42 +34,44 @@ export function MigrationPopup({
     setOpen(false);
   };
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     setMigrationStarted(true);
-    setTimeout(() => sendTransaction(0), 1300);
-    setTimeout(() => sendTransaction(1), 2600);
-    setTimeout(() => sendTransaction(2), 3900);
+    await deployNewJetton();
+    await deployMigrationMaster();
+    await mintJettonsToMaster();
   };
 
   const deployNewJetton = async () => {
+    // TODO
+    await new Promise((r) => setTimeout(r, 1000));
     setNewMinterDeployed(true);
   };
 
   const deployMigrationMaster = async () => {
+    // TODO
+    await new Promise((r) => setTimeout(r, 1000));
     setMigrationMasterDeployed(true);
   };
 
   const mintJettonsToMaster = async () => {
+    // TODO
+    await new Promise((r) => setTimeout(r, 1000));
     setMintedJettonsToMaster(true);
   };
 
-  const sendTransaction = async (index: number) => {
-    switch (index) {
-      case 0:
-        await deployNewJetton();
-        break;
-      case 1:
-        await deployMigrationMaster();
-        break;
-      case 2:
-        await mintJettonsToMaster();
-        break;
-      default:
-        break;
-    }
-  };
+  interface TransactionStepProps {
+    spinning: boolean;
+    description: string;
+  }
 
-  function TransactionProgress() {
+  const TransactionStep: React.FC<TransactionStepProps> = ({ spinning, description }) => (
+    <Box display="flex" alignItems="center" sx={{ gap: 2, marginBottom: 2 }}>
+      <Spinner spinning={spinning} />
+      <Typography variant="body1">{description}</Typography>
+    </Box>
+  );
+
+  const TransactionProgress = () => {
     return (
       <div>
         <Typography
@@ -87,23 +89,18 @@ export function MigrationPopup({
           Do not close this page until you finish the process.
         </Typography>
 
-        <Box display="flex" alignItems="center" sx={{ gap: 2, marginBottom: 2 }}>
-          <Spinner spinning={!isNewMinterDeployed} />
-          <Typography variant="body1">Deploy new Jetton Minter</Typography>
-        </Box>
-
-        <Box display="flex" alignItems="center" sx={{ gap: 2, marginBottom: 2 }}>
-          <Spinner spinning={!isMigrationMasterDeployed} />
-          <Typography variant="body1">Deploy the Migration Master</Typography>
-        </Box>
-
-        <Box display="flex" alignItems="center" sx={{ gap: 2, marginBottom: 2 }}>
-          <Spinner spinning={!mintedJettonsToMaster} />
-          <Typography variant="body1">Mint tokens to the Migration Master</Typography>
-        </Box>
+        <TransactionStep spinning={!isNewMinterDeployed} description="Deploy new Jetton Minter" />
+        <TransactionStep
+          spinning={!isMigrationMasterDeployed}
+          description="Deploy the Migration Master"
+        />
+        <TransactionStep
+          spinning={!mintedJettonsToMaster}
+          description="Mint tokens to the Migration Master"
+        />
       </div>
     );
-  }
+  };
 
   const redirectToNewPage = () => {
     const newJettonAddress = "EQAGPPuLtcu8BimtY8TFVrpJ-E36akEFZHexCSD_BNQl_QrW";

@@ -6,6 +6,8 @@ import { Typography } from "@mui/material";
 import bullet from "assets/icons/bullet.svg";
 import { Box } from "@mui/system";
 import { useState } from "react";
+import CircularProgress from "@mui/material/CircularProgress";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 export function MigrationPopup({
   open,
@@ -15,76 +17,132 @@ export function MigrationPopup({
   setOpen: (arg0: boolean) => void;
 }) {
   const { symbol } = useJettonStore();
+  const [progress, setProgress] = useState([false, false, false]);
+  const [migrationStarted, setMigrationStarted] = useState(false);
 
   const onClose = () => {
     setOpen(false);
   };
 
   const onSubmit = () => {
-    onClose();
-    console.log(123);
+    setMigrationStarted(true);
+    setTimeout(() => sendTransaction(0), 1300);
+    setTimeout(() => sendTransaction(1), 2600);
+    setTimeout(() => sendTransaction(2), 3900);
+  };
+
+  const sendTransaction = async (index: number) => {
+    // Simulate sending a transaction
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    // Update the progress state
+    setProgress((prevProgress) => {
+      const newProgress = [...prevProgress];
+      newProgress[index] = true;
+      return newProgress;
+    });
   };
 
   return (
     <Popup open={open} maxWidth={600} onClose={onClose}>
-      <Box ml={3} mt={-1} mb={-0.6} sx={{ alignSelf: "baseline", color: "#464646" }}>
-        <Typography
-          sx={{
-            color: "#161C28",
-            fontWeight: 800,
-            fontSize: 20,
-            marginBottom: 3.2,
-            textAlign: "center",
-          }}>
-          Initiate migration
-        </Typography>
-        <Typography sx={{ fontWeight: 500, marginBottom: 2.2 }}>
-          This operation will initiate the migration process of the <br /> token{" "}
-          <span style={{ fontWeight: 900 }}>{symbol}</span>. This means:
-        </Typography>
-        <ul
-          style={{
-            listStyleImage: `url(${bullet})`,
-            paddingLeft: 20,
-            fontWeight: 500,
-            marginBottom: 0,
-          }}>
-          <li style={{ marginBottom: 10 }}>
-            <span style={{ paddingLeft: 5 }}>
-              New Jetton contract will be deployed with the same settings
-            </span>
-          </li>
-          <li style={{ marginBottom: 10 }}>
-            <span style={{ paddingLeft: 5 }}>
-              Users will need to migrate their <span style={{ fontWeight: 900 }}>{symbol}</span>{" "}
-              manually{" "}
-            </span>
-          </li>
-          <li style={{ marginBottom: 10 }}>
-            <span style={{ paddingLeft: 5 }}>
-              Your project should support the new version of the Jetton
-            </span>
-          </li>
-        </ul>
-        <Typography textAlign="left" sx={{ fontWeight: 700 }}>
-          You should consider these points before initiating the migration.
-        </Typography>
-      </Box>
-      <CenteringWrapper>
-        <Box mr={4.2}>
-          <AppButton transparent width={100} onClick={() => onClose()}>
-            Cancel
-          </AppButton>
-        </Box>
-        <AppButton
-          width={100}
-          onClick={() => {
-            onClose();
-            onSubmit();
-          }}>
-          Migration
-        </AppButton>
-      </CenteringWrapper>
+      {!migrationStarted ? (
+        <>
+          <Box ml={3} mt={-1} mb={-0.6} sx={{ alignSelf: "baseline", color: "#464646" }}>
+            <Typography
+              sx={{
+                color: "#161C28",
+                fontWeight: 800,
+                fontSize: 20,
+                marginBottom: 3.2,
+                textAlign: "center",
+              }}>
+              Initiate migration
+            </Typography>
+            <Typography sx={{ fontWeight: 500, marginBottom: 2.2 }}>
+              This operation will initiate the migration process of the <br /> token{" "}
+              <span style={{ fontWeight: 900 }}>{symbol}</span>. This means:
+            </Typography>
+            <ul
+              style={{
+                listStyleImage: `url(${bullet})`,
+                paddingLeft: 20,
+                fontWeight: 500,
+                marginBottom: 0,
+              }}>
+              <li style={{ marginBottom: 10 }}>
+                <span style={{ paddingLeft: 5 }}>
+                  New Jetton contract will be deployed with the same settings
+                </span>
+              </li>
+              <li style={{ marginBottom: 10 }}>
+                <span style={{ paddingLeft: 5 }}>
+                  Users will need to migrate their <span style={{ fontWeight: 900 }}>{symbol}</span>{" "}
+                  manually{" "}
+                </span>
+              </li>
+              <li style={{ marginBottom: 10 }}>
+                <span style={{ paddingLeft: 5 }}>
+                  Your project should support the new version of the Jetton
+                </span>
+              </li>
+            </ul>
+            <Typography textAlign="left" sx={{ fontWeight: 700 }}>
+              You should consider these points before initiating the migration.
+            </Typography>
+          </Box>
+          <CenteringWrapper>
+            <Box mr={4.2}>
+              <AppButton transparent width={100} onClick={() => onClose()}>
+                Cancel
+              </AppButton>
+            </Box>
+            <AppButton
+              width={100}
+              onClick={() => {
+                onSubmit();
+              }}>
+              Migration
+            </AppButton>
+          </CenteringWrapper>
+        </>
+      ) : (
+        <TransactionProgress progress={progress} />
+      )}
     </Popup>
+  );
+}
+function TransactionProgress({ progress }: { progress: boolean[] }) {
+  return (
+    <div>
+      <Typography
+        sx={{
+          color: "#161C28",
+          fontWeight: 800,
+          fontSize: 20,
+          marginBottom: 3.2,
+          textAlign: "center",
+        }}>
+        Migration process
+      </Typography>
+
+      <Typography sx={{ color: "red", marginBottom: 2 }}>
+        Do not close this page until you finish the process.
+      </Typography>
+
+      {progress.map((done, index) => (
+        <Box key={index} display="flex" alignItems="center" sx={{ gap: 2, marginBottom: 2 }}>
+          <Spinner spinning={!done} />
+          <Typography variant="body1">Transaction {index + 1}</Typography>
+        </Box>
+      ))}
+    </div>
+  );
+}
+
+function Spinner({ spinning }: { spinning: boolean }) {
+  return (
+    <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+      {spinning ? <CircularProgress size={24} /> : <CheckCircleIcon color="primary" />}
+    </Box>
   );
 }

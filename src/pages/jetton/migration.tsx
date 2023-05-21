@@ -35,9 +35,26 @@ export function MigrationPopup({
     setTimeout(() => sendTransaction(2), 3900);
   };
 
+  const deployNewJetton = async () => {};
+
+  const deployMigrationMaster = async () => {};
+
+  const mintJettonsToMaster = async () => {};
+
   const sendTransaction = async (index: number) => {
-    // Simulate sending a transaction
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    switch (index) {
+      case 0:
+        await deployNewJetton();
+        break;
+      case 1:
+        await deployMigrationMaster();
+        break;
+      case 2:
+        await mintJettonsToMaster();
+        break;
+      default:
+        break;
+    }
 
     // Update the progress state
     setProgress((prevProgress) => {

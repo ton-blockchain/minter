@@ -8,6 +8,7 @@ import { Box } from "@mui/system";
 import { useState } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import { useNavigate } from "react-router-dom";
 
 export function MigrationPopup({
   open,
@@ -19,6 +20,9 @@ export function MigrationPopup({
   const { symbol } = useJettonStore();
   const [progress, setProgress] = useState([false, false, false]);
   const [migrationStarted, setMigrationStarted] = useState(false);
+  const [showRedirectButton, setShowRedirectButton] = useState(false);
+
+  const navigate = useNavigate();
 
   const onClose = () => {
     setOpen(false);
@@ -41,6 +45,16 @@ export function MigrationPopup({
       newProgress[index] = true;
       return newProgress;
     });
+
+    // If this is the last transaction, show the redirect button
+    if (index === 2) {
+      setShowRedirectButton(true);
+    }
+  };
+
+  const redirectToNewPage = () => {
+    const newJettonAddress = "EQAGPPuLtcu8BimtY8TFVrpJ-E36akEFZHexCSD_BNQl_QrW";
+    navigate(`/jetton/${newJettonAddress}`);
   };
 
   return (
@@ -106,11 +120,24 @@ export function MigrationPopup({
           </CenteringWrapper>
         </>
       ) : (
-        <TransactionProgress progress={progress} />
+        <>
+          <TransactionProgress progress={progress} />
+          {showRedirectButton && (
+            <AppButton
+              width={200}
+              onClick={() => {
+                onClose();
+                redirectToNewPage();
+              }}>
+              Go to the new Jetton
+            </AppButton>
+          )}
+        </>
       )}
     </Popup>
   );
 }
+
 function TransactionProgress({ progress }: { progress: boolean[] }) {
   return (
     <div>
@@ -130,7 +157,11 @@ function TransactionProgress({ progress }: { progress: boolean[] }) {
       </Typography>
 
       {progress.map((done, index) => (
-        <Box key={index} display="flex" alignItems="center" sx={{ gap: 2, marginBottom: 2 }}>
+        <Box
+          key={index}
+          display="flex"
+          alignItems="center"
+          sx={{ gap: 2, marginBottom: done && index === progress.length - 1 ? -1 : 2 }}>
           <Spinner spinning={!done} />
           <Typography variant="body1">Transaction {index + 1}</Typography>
         </Box>

@@ -36,9 +36,9 @@ export function MigrationPopup({
 
   const onSubmit = async () => {
     setMigrationStarted(true);
-    await deployNewJetton();
-    await deployMigrationMaster();
-    await mintJettonsToMaster();
+    if (!isNewMinterDeployed) await deployNewJetton();
+    if (!isMigrationMasterDeployed) await deployMigrationMaster();
+    if (!mintedJettonsToMaster) await mintJettonsToMaster();
   };
 
   const deployNewJetton = async () => {

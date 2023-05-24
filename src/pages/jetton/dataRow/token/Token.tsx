@@ -28,6 +28,7 @@ import { AppButton } from "components/appButton";
 import pen from "assets/icons/pen.svg";
 import { CenteringWrapper } from "components/footer/styled";
 import { MigrationPopup } from "pages/jetton/migration";
+import { useNavigate } from "react-router-dom";
 
 export const Token = () => {
   const {
@@ -51,9 +52,11 @@ export const Token = () => {
     isNewMinterDeployed,
     isMigrationMasterDeployed,
     mintedJettonsToMaster,
+    newMinterAddress,
   } = useJettonStore();
   const [openEdit, setOpenEdit] = useState(false);
   const [openMigrationPopup, setOpenMigrationPopup] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <StyledBlock sx={{ width: "calc(55% - 15px)" }}>
@@ -136,6 +139,26 @@ export const Token = () => {
                   </Box>
                 )
             }
+            {isNewMinterDeployed && isMigrationMasterDeployed && mintedJettonsToMaster && (
+              <Box sx={{ alignSelf: "start" }}>
+                <AppButton
+                  width={113}
+                  height={32}
+                  transparent
+                  onClick={() => navigate(`/jetton/${newMinterAddress}`)}>
+                  <CenteringWrapper>
+                    <img
+                      src={pen}
+                      alt="New Button Icon"
+                      width={15}
+                      height={15}
+                      style={{ marginRight: 4 }}
+                    />
+                    New version
+                  </CenteringWrapper>
+                </AppButton>
+              </Box>
+            )}
           </StyledTop>
           {!isAdmin && isJettonDeployerFaultyOnChainData && (
             <Alert variant="filled" severity="error">

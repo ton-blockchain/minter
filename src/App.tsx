@@ -1,11 +1,9 @@
 import { styled } from "@mui/material";
 import { Box } from "@mui/system";
 import { createContext, useEffect } from "react";
-import useConnectionStore from "store/connection-store/useConnectionStore";
 import { APP_GRID, ROUTES } from "consts";
 import { Navigate, Outlet, Route, Routes, useLocation } from "react-router-dom";
 import { DeployerPage, Jetton } from "pages";
-import ConnectPopup from "components/connectPopup";
 import analytics from "services/analytics";
 import { Footer } from "components/footer";
 import { Header } from "components/header";
@@ -80,17 +78,12 @@ const ContentWrapper = ({ children }: ContentWrapperProps) => {
 };
 
 const App = () => {
-  const { connectOnLoad } = useConnectionStore();
   const { resetJetton } = useJettonLogo();
   const location = useLocation();
 
   useEffect(() => {
     resetJetton();
   }, [location.pathname]);
-
-  useEffect(() => {
-    connectOnLoad();
-  }, []);
 
   return (
     <AppWrapper>
@@ -120,7 +113,6 @@ const App = () => {
           </Routes>
         </ScreensWrapper>
       </EnvContext.Provider>
-      <ConnectPopup />
       <FooterBox mt={5}>
         <Footer />
       </FooterBox>

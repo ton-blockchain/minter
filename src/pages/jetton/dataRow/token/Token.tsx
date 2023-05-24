@@ -47,6 +47,10 @@ export const Token = () => {
     decimals,
     isImageBroken,
     isCodeOld,
+    selectedWalletAddress,
+    isNewMinterDeployed,
+    isMigrationMasterDeployed,
+    mintedJettonsToMaster,
   } = useJettonStore();
   const [openEdit, setOpenEdit] = useState(false);
   const [openMigrationPopup, setOpenMigrationPopup] = useState(false);
@@ -108,26 +112,29 @@ export const Token = () => {
             )}
             <MigrationPopup open={openMigrationPopup} setOpen={setOpenMigrationPopup} />
             {
-              /* isAdmin && */ isCodeOld && !jettonLoading && (
-                <Box sx={{ alignSelf: "start" }}>
-                  <AppButton
-                    width={113}
-                    height={32}
-                    transparent
-                    onClick={() => setOpenMigrationPopup(true)}>
-                    <CenteringWrapper>
-                      <img
-                        src={pen}
-                        alt="Pen Icon"
-                        width={15}
-                        height={15}
-                        style={{ marginRight: 4 }}
-                      />
-                      Migration
-                    </CenteringWrapper>
-                  </AppButton>
-                </Box>
-              )
+              /* isAdmin && */ isCodeOld &&
+                !jettonLoading &&
+                selectedWalletAddress &&
+                !(isNewMinterDeployed && isMigrationMasterDeployed && mintedJettonsToMaster) && (
+                  <Box sx={{ alignSelf: "start" }}>
+                    <AppButton
+                      width={113}
+                      height={32}
+                      transparent
+                      onClick={() => setOpenMigrationPopup(true)}>
+                      <CenteringWrapper>
+                        <img
+                          src={pen}
+                          alt="Pen Icon"
+                          width={15}
+                          height={15}
+                          style={{ marginRight: 4 }}
+                        />
+                        Migration
+                      </CenteringWrapper>
+                    </AppButton>
+                  </Box>
+                )
             }
           </StyledTop>
           {!isAdmin && isJettonDeployerFaultyOnChainData && (

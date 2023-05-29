@@ -1,8 +1,6 @@
 import useNotification from "hooks/useNotification";
 import { jettonDeployController } from "lib/deploy-controller";
 import { useState } from "react";
-import WalletConnection from "services/wallet-connection";
-import useConnectionStore from "store/connection-store/useConnectionStore";
 import useJettonStore from "store/jetton-store/useJettonStore";
 import { AppButton } from "components/appButton";
 import { validateTransfer } from "./utils";
@@ -10,8 +8,9 @@ import { ButtonWrapper, TransferContent, TransferWrapper } from "./styled";
 import { AppHeading } from "components/appHeading";
 import { AppNumberInput, AppTextInput } from "components/appInput";
 import { toDecimalsBN } from "utils";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { jettonActionsState } from "pages/jetton/actions/jettonActions";
+import { useTonAddress, useTonConnectUI } from "@tonconnect/ui-react";
 
 export const TransferAction = () => {
   const { balance, symbol, jettonWalletAddress, getJettonDetails, isMyWallet, decimals } =
@@ -20,8 +19,9 @@ export const TransferAction = () => {
   const [toAddress, setToAddress] = useState<string | undefined>(undefined);
   const [amount, setAmount] = useState<number | undefined>(undefined);
   const { showNotification } = useNotification();
-  const { address: connectedWalletAddress } = useConnectionStore();
-  const setActionInProgress = useSetRecoilState(jettonActionsState);
+  const connectedWalletAddress = useTonAddress();
+  const [tonconnect] = useTonConnectUI();
+  const [actionInProgress, setActionInProgress] = useRecoilState(jettonActionsState);
 
   if (!balance || !jettonWalletAddress || !isMyWallet) {
     return null;
@@ -42,9 +42,8 @@ export const TransferAction = () => {
 
     setActionInProgress(true);
     try {
-      const connection = WalletConnection.getConnection();
       await jettonDeployController.transfer(
-        connection,
+        tonconnect,
         toDecimalsBN(amount!.toString(), decimals!),
         toAddress!,
         connectedWalletAddress!,
@@ -92,7 +91,11 @@ export const TransferAction = () => {
         />
       </TransferContent>
       <ButtonWrapper>
-        <AppButton disabled={!(toAddress && amount)} onClick={onSubmit} height={50}>
+        <AppButton
+          disabled={!(toAddress && amount)}
+          onClick={onSubmit}
+          height={50}
+          loading={actionInProgress}>
           Transfer {symbol}
         </AppButton>
       </ButtonWrapper>

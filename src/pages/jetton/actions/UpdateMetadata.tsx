@@ -8,6 +8,8 @@ import { Address } from "ton";
 import useNotification from "hooks/useNotification";
 import { useSetRecoilState } from "recoil";
 import { jettonActionsState } from "pages/jetton/actions/jettonActions";
+import { useTonAddress, useTonConnectUI } from "@tonconnect/ui-react";
+import { useState } from "react";
 
 const inputsName = ["name", "symbol", "decimals", "tokenImage", "description"];
 
@@ -45,9 +47,10 @@ interface UpdateMetadataProps {
 function UpdateMetadata({ setOpen }: UpdateMetadataProps) {
   const store = useJettonStore();
   const { isAdmin, getJettonDetails, jettonMaster } = store;
-  const setActionInProgress = useSetRecoilState(jettonActionsState);
+  const [actionInProgress, setActionInProgress] = useState(false);
   const { showNotification } = useNotification();
-
+  const [tonconnect] = useTonConnectUI();
+  const walltAddress = useTonAddress();
   if (!isAdmin) {
     return null;
   }
@@ -68,7 +71,8 @@ function UpdateMetadata({ setOpen }: UpdateMetadataProps) {
           image: values.tokenImage,
           decimals: parseInt(values.decimals).toFixed(0),
         },
-        WalletConnection.getConnection(),
+        tonconnect,
+        walltAddress,
       );
       await getJettonDetails();
       setOpen(false);
@@ -90,6 +94,7 @@ function UpdateMetadata({ setOpen }: UpdateMetadataProps) {
       disableExample={true}
       onSubmit={onSubmit}
       inputs={inputs}
+      isLoading={actionInProgress}
       defaultValues={defaultValues}
       onCancel={() => setOpen(false)}
     />

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Address } from "ton";
-import useConnectionStore from "store/connection-store/useConnectionStore";
 import { Box, Fade, Link, Typography } from "@mui/material";
 import { jettonDeployController, JettonDeployParams } from "lib/deploy-controller";
 import WalletConnection from "services/wallet-connection";
@@ -8,7 +7,6 @@ import { createDeployParams } from "lib/utils";
 import { ContractDeployer } from "lib/contract-deployer";
 import { Link as ReactRouterLink } from "react-router-dom";
 import { ROUTES } from "consts";
-import TxLoader from "components/TxLoader";
 import useNotification from "hooks/useNotification";
 import {
   FormWrapper,
@@ -24,6 +22,7 @@ import { offchainFormSpec, onchainFormSpec } from "./data";
 import { Form } from "components/form";
 import { GithubButton } from "pages/deployer/githubButton";
 import { useNavigatePreserveQuery } from "lib/hooks/useNavigatePreserveQuery";
+import { useTonAddress, useTonConnectUI } from "@tonconnect/ui-react";
 
 const DEFAULT_DECIMALS = 9;
 
@@ -39,14 +38,13 @@ async function fetchDecimalsOffchain(url: string): Promise<{ decimals?: string }
 
 function DeployerPage() {
   const { showNotification } = useNotification();
-  const { address } = useConnectionStore();
+  const walletAddress = useTonAddress();
+  const [tonconnect] = useTonConnectUI();
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigatePreserveQuery();
 
   async function deployContract(data: any) {
-    const connection = WalletConnection.getConnection();
-
-    if (!address || !connection) {
+    if (!walletAddress || !tonconnect) {
       throw new Error("Wallet not connected");
     }
 
@@ -59,7 +57,7 @@ function DeployerPage() {
     }
 
     const params: JettonDeployParams = {
-      owner: Address.parse(address),
+      owner: Address.parse(walletAddress),
       onchainMetaData: {
         name: data.name,
         symbol: data.symbol,
@@ -91,7 +89,7 @@ function DeployerPage() {
     }
 
     try {
-      const result = await jettonDeployController.createJetton(params, connection);
+      const result = await jettonDeployController.createJetton(params, tonconnect, walletAddress);
       analytics.sendEvent(
         AnalyticsCategory.DEPLOYER_PAGE,
         AnalyticsAction.DEPLOY,
@@ -110,11 +108,6 @@ function DeployerPage() {
 
   return (
     <Screen>
-      <TxLoader open={isLoading}>
-        <StyledTxLoaderContent>
-          <Typography>Deploying... Check your wallet for a pending transaction</Typography>
-        </StyledTxLoaderContent>
-      </TxLoader>
       <ScreenContent removeBackground>
         <Fade in>
           <Box>
@@ -123,7 +116,12 @@ function DeployerPage() {
             </Box>
             <FormWrapper>
               <SubHeadingWrapper>
-                <Form submitText="Deploy" onSubmit={deployContract} inputs={formSpec} />
+                <Form
+                  isLoading={isLoading}
+                  submitText="Deploy"
+                  onSubmit={deployContract}
+                  inputs={formSpec}
+                />
               </SubHeadingWrapper>
               <Box sx={{ flex: 4 }}>
                 <Description />

@@ -4,13 +4,13 @@ import { Popup } from "components/Popup";
 import useNotification from "hooks/useNotification";
 import { jettonDeployController } from "lib/deploy-controller";
 import { useState } from "react";
-import WalletConnection from "services/wallet-connection";
 import useJettonStore from "store/jetton-store/useJettonStore";
 import { AppButton } from "components/appButton";
 import { AppNumberInput } from "components/appInput";
 import { toDecimalsBN } from "utils";
 import { useRecoilState } from "recoil";
 import { jettonActionsState } from "pages/jetton/actions/jettonActions";
+import { useTonAddress, useTonConnectUI } from "@tonconnect/ui-react";
 
 function BurnJettonsAction() {
   const [amount, setAmount] = useState<number | undefined>(undefined);
@@ -25,8 +25,9 @@ function BurnJettonsAction() {
     decimals,
   } = useJettonStore();
   const { showNotification } = useNotification();
-  const [actionInProgress, setActionInProgress] = useRecoilState(jettonActionsState);
-
+  const [actionInProgress, setActionInProgress] = useState(false);
+  const [tonconnect] = useTonConnectUI();
+  const walletAddress = useTonAddress();
   if (!balance || !isMyWallet) {
     return null;
   }
@@ -56,8 +57,12 @@ function BurnJettonsAction() {
 
     try {
       setActionInProgress(true);
-      const connection = WalletConnection.getConnection();
-      await jettonDeployController.burnJettons(connection, valueDecimals, jettonWalletAddress!);
+      await jettonDeployController.burnJettons(
+        tonconnect,
+        valueDecimals,
+        jettonWalletAddress!,
+        walletAddress,
+      );
       const message = `Successfully burned ${amount.toLocaleString()} ${symbol}`;
       showNotification(message, "success");
       getJettonDetails();
@@ -89,7 +94,7 @@ function BurnJettonsAction() {
           <AppButton onClick={onBurn}>Submit</AppButton>
         </>
       </Popup>
-      <AppButton transparent={true} onClick={() => setOpen(true)}>
+      <AppButton loading={actionInProgress} transparent={true} onClick={() => setOpen(true)}>
         Burn
       </AppButton>
     </>

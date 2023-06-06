@@ -24,6 +24,7 @@ export function MigrationPopup({
     isMigrationMasterDeployed,
     mintedJettonsToMaster,
     migrationStarted,
+    newMinterAddress,
     setNewMinterDeployed,
     setMigrationMasterDeployed,
     setMintedJettonsToMaster,
@@ -109,11 +110,6 @@ export function MigrationPopup({
     );
   };
 
-  const redirectToNewPage = () => {
-    const newJettonAddress = "EQAGPPuLtcu8BimtY8TFVrpJ-E36akEFZHexCSD_BNQl_QrW";
-    navigate(`/jetton/${newJettonAddress}`);
-  };
-
   return (
     <Popup open={open} maxWidth={600} onClose={onClose}>
       {!migrationStarted ? (
@@ -184,7 +180,7 @@ export function MigrationPopup({
               width={200}
               onClick={() => {
                 onClose();
-                redirectToNewPage();
+                navigate(`/jetton/${newMinterAddress}`);
               }}>
               Go to the new Jetton
             </AppButton>

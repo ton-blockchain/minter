@@ -187,11 +187,12 @@ function useJettonStore() {
           amountToMint: new BN(0),
         };
         const deployParams = createDeployParams(params);
-        const contractAddress = new ContractDeployer().addressForContract(deployParams);
-        const isNewMinterDeployed = WalletConnection.isContractDeployed(contractAddress);
+        const newMinterAddress = new ContractDeployer().addressForContract(deployParams);
+        const isNewMinterDeployed = WalletConnection.isContractDeployed(newMinterAddress);
         setState((prevState) => ({
           ...prevState,
           isNewMinterDeployed,
+          newMinterAddress: newMinterAddress.toString(),
         }));
       }
     } catch (error) {

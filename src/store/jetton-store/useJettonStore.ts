@@ -180,6 +180,8 @@ function useJettonStore() {
         };
       });
 
+      console.log(address);
+
       if (address) {
         const minterParams: JettonDeployParams = {
           owner: Address.parse(address),
@@ -194,9 +196,13 @@ function useJettonStore() {
         };
         const minterDeployParams = createDeployParams(minterParams);
         const newMinterAddress = new ContractDeployer().addressForContract(minterDeployParams);
-        const isNewMinterDeployed = WalletConnection.isContractDeployed(newMinterAddress);
+        console.log(newMinterAddress.toFriendly());
+        const client = await getClient();
+        const isNewMinterDeployed = await client.isContractDeployed(newMinterAddress);
         let isMigrationMasterDeployed = false;
         let mintedJettonsToMaster = false;
+
+        console.log(isNewMinterDeployed);
 
         if (isNewMinterDeployed) {
           const migrationMasterConfig: MigrationMasterConfig = {
@@ -209,12 +215,14 @@ function useJettonStore() {
             deployer: Address.parse(address), //anything
             value: new BN(0), //anything
           });
-          isMigrationMasterDeployed = WalletConnection.isContractDeployed(migrationMasterAddress);
+          isMigrationMasterDeployed = await client.isContractDeployed(migrationMasterAddress);
+
+          console.log(isMigrationMasterDeployed);
 
           if (isMigrationMasterDeployed) {
             const result = await jettonDeployController.getJettonDetails(
               newMinterAddress,
-              Address.parse(address),
+              migrationMasterAddress,
               connection,
             );
 
@@ -222,6 +230,8 @@ function useJettonStore() {
               console.log("empty");
               return;
             }
+
+            console.log("qwe", result.jettonWallet?.jWalletAddress.toFriendly());
 
             const migrationMasterJettonBalance = result.jettonWallet?.balance;
 

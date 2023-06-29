@@ -90,7 +90,7 @@ export async function createMigrationMaster(
     value: MIGRATION_MASTER_DEPLOY_GAS,
   };
   const migrationMasterAddress = new ContractDeployer().addressForContract(params);
-  const isDeployed = WalletConnection.isContractDeployed(migrationMasterAddress);
+  const isDeployed = tc.isContractDeployed(migrationMasterAddress);
 
   if (await tc.isContractDeployed(migrationMasterAddress)) {
     // params.onProgress?.(JettonDeployState.ALREADY_DEPLOYED);

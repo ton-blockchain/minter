@@ -24,6 +24,7 @@ import { offchainFormSpec, onchainFormSpec } from "./data";
 import { Form } from "components/form";
 import { GithubButton } from "pages/deployer/githubButton";
 import { useNavigatePreserveQuery } from "lib/hooks/useNavigatePreserveQuery";
+import { getClient } from "lib/get-ton-client";
 
 const DEFAULT_DECIMALS = 9;
 
@@ -74,7 +75,8 @@ function DeployerPage() {
     const deployParams = createDeployParams(params, data.offchainUri);
     const contractAddress = new ContractDeployer().addressForContract(deployParams);
 
-    const isDeployed = await WalletConnection.isContractDeployed(contractAddress);
+    const client = await getClient();
+    const isDeployed = await client.isContractDeployed(contractAddress);
 
     if (isDeployed) {
       showNotification(

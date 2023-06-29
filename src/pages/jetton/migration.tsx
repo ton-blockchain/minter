@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 import WalletConnection from "services/wallet-connection";
 import useConnectionStore from "store/connection-store/useConnectionStore";
 import { TonConnection } from "@ton-defi.org/ton-connection";
-import { Address, Cell } from "ton";
+import { Address, Cell, beginCell } from "ton";
 import { JettonDeployParams, jettonDeployController } from "lib/deploy-controller";
 import { createDeployParams } from "lib/utils";
 import BN from "bn.js";
@@ -27,6 +27,9 @@ import {
   migrationMasterConfigToCell,
 } from "lib/migrations";
 import { useJettonAddress } from "hooks/useJettonAddress";
+import { transfer } from "lib/jetton-minter";
+import { cellToAddress, makeGetCall } from "lib/make-get-call";
+import { getClient } from "lib/get-ton-client";
 
 export function MigrationPopup({
   open,
@@ -47,6 +50,7 @@ export function MigrationPopup({
     jettonImage,
     description,
     totalSupply,
+    jettonWalletAddress,
     setNewMinterDeployed,
     setMigrationMasterDeployed,
     setMintedJettonsToMaster,
@@ -93,7 +97,8 @@ export function MigrationPopup({
     const deployParams = createDeployParams(params);
     const contractAddress = new ContractDeployer().addressForContract(deployParams);
 
-    const isDeployed = await WalletConnection.isContractDeployed(contractAddress);
+    const client = await getClient();
+    const isDeployed = await client.isContractDeployed(contractAddress);
 
     if (isDeployed) {
       setNewMinterDeployed(true);
@@ -128,9 +133,9 @@ export function MigrationPopup({
       deployer: Address.parse(address),
       value: MIGRATION_MASTER_DEPLOY_GAS,
     };
-    console.log(params);
     const migrationMasterAddress = new ContractDeployer().addressForContract(params);
-    const isDeployed = WalletConnection.isContractDeployed(migrationMasterAddress);
+    const client = await getClient();
+    const isDeployed = await client.isContractDeployed(migrationMasterAddress);
 
     if (isDeployed) {
       setMigrationMasterDeployed(true);
@@ -153,9 +158,44 @@ export function MigrationPopup({
   };
 
   const mintJettonsToMaster = async (connection: TonConnection) => {
-    // TODO
-    await new Promise((r) => setTimeout(r, 1000));
-    setMintedJettonsToMaster(true);
+    const amount = totalSupply;
+    const parsedJettonMaster = Address.parse(jettonAddress!);
+    const migrationMasterConfig: MigrationMasterConfig = {
+      oldJettonMinter: parsedJettonMaster,
+      newJettonMinter: Address.parse(newMinterAddress),
+    };
+    const params = {
+      code: MIGRATION_MASTER_CODE,
+      data: await migrationMasterConfigToCell(migrationMasterConfig),
+      deployer: Address.parse(address!),
+      value: MIGRATION_MASTER_DEPLOY_GAS,
+    };
+    const migrationMasterAddress = new ContractDeployer().addressForContract(params);
+
+    const newMinterJettonWalletAddress = await makeGetCall(
+      Address.parse(newMinterAddress),
+      "get_wallet_address",
+      [beginCell().storeAddress(Address.parse(address!)).endCell()],
+      ([addressCell]) => cellToAddress(addressCell),
+      await getClient(),
+    );
+
+    try {
+      const connection = WalletConnection.getConnection();
+      await jettonDeployController.transfer(
+        connection,
+        amount!,
+        migrationMasterAddress.toFriendly(),
+        address!,
+        newMinterJettonWalletAddress.toFriendly(),
+      );
+    } catch (error) {
+      if (error instanceof Error) {
+        showNotification(error.message, "error");
+      }
+    } finally {
+      setMintedJettonsToMaster(true);
+    }
   };
 
   interface TransactionStepProps {

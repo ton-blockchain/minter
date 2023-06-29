@@ -14,6 +14,11 @@ import { useJettonAddress } from "hooks/useJettonAddress";
 import { JETTON_MINTER_CODE } from "lib/jetton-minter";
 import { BN } from "bn.js";
 import { ContractDeployer } from "lib/contract-deployer";
+import {
+  MIGRATION_MASTER_CODE,
+  MigrationMasterConfig,
+  migrationMasterConfigToCell,
+} from "lib/migrations";
 
 function useJettonStore() {
   const [state, setState] = useRecoilState(jettonStateAtom);
@@ -175,7 +180,7 @@ function useJettonStore() {
       });
 
       if (address) {
-        const params: JettonDeployParams = {
+        const minterParams: JettonDeployParams = {
           owner: Address.parse(address),
           onchainMetaData: {
             name: name!,
@@ -186,13 +191,28 @@ function useJettonStore() {
           },
           amountToMint: new BN(0),
         };
-        const deployParams = createDeployParams(params);
-        const newMinterAddress = new ContractDeployer().addressForContract(deployParams);
+        const minterDeployParams = createDeployParams(minterParams);
+        const newMinterAddress = new ContractDeployer().addressForContract(minterDeployParams);
         const isNewMinterDeployed = WalletConnection.isContractDeployed(newMinterAddress);
+
+        const migrationMasterConfig: MigrationMasterConfig = {
+          oldJettonMinter: parsedJettonMaster,
+          newJettonMinter: newMinterAddress,
+        };
+        const migrationMasterAddress = new ContractDeployer().addressForContract({
+          code: MIGRATION_MASTER_CODE,
+          data: await migrationMasterConfigToCell(migrationMasterConfig),
+          deployer: newMinterAddress, //anything
+          value: new BN(0), //anything
+        });
+        const isMigrationMasterDeployed =
+          WalletConnection.isContractDeployed(migrationMasterAddress);
+
         setState((prevState) => ({
           ...prevState,
           isNewMinterDeployed,
           newMinterAddress: newMinterAddress.toString(),
+          isMigrationMasterDeployed,
         }));
       }
     } catch (error) {

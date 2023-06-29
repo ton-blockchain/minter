@@ -1,12 +1,9 @@
-import BN from "bn.js";
-import { Cell, beginCell, Address, beginDict, Slice, toNano } from "ton";
+import { Cell, beginCell, Address } from "ton";
 
 import masterHex from "./contracts/MigrationMaster.compiled.json";
 import helperHex from "./contracts/MigrationHelper.compiled.json";
-// @ts-ignore
-import { Sha256 } from "@aws-crypto/sha256-js";
-import axios from "axios";
 import { getClient } from "./get-ton-client";
+import BN from "bn.js";
 
 export const MIGRATION_MASTER_CODE = Cell.fromBoc(masterHex.hex)[0];
 export const MIGRATION_HELPER_CODE = Cell.fromBoc(helperHex.hex)[0]; // code cell from build output
@@ -54,4 +51,8 @@ export async function migrationHelperConfigToCell(config: MigrationHelperConfig)
     .storeAddress(config.recipient)
     .storeRef(config.oldWalletCode || oldWalletCode)
     .endCell();
+}
+
+export function migrateBody(amount: BN): Cell {
+  return beginCell().storeUint(OPS.Migrate, 32).storeUint(1, 64).storeCoins(amount).endCell();
 }

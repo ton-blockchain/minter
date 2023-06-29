@@ -10,6 +10,15 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useNavigate } from "react-router-dom";
 import WalletConnection from "services/wallet-connection";
 import useConnectionStore from "store/connection-store/useConnectionStore";
+import { TonConnection } from "@ton-defi.org/ton-connection";
+import { Address, Cell } from "ton";
+import { JettonDeployParams, jettonDeployController } from "lib/deploy-controller";
+import { createDeployParams } from "lib/utils";
+import BN from "bn.js";
+import { ContractDeployer } from "lib/contract-deployer";
+import { toDecimalsBN } from "utils";
+import analytics from "services/analytics";
+import useNotification from "hooks/useNotification";
 
 export function MigrationPopup({
   open,
@@ -25,12 +34,18 @@ export function MigrationPopup({
     mintedJettonsToMaster,
     migrationStarted,
     newMinterAddress,
+    decimals,
+    name,
+    jettonImage,
+    description,
+    totalSupply,
     setNewMinterDeployed,
     setMigrationMasterDeployed,
     setMintedJettonsToMaster,
     setMigrationStarted,
   } = useJettonStore();
   const { address } = useConnectionStore();
+  const { showNotification } = useNotification();
 
   const navigate = useNavigate();
 
@@ -44,24 +59,56 @@ export function MigrationPopup({
       throw new Error("Wallet not connected");
     }
     setMigrationStarted(true);
-    if (!isNewMinterDeployed) await deployNewJetton();
-    if (!isMigrationMasterDeployed) await deployMigrationMaster();
-    if (!mintedJettonsToMaster) await mintJettonsToMaster();
+    if (!isNewMinterDeployed) await deployNewJetton(connection);
+    if (!isMigrationMasterDeployed) await deployMigrationMaster(connection);
+    if (!mintedJettonsToMaster) await mintJettonsToMaster(connection);
   };
 
-  const deployNewJetton = async () => {
-    // TODO
-    await new Promise((r) => setTimeout(r, 1000));
-    setNewMinterDeployed(true);
+  const deployNewJetton = async (connection: TonConnection) => {
+    if (!address || !connection) {
+      throw new Error("Wallet not connected");
+    }
+
+    const params: JettonDeployParams = {
+      owner: Address.parse(address),
+      onchainMetaData: {
+        name: name!,
+        symbol: symbol!,
+        image: jettonImage,
+        description: description,
+        decimals: parseInt(decimals!).toFixed(0),
+      },
+      amountToMint: totalSupply!,
+    };
+
+    const deployParams = createDeployParams(params);
+    const contractAddress = new ContractDeployer().addressForContract(deployParams);
+
+    const isDeployed = await WalletConnection.isContractDeployed(contractAddress);
+
+    if (isDeployed) {
+      setNewMinterDeployed(true);
+      return;
+    }
+
+    try {
+      const result = await jettonDeployController.createJetton(params, connection);
+    } catch (err) {
+      if (err instanceof Error) {
+        showNotification(<>{err.message}</>, "error");
+      }
+    } finally {
+      setNewMinterDeployed(true);
+    }
   };
 
-  const deployMigrationMaster = async () => {
+  const deployMigrationMaster = async (connection: TonConnection) => {
     // TODO
     await new Promise((r) => setTimeout(r, 1000));
     setMigrationMasterDeployed(true);
   };
 
-  const mintJettonsToMaster = async () => {
+  const mintJettonsToMaster = async (connection: TonConnection) => {
     // TODO
     await new Promise((r) => setTimeout(r, 1000));
     setMintedJettonsToMaster(true);

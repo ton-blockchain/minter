@@ -19,6 +19,14 @@ import { ContractDeployer } from "lib/contract-deployer";
 import { toDecimalsBN } from "utils";
 import analytics from "services/analytics";
 import useNotification from "hooks/useNotification";
+import {
+  MIGRATION_MASTER_CODE,
+  MIGRATION_MASTER_DEPLOY_GAS,
+  MigrationMasterConfig,
+  createMigrationMaster,
+  migrationMasterConfigToCell,
+} from "lib/migrations";
+import { useJettonAddress } from "hooks/useJettonAddress";
 
 export function MigrationPopup({
   open,
@@ -46,6 +54,7 @@ export function MigrationPopup({
   } = useJettonStore();
   const { address } = useConnectionStore();
   const { showNotification } = useNotification();
+  const { jettonAddress } = useJettonAddress();
 
   const navigate = useNavigate();
 
@@ -103,9 +112,44 @@ export function MigrationPopup({
   };
 
   const deployMigrationMaster = async (connection: TonConnection) => {
-    // TODO
-    await new Promise((r) => setTimeout(r, 1000));
-    setMigrationMasterDeployed(true);
+    if (!address || !connection) {
+      throw new Error("Wallet not connected");
+    }
+
+    const parsedJettonMaster = Address.parse(jettonAddress!);
+
+    const migrationMasterConfig: MigrationMasterConfig = {
+      oldJettonMinter: parsedJettonMaster,
+      newJettonMinter: Address.parse(newMinterAddress),
+    };
+    const params = {
+      code: MIGRATION_MASTER_CODE,
+      data: await migrationMasterConfigToCell(migrationMasterConfig),
+      deployer: Address.parse(address),
+      value: MIGRATION_MASTER_DEPLOY_GAS,
+    };
+    console.log(params);
+    const migrationMasterAddress = new ContractDeployer().addressForContract(params);
+    const isDeployed = WalletConnection.isContractDeployed(migrationMasterAddress);
+
+    if (isDeployed) {
+      setMigrationMasterDeployed(true);
+      return;
+    }
+
+    try {
+      const result = await createMigrationMaster(
+        migrationMasterConfig,
+        connection,
+        Address.parse(address),
+      );
+    } catch (err) {
+      if (err instanceof Error) {
+        showNotification(<>{err.message}</>, "error");
+      }
+    } finally {
+      setMigrationMasterDeployed(true);
+    }
   };
 
   const mintJettonsToMaster = async (connection: TonConnection) => {

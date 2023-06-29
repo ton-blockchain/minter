@@ -19,6 +19,7 @@ import {
   MigrationMasterConfig,
   migrationMasterConfigToCell,
 } from "lib/migrations";
+import { getClient } from "lib/get-ton-client";
 
 function useJettonStore() {
   const [state, setState] = useRecoilState(jettonStateAtom);
@@ -202,17 +203,38 @@ function useJettonStore() {
         const migrationMasterAddress = new ContractDeployer().addressForContract({
           code: MIGRATION_MASTER_CODE,
           data: await migrationMasterConfigToCell(migrationMasterConfig),
-          deployer: newMinterAddress, //anything
+          deployer: Address.parse(address), //anything
           value: new BN(0), //anything
         });
         const isMigrationMasterDeployed =
           WalletConnection.isContractDeployed(migrationMasterAddress);
+        let mintedJettonsToMaster = false;
+
+        if (isNewMinterDeployed && isMigrationMasterDeployed) {
+          const result = await jettonDeployController.getJettonDetails(
+            newMinterAddress,
+            Address.parse(address),
+            connection,
+          );
+
+          if (!result) {
+            console.log("empty");
+            return;
+          }
+
+          const migrationMasterJettonBalance = result.jettonWallet?.balance;
+
+          if (migrationMasterJettonBalance?.gt(new BN(0))) {
+            mintedJettonsToMaster = true;
+          }
+        }
 
         setState((prevState) => ({
           ...prevState,
           isNewMinterDeployed,
           newMinterAddress: newMinterAddress.toString(),
           isMigrationMasterDeployed,
+          mintedJettonsToMaster,
         }));
       }
     } catch (error) {

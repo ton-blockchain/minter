@@ -195,37 +195,39 @@ function useJettonStore() {
         const minterDeployParams = createDeployParams(minterParams);
         const newMinterAddress = new ContractDeployer().addressForContract(minterDeployParams);
         const isNewMinterDeployed = WalletConnection.isContractDeployed(newMinterAddress);
-
-        const migrationMasterConfig: MigrationMasterConfig = {
-          oldJettonMinter: parsedJettonMaster,
-          newJettonMinter: newMinterAddress,
-        };
-        const migrationMasterAddress = new ContractDeployer().addressForContract({
-          code: MIGRATION_MASTER_CODE,
-          data: await migrationMasterConfigToCell(migrationMasterConfig),
-          deployer: Address.parse(address), //anything
-          value: new BN(0), //anything
-        });
-        const isMigrationMasterDeployed =
-          WalletConnection.isContractDeployed(migrationMasterAddress);
+        let isMigrationMasterDeployed = false;
         let mintedJettonsToMaster = false;
 
-        if (isNewMinterDeployed && isMigrationMasterDeployed) {
-          const result = await jettonDeployController.getJettonDetails(
-            newMinterAddress,
-            Address.parse(address),
-            connection,
-          );
+        if (isNewMinterDeployed) {
+          const migrationMasterConfig: MigrationMasterConfig = {
+            oldJettonMinter: parsedJettonMaster,
+            newJettonMinter: newMinterAddress,
+          };
+          const migrationMasterAddress = new ContractDeployer().addressForContract({
+            code: MIGRATION_MASTER_CODE,
+            data: await migrationMasterConfigToCell(migrationMasterConfig),
+            deployer: Address.parse(address), //anything
+            value: new BN(0), //anything
+          });
+          isMigrationMasterDeployed = WalletConnection.isContractDeployed(migrationMasterAddress);
 
-          if (!result) {
-            console.log("empty");
-            return;
-          }
+          if (isMigrationMasterDeployed) {
+            const result = await jettonDeployController.getJettonDetails(
+              newMinterAddress,
+              Address.parse(address),
+              connection,
+            );
 
-          const migrationMasterJettonBalance = result.jettonWallet?.balance;
+            if (!result) {
+              console.log("empty");
+              return;
+            }
 
-          if (migrationMasterJettonBalance?.gt(new BN(0))) {
-            mintedJettonsToMaster = true;
+            const migrationMasterJettonBalance = result.jettonWallet?.balance;
+
+            if (migrationMasterJettonBalance?.gt(new BN(0))) {
+              mintedJettonsToMaster = true;
+            }
           }
         }
 

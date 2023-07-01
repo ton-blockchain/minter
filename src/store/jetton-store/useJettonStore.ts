@@ -20,6 +20,7 @@ import {
   migrationMasterConfigToCell,
 } from "lib/migrations";
 import { getClient } from "lib/get-ton-client";
+import { useParams } from "react-router-dom";
 
 function useJettonStore() {
   const [state, setState] = useRecoilState(jettonStateAtom);
@@ -27,6 +28,7 @@ function useJettonStore() {
   const { showNotification } = useNotification();
   const { address: connectedWalletAddress } = useConnectionStore();
   const { jettonAddress } = useJettonAddress();
+  const { migrationId }: { migrationId?: string } = useParams();
 
   const setNewMinterDeployed = useCallback(
     (newValue: boolean) => {
@@ -180,8 +182,6 @@ function useJettonStore() {
         };
       });
 
-      console.log(address);
-
       if (address) {
         const minterParams: JettonDeployParams = {
           owner: Address.parse(address),
@@ -196,13 +196,11 @@ function useJettonStore() {
         };
         const minterDeployParams = createDeployParams(minterParams);
         const newMinterAddress = new ContractDeployer().addressForContract(minterDeployParams);
-        console.log(newMinterAddress.toFriendly());
+
         const client = await getClient();
         const isNewMinterDeployed = await client.isContractDeployed(newMinterAddress);
         let isMigrationMasterDeployed = false;
         let mintedJettonsToMaster = false;
-
-        console.log(isNewMinterDeployed);
 
         if (isNewMinterDeployed) {
           const migrationMasterConfig: MigrationMasterConfig = {
@@ -217,8 +215,6 @@ function useJettonStore() {
           });
           isMigrationMasterDeployed = await client.isContractDeployed(migrationMasterAddress);
 
-          console.log(isMigrationMasterDeployed);
-
           if (isMigrationMasterDeployed) {
             const result = await jettonDeployController.getJettonDetails(
               newMinterAddress,
@@ -226,17 +222,12 @@ function useJettonStore() {
               connection,
             );
 
-            if (!result) {
-              console.log("empty");
-              return;
-            }
+            if (result) {
+              const migrationMasterJettonBalance = result.jettonWallet?.balance;
 
-            console.log("qwe", result.jettonWallet?.jWalletAddress.toFriendly());
-
-            const migrationMasterJettonBalance = result.jettonWallet?.balance;
-
-            if (migrationMasterJettonBalance?.gt(new BN(0))) {
-              mintedJettonsToMaster = true;
+              if (migrationMasterJettonBalance?.gt(new BN(0))) {
+                mintedJettonsToMaster = true;
+              }
             }
           }
         }
@@ -268,6 +259,7 @@ function useJettonStore() {
 
   return {
     ...state,
+    migrationId,
     getJettonDetails,
     reset,
     setNewMinterDeployed,

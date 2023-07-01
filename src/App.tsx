@@ -115,6 +115,7 @@ const App = () => {
               <Route path="/" element={<ContentWrapper />}>
                 <Route path={ROUTES.deployer} element={<DeployerPage />} />
                 <Route path={ROUTES.jettonId} element={<Jetton />} />
+                <Route path={ROUTES.migration} element={<Jetton />} />
               </Route>
             </Route>
           </Routes>

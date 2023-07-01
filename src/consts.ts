@@ -3,6 +3,7 @@ const ROUTES = {
   deployer: "/",
   jetton: "/jetton",
   jettonId: "/jetton/:id",
+  migration: "/jetton/:id/migration/:migrationId",
 };
 
 const APP_GRID = 1156;

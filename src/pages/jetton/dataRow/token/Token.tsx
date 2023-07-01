@@ -28,6 +28,7 @@ import { AppButton } from "components/appButton";
 import pen from "assets/icons/pen.svg";
 import { CenteringWrapper } from "components/footer/styled";
 import { MigrationPopup } from "pages/jetton/migration";
+import { UserMigrationPopup } from "pages/jetton/userMigration";
 import { useNavigate } from "react-router-dom";
 
 export const Token = () => {
@@ -53,10 +54,14 @@ export const Token = () => {
     isMigrationMasterDeployed,
     mintedJettonsToMaster,
     newMinterAddress,
+    migrationId,
   } = useJettonStore();
   const [openEdit, setOpenEdit] = useState(false);
   const [openMigrationPopup, setOpenMigrationPopup] = useState(false);
+  const [openUserMigrationPopup, setOpenUserMigrationPopup] = useState(false);
   const navigate = useNavigate();
+
+  const isMigrationRoute: boolean = !!migrationId;
 
   return (
     <StyledBlock sx={{ width: "calc(55% - 15px)" }}>
@@ -113,52 +118,58 @@ export const Token = () => {
                 </AppButton>
               </Box>
             )}
-            <MigrationPopup open={openMigrationPopup} setOpen={setOpenMigrationPopup} />
-            {
-              /* isAdmin && */ isCodeOld &&
-                !jettonLoading &&
-                selectedWalletAddress &&
-                !(isNewMinterDeployed && isMigrationMasterDeployed && mintedJettonsToMaster) && (
-                  <Box sx={{ alignSelf: "start" }}>
-                    <AppButton
-                      width={113}
-                      height={32}
-                      transparent
-                      onClick={() => setOpenMigrationPopup(true)}>
-                      <CenteringWrapper>
-                        <img
-                          src={pen}
-                          alt="Pen Icon"
-                          width={15}
-                          height={15}
-                          style={{ marginRight: 4 }}
-                        />
-                        Migration
-                      </CenteringWrapper>
-                    </AppButton>
-                  </Box>
-                )
-            }
-            {isNewMinterDeployed && isMigrationMasterDeployed && mintedJettonsToMaster && (
+            {isMigrationRoute && !jettonLoading && (
               <Box sx={{ alignSelf: "start" }}>
                 <AppButton
                   width={113}
                   height={32}
                   transparent
-                  onClick={() => navigate(`/jetton/${newMinterAddress}`)}>
+                  onClick={() => setOpenUserMigrationPopup(true)}>
                   <CenteringWrapper>
                     <img
                       src={pen}
-                      alt="New Button Icon"
+                      alt="Migration Icon"
                       width={15}
                       height={15}
                       style={{ marginRight: 4 }}
                     />
-                    New version
+                    Migration
                   </CenteringWrapper>
                 </AppButton>
               </Box>
             )}
+            {isMigrationRoute && !jettonLoading && (
+              <UserMigrationPopup
+                open={openUserMigrationPopup}
+                setOpen={setOpenUserMigrationPopup}
+                jettonMinter={jettonMaster!}
+                migrationMaster={migrationId!}
+              />
+            )}
+            <MigrationPopup open={openMigrationPopup} setOpen={setOpenMigrationPopup} />
+            {isCodeOld &&
+              !jettonLoading &&
+              selectedWalletAddress &&
+              !(isNewMinterDeployed && isMigrationMasterDeployed && mintedJettonsToMaster) && (
+                <Box sx={{ alignSelf: "start" }}>
+                  <AppButton
+                    width={113}
+                    height={32}
+                    transparent
+                    onClick={() => setOpenMigrationPopup(true)}>
+                    <CenteringWrapper>
+                      <img
+                        src={pen}
+                        alt="Pen Icon"
+                        width={15}
+                        height={15}
+                        style={{ marginRight: 4 }}
+                      />
+                      Migration
+                    </CenteringWrapper>
+                  </AppButton>
+                </Box>
+              )}
           </StyledTop>
           {!isAdmin && isJettonDeployerFaultyOnChainData && (
             <Alert variant="filled" severity="error">

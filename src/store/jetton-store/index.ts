@@ -27,6 +27,7 @@ export interface JettonStoreState {
   mintedJettonsToMaster: boolean;
   migrationStarted: boolean;
   newMinterAddress: string;
+  migrationId?: string;
 }
 
 const jettonStateAtom = atom<JettonStoreState>({
@@ -56,6 +57,7 @@ const jettonStateAtom = atom<JettonStoreState>({
     mintedJettonsToMaster: false,
     migrationStarted: false,
     newMinterAddress: "",
+    migrationId: "",
   },
 });
 

@@ -146,8 +146,27 @@ export function UserMigrationPopup({
   };
 
   const transferJettonsToHelper = async (connection: TonConnection) => {
-    await sleep(1000);
-    setTransferredJettonsToHelper(true);
+    const amount = balance!;
+    const parsedJettonWallet = Address.parse(jettonWalletAddress!);
+
+    try {
+      const connection = WalletConnection.getConnection();
+      await jettonDeployController.transfer(
+        connection,
+        amount!,
+        migrationHelper!,
+        address!,
+        parsedJettonWallet.toFriendly(),
+        0.35,
+        0.3,
+      );
+    } catch (error) {
+      if (error instanceof Error) {
+        showNotification(error.message, "error");
+      }
+    } finally {
+      setTransferredJettonsToHelper(true);
+    }
   };
 
   interface TransactionStepProps {

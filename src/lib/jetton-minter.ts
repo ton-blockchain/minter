@@ -235,7 +235,12 @@ export function burn(amount: BN, responseAddress: Address) {
     .endCell();
 }
 
-export function transfer(to: Address, from: Address, jettonAmount: BN) {
+export function transfer(
+  to: Address,
+  from: Address,
+  jettonAmount: BN,
+  customForwardValue?: number,
+) {
   return beginCell()
     .storeUint(OPS.Transfer, 32)
     .storeUint(1, 64)
@@ -243,7 +248,7 @@ export function transfer(to: Address, from: Address, jettonAmount: BN) {
     .storeAddress(to)
     .storeAddress(from)
     .storeBit(false)
-    .storeCoins(toNano(0.001))
+    .storeCoins(toNano(customForwardValue || 0.001))
     .storeBit(false) // forward_payload in this slice, not separate cell
     .endCell();
 }

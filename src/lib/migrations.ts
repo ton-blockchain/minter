@@ -58,8 +58,12 @@ export type MigrationHelperConfig = {
 
 export async function migrationHelperConfigToCell(config: MigrationHelperConfig): Promise<Cell> {
   const client = await getClient();
-  const oldWalletCode = (await client.callGetMethod(config.oldJettonMinter, "get_jetton_data"))
-    .stack[4];
+  const oldWalletCode = Cell.fromBoc(
+    Buffer.from(
+      (await client.callGetMethod(config.oldJettonMinter, "get_jetton_data")).stack[4][1].bytes,
+      "base64",
+    ).toString("hex"),
+  )[0];
   return beginCell()
     .storeAddress(config.oldJettonMinter)
     .storeAddress(config.migrationMaster)
@@ -128,9 +132,12 @@ export async function createMigrationHelper(
   if (await tc.isContractDeployed(migrationHelperAddress)) {
     // params.onProgress?.(JettonDeployState.ALREADY_DEPLOYED);
   } else {
+    console.log(123);
     await contractDeployer.deployContract(params, tonConnection);
+    console.log(123);
     // params.onProgress?.(JettonDeployState.AWAITING_MINTER_DEPLOY);
     await waitForContractDeploy(migrationHelperAddress, tc);
+    console.log(123);
   }
 
   return migrationHelperAddress;

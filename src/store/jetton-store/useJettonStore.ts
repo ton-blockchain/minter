@@ -294,7 +294,7 @@ function useJettonStore() {
           newMinterAddress: newMinterAddress.toString(),
           isMigrationMasterDeployed,
           mintedJettonsToMaster,
-          migrationHelper: migrationHelperAddress.toString(),
+          migrationHelper: migrationHelperAddress ? migrationHelperAddress.toString() : undefined,
           isMigrationHelperDeployed,
           migrationHelperBalance,
         }));

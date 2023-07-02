@@ -17,6 +17,7 @@ enum OPS {
 }
 
 export const MIGRATION_MASTER_DEPLOY_GAS = new BN("100000000");
+export const MIGRATION_HELPER_DEPLOY_GAS = new BN("20000000");
 
 export type MigrationMasterConfig = {
   oldJettonMinter: Address;
@@ -101,4 +102,36 @@ export async function createMigrationMaster(
   }
 
   return migrationMasterAddress;
+}
+
+export async function createMigrationHelper(
+  config: MigrationHelperConfig,
+  tonConnection: TonConnection,
+  owner: Address,
+): Promise<Address> {
+  const contractDeployer = new ContractDeployer();
+  const tc = await getClient();
+
+  // params.onProgress?.(JettonDeployState.BALANCE_CHECK);
+  const balance = await tc.getBalance(owner);
+  if (balance.lt(MIGRATION_HELPER_DEPLOY_GAS))
+    throw new Error("Not enough balance in deployer wallet");
+  const params = {
+    code: MIGRATION_HELPER_CODE,
+    data: await migrationHelperConfigToCell(config),
+    deployer: owner, //anything
+    value: MIGRATION_HELPER_DEPLOY_GAS,
+  };
+  const migrationHelperAddress = new ContractDeployer().addressForContract(params);
+  const isDeployed = tc.isContractDeployed(migrationHelperAddress);
+
+  if (await tc.isContractDeployed(migrationHelperAddress)) {
+    // params.onProgress?.(JettonDeployState.ALREADY_DEPLOYED);
+  } else {
+    await contractDeployer.deployContract(params, tonConnection);
+    // params.onProgress?.(JettonDeployState.AWAITING_MINTER_DEPLOY);
+    await waitForContractDeploy(migrationHelperAddress, tc);
+  }
+
+  return migrationHelperAddress;
 }

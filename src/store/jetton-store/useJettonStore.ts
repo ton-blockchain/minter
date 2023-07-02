@@ -12,11 +12,14 @@ import useConnectionStore from "store/connection-store/useConnectionStore";
 import { getUrlParam, isValidAddress } from "utils";
 import { useJettonAddress } from "hooks/useJettonAddress";
 import { JETTON_MINTER_CODE } from "lib/jetton-minter";
-import { BN } from "bn.js";
+import BN from "bn.js";
 import { ContractDeployer } from "lib/contract-deployer";
 import {
+  MIGRATION_HELPER_CODE,
   MIGRATION_MASTER_CODE,
+  MigrationHelperConfig,
   MigrationMasterConfig,
+  migrationHelperConfigToCell,
   migrationMasterConfigToCell,
 } from "lib/migrations";
 import { getClient } from "lib/get-ton-client";
@@ -65,6 +68,36 @@ function useJettonStore() {
       setState((prevState) => ({
         ...prevState,
         migrationStarted: newValue,
+      }));
+    },
+    [setState],
+  );
+
+  const setMigrationHelperBalance = useCallback(
+    (newValue: BN) => {
+      setState((prevState) => ({
+        ...prevState,
+        migrationHelperBalance: newValue,
+      }));
+    },
+    [setState],
+  );
+
+  const setMigrationHelperDeployed = useCallback(
+    (newValue: boolean) => {
+      setState((prevState) => ({
+        ...prevState,
+        isMigrationHelperDeployed: newValue,
+      }));
+    },
+    [setState],
+  );
+
+  const setTransferredJettonsToHelper = useCallback(
+    (newValue: boolean) => {
+      setState((prevState) => ({
+        ...prevState,
+        transferredJettonsToHelper: newValue,
       }));
     },
     [setState],
@@ -232,12 +265,38 @@ function useJettonStore() {
           }
         }
 
+        let migrationHelperAddress: Address;
+        let isMigrationHelperDeployed: boolean;
+        let migrationHelperBalance: BN;
+
+        if (migrationId) {
+          const migrationHelperConfig: MigrationHelperConfig = {
+            oldJettonMinter: parsedJettonMaster,
+            migrationMaster: Address.parse(migrationId),
+            recipient: Address.parse(address),
+          };
+          migrationHelperAddress = new ContractDeployer().addressForContract({
+            code: MIGRATION_HELPER_CODE,
+            data: await migrationHelperConfigToCell(migrationHelperConfig),
+            deployer: Address.parse(address), //anything
+            value: new BN(0), //anything
+          });
+          isMigrationHelperDeployed = await client.isContractDeployed(migrationHelperAddress);
+
+          if (isMigrationHelperDeployed) {
+            migrationHelperBalance = await client.getBalance(migrationHelperAddress);
+          }
+        }
+
         setState((prevState) => ({
           ...prevState,
           isNewMinterDeployed,
           newMinterAddress: newMinterAddress.toString(),
           isMigrationMasterDeployed,
           mintedJettonsToMaster,
+          migrationHelper: migrationHelperAddress.toString(),
+          isMigrationHelperDeployed,
+          migrationHelperBalance,
         }));
       }
     } catch (error) {
@@ -266,6 +325,9 @@ function useJettonStore() {
     setMigrationMasterDeployed,
     setMintedJettonsToMaster,
     setMigrationStarted,
+    setMigrationHelperDeployed,
+    setMigrationHelperBalance,
+    setTransferredJettonsToHelper,
   };
 }
 

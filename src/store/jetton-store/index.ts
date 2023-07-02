@@ -28,6 +28,10 @@ export interface JettonStoreState {
   migrationStarted: boolean;
   newMinterAddress: string;
   migrationId?: string;
+  migrationHelper?: string;
+  migrationHelperBalance?: BN;
+  isMigrationHelperDeployed: boolean;
+  transferredJettonsToHelper: boolean;
 }
 
 const jettonStateAtom = atom<JettonStoreState>({
@@ -58,6 +62,10 @@ const jettonStateAtom = atom<JettonStoreState>({
     migrationStarted: false,
     newMinterAddress: "",
     migrationId: "",
+    migrationHelper: "",
+    migrationHelperBalance: undefined,
+    isMigrationHelperDeployed: false,
+    transferredJettonsToHelper: false,
   },
 });
 

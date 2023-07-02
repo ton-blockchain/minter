@@ -138,16 +138,15 @@ export const Token = () => {
                 </AppButton>
               </Box>
             )}
-            {isMigrationRoute && !jettonLoading && (
-              <UserMigrationPopup
-                open={openUserMigrationPopup}
-                setOpen={setOpenUserMigrationPopup}
-                jettonMinter={jettonMaster!}
-                migrationMaster={migrationId!}
-              />
-            )}
+            <UserMigrationPopup
+              open={openUserMigrationPopup}
+              setOpen={setOpenUserMigrationPopup}
+              jettonMinter={jettonMaster!}
+              migrationMaster={migrationId!}
+            />
             <MigrationPopup open={openMigrationPopup} setOpen={setOpenMigrationPopup} />
-            {isCodeOld &&
+            {!isMigrationRoute &&
+              isCodeOld &&
               !jettonLoading &&
               selectedWalletAddress &&
               !(isNewMinterDeployed && isMigrationMasterDeployed && mintedJettonsToMaster) && (

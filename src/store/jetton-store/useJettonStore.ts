@@ -4,11 +4,14 @@ import { createDeployParams, zeroAddress } from "lib/utils";
 import { useRecoilState, useResetRecoilState } from "recoil";
 import WalletConnection from "services/wallet-connection";
 import { Address, Cell } from "ton";
+import { jettonDeployController } from "lib/deploy-controller";
+import { zeroAddress } from "lib/utils";
+import { useRecoilState, useResetRecoilState } from "recoil";
+import { Address } from "ton";
 import { jettonStateAtom } from ".";
 import QuestiomMarkImg from "assets/icons/question.png";
 import { useCallback } from "react";
 import useNotification from "hooks/useNotification";
-import useConnectionStore from "store/connection-store/useConnectionStore";
 import { getUrlParam, isValidAddress } from "utils";
 import { useJettonAddress } from "hooks/useJettonAddress";
 import { JETTON_MINTER_CODE } from "lib/jetton-minter";
@@ -24,12 +27,13 @@ import {
 } from "lib/migrations";
 import { getClient } from "lib/get-ton-client";
 import { useParams } from "react-router-dom";
+import { useTonAddress, useTonConnectUI } from "@tonconnect/ui-react";
 
 function useJettonStore() {
   const [state, setState] = useRecoilState(jettonStateAtom);
   const reset = useResetRecoilState(jettonStateAtom);
   const { showNotification } = useNotification();
-  const { address: connectedWalletAddress } = useConnectionStore();
+  const connectedWalletAddress = useTonAddress();
   const { jettonAddress } = useJettonAddress();
   const { migrationId }: { migrationId?: string } = useParams();
 
@@ -124,14 +128,6 @@ function useJettonStore() {
 
     const parsedJettonMaster = Address.parse(jettonAddress);
 
-    let connection;
-
-    try {
-      connection = WalletConnection.getConnection();
-    } catch (error) {
-      connection = new TonConnection(new ChromeExtensionWalletProvider());
-    }
-
     try {
       setState((prevState) => ({
         ...prevState,
@@ -141,7 +137,6 @@ function useJettonStore() {
       const result = await jettonDeployController.getJettonDetails(
         parsedJettonMaster,
         address ? Address.parse(address) : zeroAddress(),
-        connection,
       );
 
       if (!result) {

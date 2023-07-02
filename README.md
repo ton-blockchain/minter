@@ -7,7 +7,7 @@ An open source Jetton deployer webapp, based on [jetton contracts starter templa
 Instructions:
 Make sure you have a TON wallet with at least 0.25 TON balance. Supported wallets include TonHub and Chrome Extension.
 
-Use your web browser to open the site of the deploy form: https://jetton.live
+Use your web browser to open the site of the deploy form: https://minter.ton.org
 
 > Safety Notice: The form is based on this repo and served from GitHub Pages
 

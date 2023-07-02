@@ -35,6 +35,7 @@ import { useJettonAddress } from "hooks/useJettonAddress";
 import { transfer } from "lib/jetton-minter";
 import { cellToAddress, makeGetCall } from "lib/make-get-call";
 import { getClient } from "lib/get-ton-client";
+import BigNumberDisplay from "components/BigNumberDisplay";
 
 export function UserMigrationPopup({
   open,
@@ -229,9 +230,11 @@ export function UserMigrationPopup({
               </li>
               <li style={{ marginBottom: 10 }}>
                 <span style={{ paddingLeft: 5 }}>
-                  You will receive exactly{" "}
-                  <span style={{ fontWeight: 900 }}>{balance?.toString()}</span> tokens in the new
-                  version of <span style={{ fontWeight: 900 }}>{symbol}</span>{" "}
+                  You will receive{" "}
+                  <span style={{ fontWeight: 900 }}>
+                    <BigNumberDisplay value={balance!} decimals={decimals} />
+                  </span>{" "}
+                  tokens in the new version of <span style={{ fontWeight: 900 }}>{symbol}</span>{" "}
                 </span>
               </li>
               <li style={{ marginBottom: 10 }}>

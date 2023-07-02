@@ -9,8 +9,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useNavigate } from "react-router-dom";
 import WalletConnection from "services/wallet-connection";
-import useConnectionStore from "store/connection-store/useConnectionStore";
-import { TonConnection } from "@ton-defi.org/ton-connection";
+import { useTonAddress, useTonConnectUI, TonConnectUI } from "@tonconnect/ui-react";
 import { Address, Cell, beginCell } from "ton";
 import { JettonDeployParams, jettonDeployController } from "lib/deploy-controller";
 import { createDeployParams, sleep } from "lib/utils";
@@ -74,9 +73,10 @@ export function UserMigrationPopup({
     setMigrationHelperBalance,
     setTransferredJettonsToHelper,
   } = useJettonStore();
-  const { address } = useConnectionStore();
   const { showNotification } = useNotification();
   const { jettonAddress } = useJettonAddress();
+  const [tonconnect] = useTonConnectUI();
+  const address = useTonAddress();
 
   const navigate = useNavigate();
 
@@ -85,7 +85,7 @@ export function UserMigrationPopup({
   };
 
   const onSubmit = async () => {
-    const connection = WalletConnection.getConnection();
+    const connection = tonconnect;
     if (!address || !connection) {
       throw new Error("Wallet not connected");
     }
@@ -94,7 +94,7 @@ export function UserMigrationPopup({
     await transferJettonsToHelper(connection);
   };
 
-  const deployMigrationHelper = async (connection: TonConnection) => {
+  const deployMigrationHelper = async (connection: TonConnectUI) => {
     if (!address || !connection) {
       throw new Error("Wallet not connected");
     }
@@ -145,12 +145,11 @@ export function UserMigrationPopup({
     }
   };
 
-  const transferJettonsToHelper = async (connection: TonConnection) => {
+  const transferJettonsToHelper = async (connection: TonConnectUI) => {
     const amount = balance!;
     const parsedJettonWallet = Address.parse(jettonWalletAddress!);
 
     try {
-      const connection = WalletConnection.getConnection();
       await jettonDeployController.transfer(
         connection,
         amount!,

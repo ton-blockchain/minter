@@ -73,8 +73,7 @@ function DeployerPage() {
     const deployParams = createDeployParams(params, data.offchainUri);
     const contractAddress = new ContractDeployer().addressForContract(deployParams);
 
-    const client = await getClient();
-    const isDeployed = await client.isContractDeployed(contractAddress);
+    const isDeployed = await WalletConnection.isContractDeployed(contractAddress);
 
     if (isDeployed) {
       showNotification(

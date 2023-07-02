@@ -169,11 +169,11 @@ class JettonDeployController {
           amount: toNano(customValue || 0.05).toString(),
           stateInit: undefined,
           payload: transfer(
-        Address.parse(toAddress),
-        Address.parse(fromAddress),
-        amount,
-        customForwardValue,
-      )
+            Address.parse(toAddress),
+            Address.parse(fromAddress),
+            amount,
+            customForwardValue,
+          )
             .toBoc()
             .toString("base64"),
         },

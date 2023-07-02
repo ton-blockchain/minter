@@ -2,9 +2,9 @@ import { Cell, beginCell, Address, TonClient } from "ton";
 
 import masterHex from "./contracts/MigrationMaster.compiled.json";
 import helperHex from "./contracts/MigrationHelper.compiled.json";
+import { useTonAddress, useTonConnectUI, TonConnectUI } from "@tonconnect/ui-react";
 import { getClient } from "./get-ton-client";
 import BN from "bn.js";
-import { TonConnection } from "@ton-defi.org/ton-connection";
 import { ContractDeployer } from "./contract-deployer";
 import WalletConnection from "services/wallet-connection";
 import { waitForContractDeploy } from "./utils";
@@ -78,7 +78,7 @@ export function migrateBody(amount: BN): Cell {
 
 export async function createMigrationMaster(
   config: MigrationMasterConfig,
-  tonConnection: TonConnection,
+  tonConnection: TonConnectUI,
   owner: Address,
 ): Promise<Address> {
   const contractDeployer = new ContractDeployer();
@@ -110,7 +110,7 @@ export async function createMigrationMaster(
 
 export async function createMigrationHelper(
   config: MigrationHelperConfig,
-  tonConnection: TonConnection,
+  tonConnection: TonConnectUI,
   owner: Address,
 ): Promise<Address> {
   const contractDeployer = new ContractDeployer();

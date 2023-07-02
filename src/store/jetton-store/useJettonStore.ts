@@ -1,13 +1,8 @@
-import { TonConnection, ChromeExtensionWalletProvider } from "@ton-defi.org/ton-connection";
 import { JettonDeployParams, jettonDeployController } from "lib/deploy-controller";
 import { createDeployParams, zeroAddress } from "lib/utils";
 import { useRecoilState, useResetRecoilState } from "recoil";
 import WalletConnection from "services/wallet-connection";
 import { Address, Cell } from "ton";
-import { jettonDeployController } from "lib/deploy-controller";
-import { zeroAddress } from "lib/utils";
-import { useRecoilState, useResetRecoilState } from "recoil";
-import { Address } from "ton";
 import { jettonStateAtom } from ".";
 import QuestiomMarkImg from "assets/icons/question.png";
 import { useCallback } from "react";
@@ -247,7 +242,6 @@ function useJettonStore() {
             const result = await jettonDeployController.getJettonDetails(
               newMinterAddress,
               migrationMasterAddress,
-              connection,
             );
 
             if (result) {

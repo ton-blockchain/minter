@@ -136,12 +136,13 @@ export function UserMigrationPopup({
         connection,
         Address.parse(address),
       );
+      setMigrationHelperDeployed(true);
     } catch (err) {
       if (err instanceof Error) {
         showNotification(<>{err.message}</>, "error");
+        onClose();
+        setMigrationStarted(false);
       }
-    } finally {
-      setMigrationHelperDeployed(true);
     }
   };
 
@@ -159,12 +160,13 @@ export function UserMigrationPopup({
         0.35,
         0.3,
       );
+      setTransferredJettonsToHelper(true);
     } catch (error) {
       if (error instanceof Error) {
         showNotification(error.message, "error");
+        onClose();
+        setMigrationStarted(false);
       }
-    } finally {
-      setTransferredJettonsToHelper(true);
     }
   };
 

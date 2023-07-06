@@ -106,12 +106,13 @@ export function MigrationPopup({
 
     try {
       const result = await jettonDeployController.createJetton(params, connection, walletAddress);
+      setNewMinterDeployed(true);
     } catch (err) {
       if (err instanceof Error) {
         showNotification(<>{err.message}</>, "error");
+        onClose();
+        setMigrationStarted(false);
       }
-    } finally {
-      setNewMinterDeployed(true);
     }
   };
 
@@ -147,12 +148,13 @@ export function MigrationPopup({
         connection,
         Address.parse(walletAddress),
       );
+      setMigrationMasterDeployed(true);
     } catch (err) {
       if (err instanceof Error) {
         showNotification(<>{err.message}</>, "error");
+        onClose();
+        setMigrationStarted(false);
       }
-    } finally {
-      setMigrationMasterDeployed(true);
     }
   };
 
@@ -187,12 +189,13 @@ export function MigrationPopup({
         walletAddress!,
         newMinterJettonWalletAddress.toFriendly(),
       );
+      setMintedJettonsToMaster(true);
     } catch (error) {
       if (error instanceof Error) {
         showNotification(error.message, "error");
+        onClose();
+        setMigrationStarted(false);
       }
-    } finally {
-      setMintedJettonsToMaster(true);
     }
   };
 

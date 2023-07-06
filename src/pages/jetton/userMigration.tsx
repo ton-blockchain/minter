@@ -99,31 +99,23 @@ export function UserMigrationPopup({
       throw new Error("Wallet not connected");
     }
 
-    console.log(jettonAddress!, migrationMaster);
-
     const parsedJettonMaster = Address.parse(jettonAddress!);
-
-    console.log(123);
 
     const migrationHelperConfig: MigrationHelperConfig = {
       oldJettonMinter: parsedJettonMaster,
       migrationMaster: Address.parse(migrationMaster),
       recipient: Address.parse(address),
     };
-    console.log(123, address, MIGRATION_HELPER_CODE);
     const params = {
       code: MIGRATION_HELPER_CODE,
       data: await migrationHelperConfigToCell(migrationHelperConfig),
       deployer: Address.parse(address),
       value: MIGRATION_HELPER_DEPLOY_GAS,
     };
-    console.log(123);
     const migrationHelperAddress = new ContractDeployer().addressForContract(params);
-    console.log(123);
+
     const client = await getClient();
-    console.log(123);
     const isDeployed = await client.isContractDeployed(migrationHelperAddress);
-    console.log(123);
 
     if (isDeployed) {
       setMigrationHelperDeployed(true);

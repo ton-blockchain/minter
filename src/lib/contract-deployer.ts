@@ -13,7 +13,6 @@ interface ContractDeployDetails {
 
 export class ContractDeployer {
   addressForContract(params: ContractDeployDetails) {
-    console.log(77, params.data, params.code);
     return contractAddress({
       workchain: 0,
       initialData: params.data,

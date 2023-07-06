@@ -132,12 +132,9 @@ export async function createMigrationHelper(
   if (await tc.isContractDeployed(migrationHelperAddress)) {
     // params.onProgress?.(JettonDeployState.ALREADY_DEPLOYED);
   } else {
-    console.log(123);
     await contractDeployer.deployContract(params, tonConnection);
-    console.log(123);
     // params.onProgress?.(JettonDeployState.AWAITING_MINTER_DEPLOY);
     await waitForContractDeploy(migrationHelperAddress, tc);
-    console.log(123);
   }
 
   return migrationHelperAddress;

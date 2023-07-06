@@ -22,6 +22,7 @@ import { offchainFormSpec, onchainFormSpec } from "./data";
 import { Form } from "components/form";
 import { GithubButton } from "pages/deployer/githubButton";
 import { useNavigatePreserveQuery } from "lib/hooks/useNavigatePreserveQuery";
+import { getClient } from "lib/get-ton-client";
 import { useTonAddress, useTonConnectUI } from "@tonconnect/ui-react";
 
 const DEFAULT_DECIMALS = 9;

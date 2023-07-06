@@ -150,6 +150,8 @@ class JettonDeployController {
     toAddress: string,
     fromAddress: string,
     ownerJettonWallet: string,
+    customValue?: number,
+    customForwardValue?: number,
   ) {
     const tc = await getClient();
 
@@ -164,9 +166,14 @@ class JettonDeployController {
       messages: [
         {
           address: ownerJettonWallet,
-          amount: toNano(0.05).toString(),
+          amount: toNano(customValue || 0.05).toString(),
           stateInit: undefined,
-          payload: transfer(Address.parse(toAddress), Address.parse(fromAddress), amount)
+          payload: transfer(
+            Address.parse(toAddress),
+            Address.parse(fromAddress),
+            amount,
+            customForwardValue,
+          )
             .toBoc()
             .toString("base64"),
         },
@@ -254,6 +261,12 @@ class JettonDeployController {
       minter,
       jettonWallet,
     };
+  }
+
+  async getJettonMinterCode(contractAddress: Address) {
+    const client = getClient();
+    const code = (await (await client).getContractState(contractAddress)).code!;
+    return code;
   }
 
   async fixFaultyJetton(

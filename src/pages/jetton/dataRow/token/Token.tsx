@@ -27,6 +27,9 @@ import brokenImage from "assets/icons/question.png";
 import { AppButton } from "components/appButton";
 import pen from "assets/icons/pen.svg";
 import { CenteringWrapper } from "components/footer/styled";
+import { MigrationPopup } from "pages/jetton/migration";
+import { UserMigrationPopup } from "pages/jetton/userMigration";
+import { useNavigate } from "react-router-dom";
 
 export const Token = () => {
   const {
@@ -45,8 +48,20 @@ export const Token = () => {
     jettonLoading,
     decimals,
     isImageBroken,
+    isCodeOld,
+    selectedWalletAddress,
+    isNewMinterDeployed,
+    isMigrationMasterDeployed,
+    mintedJettonsToMaster,
+    newMinterAddress,
+    migrationId,
   } = useJettonStore();
   const [openEdit, setOpenEdit] = useState(false);
+  const [openMigrationPopup, setOpenMigrationPopup] = useState(false);
+  const [openUserMigrationPopup, setOpenUserMigrationPopup] = useState(false);
+  const navigate = useNavigate();
+
+  const isMigrationRoute: boolean = !!migrationId;
 
   return (
     <StyledBlock sx={{ width: "calc(55% - 15px)" }}>
@@ -103,6 +118,57 @@ export const Token = () => {
                 </AppButton>
               </Box>
             )}
+            {isMigrationRoute && !jettonLoading && (
+              <Box sx={{ alignSelf: "start" }}>
+                <AppButton
+                  width={113}
+                  height={32}
+                  transparent
+                  onClick={() => setOpenUserMigrationPopup(true)}>
+                  <CenteringWrapper>
+                    <img
+                      src={pen}
+                      alt="Migration Icon"
+                      width={15}
+                      height={15}
+                      style={{ marginRight: 4 }}
+                    />
+                    Migration
+                  </CenteringWrapper>
+                </AppButton>
+              </Box>
+            )}
+            <UserMigrationPopup
+              open={openUserMigrationPopup}
+              setOpen={setOpenUserMigrationPopup}
+              jettonMinter={jettonMaster!}
+              migrationMaster={migrationId!}
+            />
+            <MigrationPopup open={openMigrationPopup} setOpen={setOpenMigrationPopup} />
+            {!isMigrationRoute &&
+              isCodeOld &&
+              !jettonLoading &&
+              selectedWalletAddress &&
+              !(isNewMinterDeployed && isMigrationMasterDeployed && mintedJettonsToMaster) && (
+                <Box sx={{ alignSelf: "start" }}>
+                  <AppButton
+                    width={113}
+                    height={32}
+                    transparent
+                    onClick={() => setOpenMigrationPopup(true)}>
+                    <CenteringWrapper>
+                      <img
+                        src={pen}
+                        alt="Pen Icon"
+                        width={15}
+                        height={15}
+                        style={{ marginRight: 4 }}
+                      />
+                      Migration
+                    </CenteringWrapper>
+                  </AppButton>
+                </Box>
+              )}
           </StyledTop>
           {!isAdmin && isJettonDeployerFaultyOnChainData && (
             <Alert variant="filled" severity="error">

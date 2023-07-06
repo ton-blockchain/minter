@@ -21,6 +21,17 @@ export interface JettonStoreState {
   jettonLoading: boolean;
   isMyWallet: boolean;
   selectedWalletAddress?: string | null;
+  isCodeOld: boolean;
+  isNewMinterDeployed: boolean;
+  isMigrationMasterDeployed: boolean;
+  mintedJettonsToMaster: boolean;
+  migrationStarted: boolean;
+  newMinterAddress: string;
+  migrationId?: string;
+  migrationHelper?: string;
+  migrationHelperBalance?: BN;
+  isMigrationHelperDeployed: boolean;
+  transferredJettonsToHelper: boolean;
 }
 
 const jettonStateAtom = atom<JettonStoreState>({
@@ -44,6 +55,17 @@ const jettonStateAtom = atom<JettonStoreState>({
     isJettonDeployerFaultyOnChainData: false,
     isMyWallet: false,
     selectedWalletAddress: undefined,
+    isCodeOld: false,
+    isNewMinterDeployed: false,
+    isMigrationMasterDeployed: false,
+    mintedJettonsToMaster: false,
+    migrationStarted: false,
+    newMinterAddress: "",
+    migrationId: "",
+    migrationHelper: "",
+    migrationHelperBalance: undefined,
+    isMigrationHelperDeployed: false,
+    transferredJettonsToHelper: false,
   },
 });
 

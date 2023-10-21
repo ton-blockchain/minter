@@ -41,12 +41,3 @@ export function toDecimalsBN(num: number | string, decimals: number | string) {
 export function fromDecimals(num: number | string, decimals: number | string) {
   return BigNumber(num).div(ten.pow(decimals)).toFixed();
 }
-
-export const onConnect = () => {
-  const container = document.getElementById("ton-connect-button");
-  const btn = container?.querySelector("button");
-
-  if (btn) {
-    btn.click();
-  }
-};

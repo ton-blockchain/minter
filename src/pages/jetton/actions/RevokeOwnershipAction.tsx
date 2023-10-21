@@ -13,15 +13,12 @@ import { Typography } from "@mui/material";
 import bullet from "assets/icons/bullet.svg";
 import error from "assets/icons/error-notification.svg";
 import { Box } from "@mui/system";
-import { useTonAddress, useTonConnectUI } from "@tonconnect/ui-react";
 
 function RevokeOwnershipAction() {
-  const [actionInProgress, setActionInProgress] = useState(false);
+  const setActionInProgress = useSetRecoilState(jettonActionsState);
   const [showAlert, setShowAlert] = useState(false);
   const { jettonMaster, isAdmin, getJettonDetails, isMyWallet, symbol, isImageBroken } =
     useJettonStore();
-  const walletAddress = useTonAddress();
-  const [tonconnect] = useTonConnectUI();
   const { showNotification } = useNotification();
   if (!isAdmin || !isMyWallet) {
     return null;
@@ -40,8 +37,7 @@ function RevokeOwnershipAction() {
       setActionInProgress(true);
       await jettonDeployController.burnAdmin(
         Address.parse(jettonMaster),
-        tonconnect,
-        walletAddress,
+        WalletConnection.getConnection(),
       );
       getJettonDetails();
       showNotification("Ownership revoked successfully", "success");
@@ -117,12 +113,12 @@ function RevokeOwnershipAction() {
               Cancel
             </AppButton>
           </Box>
-          <AppButton loading={actionInProgress} width={100} onClick={onSubmit}>
+          <AppButton width={100} onClick={onSubmit}>
             Revoke
           </AppButton>
         </CenteringWrapper>
       </Popup>
-      <AppButton loading={actionInProgress} transparent={true} onClick={onClick}>
+      <AppButton transparent={true} onClick={onClick}>
         Revoke ownership
       </AppButton>
     </>

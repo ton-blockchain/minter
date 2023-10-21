@@ -12,16 +12,14 @@ import { AppButton } from "components/appButton";
 import { AppNumberInput } from "components/appInput";
 import { useRecoilState } from "recoil";
 import { jettonActionsState } from "pages/jetton/actions/jettonActions";
-import { useTonAddress, useTonConnectUI } from "@tonconnect/ui-react";
 
 function MintJettonsAction() {
   const [amount, setAmount] = useState<number | undefined>(undefined);
   const [open, setOpen] = useState(false);
-  const [actionInProgress, setActionInProgress] = useState(false);
-  const [tonconnect] = useTonConnectUI();
+  const [actionInProgress, setActionInProgress] = useRecoilState(jettonActionsState);
+
   const { jettonMaster, isAdmin, symbol, getJettonDetails, isMyWallet, decimals } =
     useJettonStore();
-  const walletAddress = useTonAddress();
   const { showNotification } = useNotification();
 
   if (!isAdmin || !isMyWallet) {
@@ -41,12 +39,8 @@ function MintJettonsAction() {
 
     try {
       setActionInProgress(true);
-      await jettonDeployController.mint(
-        tonconnect,
-        Address.parse(jettonMaster),
-        value,
-        walletAddress,
-      );
+      const connection = WalletConnection.getConnection();
+      await jettonDeployController.mint(connection, Address.parse(jettonMaster), value);
       setOpen(false);
       const message = (
         <>
@@ -84,7 +78,7 @@ function MintJettonsAction() {
           <AppButton onClick={onMint}>Submit</AppButton>
         </>
       </Popup>
-      <AppButton loading={actionInProgress} transparent={true} onClick={() => setOpen(true)}>
+      <AppButton transparent={true} onClick={() => setOpen(true)}>
         Mint
       </AppButton>
     </>

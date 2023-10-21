@@ -1,6 +1,6 @@
 import BN from "bn.js";
-import { Address, beginCell, Cell, contractAddress, StateInit } from "ton";
-import { SendTransactionRequest, TonConnectUI } from "@tonconnect/ui-react";
+import { Address, Cell, contractAddress, StateInit } from "ton";
+import { TonConnection } from "@ton-defi.org/ton-connection";
 
 interface ContractDeployDetails {
   deployer: Address;
@@ -22,25 +22,17 @@ export class ContractDeployer {
 
   async deployContract(
     params: ContractDeployDetails,
-    tonConnection: TonConnectUI,
+    tonConnection: TonConnection,
   ): Promise<Address> {
     const _contractAddress = this.addressForContract(params);
-    let cell = new Cell();
-    new StateInit({ data: params.data, code: params.code }).writeTo(cell);
-    if (!params.dryRun) {
-      const tx: SendTransactionRequest = {
-        validUntil: Date.now() + 5 * 60 * 1000,
-        messages: [
-          {
-            address: _contractAddress.toString(),
-            amount: params.value.toString(),
-            stateInit: cell.toBoc().toString("base64"),
-            payload: params.message?.toBoc().toString("base64"),
-          },
-        ],
-      };
 
-      await tonConnection.sendTransaction(tx);
+    if (!params.dryRun) {
+      await tonConnection.requestTransaction({
+        to: _contractAddress,
+        value: params.value,
+        stateInit: new StateInit({ data: params.data, code: params.code }),
+        message: params.message,
+      });
     }
 
     return _contractAddress;

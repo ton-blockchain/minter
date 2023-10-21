@@ -2,14 +2,17 @@ import { Box, Typography } from "@mui/material";
 import { styled } from "@mui/system";
 import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
 import { Popup } from "components/Popup";
+import useConnectionStore from "store/connection-store/useConnectionStore";
 import useJettonStore from "store/jetton-store/useJettonStore";
 import { useState } from "react";
+import TxLoader from "components/TxLoader";
 import { jettonDeployController } from "lib/deploy-controller";
 import { Address } from "ton";
+import WalletConnection from "services/wallet-connection";
 import { AppButton } from "components/appButton";
-import { useTonAddress, useTonConnectUI } from "@tonconnect/ui-react";
 
 function FaultyDeploy() {
+  const { address } = useConnectionStore();
   const {
     jettonMaster,
     getJettonDetails,
@@ -21,8 +24,6 @@ function FaultyDeploy() {
     jettonImage,
   } = useJettonStore();
   const [isLoading, setIsLoading] = useState(false);
-  const [tonconnect] = useTonConnectUI();
-  const address = useTonAddress();
 
   const onSubmit = async () => {
     if (!address || !jettonMaster) {
@@ -38,8 +39,7 @@ function FaultyDeploy() {
           description,
           image: jettonImage,
         },
-        tonconnect,
-        address,
+        WalletConnection.getConnection(),
       );
       await getJettonDetails();
     } catch (error) {
@@ -51,6 +51,9 @@ function FaultyDeploy() {
 
   return (
     <>
+      <TxLoader open={isLoading}>
+        <Typography>Loading...</Typography>
+      </TxLoader>
       <Popup
         maxWidth={380}
         open={!!isJettonDeployerFaultyOnChainData && isAdmin && !isLoading}

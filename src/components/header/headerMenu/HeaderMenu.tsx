@@ -1,4 +1,5 @@
-import { Box, Drawer, IconButton, styled } from "@mui/material";
+import { Drawer, IconButton } from "@mui/material";
+import WalletConnector from "components/header/walletConnector/WalletConnector";
 import githubIcon from "assets/icons/github-logo.svg";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { AppLogo } from "components/appLogo";
@@ -9,7 +10,6 @@ import {
   AppMenu,
   HeaderTypography,
 } from "./styled";
-import { TonConnectButton } from "@tonconnect/ui-react";
 
 interface MenuProps {
   closeMenu?: () => void;
@@ -30,12 +30,10 @@ const MobileMenu: React.FC<MenuProps> = ({ closeMenu, showMenu }) => {
   );
 };
 
-const HeaderMenu: React.FC<MenuProps> = (props) => {
+const HeaderMenu: React.FC<MenuProps> = () => {
   return (
     <AppMenu>
-      <div onClick={props.closeMenu}>
-        <StyledTonConnectButton />
-      </div>
+      <WalletConnector />
       <IconButton
         sx={{ padding: 0, ml: 1.5 }}
         href="https://github.com/ton-blockchain/minter"
@@ -46,17 +44,5 @@ const HeaderMenu: React.FC<MenuProps> = (props) => {
     </AppMenu>
   );
 };
-
-const StyledTonConnectButton = styled(TonConnectButton)(({ theme }) => ({
-  button: {
-    background: theme.palette.primary.main,
-    "*": { color: "white" },
-    svg: {
-      "*": {
-        stroke: "white",
-      },
-    },
-  },
-}));
 
 export { HeaderMenu, MobileMenu };

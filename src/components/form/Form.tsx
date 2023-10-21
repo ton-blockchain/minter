@@ -1,5 +1,6 @@
 import useNotification from "hooks/useNotification";
 import { useForm } from "react-hook-form";
+import useConnectionStore from "store/connection-store/useConnectionStore";
 import { Box, Tooltip, useMediaQuery } from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
 import { AppButton } from "components/appButton";
@@ -19,8 +20,6 @@ import { StyledTopImg } from "pages/jetton/styled";
 import LoadingImage from "components/LoadingImage";
 import { AppHeading } from "components/appHeading";
 import { useJettonAddress } from "hooks/useJettonAddress";
-import { useTonAddress } from "@tonconnect/ui-react";
-import { onConnect } from "utils";
 
 interface FormProps {
   onSubmit: (values: any) => Promise<void>;
@@ -29,7 +28,6 @@ interface FormProps {
   submitText: string;
   defaultValues?: {};
   onCancel?: () => void;
-  isLoading?: boolean;
 }
 
 export function Form({
@@ -39,10 +37,9 @@ export function Form({
   submitText,
   defaultValues,
   onCancel,
-  isLoading,
 }: FormProps) {
   const { showNotification } = useNotification();
-  const address = useTonAddress();
+  const { address, toggleConnect } = useConnectionStore();
   const { jettonLogo, setIconHover } = useJettonLogo();
   const [logoAlertPopup, setLogoAlertPopup] = useState(false);
   const [editLogoPopup, setEditLogoPopup] = useState(false);
@@ -184,7 +181,7 @@ export function Form({
             width={150}
             fontWeight={700}
             type="button"
-            onClick={onConnect}
+            onClick={() => toggleConnect(true)}
             background="#0088CC">
             Connect wallet
           </AppButton>
@@ -202,7 +199,7 @@ export function Form({
               </Box>
             )}
             <Box sx={{ width: 110, height: 44 }} ml={2}>
-              <AppButton disabled={jettonLogo.isLoading} type="submit" loading={isLoading}>
+              <AppButton disabled={jettonLogo.isLoading} type="submit">
                 {submitText}
               </AppButton>
             </Box>

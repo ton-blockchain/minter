@@ -3,6 +3,7 @@ import { Address, beginCell, Cell, toNano } from "ton";
 import { ContractDeployer } from "./contract-deployer";
 
 import { createDeployParams, waitForContractDeploy, waitForSeqno } from "./utils";
+import { TonConnection } from "@ton-defi.org/ton-connection";
 import { zeroAddress } from "./utils";
 import {
   buildJettonOnchainMetadata,
@@ -14,7 +15,6 @@ import {
 import { readJettonMetadata, changeAdminBody, JettonMetaDataKeys } from "./jetton-minter";
 import { getClient } from "./get-ton-client";
 import { cellToAddress, makeGetCall } from "./make-get-call";
-import { SendTransactionRequest, TonConnectUI } from "@tonconnect/ui-react";
 
 export const JETTON_DEPLOY_GAS = toNano(0.25);
 
@@ -44,11 +44,7 @@ export interface JettonDeployParams {
 }
 
 class JettonDeployController {
-  async createJetton(
-    params: JettonDeployParams,
-    tonConnection: TonConnectUI,
-    walletAddress: string,
-  ): Promise<Address> {
+  async createJetton(params: JettonDeployParams, tonConnection: TonConnection): Promise<Address> {
     const contractDeployer = new ContractDeployer();
     const tc = await getClient();
 
@@ -87,129 +83,86 @@ class JettonDeployController {
     return contractAddr;
   }
 
-  async burnAdmin(contractAddress: Address, tonConnection: TonConnectUI, walletAddress: string) {
+  async burnAdmin(contractAddress: Address, tonConnection: TonConnection) {
     // @ts-ignore
+    const { address } = await tonConnection.connect();
     const tc = await getClient();
     const waiter = await waitForSeqno(
       tc.openWalletFromAddress({
-        source: Address.parse(walletAddress),
+        source: Address.parse(address),
       }),
     );
 
-    const tx: SendTransactionRequest = {
-      validUntil: Date.now() + 5 * 60 * 1000,
-      messages: [
-        {
-          address: contractAddress.toString(),
-          amount: toNano(0.01).toString(),
-          stateInit: undefined,
-          payload: changeAdminBody(zeroAddress()).toBoc().toString("base64"),
-        },
-      ],
-    };
-
-    await tonConnection.sendTransaction(tx);
+    await tonConnection.requestTransaction({
+      to: contractAddress,
+      value: toNano(0.01),
+      message: changeAdminBody(zeroAddress()),
+    });
 
     await waiter();
   }
 
-  async mint(
-    tonConnection: TonConnectUI,
-    jettonMaster: Address,
-    amount: BN,
-    walletAddress: string,
-  ) {
+  async mint(tonConnection: TonConnection, jettonMaster: Address, amount: BN) {
+    const { address } = await tonConnection.connect();
     const tc = await getClient();
     const waiter = await waitForSeqno(
       tc.openWalletFromAddress({
-        source: Address.parse(walletAddress),
+        source: Address.parse(address),
       }),
     );
-
-    const tx: SendTransactionRequest = {
-      validUntil: Date.now() + 5 * 60 * 1000,
-      messages: [
-        {
-          address: jettonMaster.toString(),
-          amount: toNano(0.04).toString(),
-          stateInit: undefined,
-          payload: mintBody(Address.parse(walletAddress), amount, toNano(0.02), 0)
-            .toBoc()
-            .toString("base64"),
-        },
-      ],
-    };
-
-    await tonConnection.sendTransaction(tx);
+    await tonConnection.requestTransaction({
+      to: jettonMaster,
+      value: toNano(0.04),
+      message: mintBody(Address.parse(address), amount, toNano(0.02), 0),
+    });
     await waiter();
   }
 
   async transfer(
-    tonConnection: TonConnectUI,
+    tonConnection: TonConnection,
     amount: BN,
     toAddress: string,
     fromAddress: string,
     ownerJettonWallet: string,
   ) {
+    const { address } = await tonConnection.connect();
     const tc = await getClient();
 
     const waiter = await waitForSeqno(
       tc.openWalletFromAddress({
-        source: Address.parse(fromAddress),
+        source: Address.parse(address),
       }),
     );
 
-    const tx: SendTransactionRequest = {
-      validUntil: Date.now() + 5 * 60 * 1000,
-      messages: [
-        {
-          address: ownerJettonWallet,
-          amount: toNano(0.05).toString(),
-          stateInit: undefined,
-          payload: transfer(Address.parse(toAddress), Address.parse(fromAddress), amount)
-            .toBoc()
-            .toString("base64"),
-        },
-      ],
-    };
-
-    await tonConnection.sendTransaction(tx);
+    await tonConnection.requestTransaction({
+      to: Address.parse(ownerJettonWallet),
+      value: toNano(0.05),
+      message: transfer(Address.parse(toAddress), Address.parse(fromAddress), amount),
+    });
 
     await waiter();
   }
 
-  async burnJettons(
-    tonConnection: TonConnectUI,
-    amount: BN,
-    jettonAddress: string,
-    walletAddress: string,
-  ) {
+  async burnJettons(tonConnection: TonConnection, amount: BN, jettonAddress: string) {
+    const { address } = await tonConnection.connect();
     const tc = await getClient();
 
     const waiter = await waitForSeqno(
       tc.openWalletFromAddress({
-        source: Address.parse(walletAddress),
+        source: Address.parse(address),
       }),
     );
 
-    const tx: SendTransactionRequest = {
-      validUntil: Date.now() + 5 * 60 * 1000,
-      messages: [
-        {
-          address: jettonAddress,
-          amount: toNano(0.031).toString(),
-          stateInit: undefined,
-          payload: burn(amount, Address.parse(walletAddress)).toBoc().toString("base64"),
-        },
-      ],
-    };
-
-    await tonConnection.sendTransaction(tx);
+    await tonConnection.requestTransaction({
+      to: Address.parse(jettonAddress),
+      value: toNano(0.031),
+      message: burn(amount, Address.parse(address)),
+    });
 
     await waiter();
   }
 
-  async getJettonDetails(contractAddr: Address, owner: Address) {
+  async getJettonDetails(contractAddr: Address, owner: Address, tonConnection: TonConnection) {
     const tc = await getClient();
     const minter = await makeGetCall(
       contractAddr,
@@ -261,29 +214,21 @@ class JettonDeployController {
     data: {
       [s in JettonMetaDataKeys]?: string | undefined;
     },
-    connection: TonConnectUI,
-    walletAddress: string,
+    connection: TonConnection,
   ) {
+    const { address } = await connection.connect();
     const tc = await getClient();
     const waiter = await waitForSeqno(
       tc.openWalletFromAddress({
-        source: Address.parse(walletAddress),
+        source: Address.parse(address),
       }),
     );
-    const body = updateMetadataBody(buildJettonOnchainMetadata(data));
-    const tx: SendTransactionRequest = {
-      validUntil: Date.now() + 5 * 60 * 1000,
-      messages: [
-        {
-          address: contractAddress.toString(),
-          amount: toNano(0.01).toString(),
-          stateInit: undefined,
-          payload: body.toBoc().toString("base64"),
-        },
-      ],
-    };
 
-    await connection.sendTransaction(tx);
+    await connection.requestTransaction({
+      to: contractAddress,
+      message: updateMetadataBody(buildJettonOnchainMetadata(data)),
+      value: toNano(0.01),
+    });
 
     await waiter();
   }
@@ -293,29 +238,21 @@ class JettonDeployController {
     data: {
       [s in JettonMetaDataKeys]?: string | undefined;
     },
-    connection: TonConnectUI,
-    walltAddress: string,
+    connection: TonConnection,
   ) {
+    const { address } = await connection.connect();
     const tc = await getClient();
     const waiter = await waitForSeqno(
       tc.openWalletFromAddress({
-        source: Address.parse(walltAddress),
+        source: Address.parse(address),
       }),
     );
 
-    const tx: SendTransactionRequest = {
-      validUntil: Date.now() + 5 * 60 * 1000,
-      messages: [
-        {
-          address: contractAddress.toString(),
-          amount: toNano(0.01).toString(),
-          stateInit: undefined,
-          payload: updateMetadataBody(buildJettonOnchainMetadata(data)).toBoc().toString("base64"),
-        },
-      ],
-    };
-
-    await connection.sendTransaction(tx);
+    await connection.requestTransaction({
+      to: contractAddress,
+      message: updateMetadataBody(buildJettonOnchainMetadata(data)),
+      value: toNano(0.01),
+    });
 
     await waiter();
   }

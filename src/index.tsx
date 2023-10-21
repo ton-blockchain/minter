@@ -12,7 +12,6 @@ import { ThemeProvider } from "@mui/material/styles";
 import { ThemeProvider as MakeStylesProvider } from "@mui/material";
 import theme from "theme";
 import { SnackbarProvider } from "notistack";
-import { TonConnectUIProvider } from "@tonconnect/ui-react";
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 root.render(
@@ -22,9 +21,7 @@ root.render(
         <CssBaseline />
         <Router>
           <SnackbarProvider maxSnack={3}>
-            <TonConnectUIProvider manifestUrl="https://minter.ton.org/tonconnect-manifest.json">
-              <App />
-            </TonConnectUIProvider>
+            <App />
           </SnackbarProvider>
         </Router>
       </MakeStylesProvider>

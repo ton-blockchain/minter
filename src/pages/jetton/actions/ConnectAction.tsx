@@ -1,8 +1,18 @@
+import useConnectionStore from "store/connection-store/useConnectionStore";
 import { AppButton } from "components/appButton";
-import { onConnect } from "utils";
 
 function ConnectAction() {
-  return <AppButton onClick={onConnect}>Connect wallet</AppButton>;
+  const { address, toggleConnect } = useConnectionStore();
+
+  if (address) {
+    return null;
+  }
+
+  return (
+    <AppButton fontWeight={700} width={150} height={44} onClick={() => toggleConnect(true)}>
+      Connect wallet
+    </AppButton>
+  );
 }
 
 export default ConnectAction;

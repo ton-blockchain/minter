@@ -1,20 +1,22 @@
+import { TonConnection, ChromeExtensionWalletProvider } from "@ton-defi.org/ton-connection";
 import { jettonDeployController } from "lib/deploy-controller";
 import { zeroAddress } from "lib/utils";
 import { useRecoilState, useResetRecoilState } from "recoil";
+import WalletConnection from "services/wallet-connection";
 import { Address } from "ton";
 import { jettonStateAtom } from ".";
 import QuestiomMarkImg from "assets/icons/question.png";
 import { useCallback } from "react";
 import useNotification from "hooks/useNotification";
+import useConnectionStore from "store/connection-store/useConnectionStore";
 import { getUrlParam, isValidAddress } from "utils";
 import { useJettonAddress } from "hooks/useJettonAddress";
-import { useTonAddress, useTonConnectUI } from "@tonconnect/ui-react";
 
 function useJettonStore() {
   const [state, setState] = useRecoilState(jettonStateAtom);
   const reset = useResetRecoilState(jettonStateAtom);
   const { showNotification } = useNotification();
-  const connectedWalletAddress = useTonAddress();
+  const { address: connectedWalletAddress } = useConnectionStore();
   const { jettonAddress } = useJettonAddress();
 
   const getJettonDetails = useCallback(async () => {
@@ -38,6 +40,14 @@ function useJettonStore() {
 
     const parsedJettonMaster = Address.parse(jettonAddress);
 
+    let connection;
+
+    try {
+      connection = WalletConnection.getConnection();
+    } catch (error) {
+      connection = new TonConnection(new ChromeExtensionWalletProvider());
+    }
+
     try {
       setState((prevState) => ({
         ...prevState,
@@ -47,6 +57,7 @@ function useJettonStore() {
       const result = await jettonDeployController.getJettonDetails(
         parsedJettonMaster,
         address ? Address.parse(address) : zeroAddress(),
+        connection,
       );
 
       if (!result) {

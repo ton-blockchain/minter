@@ -64,8 +64,5 @@ export async function makeGetCall4<T>(
   // const some = await tonClient.runMethod(seqno, address!, name, _prepareParams(params));
 
   // @ts-ignore
-  console.log(res.result.map(({ value, cell }) => value ?? cell));
-
-  // @ts-ignore
-  return parser(_parseGetMethodCall(res.result.map(({ value, cell }) => value ?? cell)));
+  return parser(res.result.map(({ value, cell }) => value ?? cell));
 }

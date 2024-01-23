@@ -217,27 +217,31 @@ class JettonDeployController {
       contractAddr,
       "get_jetton_data",
       [],
-      async ([totalSupply, __, adminCell, contentCell]) => ({
-        ...(await readJettonMetadata(contentCell as unknown as Cell)),
-        admin: cellToAddress(adminCell),
-        totalSupply: totalSupply as BN,
-      }),
+      async ([totalSupply, __, adminCell, contentCell]) => {
+        return {
+          ...(await readJettonMetadata(contentCell as unknown as Cell)),
+          admin: cellToAddress(adminCell),
+          totalSupply: totalSupply as BN,
+        };
+      },
       tc4,
     );
 
-    const jWalletAddress = await makeGetCall4(
+    console.log(minter);
+
+    const jWalletAddress = await makeGetCall(
       contractAddr,
       "get_wallet_address",
       [beginCell().storeAddress(owner).endCell()],
       ([addressCell]) => cellToAddress(addressCell),
-      tc4,
+      tc,
     );
 
     const isDeployed = await tc.isContractDeployed(jWalletAddress);
 
     let jettonWallet;
     if (isDeployed) {
-      jettonWallet = await makeGetCall4(
+      jettonWallet = await makeGetCall(
         jWalletAddress,
         "get_wallet_data",
         [],
@@ -246,7 +250,7 @@ class JettonDeployController {
           jWalletAddress,
           jettonMasterAddress: cellToAddress(jettonMasterAddressCell),
         }),
-        tc4,
+        tc,
       );
     } else {
       jettonWallet = null;

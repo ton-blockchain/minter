@@ -227,8 +227,6 @@ class JettonDeployController {
       tc4,
     );
 
-    console.log(minter);
-
     const jWalletAddress = await makeGetCall(
       contractAddr,
       "get_wallet_address",

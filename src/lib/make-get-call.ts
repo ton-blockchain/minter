@@ -61,7 +61,6 @@ export async function makeGetCall4<T>(
     last: { seqno },
   } = await tonClient.getLastBlock();
   const res = await tonClient.runMethod(seqno, address!, name, params);
-  // const some = await tonClient.runMethod(seqno, address!, name, _prepareParams(params));
 
   // @ts-ignore
   return parser(res.result.map(({ value, cell }) => value ?? cell));

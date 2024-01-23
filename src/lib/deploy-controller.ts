@@ -13,8 +13,9 @@ import {
 } from "./jetton-minter";
 import { readJettonMetadata, changeAdminBody, JettonMetaDataKeys } from "./jetton-minter";
 import { getClient } from "./get-ton-client";
-import { cellToAddress, makeGetCall } from "./make-get-call";
+import { cellToAddress, makeGetCall, makeGetCall4 } from "./make-get-call";
 import { SendTransactionRequest, TonConnectUI } from "@tonconnect/ui-react";
+import { getClient4 } from "./get-ton-client-4";
 
 export const JETTON_DEPLOY_GAS = toNano(0.25);
 
@@ -211,7 +212,8 @@ class JettonDeployController {
 
   async getJettonDetails(contractAddr: Address, owner: Address) {
     const tc = await getClient();
-    const minter = await makeGetCall(
+    const tc4 = await getClient4();
+    const minter = await makeGetCall4(
       contractAddr,
       "get_jetton_data",
       [],
@@ -220,22 +222,22 @@ class JettonDeployController {
         admin: cellToAddress(adminCell),
         totalSupply: totalSupply as BN,
       }),
-      tc,
+      tc4,
     );
 
-    const jWalletAddress = await makeGetCall(
+    const jWalletAddress = await makeGetCall4(
       contractAddr,
       "get_wallet_address",
       [beginCell().storeAddress(owner).endCell()],
       ([addressCell]) => cellToAddress(addressCell),
-      tc,
+      tc4,
     );
 
     const isDeployed = await tc.isContractDeployed(jWalletAddress);
 
     let jettonWallet;
     if (isDeployed) {
-      jettonWallet = await makeGetCall(
+      jettonWallet = await makeGetCall4(
         jWalletAddress,
         "get_wallet_data",
         [],
@@ -244,7 +246,7 @@ class JettonDeployController {
           jWalletAddress,
           jettonMasterAddress: cellToAddress(jettonMasterAddressCell),
         }),
-        tc,
+        tc4,
       );
     } else {
       jettonWallet = null;

@@ -1,14 +1,16 @@
+import { useTonAddress } from "@tonconnect/ui-react";
+import QuestiomMarkImg from "assets/icons/question.png";
+import { useJettonAddress } from "hooks/useJettonAddress";
+import useNotification from "hooks/useNotification";
 import { jettonDeployController } from "lib/deploy-controller";
 import { zeroAddress } from "lib/utils";
+import { useCallback } from "react";
 import { useRecoilState, useResetRecoilState } from "recoil";
 import { Address } from "ton";
-import { jettonStateAtom } from ".";
-import QuestiomMarkImg from "assets/icons/question.png";
-import { useCallback } from "react";
-import useNotification from "hooks/useNotification";
 import { getUrlParam, isValidAddress } from "utils";
-import { useJettonAddress } from "hooks/useJettonAddress";
-import { useTonAddress, useTonConnectUI } from "@tonconnect/ui-react";
+import { jettonStateAtom } from ".";
+
+let i = 0;
 
 function useJettonStore() {
   const [state, setState] = useRecoilState(jettonStateAtom);
@@ -18,6 +20,9 @@ function useJettonStore() {
   const { jettonAddress } = useJettonAddress();
 
   const getJettonDetails = useCallback(async () => {
+    i++;
+    const myIndex = i;
+
     let queryAddress = getUrlParam("address");
 
     if (queryAddress && !isValidAddress(queryAddress)) {
@@ -27,6 +32,7 @@ function useJettonStore() {
     }
 
     const address = queryAddress || connectedWalletAddress;
+
     const isMyWallet = address ? address === connectedWalletAddress : false;
 
     reset();
@@ -54,7 +60,7 @@ function useJettonStore() {
 
         return;
       }
-      const _adminAddress = result.minter.admin.toFriendly();
+      const _adminAddress = result.minter.admin?.toFriendly() ?? zeroAddress().toFriendly();
       const admin = isMyWallet && _adminAddress === connectedWalletAddress;
 
       let image: string | undefined;
@@ -87,6 +93,9 @@ function useJettonStore() {
         }
       }
 
+      if (myIndex !== i) {
+        return;
+      }
       setState((prevState) => {
         return {
           ...prevState,
@@ -102,7 +111,7 @@ function useJettonStore() {
           decimals: result.minter.metadata.decimals || "9",
           adminAddress: _adminAddress,
           balance: result.jettonWallet ? result.jettonWallet.balance : undefined,
-          jettonWalletAddress: result.jettonWallet?.jWalletAddress.toFriendly(),
+          jettonWalletAddress: result.jettonWallet?.jWalletAddress?.toFriendly(),
           jettonMaster: jettonAddress,
           isMyWallet,
           selectedWalletAddress: address,
@@ -110,6 +119,7 @@ function useJettonStore() {
       });
     } catch (error) {
       if (error instanceof Error) {
+        console.error(error);
         showNotification(
           !!error.message.match(/exit_code: (11|32)/g)
             ? `Unable to query. This is probably not a Jetton Contract (${error.message})`

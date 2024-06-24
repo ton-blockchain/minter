@@ -1,5 +1,5 @@
 import BN from "bn.js";
-import { persistenceType } from "lib/jetton-minter";
+import { PersistenceType } from "lib/jetton-minter";
 import { atom } from "recoil";
 
 export interface JettonStoreState {
@@ -14,7 +14,7 @@ export interface JettonStoreState {
   adminAddress?: string;
   balance?: BN;
   jettonMaster?: string;
-  persistenceType?: persistenceType;
+  persistenceType?: PersistenceType;
   totalSupply?: BN;
   jettonWalletAddress?: string;
   isJettonDeployerFaultyOnChainData?: boolean;

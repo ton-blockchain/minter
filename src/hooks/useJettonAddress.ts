@@ -9,9 +9,7 @@ export const useJettonAddress = () => {
   const { id }: { id?: string } = useParams();
   let isAddressValid = isValidAddress(id || "", "Invalid jetton address");
 
-  // console.log('hi')
   let jettonAddress = isAddressValid ? Address.parse(id!).toFriendly() : null;
-  // console.log('hi2')
 
   useEffect(() => {
     if (id && jettonAddress && jettonAddress !== id) {

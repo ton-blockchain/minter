@@ -1,19 +1,15 @@
-import { useEffect } from "react";
-import { ScreenContent, Screen } from "components/Screen";
-import useJettonStore from "store/jetton-store/useJettonStore";
-import FaultyDeploy from "./FaultyDeploy";
-import { StyledContainer } from "pages/jetton/styled";
-import { Wallet } from "pages/jetton/wallet";
-import { Token } from "pages/jetton/dataRow/token";
-import { Typography } from "@mui/material";
-import { useRecoilValue } from "recoil";
-import { jettonActionsState } from "pages/jetton/actions/jettonActions";
+import { useTonAddress } from "@tonconnect/ui-react";
+import { Screen, ScreenContent } from "components/Screen";
 import { useJettonAddress } from "hooks/useJettonAddress";
 import useNotification from "hooks/useNotification";
-import { useTonAddress } from "@tonconnect/ui-react";
+import { Token } from "pages/jetton/dataRow/token";
+import { StyledContainer } from "pages/jetton/styled";
+import { Wallet } from "pages/jetton/wallet";
+import { useEffect } from "react";
+import useJettonStore from "store/jetton-store/useJettonStore";
+import FaultyDeploy from "./FaultyDeploy";
 
 export const Jetton = () => {
-  const actionInProgress = useRecoilValue(jettonActionsState);
   const { getJettonDetails } = useJettonStore();
   const { isAddressEmpty, jettonAddress } = useJettonAddress();
   const { showNotification } = useNotification();

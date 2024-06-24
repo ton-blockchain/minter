@@ -29,7 +29,8 @@ export type JettonMetaDataKeys =
   | "image"
   | "symbol"
   | "image_data"
-  | "decimals";
+  | "decimals"
+  | "uri";
 
 const jettonOnChainMetadataSpec: {
   [key in JettonMetaDataKeys]: "utf8" | "ascii" | undefined;
@@ -40,6 +41,7 @@ const jettonOnChainMetadataSpec: {
   decimals: "utf8",
   symbol: "utf8",
   image_data: undefined,
+  uri: "ascii",
 };
 
 const sha256 = (str: string) => {
@@ -88,27 +90,42 @@ export function buildJettonOffChainMetadata(contentUri: string): Cell {
     .endCell();
 }
 
-export type persistenceType = "onchain" | "offchain_private_domain" | "offchain_ipfs";
+export type PersistenceType = "onchain" | "offchain_private_domain" | "offchain_ipfs";
 
 export async function readJettonMetadata(contentCell: Cell): Promise<{
-  persistenceType: persistenceType;
+  persistenceType: PersistenceType;
   metadata: { [s in JettonMetaDataKeys]?: string };
   isJettonDeployerFaultyOnChainData?: boolean;
 }> {
   const contentSlice = contentCell.beginParse();
 
   switch (contentSlice.readUint(8).toNumber()) {
-    case ONCHAIN_CONTENT_PREFIX:
+    case ONCHAIN_CONTENT_PREFIX: {
+      const res = parseJettonOnchainMetadata(contentSlice);
+
+      let persistenceType: PersistenceType = "onchain";
+
+      if (res.metadata.uri) {
+        const offchainMetadata = await getJettonMetadataFromExternalUri(res.metadata.uri);
+        persistenceType = offchainMetadata.isIpfs ? "offchain_ipfs" : "offchain_private_domain";
+        res.metadata = {
+          ...res.metadata,
+          ...offchainMetadata.metadata,
+        };
+      }
+
       return {
-        persistenceType: "onchain",
-        ...parseJettonOnchainMetadata(contentSlice),
+        persistenceType: persistenceType,
+        ...res,
       };
-    case OFFCHAIN_CONTENT_PREFIX:
+    }
+    case OFFCHAIN_CONTENT_PREFIX: {
       const { metadata, isIpfs } = await parseJettonOffchainMetadata(contentSlice);
       return {
         persistenceType: isIpfs ? "offchain_ipfs" : "offchain_private_domain",
         metadata,
       };
+    }
     default:
       throw new Error("Unexpected jetton metadata content prefix");
   }
@@ -118,10 +135,11 @@ async function parseJettonOffchainMetadata(contentSlice: Slice): Promise<{
   metadata: { [s in JettonMetaDataKeys]?: string };
   isIpfs: boolean;
 }> {
-  const jsonURI = contentSlice
-    .readRemainingBytes()
-    .toString("ascii")
-    .replace("ipfs://", "https://ipfs.io/ipfs/");
+  return getJettonMetadataFromExternalUri(contentSlice.readRemainingBytes().toString("ascii"));
+}
+
+async function getJettonMetadataFromExternalUri(uri: string) {
+  const jsonURI = uri.replace("ipfs://", "https://ipfs.io/ipfs/");
 
   return {
     metadata: (await axios.get(jsonURI)).data,

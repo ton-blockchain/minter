@@ -1,4 +1,4 @@
-import { persistenceType } from "lib/jetton-minter";
+import { PersistenceType } from "lib/jetton-minter";
 import BurnJettonsAction from "./actions/BurnJettonsAction";
 import MintJettonsAction from "./actions/MintJettonsAction";
 import RevokeOwnershipAction from "./actions/RevokeOwnershipAction";
@@ -55,7 +55,7 @@ export const getAdminMessage = (
 };
 
 export const getMetadataWarning = (
-  persistenceType?: persistenceType,
+  persistenceType?: PersistenceType,
   adminRevokedOwnership?: boolean,
 ): JettonDetailMessage | undefined => {
   if (persistenceType === "onchain" && !adminRevokedOwnership) {
@@ -82,7 +82,7 @@ export const getMetadataWarning = (
 };
 
 export const getTotalSupplyWarning = (
-  persistenceType?: persistenceType,
+  persistenceType?: PersistenceType,
   adminRevokedOwnership?: boolean,
 ): JettonDetailMessage | undefined => {
   if (persistenceType === "onchain" && !adminRevokedOwnership) {

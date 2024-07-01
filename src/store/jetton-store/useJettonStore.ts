@@ -126,6 +126,7 @@ function useJettonStore() {
             : error.message,
           "error",
         );
+        console.error(error);
       }
     } finally {
       setState((prevState) => ({

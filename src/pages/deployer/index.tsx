@@ -95,6 +95,7 @@ function DeployerPage() {
       if (err instanceof Error) {
         showNotification(<>{err.message}</>, "error");
       }
+      console.error(err);
     } finally {
       setIsLoading(false);
     }

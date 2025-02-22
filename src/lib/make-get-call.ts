@@ -1,4 +1,4 @@
-import { Address, Cell, TonClient } from "ton";
+import { Address, Cell, TonClient, TonClient4 } from "ton";
 import BN from "bn.js";
 
 function _prepareParams(params: any[] = []) {
@@ -48,4 +48,20 @@ export async function makeGetCall<T>(
   const { stack } = await tonClient.callGetMethod(address!, name, _prepareParams(params));
 
   return parser(_parseGetMethodCall(stack as [["num" | "cell", any]]));
+}
+
+export async function makeGetCall4<T>(
+  address: Address | undefined,
+  name: string,
+  params: any[],
+  parser: (stack: GetResponseValue[]) => T,
+  tonClient: TonClient4,
+) {
+  const {
+    last: { seqno },
+  } = await tonClient.getLastBlock();
+  const res = await tonClient.runMethod(seqno, address!, name, params);
+
+  // @ts-ignore
+  return parser(res.result.map(({ value, cell }) => value ?? cell));
 }

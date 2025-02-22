@@ -13,8 +13,9 @@ import {
 } from "./jetton-minter";
 import { readJettonMetadata, changeAdminBody, JettonMetaDataKeys } from "./jetton-minter";
 import { getClient } from "./get-ton-client";
-import { cellToAddress, makeGetCall } from "./make-get-call";
+import { cellToAddress, makeGetCall, makeGetCall4 } from "./make-get-call";
 import { SendTransactionRequest, TonConnectUI } from "@tonconnect/ui-react";
+import { getClient4 } from "./get-ton-client-4";
 
 export const JETTON_DEPLOY_GAS = toNano(0.25);
 
@@ -211,16 +212,19 @@ class JettonDeployController {
 
   async getJettonDetails(contractAddr: Address, owner: Address) {
     const tc = await getClient();
-    const minter = await makeGetCall(
+    const tc4 = await getClient4();
+    const minter = await makeGetCall4(
       contractAddr,
       "get_jetton_data",
       [],
-      async ([totalSupply, __, adminCell, contentCell]) => ({
-        ...(await readJettonMetadata(contentCell as unknown as Cell)),
-        admin: cellToAddress(adminCell),
-        totalSupply: totalSupply as BN,
-      }),
-      tc,
+      async ([totalSupply, __, adminCell, contentCell]) => {
+        return {
+          ...(await readJettonMetadata(contentCell as unknown as Cell)),
+          admin: cellToAddress(adminCell),
+          totalSupply: totalSupply as BN,
+        };
+      },
+      tc4,
     );
 
     const jWalletAddress = await makeGetCall(

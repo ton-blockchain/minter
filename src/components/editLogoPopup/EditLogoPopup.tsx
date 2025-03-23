@@ -13,6 +13,7 @@ import {
   PopupTitle,
 } from "components/editLogoPopup/styled";
 import { useJettonLogo } from "hooks/useJettonLogo";
+import QuestiomMarkImg from "assets/icons/question.png";
 
 interface EditLogoPopupProps {
   showPopup: boolean;
@@ -40,7 +41,7 @@ export const EditLogoPopup = ({
   };
 
   useEffect(() => {
-    setTempUrl(jettonLogo.logoUrl);
+    setTempUrl(jettonLogo.logoUrl === QuestiomMarkImg ? "" : jettonLogo.logoUrl);
   }, [showPopup]);
 
   return (
@@ -50,6 +51,7 @@ export const EditLogoPopup = ({
         <PopupContent>
           <LogoTextAreaWrapper>
             <LogoTextArea
+              maxLength={1000}
               spellCheck={false}
               onFocus={() => setInputFocus(true)}
               onBlur={() => setInputFocus(false)}

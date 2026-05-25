@@ -1,6 +1,6 @@
 import { styled } from "@mui/material";
 import { Box } from "@mui/system";
-import { createContext, useEffect } from "react";
+import { createContext, useEffect, useState } from "react";
 import { APP_GRID, ROUTES } from "consts";
 import { Navigate, Outlet, Route, Routes, useLocation } from "react-router-dom";
 import { DeployerPage, Jetton } from "pages";
@@ -9,14 +9,19 @@ import { Footer } from "components/footer";
 import { Header } from "components/header";
 import { useJettonLogo } from "hooks/useJettonLogo";
 import useNotification from "hooks/useNotification";
+import { HeroGlow, FooterGlow } from "components/GlowEffect";
+import { GlobalStyles } from "@mui/material";
 
 analytics.init();
 
 const AppWrapper = styled(Box)(() => ({
   display: "flex",
   flexDirection: "column",
-  height: "100vh",
-  overflowY: "scroll",
+  minHeight: "100vh",
+  position: "relative",
+  isolation: "isolate",
+  overflowX: "hidden",
+  background: "#10161F",
 }));
 
 const FooterBox = styled(Box)(() => ({
@@ -24,26 +29,26 @@ const FooterBox = styled(Box)(() => ({
   flex: 1,
   alignItems: "flex-end",
   justifyContent: "center",
+  position: "relative",
+  zIndex: 1,
 }));
 
-const ScreensWrapper = styled(Box)({
-  "*::-webkit-scrollbar": {
-    display: "none",
+const ScreensWrapper = styled(Box, {
+  shouldForwardProp: (prop) => prop !== "isTestnet",
+})<{ isTestnet?: boolean }>(({ theme, isTestnet }) => ({
+  position: "relative",
+  zIndex: 1,
+  paddingTop: 80,
+  [theme.breakpoints.down("sm")]: {
+    paddingTop: isTestnet ? 100 : 20,
   },
-  "*::-webkit-scrollbar-track": {
-    display: "none",
-  },
-  "*::-webkit-scrollbar-thumb": {
-    display: "none",
-  },
-});
+}));
 
 const FlexibleBox = styled(Box)(({ theme }) => ({
   maxWidth: APP_GRID,
   width: "calc(100% - 50px)",
   marginLeft: "auto",
   marginRight: "auto",
-
   [theme.breakpoints.down("sm")]: {
     width: "calc(100% - 30px)",
   },
@@ -56,22 +61,15 @@ export const EnvContext = createContext({
 
 const PageNotFound = () => {
   const { showNotification } = useNotification();
-
   useEffect(() => {
     showNotification("Page not found", "error");
   }, []);
-
   return <Box />;
 };
 
-interface ContentWrapperProps {
-  children?: any;
-}
-
-const ContentWrapper = ({ children }: ContentWrapperProps) => {
+const ContentWrapper = () => {
   return (
     <FlexibleBox>
-      {children}
       <Outlet />
     </FlexibleBox>
   );
@@ -90,12 +88,64 @@ const App = () => {
 
   return (
     <AppWrapper>
-      <EnvContext.Provider
-        value={{
-          isSandbox: isSandbox,
-          isTestnet: isTestnet,
-        }}>
-        <ScreensWrapper>
+      <GlobalStyles
+        styles={`
+    [data-tc-dropdown-container] {
+      max-width: calc(100vw - 32px) !important;
+      left: auto !important;
+      right: 16px !important;
+    }
+
+    [data-tc-dropdown] {
+      background: #1D2633 !important;
+      border: 0.5px solid #364459 !important;
+      border-radius: 16px !important;
+      box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.3) !important;
+      overflow: hidden !important;
+    }
+
+    [data-tc-dropdown] ul {
+      background: #1D2633 !important;
+    }
+
+    [data-tc-dropdown] li {
+      background: #1D2633 !important;
+    }
+
+    [data-tc-dropdown] button {
+      background: #1D2633 !important;
+      transition: background 0.15s ease !important;
+    }
+
+    [data-tc-dropdown] button:hover {
+      background: #222C3D !important;
+    }
+
+    [data-tc-dropdown] [data-tc-text] {
+      color: #FFFFFF !important;
+    }
+
+    [data-tc-dropdown] svg path {
+      fill: #93A5B8 !important;
+    }
+
+    tc-wallet-selector,
+    [data-tc-wallet-selector] {
+      background: #1D2633 !important;
+    }
+
+    @media (max-width: 600px) {
+      [data-tc-dropdown-container] {
+        left: 50% !important;
+        right: auto !important;
+        transform: translateX(-50%) !important;
+      }
+    }
+  `}
+      />
+      <HeroGlow />
+      <EnvContext.Provider value={{ isSandbox, isTestnet }}>
+        <ScreensWrapper isTestnet={isTestnet}>
           <Routes>
             <Route
               path="*"
@@ -119,6 +169,7 @@ const App = () => {
       <FooterBox mt={5}>
         <Footer />
       </FooterBox>
+      <FooterGlow />
     </AppWrapper>
   );
 };

@@ -11,7 +11,9 @@ interface StyledButtonProps {
   height?: number;
 }
 
-const StyledButton = styled(LoadingButton)((props: StyledButtonProps) => ({
+const StyledButton = styled(LoadingButton, {
+  shouldForwardProp: (prop) => prop !== "transparent",
+})((props: StyledButtonProps) => ({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
@@ -22,17 +24,40 @@ const StyledButton = styled(LoadingButton)((props: StyledButtonProps) => ({
   width: props.width || "100%",
   height: props.height || "100%",
   fontSize: props.fontSize || 14,
-  boxShadow: "none",
+  boxShadow: props.transparent ? "none" : "0 1px 1px 0 #2D3945 inset",
   fontWeight: props.fontWeight || 600,
   borderRadius: 40,
-  border: props.transparent ? "1px solid #50A7EA" : "",
-  background: props.background || "",
+  border: props.transparent ? "1px solid #364459" : "none",
+  background: props.background
+    ? props.background
+    : props.transparent
+    ? "rgba(29, 38, 51, 0.8)"
+    : "#1EAEFB",
+  color: "#FFFFFF",
+  backdropFilter: props.transparent ? "blur(1px)" : "none",
   whiteSpace: "nowrap",
+  transition: "background-color .16s ease, transform .18s ease-out",
   "& img": {
     maxWidth: 22,
   },
+  "&:hover": {
+    background: props.background
+      ? props.background
+      : props.transparent
+      ? "rgba(37, 50, 68, 0.8)"
+      : "#3db8fc",
+    transform: "scale(1.03)",
+  },
+  "&:active": {
+    transform: "scale(0.97)",
+  },
   "&:disabled": {
-    background: "#D9D9D9",
+    background: "#364459",
+    color: "#93A5B8",
+  },
+  "&:focus-visible": {
+    outline: "2px solid #1EAEFB",
+    outlineOffset: "3px",
   },
 }));
 
@@ -77,3 +102,5 @@ export const AppButton: React.FC<AppButtonProps> = ({
     </StyledButton>
   );
 };
+
+export * from "./AppButton";

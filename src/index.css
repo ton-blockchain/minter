@@ -1,18 +1,14 @@
+@import "https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Google+Sans+Flex:opsz,wght@6..144,1..1000&display=swap";
+
 body {
   margin: 0;
-  font-family: "Mulish", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
-    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  font-family: "Google Sans Flex", "Google Sans", Inter, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f7f9fb !important;
+  background-color: #10161f !important;
+  color: #ffffff;
   height: 100vh;
-}
-
-@media screen and (max-height: 850px) {
-  body {
-    height: 100%;
-    overflow-y: scroll;
-  }
 }
 
 code {
@@ -29,7 +25,6 @@ input::-webkit-inner-spin-button {
   margin: 0;
 }
 
-/* Firefox */
 input[type="number"] {
   -moz-appearance: textfield;
 }

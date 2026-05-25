@@ -22,10 +22,10 @@ export const LogoAlertPopup = ({
   return (
     <Popup open={showPopup} onClose={close} maxWidth={592}>
       <PopupTitle>Token logo is broken</PopupTitle>
-      <Typography sx={{ alignSelf: "baseline" }} mb={0.5}>
+      <Typography sx={{ alignSelf: "baseline", color: "#FFFFFF" }} mb={0.5}>
         Your token <span style={{ fontWeight: 700 }}>does not have a working logo.</span>
       </Typography>
-      <Typography sx={{ alignSelf: "baseline", lineHeight: 2 }}>
+      <Typography sx={{ alignSelf: "baseline", lineHeight: 2, color: "#93A5B8" }}>
         You can fix this later by editing the token's metadata, as long as you're <br />
         still the token admin.
       </Typography>
@@ -58,10 +58,12 @@ export const LogoAlertPopup = ({
             onValidate();
             close();
           }}
-          background="#0098EA">
+          background="#1EAEFB">
           {isUpdateText ? "Update Metadata" : "Deploy"}
         </AppButton>
       </CenteringWrapper>
     </Popup>
   );
 };
+
+export * from "./LogoAlertPopup";

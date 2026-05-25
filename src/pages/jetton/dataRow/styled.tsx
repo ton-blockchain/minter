@@ -20,9 +20,11 @@ const RowMessage = styled(Box)(({ type }: { type: string }) => ({
   },
   "& p": {
     margin: 0,
+    color: type === "success" ? "#0EA438" : "#EEBD40",
     "& a": {
       textDecoration: "none",
       fontWeight: 800,
+      color: type === "success" ? "#0EA438" : "#EEBD40",
     },
   },
 }));
@@ -38,11 +40,11 @@ const RowActionsButton = styled(Box)({
     padding: "0px 10px",
     fontSize: 13,
     fontWeight: 700,
-    background: "#0098EA",
+    background: "#1EAEFB",
     color: "#fff",
     borderRadius: 24,
     "&:hover": {
-      background: "rgb(0, 95, 142)",
+      background: "#3db8fc",
     },
   },
 });
@@ -53,13 +55,15 @@ const RowValueDisplayer = styled(Box)({
   alignItems: "center",
   justifyContent: "space-between",
   padding: "0px 5px 0px 20px",
-  background: "#F7F9FB",
+  background: "#131B25",
   borderRadius: 40,
+  border: "0.5px solid rgba(114, 138, 150, 0.16)",
 });
 
 const RowTitle = styled(Typography)(({ theme }) => ({
   fontSize: 14,
   fontWeight: 500,
+  color: "#93A5B8",
   marginBottom: theme.spacing(1),
   marginLeft: theme.spacing(2.5),
 }));
@@ -84,9 +88,13 @@ const RowValueSection = styled(Box)(({ hasButton }: { hasButton?: boolean }) => 
     overflow: "hidden",
     textOverflow: "ellipsis",
     paddingRight: 20,
+    color: "#FFFFFF",
     [theme.breakpoints.down("sm")]: {
       fontSize: 14,
     },
+  },
+  "& a": {
+    color: "#1EAEFB !important",
   },
 }));
 

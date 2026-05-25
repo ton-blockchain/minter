@@ -54,7 +54,7 @@ export const TransferAction = () => {
       getJettonDetails();
       showNotification(
         `Successfully transfered ${amount?.toLocaleString()} ${symbol}`,
-        "warning",
+        "success",
         undefined,
         4000,
       );
@@ -75,7 +75,7 @@ export const TransferAction = () => {
         fontWeight={800}
         fontSize={20}
         marginBottom={20}
-        color="#161C28"
+        color="#FFFFFF"
       />
       <TransferContent>
         <AppTextInput
@@ -94,8 +94,9 @@ export const TransferAction = () => {
         <AppButton
           disabled={!(toAddress && amount)}
           onClick={onSubmit}
-          height={50}
-          loading={actionInProgress}>
+          height={44}
+          loading={actionInProgress}
+          background="#1EAEFB">
           Transfer {symbol}
         </AppButton>
       </ButtonWrapper>

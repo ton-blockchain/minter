@@ -5,13 +5,15 @@ const StyledContainer = styled(Typography)({
   marginBottom: 15,
   fontSize: 14,
   fontWeight: 600,
+  color: "#93A5B8",
   "& a": {
     fontSize: 14,
-    color: "unset",
+    color: "#1EAEFB",
     textDecoration: "unset",
     fontWeight: 600,
   },
 });
+
 interface Props {
   children: ReactNode;
   href?: string;

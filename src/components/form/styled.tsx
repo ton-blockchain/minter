@@ -23,8 +23,8 @@ const StyledActionBtn = styled(Box)({
   },
 });
 
-const JettonFormTitle = styled(Typography)({
-  color: "#161C28",
+const JettonFormTitle = styled(Typography)(({ theme }) => ({
+  color: "#FFFFFF",
   fontSize: 20,
   fontWeight: 800,
   marginBottom: 0.5,
@@ -32,6 +32,10 @@ const JettonFormTitle = styled(Typography)({
   textOverflow: "ellipsis",
   whiteSpace: "nowrap",
   maxWidth: 300,
-});
+  [theme.breakpoints.down("sm")]: {
+    maxWidth: "100%",
+    fontSize: 16,
+  },
+}));
 
 export { StyledForm, StyledFormInputs, StyledActionBtn, JettonFormTitle };

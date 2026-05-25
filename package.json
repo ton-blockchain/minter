@@ -49,7 +49,8 @@
     "test": "react-app-rewired test",
     "eject": "react-app-rewired eject",
     "deploy": "gh-pages -d build",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "predeploy": "npm run build"
   },
   "eslintConfig": {
     "extends": [

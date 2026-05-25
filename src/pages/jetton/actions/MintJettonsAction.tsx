@@ -72,7 +72,9 @@ function MintJettonsAction() {
     <>
       <Popup open={open && !actionInProgress} onClose={onClose} maxWidth={400}>
         <>
-          <Typography className="title">Mint {symbol}</Typography>
+          <Typography className="title" sx={{ color: "#FFFFFF" }}>
+            Mint {symbol}
+          </Typography>
           <AppNumberInput
             label={`Enter ${symbol} amount`}
             value={amount}

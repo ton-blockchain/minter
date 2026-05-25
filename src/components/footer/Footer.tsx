@@ -1,81 +1,86 @@
-import React from "react";
-import { Box, Typography } from "@mui/material";
-import { HoverableIcon } from "components/hoverableIcon/HoverableIcon";
 import {
-  CenteringWrapper,
-  ContributedWrapper,
-  CredentialsWrapper,
-  FooterLink,
-  FooterTextBoxLeft,
-  FooterTextBoxRight,
   FooterWrapper,
-  Separator,
-  SocialsContent,
-  SocialsWrapper,
+  FooterBrand,
+  FooterLinks,
+  FooterColumn,
+  FooterLink,
+  PoweredBy,
+  FlagIcon,
 } from "./styled";
-import telegram from "assets/icons/telegram.svg";
-import telegramHovered from "assets/icons/telegram-hover.svg";
-import github from "assets/icons/github.svg";
-import orbsLogo from "assets/icons/orbs.svg";
-import githubHovered from "assets/icons/github-hover.svg";
-import heart from "assets/icons/heart.svg";
 import { Outlet } from "react-router-dom";
 import { useNetwork } from "../../lib/hooks/useNetwork";
+import { AppLogo } from "components/appLogo";
+
+import { Box, Link, Typography } from "@mui/material";
 
 export const Footer = () => {
   const { network } = useNetwork();
-
-  let isTestnet = network === "testnet";
-  let switchNetworkText = isTestnet ? "Switch to Mainnet" : "Switch to Testnet";
-  let switchNetworkURL = isTestnet ? "/" : "/?testnet=true";
-
+  const isTestnet = network === "testnet";
   return (
-    <FooterWrapper>
-      <SocialsWrapper>
-        <Box></Box>
-        <SocialsContent>
-          <HoverableIcon
-            iconUrl={telegram}
-            hoveredIconUrl={telegramHovered}
-            link="https://t.me/+YDnoBue1Dz81ZTMy"
-          />
-          <HoverableIcon
-            iconUrl={github}
-            hoveredIconUrl={githubHovered}
-            link="https://github.com/ton-blockchain/minter"
-          />
-        </SocialsContent>
-      </SocialsWrapper>
-      <Separator />
-      <CredentialsWrapper>
-        <FooterTextBoxLeft>
-          <Typography variant="body2">© {new Date().getFullYear()} TON Foundation</Typography>
-        </FooterTextBoxLeft>
-        <ContributedWrapper>
-          <Typography variant="body2" sx={{ display: "flex", alignItems: "center" }}>
-            Contributed with
-            <CenteringWrapper mx={0.4}>
-              <img src={heart} alt="Love" width={12} height={12} />
-            </CenteringWrapper>
-            by
-            <CenteringWrapper mx={0.4}>
-              <img src={orbsLogo} alt="Orbs logo" width={12} height={12} />
-            </CenteringWrapper>
-            <FooterLink
-              sx={{ color: "#5E75E8", display: "flex", alignItems: "center" }}
+    <>
+      <FooterWrapper>
+        <FooterBrand>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+            <AppLogo />
+            <Typography sx={{ color: "#93A5B8", fontSize: 16 }}>
+              © {new Date().getFullYear()}
+            </Typography>
+          </Box>
+          <PoweredBy sx={{ color: "#FFFFFF", display: "flex", alignItems: "center", gap: 0.5 }}>
+            <span>Powered by</span>
+            <Link
+              href="https://t.me/durov/482"
               target="_blank"
-              href="https://orbs.com/">
+              sx={{ color: "#1EAEFB", textDecoration: "none", fontWeight: 500 }}>
+              MTONGA
+            </Link>
+            <FlagIcon />
+          </PoweredBy>
+          <Box sx={{ color: "#FFFFFF", fontSize: 16 }}>
+            Contributed by{" "}
+            <Link
+              href="https://orbs.com/"
+              target="_blank"
+              sx={{ color: "#1EAEFB", textDecoration: "none", fontWeight: 500 }}>
               Orbs
+            </Link>
+          </Box>
+          <Box sx={{ color: "#FFFFFF", fontSize: 16 }}>
+            Design by{" "}
+            <Link
+              href="https://t.me/socia"
+              target="_blank"
+              sx={{ color: "#1EAEFB", textDecoration: "none", fontWeight: 500 }}>
+              Socia
+            </Link>
+          </Box>
+        </FooterBrand>
+        <FooterLinks>
+          <FooterColumn>
+            <FooterLink href="https://t.me/tondev_eng" target="_blank">
+              Dev Chat
             </FooterLink>
-          </Typography>
-        </ContributedWrapper>
-        <FooterTextBoxRight>
-          <FooterLink target="_blank" href={switchNetworkURL}>
-            <Typography variant="body2">{switchNetworkText}</Typography>
-          </FooterLink>
-        </FooterTextBoxRight>
-      </CredentialsWrapper>
-      <Outlet />
-    </FooterWrapper>
+            <FooterLink href="https://t.me/addlist/9ZlvcewREBw4NmJi" target="_blank">
+              Dev Channels
+            </FooterLink>
+            <FooterLink href="https://github.com/ton-blockchain" target="_blank">
+              GitHub
+            </FooterLink>
+          </FooterColumn>
+          <FooterColumn>
+            <FooterLink href="https://ton.org/toolset/">Toolset</FooterLink>
+            <FooterLink href="https://docs.ton.org/" target="_blank">
+              Docs
+            </FooterLink>
+            <FooterLink href="https://t.me/ton_minter" target="_blank">
+              Help Chat
+            </FooterLink>
+          </FooterColumn>
+        </FooterLinks>
+        <Outlet />
+      </FooterWrapper>
+    </>
   );
 };
+
+export * from "./Footer";

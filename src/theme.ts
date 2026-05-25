@@ -1,42 +1,33 @@
-import { Theme } from "@mui/material/styles";
 import { createTheme } from "@mui/material/styles";
 
-declare module "@mui/material" {
-  interface DefaultTheme extends Theme {}
-}
-
-// A custom theme for this app
 let theme = createTheme({
   palette: {
+    mode: "dark",
     primary: {
-      main: "#0098EA",
+      main: "#1EAEFB",
       contrastText: "#fff",
     },
-
     secondary: {
-      main: "#313855",
+      main: "#93A5B8",
     },
-
+    background: {
+      default: "#10161F",
+      paper: "#1D2633CC",
+    },
     text: {
-      primary: "#313855",
-      secondary: "#00000",
+      primary: "#FFFFFF",
+      secondary: "#93A5B8",
     },
+    divider: "#364459",
     error: {
       main: "#ef5350",
     },
     warning: {
       main: "#FF5147",
     },
-
-    action: {
-      active: "#ffffff",
-      hover: "#00000",
-      disabledBackground: "#B2B2B2",
-      disabled: "",
-    },
   },
   typography: {
-    fontFamily: "mulish, sans-serif",
+    fontFamily: '"Google Sans Flex", "Google Sans", Inter, -apple-system, sans-serif',
     button: {
       textTransform: "none",
     },

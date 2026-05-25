@@ -9,7 +9,7 @@ const APP_GRID = 1156;
 
 const LOCAL_STORAGE_PROVIDER = "wallet_provider";
 
-const APP_DISPLAY_NAME = "TON MINTER";
+const APP_DISPLAY_NAME = "TON | Minter";
 
 const JETTON_DEPLOYER_CONTRACTS_GITHUB = "https://github.com/ton-blockchain/minter-contract";
 

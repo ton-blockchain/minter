@@ -12,9 +12,10 @@ const SearchBarWrapper = styled(Box)(({ theme }) => ({
   minHeight: 50,
   height: "100%",
   transition: "0.1s all",
-  background: "#F7F9FB",
+  background: "#131B25",
   border: "0.5px solid rgba(114, 138, 150, 0.16)",
   borderRadius: 40,
+  overflow: "visible",
   [theme.breakpoints.down("md")]: {
     height: 40,
   },
@@ -27,13 +28,13 @@ const SearchBarInput = styled("input")(({ theme }) => ({
   fontSize: 16,
   fontWeight: 500,
   outline: "unset",
-  fontFamily: "Mulish",
-  color: "#000",
+  fontFamily: "inherit",
+  color: "#FFFFFF",
   border: "none",
-  background: "#F7F9FB",
-  caretColor: "#728A96",
+  background: "transparent",
+  caretColor: "#93A5B8",
   "&::placeholder": {
-    color: "#728A96",
+    color: "#93A5B8",
   },
   [theme.breakpoints.down("sm")]: {
     fontSize: 16,
@@ -44,20 +45,14 @@ const SearchResultsWrapper = styled(Box)(({ theme }) => ({
   position: "absolute",
   top: "calc(100% + 10px)",
   left: 0,
-
-  padding: `${theme.spacing(1)}, ${theme.spacing(2)}`,
-  zIndex: 99,
-
-  background: "rgba(232,233,235)",
-  border: "0.5px solid rgba(114, 138, 150, 0.16)",
+  zIndex: 999,
+  background: "#1D2633",
+  border: "0.5px solid #364459",
   borderRadius: 16,
   width: "100%",
   maxHeight: 450,
   overflowY: "auto",
-
-  [theme.breakpoints.down("md")]: {
-    display: "none",
-  },
+  boxShadow: "0px 4px 16px rgba(0, 0, 0, 0.3)",
 }));
 
 const CenteringWrapper = styled(Box)(() => ({
@@ -71,14 +66,17 @@ const SearchResultsItem = styled(Box)(() => ({
   justifyContent: "space-between",
   background: "transparent",
   fontSize: 20,
-  color: "#000",
+  color: "#FFFFFF",
   fontWeight: 500,
   height: 30,
   padding: "20px 24px 20px 30px",
   transitionDuration: ".15s",
   "&:hover": {
     cursor: "pointer",
-    background: "rgb(225,227,230)",
+    background: "#222C3D",
+  },
+  "& p": {
+    color: "#FFFFFF",
   },
 }));
 
@@ -87,6 +85,9 @@ const IndentlessIcon = styled(Box)(() => ({
   alignItems: "center",
   marginLeft: 14,
   padding: 0,
+  "& img": {
+    filter: "brightness(0) invert(0.6)",
+  },
 }));
 
 export {

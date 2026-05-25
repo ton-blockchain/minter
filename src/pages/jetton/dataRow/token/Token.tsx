@@ -8,7 +8,7 @@ import {
 } from "pages/jetton/styled";
 import LoadingImage from "components/LoadingImage";
 import LoadingContainer from "components/LoadingContainer";
-import { Box, Tooltip } from "@mui/material";
+import { Box, Tooltip, useMediaQuery, useTheme } from "@mui/material";
 import Alert from "@mui/material/Alert";
 import {
   adminActions,
@@ -47,9 +47,11 @@ export const Token = () => {
     isImageBroken,
   } = useJettonStore();
   const [openEdit, setOpenEdit] = useState(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
-    <StyledBlock sx={{ width: "calc(55% - 15px)" }}>
+    <StyledBlock>
       {!openEdit ? (
         <>
           <StyledTop>
@@ -67,21 +69,21 @@ export const Token = () => {
                     text={`${name} ${symbol && `(${symbol})`}`}
                     variant="h2"
                     fontWeight={800}
-                    fontSize={20}
-                    color="#161C28"
+                    fontSize={isMobile ? 16 : 20}
+                    color="#FFFFFF"
                   />
                 )}
               </LoadingContainer>
               <LoadingContainer loading={jettonLoading} loaderWidth="150px">
                 <Tooltip arrow title={description && description?.length > 80 ? description : ""}>
-                  <Box marginTop=".5px" sx={{ maxWidth: 300, maxHeight: 60 }}>
+                  <Box marginTop=".5px" sx={{ maxWidth: isMobile ? "100%" : 300, maxHeight: 60 }}>
                     <AppHeading
                       text={description || "Description"}
-                      limitText={80}
+                      limitText={isMobile ? 40 : 80}
                       variant="h4"
                       fontWeight={500}
-                      fontSize={16}
-                      color="#728A96"
+                      fontSize={isMobile ? 13 : 16}
+                      color="#93A5B8"
                     />
                   </Box>
                 </Tooltip>
@@ -89,23 +91,27 @@ export const Token = () => {
             </StyledTopText>
             {isAdmin && !adminRevokedOwnership && !jettonLoading && (
               <Box sx={{ alignSelf: "start" }}>
-                <AppButton width={113} height={32} transparent onClick={() => setOpenEdit(true)}>
+                <AppButton
+                  width={isMobile ? 32 : 113}
+                  height={isMobile ? 32 : 32}
+                  transparent
+                  onClick={() => setOpenEdit(true)}>
                   <CenteringWrapper>
                     <img
                       src={pen}
                       alt="Pen Icon"
                       width={15}
                       height={15}
-                      style={{ marginRight: 4 }}
+                      style={{ marginRight: isMobile ? 0 : 4 }}
                     />
-                    Edit token
+                    {!isMobile && "Edit token"}
                   </CenteringWrapper>
                 </AppButton>
               </Box>
             )}
           </StyledTop>
           {!isAdmin && isJettonDeployerFaultyOnChainData && (
-            <Alert variant="filled" severity="error">
+            <Alert variant="filled" severity="error" sx={{ fontSize: isMobile ? 12 : 14 }}>
               {getFaultyMetadataWarning(adminRevokedOwnership)}
             </Alert>
           )}

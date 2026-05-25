@@ -1,70 +1,82 @@
-import { IconButton, useMediaQuery } from "@mui/material";
 import { Box } from "@mui/system";
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
-import { HeaderMenu, MobileMenu } from "components/header/headerMenu/HeaderMenu";
+import React, { useEffect, useRef } from "react";
+import { HeaderMenu } from "components/header/headerMenu/HeaderMenu";
 import { AppLogo } from "components/appLogo";
-import { SearchBar } from "components/header/headerSearchBar";
-import {
-  HeaderContent,
-  HeaderExampleText,
-  HeaderOptionalContent,
-  HeaderWrapper,
-  HeaderExampleLink,
-  HeaderExampleTextWrapper,
-} from "./styled";
-import { EXAMPLE_ADDRESS } from "consts";
-import { Outlet, useLocation } from "react-router-dom";
+import { HeaderContent, HeaderWrapper } from "./styled";
+import { Outlet } from "react-router-dom";
+import { useNetwork } from "lib/hooks/useNetwork";
+import { Typography } from "@mui/material";
+import { AppButton } from "components/appButton";
 
 export const Header = () => {
-  const [mobileMenu, setMobileMenu] = useState(false);
-  const matches = useMediaQuery("(min-width:900px)");
-  const [example, setExample] = useState<string | undefined>(undefined);
+  const headerRef = useRef<null | HTMLDivElement>(null);
+  const { network } = useNetwork();
+  const isTestnet = network === "testnet";
 
-  const location = useLocation();
-  const topRef = useRef<null | HTMLDivElement>(null);
-
-  const resetExample = useCallback(() => {
-    setExample(undefined);
-  }, []);
+  const switchNetwork = () => {
+    window.location.href = "/";
+  };
 
   useEffect(() => {
-    topRef.current?.scrollIntoView();
-  }, [location]);
+    const header = headerRef.current;
+    if (!header) return;
+    const updateStuck = () => {
+      header.classList.toggle("is-stuck", window.scrollY > 4);
+    };
+    updateStuck();
+    window.addEventListener("scroll", updateStuck, { passive: true });
+    return () => window.removeEventListener("scroll", updateStuck);
+  }, []);
 
   return (
     <>
-      <HeaderWrapper position="static" ref={topRef}>
+      <HeaderWrapper ref={headerRef}>
         <HeaderContent>
-          <HeaderOptionalContent>
-            {!matches && (
-              <IconButton onClick={() => setMobileMenu(true)}>
-                <MenuRoundedIcon style={{ width: 40, height: 40, color: "#50A7EA" }} />
-              </IconButton>
-            )}
-            {matches && <AppLogo />}
-            {matches && <HeaderMenu />}
-          </HeaderOptionalContent>
-          <Box sx={{ width: "100%" }}>
-            <SearchBar
-              example={example}
-              resetExample={resetExample}
-              closeMenu={() => setMobileMenu(false)}
-            />
-            <HeaderExampleTextWrapper>
-              <HeaderExampleText>
-                Enter an existing Jetton contract address.
-                <HeaderExampleLink variant="body2" onClick={() => setExample(EXAMPLE_ADDRESS)}>
-                  {" "}
-                  Use example.
-                </HeaderExampleLink>
-              </HeaderExampleText>
-            </HeaderExampleTextWrapper>
-          </Box>
-          <MobileMenu showMenu={mobileMenu && !matches} closeMenu={() => setMobileMenu(false)} />
+          <AppLogo />
+          <Box sx={{ flex: 1 }} />
+          <HeaderMenu />
         </HeaderContent>
       </HeaderWrapper>
+
+      {isTestnet && (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            width: "100%",
+            position: "fixed",
+            top: 80,
+            left: 0,
+            right: 0,
+            zIndex: 49,
+            pointerEvents: "none",
+          }}>
+          <Box
+            sx={{
+              background: "rgba(29, 38, 51, 0.8)",
+              backdropFilter: "blur(0.5px)",
+              border: "0.5px solid rgba(114, 138, 150, 0.24)",
+              boxShadow: "0 1px 1px 0 #2D3945 inset",
+              borderRadius: "40px",
+              padding: "6px 6px 6px 16px",
+              display: "flex",
+              alignItems: "center",
+              gap: 1.5,
+              pointerEvents: "auto",
+            }}>
+            <Typography sx={{ color: "#93A5B8", fontSize: 13, whiteSpace: "nowrap" }}>
+              You are on Testnet
+            </Typography>
+            <AppButton transparent onClick={switchNetwork} height={30} fontSize={12}>
+              Switch to Mainnet
+            </AppButton>
+          </Box>
+        </Box>
+      )}
+
       <Outlet />
     </>
   );
 };
+
+export * from "./Header";

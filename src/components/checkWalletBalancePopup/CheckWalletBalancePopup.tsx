@@ -27,7 +27,7 @@ export const CheckWalletBalancePopup = ({ showPopup, close }: CheckWalletBalance
       close();
       setSearch("");
     } else {
-      showNotification("Wallet address in invalid", "error");
+      showNotification("Wallet address is invalid", "error");
     }
   }, [search]);
 
@@ -44,7 +44,7 @@ export const CheckWalletBalancePopup = ({ showPopup, close }: CheckWalletBalance
       }}
       maxWidth={592}>
       <PopupTitle>Check balance for another address</PopupTitle>
-      <Typography sx={{ alignSelf: "baseline" }} mb={1.5}>
+      <Typography sx={{ alignSelf: "baseline", color: "#93A5B8" }} mb={1.5}>
         Enter address to check balance:
       </Typography>
       <Box
@@ -57,7 +57,7 @@ export const CheckWalletBalancePopup = ({ showPopup, close }: CheckWalletBalance
           minHeight: 50,
           height: "100%",
           transition: "0.1s all",
-          background: "#F7F9FB",
+          background: "#131B25",
           border: "0.5px solid rgba(114, 138, 150, 0.16)",
           borderRadius: 40,
         }}>
@@ -78,3 +78,5 @@ export const CheckWalletBalancePopup = ({ showPopup, close }: CheckWalletBalance
     </Popup>
   );
 };
+
+export * from "./CheckWalletBalancePopup";

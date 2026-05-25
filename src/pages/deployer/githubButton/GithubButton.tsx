@@ -17,13 +17,13 @@ export const GithubButton = () => {
         ml={1}
         variant="h5"
         sx={{
-          color: "#000",
+          color: "#FFFFFF",
           fontWeight: 700,
           fontSize: 16,
           display: "flex",
           alignItems: "center",
         }}>
-        GitHub Repo{" "}
+        GitHub Repo
       </Typography>
       <Box
         ml={1}
@@ -35,7 +35,7 @@ export const GithubButton = () => {
         <img
           width={14}
           height={14}
-          style={{ position: "absolute", top: "-6px" }}
+          style={{ position: "absolute", top: "-6px", filter: "brightness(0) invert(1)" }}
           src={rightArrow}
           alt="Icon"
         />
@@ -43,3 +43,5 @@ export const GithubButton = () => {
     </IconButton>
   );
 };
+
+export * from "./GithubButton";

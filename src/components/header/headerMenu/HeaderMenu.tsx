@@ -1,62 +1,46 @@
-import { Drawer, IconButton, styled } from "@mui/material";
-import githubIcon from "assets/icons/github-logo.svg";
-import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
-import { AppLogo } from "components/appLogo";
-import {
-  CloseMenuButton,
-  DrawerContent,
-  StyledGithubIcon,
-  AppMenu,
-  HeaderTypography,
-} from "./styled";
-import { TonConnectButton } from "@tonconnect/ui-react";
+import { styled } from "@mui/material";
+import { AppMenu } from "./styled";
+import { TonConnectButton, useTonAddress } from "@tonconnect/ui-react";
+import { AppButton } from "components/appButton";
+import { onConnect } from "utils";
 
 interface MenuProps {
   closeMenu?: () => void;
   showMenu?: boolean;
 }
 
-const MobileMenu: React.FC<MenuProps> = ({ closeMenu, showMenu }) => {
-  return (
-    <Drawer anchor="left" open={showMenu} onClose={closeMenu}>
-      <CloseMenuButton onClick={closeMenu}>
-        <CloseRoundedIcon style={{ width: 30, height: 30 }} />
-      </CloseMenuButton>
-      <DrawerContent>
-        <AppLogo />
-        <HeaderMenu showMenu={showMenu} closeMenu={closeMenu} />
-      </DrawerContent>
-    </Drawer>
-  );
-};
+const HeaderMenu: React.FC<MenuProps> = () => {
+  const address = useTonAddress();
 
-const HeaderMenu: React.FC<MenuProps> = (props) => {
   return (
     <AppMenu>
-      <div onClick={props.closeMenu}>
+      {address ? (
         <StyledTonConnectButton />
-      </div>
-      <IconButton
-        sx={{ padding: 0, ml: 1.5 }}
-        href="https://github.com/ton-blockchain/minter"
-        target="_blank">
-        <StyledGithubIcon width={20} height={20} src={githubIcon} />
-        <HeaderTypography variant="h5">GitHub</HeaderTypography>
-      </IconButton>
+      ) : (
+        <AppButton height={40} width={120} onClick={onConnect}>
+          Connect
+        </AppButton>
+      )}
     </AppMenu>
   );
 };
 
 const StyledTonConnectButton = styled(TonConnectButton)(({ theme }) => ({
   button: {
-    background: theme.palette.primary.main,
+    background: "#1EAEFB",
+    borderRadius: 40,
+    height: 40,
+    padding: "0 18px",
+    fontSize: 14,
+    fontWeight: 600,
     "*": { color: "white" },
-    svg: {
-      "*": {
-        stroke: "white",
-      },
+    svg: { "*": { stroke: "white" } },
+    [theme.breakpoints.down("sm")]: {
+      height: 36,
+      fontSize: 14,
+      padding: "0 16px",
     },
   },
 }));
 
-export { HeaderMenu, MobileMenu };
+export { HeaderMenu };

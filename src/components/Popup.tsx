@@ -19,7 +19,7 @@ export function Popup({
   open,
   onClose,
   children,
-  backgroundColor = "rgba(48, 48, 48, 0.4)",
+  backgroundColor = "rgba(16, 22, 31, 0.6)",
   blur = true,
   className = "",
   maxWidth,
@@ -36,22 +36,26 @@ export function Popup({
         style: {
           maxWidth: maxWidth || "unset",
           width: "100%",
-          borderRadius: "10px",
+          borderRadius: "20px",
           padding: 0,
           overflow: "unset",
           margin: 20,
+          background: "#1D2633",
+          border: "0.5px solid #364459",
+          boxShadow: "0 1px 1px 0 #2D3945 inset, 0px 2px 16px rgba(0, 0, 0, 0.3)",
         },
       }}
       BackdropProps={{
         style: {
           backgroundColor,
+          backdropFilter: blur ? "blur(4px)" : "none",
         },
       }}>
       <Box>
         {!hideCloseButton && (
           <Box sx={{ display: "flex", justifyContent: "end", width: "100%" }}>
             <StyledClose onClick={onClose}>
-              <CloseRoundedIcon style={{ width: 23, height: 23 }} />
+              <CloseRoundedIcon style={{ width: 23, height: 23, color: "#93A5B8" }} />
             </StyledClose>
           </Box>
         )}
@@ -64,18 +68,23 @@ export function Popup({
 }
 
 const StyledClose = styled(IconButton)(() => ({
-  color: "#000",
+  color: "#93A5B8",
+  "&:hover": {
+    color: "#FFFFFF",
+  },
 }));
 
 const StyledChildren = styled(Box)({
   display: "flex",
   alignItems: "center",
   flexDirection: "column",
+  color: "#FFFFFF",
   "& .title": {
-    texAlign: "center",
-    fontWeight: 500,
+    textAlign: "center",
+    fontWeight: 700,
     fontSize: 20,
     marginBottom: 20,
+    color: "#FFFFFF",
   },
   "& .base-button": {
     height: 40,

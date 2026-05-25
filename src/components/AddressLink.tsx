@@ -14,12 +14,13 @@ const StyledContainer = styled(Box)({
   width: "100%",
   "& a": {
     textDecoration: "none",
-    color: "unset",
+    color: "#1EAEFB !important",
   },
 });
 
 const StyledImg = styled("img")({
   width: 15,
+  filter: "brightness(0) invert(0.6)",
 });
 
 const StyledLink = styled("div")({
@@ -27,7 +28,7 @@ const StyledLink = styled("div")({
   overflow: "hidden",
   textOverflow: "ellipsis",
   width: "95%",
-  color: "#0688CC!important",
+  color: "#1EAEFB !important",
   [theme.breakpoints.down("sm")]: {
     fontSize: 14,
   },

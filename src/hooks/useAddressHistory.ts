@@ -40,10 +40,11 @@ export function useAddressHistory() {
   const onAddressClick = (address: string) => {
     setActive(false);
     setValue("");
-
     addAddress(address);
 
-    navigate(`${ROUTES.jetton}/${address}`);
+    setTimeout(() => {
+      navigate(`${ROUTES.jetton}/${address}`);
+    }, 50);
   };
 
   const onSubmit = (address: string) => {
@@ -54,15 +55,15 @@ export function useAddressHistory() {
       return;
     }
 
-    const transformedAddress = Address.parse(address!).toFriendly();
-
+    const transformedAddress = Address.parse(address).toFriendly();
     addAddress(transformedAddress);
     setValue("");
     setActive(false);
 
-    navigate(`${ROUTES.jetton}/${transformedAddress}`);
+    setTimeout(() => {
+      navigate(`${ROUTES.jetton}/${transformedAddress}`);
+    }, 50);
   };
-
   useEffect(() => {
     jettonAddress && addAddress(jettonAddress);
   }, []);

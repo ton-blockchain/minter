@@ -1,14 +1,14 @@
 import { useEffect } from "react";
-import coinLogo from "assets/icons/coin-logo.svg";
 import { atom, useRecoilState } from "recoil";
 import useJettonStore from "store/jetton-store/useJettonStore";
+import pen from "assets/icons/pen.svg";
 import brokenImage from "assets/icons/question.png";
 import { useJettonAddress } from "hooks/useJettonAddress";
 
 const defaultState = {
   iconHover: false,
   logoUrl: "",
-  image: coinLogo,
+  image: pen,
   isLoading: false,
   hasError: false,
 };
@@ -17,7 +17,7 @@ const jettonLogoState = atom({
   key: "jettonLogo",
   default: defaultState,
 });
-
+export const defaultJettonImage = pen;
 export const useJettonLogo = () => {
   const [jettonLogo, setJettonLogo] = useRecoilState(jettonLogoState);
   const { jettonImage } = useJettonStore();

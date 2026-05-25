@@ -1,70 +1,39 @@
 import { IconButton, useMediaQuery } from "@mui/material";
 import { Box } from "@mui/system";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
-import { HeaderMenu, MobileMenu } from "components/header/headerMenu/HeaderMenu";
+import { HeaderMenu } from "components/header/headerMenu/HeaderMenu";
 import { AppLogo } from "components/appLogo";
-import { SearchBar } from "components/header/headerSearchBar";
-import {
-  HeaderContent,
-  HeaderExampleText,
-  HeaderOptionalContent,
-  HeaderWrapper,
-  HeaderExampleLink,
-  HeaderExampleTextWrapper,
-} from "./styled";
-import { EXAMPLE_ADDRESS } from "consts";
+import { HeaderContent, HeaderWrapper } from "./styled";
 import { Outlet, useLocation } from "react-router-dom";
-
 export const Header = () => {
   const [mobileMenu, setMobileMenu] = useState(false);
   const matches = useMediaQuery("(min-width:900px)");
-  const [example, setExample] = useState<string | undefined>(undefined);
-
   const location = useLocation();
-  const topRef = useRef<null | HTMLDivElement>(null);
-
-  const resetExample = useCallback(() => {
-    setExample(undefined);
-  }, []);
+  const headerRef = useRef<null | HTMLDivElement>(null);
 
   useEffect(() => {
-    topRef.current?.scrollIntoView();
-  }, [location]);
+    const header = headerRef.current;
+    if (!header) return;
+    const updateStuck = () => {
+      header.classList.toggle("is-stuck", window.scrollY > 4);
+    };
+    updateStuck();
+    window.addEventListener("scroll", updateStuck, { passive: true });
+    return () => window.removeEventListener("scroll", updateStuck);
+  }, []);
 
   return (
     <>
-      <HeaderWrapper position="static" ref={topRef}>
+      <HeaderWrapper ref={headerRef}>
         <HeaderContent>
-          <HeaderOptionalContent>
-            {!matches && (
-              <IconButton onClick={() => setMobileMenu(true)}>
-                <MenuRoundedIcon style={{ width: 40, height: 40, color: "#50A7EA" }} />
-              </IconButton>
-            )}
-            {matches && <AppLogo />}
-            {matches && <HeaderMenu />}
-          </HeaderOptionalContent>
-          <Box sx={{ width: "100%" }}>
-            <SearchBar
-              example={example}
-              resetExample={resetExample}
-              closeMenu={() => setMobileMenu(false)}
-            />
-            <HeaderExampleTextWrapper>
-              <HeaderExampleText>
-                Enter an existing Jetton contract address.
-                <HeaderExampleLink variant="body2" onClick={() => setExample(EXAMPLE_ADDRESS)}>
-                  {" "}
-                  Use example.
-                </HeaderExampleLink>
-              </HeaderExampleText>
-            </HeaderExampleTextWrapper>
-          </Box>
-          <MobileMenu showMenu={mobileMenu && !matches} closeMenu={() => setMobileMenu(false)} />
+          <AppLogo />
+          <Box sx={{ flex: 1 }} />
+          <HeaderMenu />
         </HeaderContent>
       </HeaderWrapper>
       <Outlet />
     </>
   );
 };
+export * from "./Header";

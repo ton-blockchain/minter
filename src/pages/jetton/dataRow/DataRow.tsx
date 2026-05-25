@@ -55,7 +55,7 @@ export const DataRow: React.FC<DataRowProps> = ({
                   regularAddress={regularAddress}
                 />
               ) : (
-                <Typography>{value || "-"}</Typography>
+                <Typography sx={{ color: "#FFFFFF" }}>{value || "-"}</Typography>
               )}
             </RowValueSection>
             {actions && (
@@ -77,7 +77,7 @@ export const DataRow: React.FC<DataRowProps> = ({
             fontSize={12}
             fontWeight={500}
             marginLeft={20}
-            color="rgba(114,138,150,0.7)"
+            color="#93A5B8"
           />
         )}
         {!dataLoading && <MessageRenderer message={message} />}
@@ -85,3 +85,5 @@ export const DataRow: React.FC<DataRowProps> = ({
     </Box>
   );
 };
+
+export * from "./DataRow";

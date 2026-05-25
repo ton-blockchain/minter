@@ -11,6 +11,7 @@ const StyledScreen = styled(Box)({
   display: "flex",
   alignItems: "center",
   flexDirection: "column",
+  background: "transparent",
 });
 
 const StyledContent = styled(Box)(({ theme }) => ({
@@ -24,7 +25,7 @@ const StyledContent = styled(Box)(({ theme }) => ({
 }));
 
 const ScreenContent = ({ children }: Props) => {
-  return <StyledContent className="screen-content"> {children}</StyledContent>;
+  return <StyledContent className="screen-content">{children}</StyledContent>;
 };
 
 function Screen({ children, id = "" }: Props) {

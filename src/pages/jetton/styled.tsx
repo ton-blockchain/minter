@@ -2,21 +2,21 @@ import { Box, styled } from "@mui/material";
 
 const StyledContainer = styled(Box)(({ theme }) => ({
   display: "flex",
+  flexDirection: "column",
   gap: 30,
   width: "100%",
   marginTop: theme.spacing(3),
-  [theme.breakpoints.down("lg")]: {
-    flexDirection: "column",
-  },
+  alignItems: "stretch",
   [theme.breakpoints.down("sm")]: {
     marginTop: theme.spacing(8),
   },
 }));
 
 const StyledCategory = styled(Box)(({ theme }) => ({
-  width: "calc(50% - 15px)",
+  width: "100%",
   padding: "20px 30px 30px 30px",
   borderRadius: 16,
+  boxSizing: "border-box",
   [theme.breakpoints.down("lg")]: {
     width: "100%",
     padding: "20px 25px 20px 25px",
@@ -30,10 +30,11 @@ const StyledCategoryFields = styled(Box)({
 });
 
 const StyledBlock = styled(StyledCategory)({
-  background: "#FFFFFF",
+  background: "rgba(29, 38, 51, 0.8)",
+  backdropFilter: "blur(0.5px)",
   border: "0.5px solid rgba(114, 138, 150, 0.24)",
+  boxShadow: "0 1px 1px 0 #2D3945 inset, 0px 2px 16px rgba(0, 0, 0, 0.2)",
   borderRadius: 24,
-  filter: "drop-shadow(0px 2px 16px rgba(114, 138, 150, 0.08))",
   height: "100%",
 });
 
@@ -44,7 +45,7 @@ const StyledTop = styled(Box)({
 });
 
 const StyledTopText = styled(Box)({
-  color: "#27272E",
+  color: "#FFFFFF",
   display: "flex",
   flexDirection: "column",
   gap: 3,
@@ -60,20 +61,20 @@ const StyledTopText = styled(Box)({
 });
 
 const StyledTopImg = styled(Box)(({ theme }) => ({
-  width: 101,
-  height: 101,
+  width: 60,
+  height: 60,
   borderRadius: "50%",
   overflow: "hidden",
-  background: "rgba(0,0,0, 0.1)",
+  background: "transparent",
+  border: "1px solid #364459",
   "& img": {
     width: "100%",
     height: "100%",
     objectFit: "cover",
   },
   [theme.breakpoints.down("sm")]: {
-    width: 60,
-    height: 60,
-    border: "2px solid #D9D9D9",
+    width: 56,
+    height: 56,
   },
 }));
 

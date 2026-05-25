@@ -14,7 +14,19 @@ export const AppLogo = () => {
         <img src={logo} alt="Logo" />
       </ImageWrapper>
       <Typography variant="h4">{APP_DISPLAY_NAME}</Typography>
-      {network === "testnet" && <Chip sx={{ ml: 1 }} label="Testnet" />}
+      {network === "testnet" && (
+        <Chip
+          sx={{
+            ml: 1,
+            color: "#FFFFFF",
+            background: "#364459",
+            "& .MuiChip-label": { color: "#FFFFFF" },
+          }}
+          label="Testnet"
+        />
+      )}
     </LogoWrapper>
   );
 };
+
+export * from "./AppLogo";

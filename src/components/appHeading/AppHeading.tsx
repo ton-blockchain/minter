@@ -26,7 +26,7 @@ interface HeadingTextProps {
 const HeadingText = styled(Typography)((props: HeadingTextProps) => ({
   fontSize: props.fontSize || 14,
   fontWeight: props.fontWeight || 400,
-  color: props.color || "#000",
+  color: props.color || "#FFFFFF",
   textAlign: props.textAlign,
   wordBreak: "break-all",
 }));

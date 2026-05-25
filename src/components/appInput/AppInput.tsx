@@ -75,22 +75,12 @@ export const AppNumberInput: React.FC<AppNumberInputProps> = ({ value, label, on
   return (
     <InputWrapper>
       <NumberFormat
-        sx={{
-          background: "#F7F9FB",
+        style={{
+          background: "#131B25",
           borderRadius: 40,
-          paddingLeft: 1,
+          paddingLeft: 8,
           border: "none",
-          "& fieldset": {
-            border: "none",
-            background: "none",
-          },
-          "& label": {
-            display: !value ? "inline" : "none",
-            marginLeft: 0.8,
-            "&.Mui-focused": {
-              display: "none",
-            },
-          },
+          color: "#FFFFFF",
         }}
         value={value || ""}
         customInput={TextField}
@@ -99,6 +89,16 @@ export const AppNumberInput: React.FC<AppNumberInputProps> = ({ value, label, on
         label={label}
         onValueChange={({ value }) => {
           onChange(Number(value));
+        }}
+        InputProps={{
+          style: {
+            color: "#FFFFFF",
+          },
+        }}
+        InputLabelProps={{
+          style: {
+            color: "#93A5B8",
+          },
         }}
       />
     </InputWrapper>

@@ -69,13 +69,14 @@ export const TransferAction = () => {
 
   return (
     <TransferWrapper>
+      // AppHeading color:
       <AppHeading
         text={`Transfer ${symbol}`}
         variant="h4"
         fontWeight={800}
         fontSize={20}
         marginBottom={20}
-        color="#161C28"
+        color="#FFFFFF"
       />
       <TransferContent>
         <AppTextInput

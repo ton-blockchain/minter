@@ -56,7 +56,7 @@ function RevokeOwnershipAction() {
         <Box ml={3} mt={-1} mb={-0.6} sx={{ alignSelf: "baseline", color: "#464646" }}>
           <Typography
             sx={{
-              color: "#161C28",
+              color: "#FFFFFF",
               fontWeight: 800,
               fontSize: 20,
               marginBottom: 3.2,
@@ -74,6 +74,7 @@ function RevokeOwnershipAction() {
               paddingLeft: 20,
               fontWeight: 500,
               marginBottom: 0,
+              color: "#93A5B8",
             }}>
             <li style={{ marginBottom: 10 }}>
               <span style={{ paddingLeft: 5 }}>Change the token logo</span>
@@ -104,7 +105,7 @@ function RevokeOwnershipAction() {
               <span style={{ paddingLeft: 5 }}>Change the token description</span>
             </li>
           </ul>
-          <Typography textAlign="left" sx={{ fontWeight: 700 }}>
+          <Typography textAlign="left" sx={{ fontWeight: 700, color: "#FFFFFF" }}>
             You should revoke ownership only after metadata has been finalized
           </Typography>
         </Box>

@@ -1,54 +1,74 @@
-import { Box, Link, styled } from "@mui/material";
-import { APP_GRID } from "consts";
+import { Box, Link, styled, Typography } from "@mui/material";
 
-const FooterWrapper = styled(Box)({
-  maxWidth: APP_GRID,
-  width: "calc(100% - 50px)",
-});
-
-const SocialsWrapper = styled(Box)({
-  display: "flex",
-  justifyContent: "space-between",
-  marginBottom: 28,
-});
-
-const SocialsContent = styled(Box)(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-  gap: theme.spacing(1.5),
-}));
-
-const CredentialsWrapper = styled(Box)(({ theme }) => ({
-  display: "flex",
-  flexWrap: "wrap",
-  justifyContent: "space-between",
-  marginTop: theme.spacing(3),
-  marginBottom: theme.spacing(2),
-  color: "#728A96",
-  fontSize: 14,
+const FooterWrapper = styled(Box)(({ theme }) => ({
+  display: "grid",
+  gridTemplateColumns: "1fr 1fr",
+  gap: 48,
+  borderTop: "0.5px solid #364459",
+  paddingBlock: "48px 80px",
+  paddingInline: "max(32px, calc((100% - 1160px) / 2 + 32px))",
+  width: "100%",
+  position: "relative",
   [theme.breakpoints.down("md")]: {
-    "& > *": {
-      marginBottom: `${theme.spacing(1)} !important`,
-    },
+    gridTemplateColumns: "1fr",
+  },
+  [theme.breakpoints.down("sm")]: {
+    gap: 24,
+    padding: "32px 24px 48px",
   },
 }));
 
-const Separator = styled("hr")({
-  height: "1px",
-  backgroundColor: "#e6e6e6",
-  border: "none",
-});
-
-const FooterLink = styled(Link)(({ theme }) => ({
-  display: "inline-flex",
-  alignItems: "center",
-  color: "inherit",
-  textDecoration: "none",
-  [theme.breakpoints.down("md")]: {
-    justifyContent: "flex-end",
+const FooterBrand = styled(Box)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  gap: 12,
+  [theme.breakpoints.down("sm")]: {
+    borderBottom: "0.5px solid #364459",
+    paddingBottom: 24,
   },
 }));
+
+const PoweredBy = styled(Typography)({});
+
+const FlagIcon = styled("span")({
+  display: "inline-block",
+  width: 24,
+  height: 24,
+  lineHeight: 0,
+  flexShrink: 0,
+});
+
+const FooterLinks = styled("nav")(({ theme }) => ({
+  display: "grid",
+  gridTemplateColumns: "1fr 1fr",
+  gap: 24,
+  [theme.breakpoints.down("sm")]: {
+    gap: 16,
+    gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+    maxWidth: 327,
+    width: "100%",
+    paddingTop: 8, // ← отступ сверху
+  },
+}));
+
+const FooterColumn = styled(Box)({
+  display: "flex",
+  flexDirection: "column",
+  gap: 14,
+  "& a, & span": {
+    color: "#93A5B8",
+    fontFamily: "inherit",
+    fontSize: 16,
+    fontWeight: 500,
+    lineHeight: 1.4,
+    textDecoration: "none",
+  },
+  "& a:hover": {
+    color: "#1EAEFB",
+  },
+});
+
+const FooterLink = styled(Link)({});
 
 const CenteringWrapper = styled(Box)({
   display: "flex",
@@ -56,46 +76,13 @@ const CenteringWrapper = styled(Box)({
   alignItems: "center",
 });
 
-const ContributedWrapper = styled(CenteringWrapper)(({ theme }) => ({
-  [theme.breakpoints.down("md")]: {
-    minWidth: "100%",
-    flex: 2,
-    order: 3,
-  },
-}));
-
-const FooterTextBox = styled(CenteringWrapper)(({ theme }) => ({
-  [theme.breakpoints.down("md")]: {
-    minWidth: "50%",
-  },
-}));
-
-const FooterTextBoxLeft = styled(FooterTextBox)(({ theme }) => ({
-  [theme.breakpoints.down("md")]: {
-    justifyContent: "start",
-  },
-  [theme.breakpoints.down("sm")]: {},
-}));
-
-const FooterTextBoxRight = styled(FooterTextBox)(({ theme }) => ({
-  [theme.breakpoints.down("md")]: {
-    justifyContent: "end",
-  },
-  [theme.breakpoints.down("sm")]: {
-    minWidth: 70,
-  },
-}));
-
 export {
   FooterWrapper,
-  SocialsWrapper,
-  SocialsContent,
-  Separator,
-  CredentialsWrapper,
+  FooterBrand,
+  FooterLinks,
+  FooterColumn,
   FooterLink,
+  PoweredBy,
+  FlagIcon,
   CenteringWrapper,
-  ContributedWrapper,
-  FooterTextBox,
-  FooterTextBoxLeft,
-  FooterTextBoxRight,
 };

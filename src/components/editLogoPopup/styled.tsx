@@ -3,7 +3,7 @@ import { CenteringWrapper } from "components/footer/styled";
 
 const PopupTitle = styled(Typography)(({ theme }) => ({
   textAlign: "center",
-  color: "#161C28",
+  color: "#FFFFFF",
   fontSize: 20,
   fontWeight: 800,
   padding: 0,
@@ -12,9 +12,9 @@ const PopupTitle = styled(Typography)(({ theme }) => ({
 
 const PopupDescription = styled(Typography)({
   fontSize: 14,
-  opacity: 0.3,
+  opacity: 0.6,
   paddingLeft: "17px",
-  color: "#313855",
+  color: "#93A5B8",
   margin: "8px 0 4px 0",
 });
 
@@ -25,22 +25,25 @@ const PopupContent = styled(CenteringWrapper)({
 });
 
 const PopupLink = styled(Link)({
-  color: "#9CADB6",
-  textDecorationColor: "#9CADB6",
+  color: "#93A5B8",
+  textDecorationColor: "#93A5B8",
   fontWeight: 800,
   fontSize: 14,
   display: "flex",
   alignItems: "center",
+  "&:hover": {
+    color: "#1EAEFB",
+  },
 });
 
 const LogoTextAreaWrapper = styled(Box)({
   width: "100%",
   display: "flex",
   alignItems: "center",
-  background: "#F7F9FB",
+  background: "#131B25",
   border: "0.5px solid rgba(114, 138, 150, 0.16)",
   transition: "0.2s all",
-  borderRadius: "24px", //40
+  borderRadius: "24px",
   overflowWrap: "anywhere",
 });
 
@@ -49,17 +52,20 @@ const LogoTextArea = styled("textarea")({
   width: "100%",
   flex: 1,
   border: "0.5px solid rgba(114, 138, 150, 0.16)",
-  background: "#F7F9FB",
+  background: "#131B25",
   outline: "none",
-  color: "#728A96",
-  fontFamily: "Mulish",
+  color: "#FFFFFF",
+  fontFamily: "inherit",
   fontSize: 16,
-  caretColor: "#728A96",
+  caretColor: "#93A5B8",
   borderRadius: "24px",
   padding: "10px 20px",
   maxHeight: 97,
   "::-webkit-scrollbar": {
     display: "none",
+  },
+  "&::placeholder": {
+    color: "#93A5B8",
   },
 });
 

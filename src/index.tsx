@@ -24,7 +24,7 @@ root.render(
           <SnackbarProvider maxSnack={3}>
             <TonConnectUIProvider
               manifestUrl="https://minter.ton.org/tonconnect-manifest.json"
-              uiPreferences={{ theme: THEME.LIGHT }}>
+              uiPreferences={{ theme: THEME.DARK }}>
               <App />
             </TonConnectUIProvider>
           </SnackbarProvider>

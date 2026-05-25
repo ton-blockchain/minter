@@ -23,6 +23,8 @@ function useJettonStore() {
     i++;
     const myIndex = i;
 
+    const currentJettonAddress = jettonAddress;
+
     let queryAddress = getUrlParam("address");
 
     if (queryAddress && !isValidAddress(queryAddress)) {
@@ -43,104 +45,131 @@ function useJettonStore() {
 
     const isMyWallet = address && userAddress ? address.equals(userAddress) : false;
 
-    reset();
-
-    if (!jettonAddress || !isValidAddress(jettonAddress)) {
-      showNotification("Invalid jetton address", "error");
+    if (!currentJettonAddress || !isValidAddress(currentJettonAddress)) {
       return;
     }
 
-    const parsedJettonMaster = Address.parse(jettonAddress);
+    reset();
 
-    try {
-      setState((prevState) => ({
-        ...prevState,
-        jettonLoading: true,
-      }));
+    const parsedJettonMaster = Address.parse(currentJettonAddress);
 
-      const result = await jettonDeployController.getJettonDetails(
-        parsedJettonMaster,
-        address ?? zeroAddress(),
-      );
+    let attempts = 0;
+    const maxAttempts = 3;
 
-      if (!result) {
-        console.log("empty");
+    while (attempts < maxAttempts) {
+      try {
+        attempts++;
 
-        return;
-      }
-      const _adminAddress = result.minter.admin?.toFriendly() ?? zeroAddress().toFriendly();
-      const adminAddress = Address.parse(_adminAddress);
-      const admin = (isMyWallet && userAddress && adminAddress.equals(userAddress)) || false;
-
-      let image: string | undefined;
-
-      if (result.minter.metadata.image) {
-        const img = new Image();
-        img.src = result.minter.metadata.image;
-        img.onerror = () => {
-          setState((prev) => ({ ...prev, isImageBroken: true }));
-        };
-
-        image = result.minter.metadata.image;
-      } else if (result.minter.metadata.image_data) {
-        try {
-          const imgData = Buffer.from(result.minter.metadata.image_data, "base64").toString();
-          let type: string;
-
-          if (/<svg xmlns/.test(imgData)) {
-            type = "svg+xml";
-          } else if (/png/i.test(imgData)) {
-            type = "png";
-          } else {
-            console.warn("Defaulting to jpeg");
-            type = "jpeg"; // Fallback
-          }
-
-          image = `data:image/${type};base64,${result.minter.metadata.image_data}`;
-        } catch (e) {
-          console.error("Error parsing img metadata");
-        }
-      }
-
-      if (myIndex !== i) {
-        return;
-      }
-      setState((prevState) => {
-        return {
+        setState((prevState) => ({
           ...prevState,
-          isJettonDeployerFaultyOnChainData: result.minter.isJettonDeployerFaultyOnChainData,
-          persistenceType: result.minter.persistenceType,
-          description: result.minter.metadata.description,
-          jettonImage: image ?? QuestiomMarkImg,
-          totalSupply: result.minter.totalSupply,
-          name: result.minter.metadata.name,
-          symbol: result.minter.metadata.symbol,
-          adminRevokedOwnership: zeroAddress().equals(adminAddress),
-          isAdmin: admin,
-          decimals: result.minter.metadata.decimals || "9",
-          adminAddress: adminAddress.toFriendly({ urlSafe: true, bounceable: false }),
-          balance: result.jettonWallet ? result.jettonWallet.balance : undefined,
-          jettonWalletAddress: result.jettonWallet?.jWalletAddress?.toFriendly(),
-          jettonMaster: jettonAddress,
-          isMyWallet,
-          selectedWalletAddress: address?.toFriendly({ urlSafe: true, bounceable: false }),
-        };
-      });
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error(error);
-        showNotification(
-          !!error.message.match(/exit_code: (11|32)/g)
-            ? `Unable to query. This is probably not a Jetton Contract (${error.message})`
-            : error.message,
-          "error",
+          jettonLoading: true,
+        }));
+
+        const result = await jettonDeployController.getJettonDetails(
+          parsedJettonMaster,
+          address ?? zeroAddress(),
         );
+
+        if (!result) {
+          console.log("empty");
+          return;
+        }
+
+        const _adminAddress = result.minter.admin?.toFriendly() ?? zeroAddress().toFriendly();
+        const adminAddress = Address.parse(_adminAddress);
+        const admin = (isMyWallet && userAddress && adminAddress.equals(userAddress)) || false;
+
+        let image: string | undefined;
+
+        if (result.minter.metadata.image) {
+          const img = new Image();
+          img.src = result.minter.metadata.image;
+          img.onerror = () => {
+            setState((prev) => ({ ...prev, isImageBroken: true }));
+          };
+          image = result.minter.metadata.image;
+        } else if (result.minter.metadata.image_data) {
+          try {
+            const imgData = Buffer.from(result.minter.metadata.image_data, "base64").toString();
+            let type: string;
+
+            if (/<svg xmlns/.test(imgData)) {
+              type = "svg+xml";
+            } else if (/png/i.test(imgData)) {
+              type = "png";
+            } else {
+              console.warn("Defaulting to jpeg");
+              type = "jpeg";
+            }
+
+            image = `data:image/${type};base64,${result.minter.metadata.image_data}`;
+          } catch (e) {
+            console.error("Error parsing img metadata");
+          }
+        }
+
+        if (myIndex !== i) {
+          return;
+        }
+
+        setState((prevState) => {
+          return {
+            ...prevState,
+            isJettonDeployerFaultyOnChainData: result.minter.isJettonDeployerFaultyOnChainData,
+            persistenceType: result.minter.persistenceType,
+            description: result.minter.metadata.description,
+            jettonImage: image ?? QuestiomMarkImg,
+            totalSupply: result.minter.totalSupply,
+            name: result.minter.metadata.name,
+            symbol: result.minter.metadata.symbol,
+            adminRevokedOwnership: zeroAddress().equals(adminAddress),
+            isAdmin: admin,
+            decimals: result.minter.metadata.decimals || "9",
+            adminAddress: adminAddress.toFriendly({ urlSafe: true, bounceable: false }),
+            balance: result.jettonWallet ? result.jettonWallet.balance : undefined,
+            jettonWalletAddress: result.jettonWallet?.jWalletAddress?.toFriendly(),
+            jettonMaster: currentJettonAddress,
+            isMyWallet,
+            selectedWalletAddress: address?.toFriendly({ urlSafe: true, bounceable: false }),
+          };
+        });
+
+        setState((prevState) => ({
+          ...prevState,
+          jettonLoading: false,
+        }));
+
+        return;
+      } catch (error) {
+        if (
+          attempts < maxAttempts &&
+          error instanceof Error &&
+          (error.message.match(/exit_code: -13/g) || error.message.includes("502"))
+        ) {
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+          continue;
+        }
+
+        if (error instanceof Error) {
+          console.error(error);
+          if (error.message.match(/exit_code: (11|32|-13)/g)) {
+            showNotification(
+              `Unable to load token data. Please try again. (Reload web site)`,
+              "error",
+            );
+          } else if (error.message.includes("502")) {
+            showNotification(`Server error. Please try again.`, "error");
+          } else {
+            showNotification(error.message, "error");
+          }
+        }
+
+        setState((prevState) => ({
+          ...prevState,
+          jettonLoading: false,
+        }));
       }
-    } finally {
-      setState((prevState) => ({
-        ...prevState,
-        jettonLoading: false,
-      }));
+      break;
     }
   }, [setState, showNotification, connectedWalletAddress, jettonAddress, reset]);
 

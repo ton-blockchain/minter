@@ -21,6 +21,8 @@ import { AppHeading } from "components/appHeading";
 import { useJettonAddress } from "hooks/useJettonAddress";
 import { useTonAddress } from "@tonconnect/ui-react";
 import { onConnect } from "utils";
+import { defaultJettonImage } from "hooks/useJettonLogo";
+import pen from "assets/icons/pen.svg";
 
 interface FormProps {
   onSubmit: (values: any) => Promise<void>;
@@ -99,31 +101,31 @@ export function Form({
         close={closeAlertLogoPopup}
         onValidate={handleSubmit(onSubmit, onFormError)}
       />
-      <Box sx={{ display: "flex" }} mb={3}>
+      <Box sx={{ display: "flex", alignItems: "center" }} mb={3}>
         <CenteringWrapper>
-          <StyledTopImg sx={{ position: "relative" }}>
-            <img
-              alt="Hover icon"
-              style={{
-                cursor: "pointer",
-                position: "absolute",
-                left: matches ? -1 : 0,
-                top: matches ? -1 : 0,
-                opacity: jettonLogo.iconHover ? 0.5 : 0,
-                zIndex: 1,
-                width: matches ? 60 : 101,
-                height: matches ? 60 : 101,
-              }}
-              onClick={() => setEditLogoPopup(true)}
-              onMouseEnter={() => setIconHover(true)}
-              onMouseLeave={() => setIconHover(false)}
-              src={coinLogoHover}
-            />
-            <LoadingImage
-              src={jettonLogo.image}
-              loading={jettonLogo.isLoading}
-              alt="jetton image"
-            />
+          <StyledTopImg
+            onClick={() => setEditLogoPopup(true)}
+            sx={{ position: "relative", cursor: "pointer" }}>
+            {/* Дефолтная иконка или загруженное лого */}
+            <Box
+              sx={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}>
+              <img
+                src={jettonLogo.image}
+                alt="jetton image"
+                style={{
+                  width: jettonLogo.image === defaultJettonImage ? "40%" : "100%",
+                  height: jettonLogo.image === defaultJettonImage ? "40%" : "100%",
+                  objectFit: "contain",
+                  filter: "brightness(0) invert(1)",
+                }}
+              />
+            </Box>
           </StyledTopImg>
         </CenteringWrapper>
         <Box ml={3}>
@@ -144,7 +146,7 @@ export function Form({
                 variant="h4"
                 fontWeight={500}
                 fontSize={16}
-                color="#728A96"
+                color="#93A5B8"
               />
             </Box>
           </Tooltip>

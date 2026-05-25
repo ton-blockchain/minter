@@ -59,20 +59,22 @@ function FaultyDeploy() {
         <StyledWarningPopup>
           <Box className="header">
             <WarningAmberRoundedIcon />
-            <Typography>Token metadata requires fix</Typography>
+            <Typography sx={{ color: "#FF5147" }}>Token metadata requires fix</Typography>
           </Box>
           <Box className="description">
-            <Typography>
-              This token was created with a previous faulty version of the deployer. Don’t worry,
+            <Typography sx={{ color: "#93A5B8" }}>
+              This token was created with a previous faulty version of the deployer. Don't worry,
               this can easily be fixed.
             </Typography>
             <br />
-            <Typography>
-              Click below to issue a fix transaction that will keep the token’s original data and
+            <Typography sx={{ color: "#93A5B8" }}>
+              Click below to issue a fix transaction that will keep the token's original data and
               fix the format.
             </Typography>
           </Box>
-          <AppButton onClick={onSubmit}>Submit</AppButton>
+          <AppButton onClick={onSubmit} background="#ef5350">
+            Submit
+          </AppButton>
         </StyledWarningPopup>
       </Popup>
     </>
@@ -90,8 +92,8 @@ export const StyledWarningPopup = styled(Box)({
     display: "flex",
     textAlign: "center",
     gap: 10,
-    "* ": {
-      color: "#d32f2f",
+    "*": {
+      color: "#ef5350",
     },
     "& p": {
       fontSize: 22,
@@ -113,6 +115,5 @@ export const StyledWarningPopup = styled(Box)({
     marginTop: 40,
     height: 40,
     width: 200,
-    background: "#d32f2f",
   },
 });

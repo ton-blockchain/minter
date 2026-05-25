@@ -49,7 +49,7 @@ export const Token = () => {
   const [openEdit, setOpenEdit] = useState(false);
 
   return (
-    <StyledBlock sx={{ width: "calc(55% - 15px)" }}>
+    <StyledBlock>
       {!openEdit ? (
         <>
           <StyledTop>
@@ -68,7 +68,7 @@ export const Token = () => {
                     variant="h2"
                     fontWeight={800}
                     fontSize={20}
-                    color="#161C28"
+                    color="#FFFFFF"
                   />
                 )}
               </LoadingContainer>
@@ -81,7 +81,7 @@ export const Token = () => {
                       variant="h4"
                       fontWeight={500}
                       fontSize={16}
-                      color="#728A96"
+                      color="#93A5B8"
                     />
                   </Box>
                 </Tooltip>

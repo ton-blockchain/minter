@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import SearchImg from "assets/icons/search.svg";
 import { IndentlessIcon, SearchBarInput, SearchBarWrapper } from "./styled";
 import close from "assets/icons/close.svg";
-import { Backdrop, ClickAwayListener, IconButton } from "@mui/material";
+import { Box, IconButton } from "@mui/material";
 import { AppButton } from "components/appButton";
 import { HeaderSearchResults } from "components/header/headerSearchResults";
 import { useAddressHistory } from "hooks/useAddressHistory";
@@ -36,7 +36,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ example, resetExample, clo
       if (event.code === "Enter" || event.code === "NumpadEnter") {
         event.preventDefault();
         event.target.blur();
-        onSubmit(addressInput.value);
+        onSubmit(addressInput.value.trim());
         closeMenu?.();
       }
     };
@@ -51,12 +51,22 @@ export const SearchBar: React.FC<SearchBarProps> = ({ example, resetExample, clo
   }, [example]);
 
   return (
-    <ClickAwayListener onClickAway={() => setActive(false)}>
-      <>
-        <Backdrop
-          sx={{ color: "#fff", zIndex: 2, overflow: "hidden" }}
-          open={addressInput.active}
-          onClick={() => setActive(false)}></Backdrop>
+    <>
+      {addressInput.active && (
+        <Box
+          onClick={() => setActive(false)}
+          sx={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 99998,
+          }}
+        />
+      )}
+
+      <Box sx={{ position: "relative", zIndex: addressInput.active ? 99999 : 3 }}>
         <SearchBarWrapper>
           <IndentlessIcon>
             <img src={SearchImg} width={18} height={18} alt="Search Icon" />
@@ -78,23 +88,29 @@ export const SearchBar: React.FC<SearchBarProps> = ({ example, resetExample, clo
                 height={34}
                 width={40}
                 onClick={() => {
-                  onSubmit(addressInput.value);
+                  onSubmit(addressInput.value.trim());
                   closeMenu?.();
                 }}>
                 Go
               </AppButton>
             </>
           )}
-          {addressInput.active && !!addresses?.length && (
-            <HeaderSearchResults
-              searchResults={addresses}
-              onHistoryClear={resetAddresses}
-              onItemClick={onAddressClick}
-              onItemDelete={onAddressRemove}
-            />
+          {addressInput.active && !addressInput.value.length && (
+            <IconButton onClick={() => setActive(false)}>
+              <img src={close} alt="Close" width={18} height={18} />
+            </IconButton>
           )}
         </SearchBarWrapper>
-      </>
-    </ClickAwayListener>
+
+        {addressInput.active && !!addresses?.length && (
+          <HeaderSearchResults
+            searchResults={addresses}
+            onHistoryClear={resetAddresses}
+            onItemClick={onAddressClick}
+            onItemDelete={onAddressRemove}
+          />
+        )}
+      </Box>
+    </>
   );
 };

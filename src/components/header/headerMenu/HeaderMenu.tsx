@@ -1,6 +1,8 @@
 import { styled } from "@mui/material";
 import { AppMenu } from "./styled";
-import { TonConnectButton } from "@tonconnect/ui-react";
+import { TonConnectButton, useTonAddress } from "@tonconnect/ui-react";
+import { AppButton } from "components/appButton";
+import { onConnect } from "utils";
 
 interface MenuProps {
   closeMenu?: () => void;
@@ -8,9 +10,17 @@ interface MenuProps {
 }
 
 const HeaderMenu: React.FC<MenuProps> = () => {
+  const address = useTonAddress();
+
   return (
     <AppMenu>
-      <StyledTonConnectButton />
+      {address ? (
+        <StyledTonConnectButton />
+      ) : (
+        <AppButton height={40} width={120} onClick={onConnect}>
+          Connect
+        </AppButton>
+      )}
     </AppMenu>
   );
 };
@@ -25,12 +35,6 @@ const StyledTonConnectButton = styled(TonConnectButton)(({ theme }) => ({
     fontWeight: 600,
     "*": { color: "white" },
     svg: { "*": { stroke: "white" } },
-    "& > div": {
-      display: "none",
-    },
-    "&::before": {
-      content: "'Connect'",
-    },
     [theme.breakpoints.down("sm")]: {
       height: 36,
       fontSize: 14,

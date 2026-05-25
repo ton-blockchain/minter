@@ -19,6 +19,8 @@ import { useTonAddress, useTonConnectUI } from "@tonconnect/ui-react";
 import { SearchBar } from "components/header/headerSearchBar";
 import { AppButton } from "components/appButton";
 import { useNetwork } from "lib/hooks/useNetwork";
+import { useCreatedTokens } from "hooks/useCreatedTokens";
+import { CreatedTokensList } from "components/CreatedTokensList";
 
 const DEFAULT_DECIMALS = 9;
 
@@ -54,6 +56,7 @@ function DeployerPage() {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigatePreserveQuery();
   const [example, setExample] = useState<string | undefined>(undefined);
+  const { addToken } = useCreatedTokens();
 
   async function deployContract(data: any) {
     if (!walletAddress || !tonConnectUI) {
@@ -102,6 +105,14 @@ function DeployerPage() {
 
     try {
       const result = await jettonDeployController.createJetton(params, tonConnectUI, walletAddress);
+
+      addToken({
+        address: Address.normalize(result),
+        name: data.name,
+        symbol: data.symbol,
+        timestamp: Date.now(),
+      });
+
       analytics.sendEvent(
         AnalyticsCategory.DEPLOYER_PAGE,
         AnalyticsAction.DEPLOY,
@@ -156,8 +167,12 @@ function DeployerPage() {
                   inputs={formSpec}
                 />
               </SubHeadingWrapper>
-
-              <Description />
+              <Box sx={{ display: "flex", flexDirection: "column", flex: 4 }}>
+                <CreatedTokensList />
+                <Box sx={{ mt: 5 }}>
+                  <Description />
+                </Box>
+              </Box>
             </FormWrapper>
           </Box>
         </Fade>

@@ -116,12 +116,13 @@ export function Form({
               }}>
               <img
                 src={jettonLogo.image}
-                alt="jetton image"
+                alt="jetton logo"
                 style={{
                   width: jettonLogo.image === defaultJettonImage ? "40%" : "100%",
                   height: jettonLogo.image === defaultJettonImage ? "40%" : "100%",
                   objectFit: "contain",
-                  filter: "brightness(0) invert(1)",
+                  filter:
+                    jettonLogo.image === defaultJettonImage ? "brightness(0) invert(1)" : "none",
                 }}
               />
             </Box>

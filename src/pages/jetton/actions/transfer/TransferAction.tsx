@@ -74,7 +74,7 @@ export const TransferAction = () => {
         variant="h4"
         fontWeight={800}
         fontSize={20}
-        marginBottom={3}
+        marginBottom={20}
         color="#FFFFFF"
       />
       <TransferContent>

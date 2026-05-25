@@ -7,7 +7,7 @@ import { balanceActions } from "pages/jetton/util";
 import { TransferAction } from "pages/jetton/actions/transfer";
 import useJettonStore from "store/jetton-store/useJettonStore";
 import ConnectAction from "pages/jetton/actions/ConnectAction";
-import { Box, Link } from "@mui/material";
+import { Box, Link, Typography } from "@mui/material";
 import { useSearchParams } from "react-router-dom";
 import { CenteringWrapper } from "components/header/headerSearchBar/styled";
 import { CheckWalletBalancePopup } from "components/checkWalletBalancePopup";
@@ -34,18 +34,29 @@ export const Wallet = () => {
           dataLoading={jettonLoading}
           address={selectedWalletAddress}
           regularAddress
-          description="Connected wallet public address, can be shared to receive jetton transfers"
           children={
-            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "flex-start",
+                justifyContent: "space-between",
+                flexDirection: { xs: "column", sm: "row" },
+                gap: 1,
+                width: "100%",
+              }}>
               <CheckWalletBalancePopup showPopup={showPopup} close={() => setShowPopup(false)} />
-              Wallet Address
-              <CenteringWrapper>
+              <CenteringWrapper
+                sx={{ justifyContent: "flex-start", width: { xs: "100%", sm: "auto" } }}>
                 {!!params.get("address") ? (
-                  <Link sx={{ cursor: "pointer" }} onClick={() => setParams("")}>
+                  <Link
+                    sx={{ cursor: "pointer", color: "#1EAEFB", fontSize: { xs: 13, sm: 14 } }}
+                    onClick={() => setParams("")}>
                     Cancel
                   </Link>
                 ) : (
-                  <Link sx={{ cursor: "pointer" }} onClick={() => setShowPopup(true)}>
+                  <Link
+                    sx={{ cursor: "pointer", color: "#1EAEFB", fontSize: { xs: 13, sm: 14 } }}
+                    onClick={() => setShowPopup(true)}>
                     View different wallet balance
                   </Link>
                 )}
@@ -64,7 +75,6 @@ export const Wallet = () => {
           }
           dataLoading={jettonLoading}
           actions={balanceActions}
-          description="Number of tokens in connected wallet that can be transferred to others"
         />
         <TransferAction />
       </StyledCategoryFields>

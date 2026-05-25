@@ -12,6 +12,7 @@ import {
 } from "pages/jetton/dataRow/styled";
 import { MessageRenderer } from "pages/jetton/dataRow/utils";
 import { AppHeading } from "components/appHeading";
+import { useTheme, useMediaQuery } from "@mui/material";
 
 export interface DataRowProps {
   title: string;
@@ -40,6 +41,9 @@ export const DataRow: React.FC<DataRowProps> = ({
   children,
   regularAddress,
 }) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
   return (
     <Box>
       <RowTitle variant="h6">{children ? children : title}</RowTitle>
@@ -74,10 +78,11 @@ export const DataRow: React.FC<DataRowProps> = ({
             text={description}
             variant="h6"
             marginTop={4}
-            fontSize={12}
+            fontSize={isMobile ? 11 : 12}
             fontWeight={500}
-            marginLeft={20}
+            marginLeft={isMobile ? 1 : 20}
             color="#93A5B8"
+            limitText={isMobile ? 50 : undefined}
           />
         )}
         {!dataLoading && <MessageRenderer message={message} />}

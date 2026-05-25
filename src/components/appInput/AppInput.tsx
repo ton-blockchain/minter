@@ -1,69 +1,87 @@
 import { Box, styled, TextField } from "@mui/material";
 import NumberFormat from "react-number-format";
 
-const InputWrapper = styled(Box)(({ theme }) => ({
+const InputWrapper = styled(Box)({
   width: "100%",
-  "& .MuiTextField-root": {
-    "& .MuiInputLabel-root": {
-      color: "#7A828A",
-      fontSize: 16,
-      "&.Mui-focused": {
-        color: theme.palette.primary.main,
-      },
-    },
-    "& input": {
-      fontSize: 16,
-    },
-  },
-}));
-
-interface InputProps {
-  showLabel?: boolean;
-}
-
-const TextInput = styled(TextField)((props: InputProps) => ({ theme }) => ({
-  background: "#F7F9FB",
+});
+const StyledTextField = styled(TextField)({
+  background: "#131B25",
   borderRadius: 40,
-  border: "none",
-  paddingLeft: theme.spacing(1),
+  "& .MuiInputBase-root": {
+    borderRadius: 40,
+    background: "#131B25",
+  },
+  "& .MuiInputBase-input": {
+    color: "#FFFFFF",
+    fontSize: 16,
+    padding: "14px 16px",
+  },
+  "& .MuiInputLabel-root": {
+    color: "#93A5B8",
+    marginLeft: 4,
+    top: -2,
+  },
+  "& .MuiInputLabel-root.Mui-focused": {
+    color: "#1EAEFB",
+  },
+  "& .MuiInputLabel-root.MuiFormLabel-filled": {
+    top: 0,
+  },
+  "& .MuiOutlinedInput-notchedOutline": {
+    border: "none",
+  },
   "& fieldset": {
     border: "none",
-    background: "none",
   },
-  "&::placeholder": {
-    marginLeft: 15,
-  },
-  "& label": {
-    display: props.showLabel ? "inline" : "none",
-    marginLeft: theme.spacing(0.8),
-    "&.Mui-focused": {
-      display: "none",
-    },
-  },
-}));
+});
 
-interface AppInputProps {
+const NumberWrapper = styled(Box)({
+  "& .MuiInputBase-root": {
+    background: "#131B25",
+    borderRadius: 40,
+  },
+  "& .MuiInputBase-input": {
+    color: "#FFFFFF",
+    fontSize: 16,
+    padding: "14px 16px",
+  },
+  "& .MuiInputLabel-root": {
+    color: "#93A5B8",
+    marginLeft: 4,
+    top: -2,
+  },
+  "& .MuiInputLabel-root.Mui-focused": {
+    color: "#1EAEFB",
+  },
+  "& .MuiInputLabel-root.MuiFormLabel-filled": {
+    top: 0,
+  },
+  "& fieldset": {
+    border: "none",
+  },
+  "& .MuiOutlinedInput-notchedOutline": {
+    border: "none",
+  },
+});
+interface AppTextInputProps {
   fullWidth?: boolean;
   label?: string;
   value?: string | number;
   onChange: (e: any) => void;
 }
 
-export const AppTextInput: React.FC<AppInputProps> = ({ fullWidth, value, label, onChange }) => {
+export const AppTextInput: React.FC<AppTextInputProps> = ({
+  fullWidth,
+  value,
+  label,
+  onChange,
+}) => {
   return (
     <InputWrapper>
-      <TextInput
-        fullWidth={fullWidth}
-        label={label}
-        value={value}
-        onChange={onChange}
-        showLabel={!value}
-      />
+      <StyledTextField fullWidth={fullWidth} label={label} value={value} onChange={onChange} />
     </InputWrapper>
   );
 };
-
-//TODO separate text and number inputs into separate files, refactor AppNumberInput
 
 interface AppNumberInputProps {
   onChange: (val: number) => void;
@@ -74,33 +92,18 @@ interface AppNumberInputProps {
 export const AppNumberInput: React.FC<AppNumberInputProps> = ({ value, label, onChange }) => {
   return (
     <InputWrapper>
-      <NumberFormat
-        style={{
-          background: "#131B25",
-          borderRadius: 40,
-          paddingLeft: 8,
-          border: "none",
-          color: "#FFFFFF",
-        }}
-        value={value || ""}
-        customInput={TextField}
-        thousandSeparator=","
-        fullWidth
-        label={label}
-        onValueChange={({ value }) => {
-          onChange(Number(value));
-        }}
-        InputProps={{
-          style: {
-            color: "#FFFFFF",
-          },
-        }}
-        InputLabelProps={{
-          style: {
-            color: "#93A5B8",
-          },
-        }}
-      />
+      <NumberWrapper>
+        <NumberFormat
+          value={value || ""}
+          customInput={TextField}
+          thousandSeparator=","
+          fullWidth
+          label={label}
+          onValueChange={({ value }) => {
+            onChange(Number(value));
+          }}
+        />
+      </NumberWrapper>
     </InputWrapper>
   );
 };

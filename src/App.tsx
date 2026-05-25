@@ -10,6 +10,7 @@ import { Header } from "components/header";
 import { useJettonLogo } from "hooks/useJettonLogo";
 import useNotification from "hooks/useNotification";
 import { HeroGlow, FooterGlow } from "components/GlowEffect";
+import { GlobalStyles } from "@mui/material";
 
 analytics.init();
 
@@ -77,7 +78,6 @@ const ContentWrapper = () => {
 const App = () => {
   const { resetJetton } = useJettonLogo();
   const location = useLocation();
-  const [example, setExample] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     resetJetton();
@@ -88,6 +88,61 @@ const App = () => {
 
   return (
     <AppWrapper>
+      <GlobalStyles
+        styles={`
+    [data-tc-dropdown-container] {
+      max-width: calc(100vw - 32px) !important;
+      left: auto !important;
+      right: 16px !important;
+    }
+
+    [data-tc-dropdown] {
+      background: #1D2633 !important;
+      border: 0.5px solid #364459 !important;
+      border-radius: 16px !important;
+      box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.3) !important;
+      overflow: hidden !important;
+    }
+
+    [data-tc-dropdown] ul {
+      background: #1D2633 !important;
+    }
+
+    [data-tc-dropdown] li {
+      background: #1D2633 !important;
+    }
+
+    [data-tc-dropdown] button {
+      background: #1D2633 !important;
+      transition: background 0.15s ease !important;
+    }
+
+    [data-tc-dropdown] button:hover {
+      background: #222C3D !important;
+    }
+
+    [data-tc-dropdown] [data-tc-text] {
+      color: #FFFFFF !important;
+    }
+
+    [data-tc-dropdown] svg path {
+      fill: #93A5B8 !important;
+    }
+
+    tc-wallet-selector,
+    [data-tc-wallet-selector] {
+      background: #1D2633 !important;
+    }
+
+    @media (max-width: 600px) {
+      [data-tc-dropdown-container] {
+        left: 50% !important;
+        right: auto !important;
+        transform: translateX(-50%) !important;
+      }
+    }
+  `}
+      />
       <HeroGlow />
       <EnvContext.Provider value={{ isSandbox, isTestnet }}>
         <ScreensWrapper isTestnet={isTestnet}>

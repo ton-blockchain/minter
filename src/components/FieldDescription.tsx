@@ -11,7 +11,9 @@ interface Props {
 function FieldDescription({ children, zeroPadding }: Props) {
   return (
     <Typography
+      component="span"
       style={{
+        display: "block",
         fontSize: 14,
         marginTop: 5,
         opacity: 0.6,

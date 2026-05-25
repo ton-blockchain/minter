@@ -11,7 +11,9 @@ interface StyledButtonProps {
   height?: number;
 }
 
-const StyledButton = styled(LoadingButton)((props: StyledButtonProps) => ({
+const StyledButton = styled(LoadingButton, {
+  shouldForwardProp: (prop) => prop !== "transparent",
+})((props: StyledButtonProps) => ({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",

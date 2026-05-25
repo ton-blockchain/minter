@@ -114,7 +114,6 @@ export const FooterGlow = () => (
           <stop offset="1" stopColor="#378EE5" stopOpacity="0" />
         </radialGradient>
       </defs>
-      {/* Группа с поворотом на 180 градусов — как на ton.org */}
       <g transform="rotate(180 720 330)">
         {[0, 1, 2, 3, 4, 5].map((i) => (
           <path key={i} fill={`url(#footer-glow-${i})`} fillOpacity=".2" d="M0 0H1440V660H0z" />

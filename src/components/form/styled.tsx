@@ -33,7 +33,7 @@ const JettonFormTitle = styled(Typography)(({ theme }) => ({
   whiteSpace: "nowrap",
   maxWidth: 300,
   [theme.breakpoints.down("sm")]: {
-    maxWidth: "100%", // ← полная ширина на мобилке
+    maxWidth: "100%",
     fontSize: 16,
   },
 }));

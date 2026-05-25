@@ -7,7 +7,6 @@ import { DeployerPage, Jetton } from "pages";
 import analytics from "services/analytics";
 import { Footer } from "components/footer";
 import { Header } from "components/header";
-import { SearchSection } from "components/SearchSection";
 import { useJettonLogo } from "hooks/useJettonLogo";
 import useNotification from "hooks/useNotification";
 import { HeroGlow, FooterGlow } from "components/GlowEffect";
@@ -33,12 +32,14 @@ const FooterBox = styled(Box)(() => ({
   zIndex: 1,
 }));
 
-const ScreensWrapper = styled(Box)(({ theme }) => ({
+const ScreensWrapper = styled(Box, {
+  shouldForwardProp: (prop) => prop !== "isTestnet",
+})<{ isTestnet?: boolean }>(({ theme, isTestnet }) => ({
   position: "relative",
   zIndex: 1,
   paddingTop: 80,
   [theme.breakpoints.down("sm")]: {
-    paddingTop: 20, // ← меньше на мобилке
+    paddingTop: isTestnet ? 100 : 20,
   },
 }));
 
@@ -65,14 +66,9 @@ const PageNotFound = () => {
   return <Box />;
 };
 
-interface ContentWrapperProps {
-  children?: any;
-}
-
-const ContentWrapper = ({ children }: ContentWrapperProps) => {
+const ContentWrapper = () => {
   return (
     <FlexibleBox>
-      {children}
       <Outlet />
     </FlexibleBox>
   );
@@ -94,7 +90,7 @@ const App = () => {
     <AppWrapper>
       <HeroGlow />
       <EnvContext.Provider value={{ isSandbox, isTestnet }}>
-        <ScreensWrapper>
+        <ScreensWrapper isTestnet={isTestnet}>
           <Routes>
             <Route
               path="*"
@@ -107,13 +103,7 @@ const App = () => {
               }
             />
             <Route path="/" element={<Header />}>
-              <Route
-                path="/"
-                element={
-                  <>
-                    <ContentWrapper />
-                  </>
-                }>
+              <Route path="/" element={<ContentWrapper />}>
                 <Route path={ROUTES.deployer} element={<DeployerPage />} />
                 <Route path={ROUTES.jettonId} element={<Jetton />} />
               </Route>

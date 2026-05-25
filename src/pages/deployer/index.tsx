@@ -17,6 +17,8 @@ import { Form } from "components/form";
 import { useNavigatePreserveQuery } from "lib/hooks/useNavigatePreserveQuery";
 import { useTonAddress, useTonConnectUI } from "@tonconnect/ui-react";
 import { SearchBar } from "components/header/headerSearchBar";
+import { AppButton } from "components/appButton";
+import { useNetwork } from "lib/hooks/useNetwork";
 
 const DEFAULT_DECIMALS = 9;
 
@@ -30,22 +32,9 @@ async function fetchDecimalsOffchain(url: string): Promise<{ decimals?: string }
   return obj;
 }
 
-const SearchBlock = styled(Box)(({ theme }) => ({
-  background: "rgba(29, 38, 51, 0.8)",
-  backdropFilter: "blur(0.5px)",
-  border: "0.5px solid rgba(114, 138, 150, 0.24)",
-  boxShadow: "0 1px 1px 0 #2D3945 inset",
-  borderRadius: 24,
-  padding: 24,
-  marginBottom: 32,
-  overflow: "visible !important",
-  position: "relative",
-  zIndex: 9999,
-}));
-
 const SearchLabel = styled(Typography)({
-  color: "#728A96", // ← как у FieldDescription
-  opacity: 0.6, // ← как у FieldDescription
+  color: "#728A96",
+  opacity: 0.6,
   fontSize: 14,
   marginTop: 8,
   marginLeft: 18,
@@ -184,8 +173,16 @@ const Spacer = () => {
 };
 
 function Description() {
+  const { network } = useNetwork();
+  const isTestnet = network === "testnet";
+
+  const switchNetwork = () => {
+    const url = isTestnet ? "/" : "/?testnet=true";
+    window.location.href = url;
+  };
+
   return (
-    <StyledDescription sx={{ padding: 3 }}>
+    <StyledDescription sx={{ padding: 3, display: "flex", flexDirection: "column" }}>
       <Box sx={{ flex: 1 }}>
         <Typography
           variant="h5"
@@ -256,6 +253,7 @@ function Description() {
           </Link>
           .
         </Typography>
+
         <Box
           sx={{
             mt: 3,
@@ -285,6 +283,12 @@ function Description() {
             .
           </Typography>
         </Box>
+      </Box>
+
+      <Box sx={{ mt: 2 }}>
+        <AppButton transparent onClick={switchNetwork} height={36}>
+          {isTestnet ? "Switch to Mainnet" : "Switch to Testnet"}
+        </AppButton>
       </Box>
     </StyledDescription>
   );

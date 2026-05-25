@@ -106,7 +106,6 @@ export function Form({
           <StyledTopImg
             onClick={() => setEditLogoPopup(true)}
             sx={{ position: "relative", cursor: "pointer" }}>
-            {/* Дефолтная иконка или загруженное лого */}
             <Box
               sx={{
                 width: "100%",

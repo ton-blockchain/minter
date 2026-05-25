@@ -28,7 +28,7 @@ const StyledGithubIcon = styled("img")({
 const AppMenu = styled(Box)(({ theme }) => ({
   display: "flex",
   alignItems: "center",
-  justifyContent: "flex-end", // ← прижать к правому краю
+  justifyContent: "flex-end",
   gap: 11,
   height: 35,
   [theme.breakpoints.down("md")]: {

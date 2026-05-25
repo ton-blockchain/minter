@@ -26,10 +26,10 @@ const StyledTonConnectButton = styled(TonConnectButton)(({ theme }) => ({
     "*": { color: "white" },
     svg: { "*": { stroke: "white" } },
     "& > div": {
-      display: "none", // скрыть адрес кошелька
+      display: "none",
     },
     "&::before": {
-      content: "'Connect'", // ← всегда показывать "Connect"
+      content: "'Connect'",
     },
     [theme.breakpoints.down("sm")]: {
       height: 36,

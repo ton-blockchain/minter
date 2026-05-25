@@ -24,20 +24,16 @@ const HeaderWrapper = styled(AppBar)(({ theme }) => ({
     zIndex: 99,
   },
 }));
-
 const HeaderContent = styled(Box)(({ theme }) => ({
   maxWidth: APP_GRID,
-  width: "100%",
+  width: "calc(100% - 50px)",
   margin: "0 auto",
   height: "100%",
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
-  paddingLeft: 32,
-  paddingRight: 32,
   [theme.breakpoints.down("sm")]: {
-    paddingLeft: 16,
-    paddingRight: 16,
+    width: "calc(100% - 30px)",
   },
 }));
 

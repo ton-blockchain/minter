@@ -57,14 +57,14 @@ const ScreenHeading = styled(Typography)(({ theme }) => ({
     textAlign: "center",
   },
   [theme.breakpoints.down("sm")]: {
-    marginTop: 0, // ← убрать огромный отступ
+    marginTop: 0,
     fontSize: 24,
   },
 }));
 
 const FormWrapper = styled(Box)(({ theme }) => ({
   display: "flex",
-  flexDirection: "column", // ← колонка вместо строки
+  flexDirection: "column",
   gap: theme.spacing(5),
 }));
 

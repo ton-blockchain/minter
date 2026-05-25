@@ -47,7 +47,7 @@ const FooterLinks = styled("nav")(({ theme }) => ({
     gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
     maxWidth: 327,
     width: "100%",
-    paddingTop: 8, // ← отступ сверху
+    paddingTop: 8,
   },
 }));
 

@@ -1,11 +1,11 @@
 # Minter - Webclient
 
-An open source Jetton deployer webapp, based on [jetton contracts starter template](https://github.com/ton-blockchain/minter-contract).
+An open source Jetton deployer webapp, based on the [Acton Jetton contract template](https://github.com/ton-blockchain/acton/tree/9cf4d1f410267178e943daf32b44353d99ddb6db/src/commands/new/templates/jetton/contracts).
 
 ## How to use
 
 Instructions:
-Make sure you have a TON wallet with at least 0.25 TON balance.
+Make sure you have a TON wallet with at least 0.15 TON balance.
 
 Use your web browser to open the site of the deploy form: https://minter.ton.org
 
@@ -35,7 +35,7 @@ Open `http://localhost:3000`
 
 ## Is this tool safe?
 
-Yes. See https://github.com/ton-blockchain/minter-contract#qa-is-this-contract-deployer-safe
+The deployed Jetton v2.1 contract source is pinned to the [Acton Jetton contract template](https://github.com/ton-blockchain/acton/tree/9cf4d1f410267178e943daf32b44353d99ddb6db/src/commands/new/templates/jetton/contracts).
 
 # License
 

@@ -9,6 +9,7 @@ import { AppButton } from "components/appButton";
 import { AppNumberInput } from "components/appInput";
 import { toDecimalsBN } from "utils";
 import { useTonAddress, useTonConnectUI } from "@tonconnect/ui-react";
+import { Address } from "ton";
 
 function BurnJettonsAction() {
   const [amount, setAmount] = useState<number | undefined>(undefined);
@@ -57,6 +58,7 @@ function BurnJettonsAction() {
       setActionInProgress(true);
       await jettonDeployController.burnJettons(
         tonConnectUI,
+        Address.parse(jettonMaster),
         valueDecimals,
         jettonWalletAddress!,
         walletAddress,

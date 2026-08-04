@@ -167,7 +167,7 @@ function Description() {
           TON Blockchain
         </Link>
         . This free educational tool allows you to deploy your own Jetton to mainnet in one click.
-        You will need at least 0.25 TON for deployment fees. <br />
+        You will need at least 0.15 TON for deployment fees. <br />
         <Spacer />
         For detailed instructions and in-depth explanations of all fields please see the{" "}
         <Link
@@ -179,7 +179,9 @@ function Description() {
         <Spacer />
         Never deploy code that you've never seen before! This deployer is fully open source with all
         smart contract code{" "}
-        <Link target="_blank" href="https://github.com/ton-blockchain/minter-contract">
+        <Link
+          target="_blank"
+          href="https://github.com/ton-blockchain/acton/tree/9cf4d1f410267178e943daf32b44353d99ddb6db/src/commands/new/templates/jetton/contracts">
           available here
         </Link>
         . The HTML form is also{" "}
@@ -191,14 +193,6 @@ function Description() {
           GitHub Pages
         </Link>
         . <Spacer />
-        Is this deployer safe? Yes! Read{" "}
-        <Link
-          target="_blank"
-          href="https://github.com/ton-blockchain/minter-contract#protect-yourself-and-your-users">
-          this
-        </Link>{" "}
-        to understand why.
-        <Spacer />
         Learn more about other token-minting solutions in our{" "}
         <Link target="_blank" href="https://blog.ton.org/history-of-mass-minting-on-ton">
           article

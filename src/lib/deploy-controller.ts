@@ -1,5 +1,5 @@
 import BN from "bn.js";
-import { Address, beginCell, Cell, toNano } from "ton";
+import { Address, beginCell, Cell, toNano, TonClient } from "ton";
 import { ContractDeployer } from "./contract-deployer";
 
 import { createDeployParams, waitForContractDeploy, waitForSeqno } from "./utils";
@@ -15,8 +15,20 @@ import { readJettonMetadata, changeAdminBody, JettonMetaDataKeys } from "./jetto
 import { getClient } from "./get-ton-client";
 import { cellToAddress, makeGetCall } from "./make-get-call";
 import { SendTransactionRequest, TonConnectUI } from "@tonconnect/ui-react";
+import {
+  dropJettonV2AdminBody,
+  isJettonV2Code,
+  JETTON_V2_ADMIN_VALUE,
+  JETTON_V2_BURN_VALUE,
+  JETTON_V2_DEPLOY_VALUE,
+  JETTON_V2_MINT_TO_WALLET_VALUE,
+  JETTON_V2_MINT_VALUE,
+  JETTON_V2_TRANSFER_VALUE,
+  mintJettonV2Body,
+  updateJettonV2MetadataBody,
+} from "./jetton-v2";
 
-export const JETTON_DEPLOY_GAS = toNano(0.25);
+export const JETTON_DEPLOY_GAS = JETTON_V2_DEPLOY_VALUE;
 
 export enum JettonDeployState {
   NOT_STARTED,
@@ -41,6 +53,14 @@ export interface JettonDeployParams {
   offchainUri?: string;
   owner: Address;
   amountToMint: BN;
+}
+
+async function isJettonV2(contractAddress: Address, client: TonClient): Promise<boolean> {
+  const state = await client.getContractState(contractAddress);
+
+  // Only the exact v2.1 code switches ABI. Every other contract keeps the
+  // legacy behavior that the app used before this upgrade.
+  return isJettonV2Code(state.code);
 }
 
 class JettonDeployController {
@@ -88,8 +108,8 @@ class JettonDeployController {
   }
 
   async burnAdmin(contractAddress: Address, tonConnection: TonConnectUI, walletAddress: string) {
-    // @ts-ignore
     const tc = await getClient();
+    const useV2 = await isJettonV2(contractAddress, tc);
     const waiter = await waitForSeqno(
       tc.openWalletFromAddress({
         source: Address.parse(walletAddress),
@@ -101,9 +121,11 @@ class JettonDeployController {
       messages: [
         {
           address: contractAddress.toString(),
-          amount: toNano(0.01).toString(),
+          amount: (useV2 ? JETTON_V2_ADMIN_VALUE : toNano(0.01)).toString(),
           stateInit: undefined,
-          payload: changeAdminBody(zeroAddress()).toBoc().toString("base64"),
+          payload: (useV2 ? dropJettonV2AdminBody(0) : changeAdminBody(zeroAddress()))
+            .toBoc()
+            .toString("base64"),
         },
       ],
     };
@@ -120,6 +142,7 @@ class JettonDeployController {
     walletAddress: string,
   ) {
     const tc = await getClient();
+    const useV2 = await isJettonV2(jettonMaster, tc);
     const waiter = await waitForSeqno(
       tc.openWalletFromAddress({
         source: Address.parse(walletAddress),
@@ -131,9 +154,18 @@ class JettonDeployController {
       messages: [
         {
           address: jettonMaster.toString(),
-          amount: toNano(0.04).toString(),
+          amount: (useV2 ? JETTON_V2_MINT_VALUE : toNano(0.04)).toString(),
           stateInit: undefined,
-          payload: mintBody(Address.parse(walletAddress), amount, toNano(0.02), 0)
+          payload: (useV2
+            ? mintJettonV2Body(
+                Address.parse(walletAddress),
+                Address.parse(walletAddress),
+                amount,
+                JETTON_V2_MINT_TO_WALLET_VALUE,
+                0,
+              )
+            : mintBody(Address.parse(walletAddress), amount, toNano(0.02), 0)
+          )
             .toBoc()
             .toString("base64"),
         },
@@ -146,12 +178,14 @@ class JettonDeployController {
 
   async transfer(
     tonConnection: TonConnectUI,
+    jettonMaster: Address,
     amount: BN,
     toAddress: string,
     fromAddress: string,
     ownerJettonWallet: string,
   ) {
     const tc = await getClient();
+    const useV2 = await isJettonV2(jettonMaster, tc);
 
     const waiter = await waitForSeqno(
       tc.openWalletFromAddress({
@@ -164,7 +198,7 @@ class JettonDeployController {
       messages: [
         {
           address: ownerJettonWallet,
-          amount: toNano(0.05).toString(),
+          amount: (useV2 ? JETTON_V2_TRANSFER_VALUE : toNano(0.05)).toString(),
           stateInit: undefined,
           payload: transfer(Address.parse(toAddress), Address.parse(fromAddress), amount)
             .toBoc()
@@ -180,11 +214,13 @@ class JettonDeployController {
 
   async burnJettons(
     tonConnection: TonConnectUI,
+    jettonMaster: Address,
     amount: BN,
     jettonAddress: string,
     walletAddress: string,
   ) {
     const tc = await getClient();
+    const useV2 = await isJettonV2(jettonMaster, tc);
 
     const waiter = await waitForSeqno(
       tc.openWalletFromAddress({
@@ -197,7 +233,7 @@ class JettonDeployController {
       messages: [
         {
           address: jettonAddress,
-          amount: toNano(0.031).toString(),
+          amount: (useV2 ? JETTON_V2_BURN_VALUE : toNano(0.031)).toString(),
           stateInit: undefined,
           payload: burn(amount, Address.parse(walletAddress)).toBoc().toString("base64"),
         },
@@ -217,7 +253,7 @@ class JettonDeployController {
       [],
       async ([totalSupply, __, adminCell, contentCell]) => ({
         ...(await readJettonMetadata(contentCell as unknown as Cell)),
-        admin: cellToAddress(adminCell),
+        admin: adminCell ? cellToAddress(adminCell) : null,
         totalSupply: totalSupply as BN,
       }),
       tc,
@@ -265,18 +301,20 @@ class JettonDeployController {
     walletAddress: string,
   ) {
     const tc = await getClient();
+    const useV2 = await isJettonV2(contractAddress, tc);
     const waiter = await waitForSeqno(
       tc.openWalletFromAddress({
         source: Address.parse(walletAddress),
       }),
     );
-    const body = updateMetadataBody(buildJettonOnchainMetadata(data));
+    const metadata = buildJettonOnchainMetadata(data);
+    const body = useV2 ? updateJettonV2MetadataBody(metadata, 0) : updateMetadataBody(metadata);
     const tx: SendTransactionRequest = {
       validUntil: Date.now() + 5 * 60 * 1000,
       messages: [
         {
           address: contractAddress.toString(),
-          amount: toNano(0.01).toString(),
+          amount: (useV2 ? JETTON_V2_ADMIN_VALUE : toNano(0.01)).toString(),
           stateInit: undefined,
           payload: body.toBoc().toString("base64"),
         },
@@ -297,20 +335,23 @@ class JettonDeployController {
     walletAddress: string,
   ) {
     const tc = await getClient();
+    const useV2 = await isJettonV2(contractAddress, tc);
     const waiter = await waitForSeqno(
       tc.openWalletFromAddress({
         source: Address.parse(walletAddress),
       }),
     );
 
+    const metadata = buildJettonOnchainMetadata(data);
+    const body = useV2 ? updateJettonV2MetadataBody(metadata, 0) : updateMetadataBody(metadata);
     const tx: SendTransactionRequest = {
       validUntil: Date.now() + 5 * 60 * 1000,
       messages: [
         {
           address: contractAddress.toString(),
-          amount: toNano(0.01).toString(),
+          amount: (useV2 ? JETTON_V2_ADMIN_VALUE : toNano(0.01)).toString(),
           stateInit: undefined,
-          payload: updateMetadataBody(buildJettonOnchainMetadata(data)).toBoc().toString("base64"),
+          payload: body.toBoc().toString("base64"),
         },
       ],
     };

@@ -111,7 +111,7 @@ export const Token = () => {
           )}
           <StyledCategoryFields>
             <DataRow
-              description="On-chain smart contract address of the Jetton parent (jetton-minter.fc)"
+              description="On-chain address of the Jetton master contract"
               title="Address"
               value={jettonMaster}
               dataLoading={jettonLoading}

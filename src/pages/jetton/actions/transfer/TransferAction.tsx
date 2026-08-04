@@ -11,10 +11,18 @@ import { toDecimalsBN } from "utils";
 import { useRecoilState } from "recoil";
 import { jettonActionsState } from "pages/jetton/actions/jettonActions";
 import { useTonAddress, useTonConnectUI } from "@tonconnect/ui-react";
+import { Address } from "ton";
 
 export const TransferAction = () => {
-  const { balance, symbol, jettonWalletAddress, getJettonDetails, isMyWallet, decimals } =
-    useJettonStore();
+  const {
+    balance,
+    symbol,
+    jettonMaster,
+    jettonWalletAddress,
+    getJettonDetails,
+    isMyWallet,
+    decimals,
+  } = useJettonStore();
 
   const [toAddress, setToAddress] = useState<string | undefined>(undefined);
   const [amount, setAmount] = useState<number | undefined>(undefined);
@@ -23,7 +31,7 @@ export const TransferAction = () => {
   const [tonConnectUI] = useTonConnectUI();
   const [actionInProgress, setActionInProgress] = useRecoilState(jettonActionsState);
 
-  if (!balance || !jettonWalletAddress || !isMyWallet) {
+  if (!balance || !jettonMaster || !jettonWalletAddress || !isMyWallet) {
     return null;
   }
 
@@ -44,6 +52,7 @@ export const TransferAction = () => {
     try {
       await jettonDeployController.transfer(
         tonConnectUI,
+        Address.parse(jettonMaster),
         toDecimalsBN(amount!.toString(), decimals!),
         toAddress!,
         connectedWalletAddress!,

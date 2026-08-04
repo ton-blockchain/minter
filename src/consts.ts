@@ -11,7 +11,8 @@ const LOCAL_STORAGE_PROVIDER = "wallet_provider";
 
 const APP_DISPLAY_NAME = "TON MINTER";
 
-const JETTON_DEPLOYER_CONTRACTS_GITHUB = "https://github.com/ton-blockchain/minter-contract";
+const JETTON_DEPLOYER_CONTRACTS_GITHUB =
+  "https://github.com/ton-blockchain/acton/tree/9cf4d1f410267178e943daf32b44353d99ddb6db/src/commands/new/templates/jetton/contracts";
 
 const EXAMPLE_ADDRESS =
   getNetwork(new URLSearchParams(window.location.search)) === "testnet"

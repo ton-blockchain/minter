@@ -1,6 +1,11 @@
-import { Address, beginCell, toNano, TonClient, Wallet } from "ton";
+import { Address, beginCell, TonClient, Wallet } from "ton";
 import { JettonDeployParams, JETTON_DEPLOY_GAS } from "./deploy-controller";
-import { initData, JETTON_MINTER_CODE, mintBody } from "./jetton-minter";
+import {
+  initJettonV2Data,
+  JETTON_V2_MINTER_CODE,
+  JETTON_V2_MINT_TO_WALLET_VALUE,
+  mintJettonV2Body,
+} from "./jetton-v2";
 
 export async function sleep(time: number) {
   return new Promise((resolve) => {
@@ -48,10 +53,16 @@ export const createDeployParams = (params: JettonDeployParams, offchainUri?: str
   const queryId = parseInt(process.env.REACT_APP_DEPLOY_QUERY_ID ?? "0");
 
   return {
-    code: JETTON_MINTER_CODE,
-    data: initData(params.owner, params.onchainMetaData, offchainUri),
+    code: JETTON_V2_MINTER_CODE,
+    data: initJettonV2Data(params.owner, params.onchainMetaData, offchainUri),
     deployer: params.owner,
     value: JETTON_DEPLOY_GAS,
-    message: mintBody(params.owner, params.amountToMint, toNano(0.2), queryId),
+    message: mintJettonV2Body(
+      params.owner,
+      params.owner,
+      params.amountToMint,
+      JETTON_V2_MINT_TO_WALLET_VALUE,
+      queryId,
+    ),
   };
 };

@@ -3,7 +3,11 @@ import { Address, beginCell, toNano } from "ton";
 import { CHAIN, TonConnectUI } from "@tonconnect/ui-react";
 
 import { getClient } from "./get-ton-client";
-import { jettonDeployController } from "./deploy-controller";
+import {
+  JETTON_DEPLOY_MIN_BALANCE,
+  JettonAlreadyDeployedError,
+  jettonDeployController,
+} from "./deploy-controller";
 import { makeGetCall } from "./make-get-call";
 import {
   buildJettonOnchainMetadata,
@@ -191,4 +195,188 @@ test("reads a revoked v2.1 admin as null", async () => {
   const result = await jettonDeployController.getJettonDetails(MASTER, OWNER, "testnet");
 
   expect(result.minter.admin).toBeNull();
+});
+
+function deployFixture() {
+  const deployParams = {
+    code: beginCell().storeUint(1, 1).endCell(),
+    data: beginCell().storeUint(2, 2).endCell(),
+    deployer: OWNER,
+    value: toNano(0.15),
+    message: beginCell().endCell(),
+  };
+  mockedCreateDeployParams.mockReturnValue(deployParams);
+  return {
+    deployParams,
+    deterministicMaster: new ContractDeployer().addressForContract(deployParams),
+  };
+}
+
+test("reports an existing deterministic master without another deploy or initial mint", async () => {
+  const { deterministicMaster } = deployFixture();
+  const getBalance = jest.fn();
+  mockedGetClient.mockResolvedValue({
+    getBalance,
+    isContractDeployed: jest.fn(async () => true),
+  } as any);
+
+  const result = jettonDeployController.createJetton(
+    {
+      owner: OWNER,
+      amountToMint: new BN(1),
+      onchainMetaData: { name: "Existing", symbol: "EX", decimals: "9" },
+    },
+    {} as TonConnectUI,
+    "testnet",
+  );
+
+  const error = await result.catch((caught) => caught);
+  expect(error).toBeInstanceOf(JettonAlreadyDeployedError);
+  expect((error as JettonAlreadyDeployedError).address.equals(deterministicMaster)).toBe(true);
+  expect(getBalance).not.toHaveBeenCalled();
+  expect(mockedMakeGetCall).not.toHaveBeenCalled();
+  expect(mockedSendTransactionAndTrack).not.toHaveBeenCalled();
+});
+
+test("returns the authoritative completed-trace outcome for a fresh deploy", async () => {
+  const { deterministicMaster } = deployFixture();
+  const getBalance = jest.fn(async () => toNano(1));
+  const isContractDeployed = jest.fn(async () => false);
+  mockedGetClient.mockResolvedValue({ getBalance, isContractDeployed } as any);
+
+  const result = await jettonDeployController.createJetton(
+    {
+      owner: OWNER,
+      amountToMint: new BN(1),
+      onchainMetaData: { name: "Fresh", symbol: "NEW", decimals: "9" },
+    },
+    {} as TonConnectUI,
+    "testnet",
+  );
+
+  expect(result.address.equals(deterministicMaster)).toBe(true);
+  expect(result).toMatchObject({ status: "confirmed", externalMessageHash: "hash" });
+  expect(getBalance).toHaveBeenCalledWith(OWNER);
+  expect(mockedMakeGetCall).not.toHaveBeenCalled();
+  expect(mockedSendTransactionAndTrack).toHaveBeenCalledTimes(1);
+});
+
+test("requires 0.20 native coins while keeping the deploy message at 0.15", async () => {
+  deployFixture();
+  const getBalance = jest
+    .fn()
+    .mockResolvedValueOnce(toNano(0.15))
+    .mockResolvedValueOnce(JETTON_DEPLOY_MIN_BALANCE);
+  mockedGetClient.mockResolvedValue({
+    getBalance,
+    isContractDeployed: jest.fn(async () => false),
+  } as any);
+  const params = {
+    owner: OWNER,
+    amountToMint: new BN(1),
+    onchainMetaData: { name: "Balance gate", symbol: "BG", decimals: "9" },
+  };
+
+  await expect(
+    jettonDeployController.createJetton(params, {} as TonConnectUI, "testnet"),
+  ).rejects.toThrow("Not enough balance");
+  expect(mockedSendTransactionAndTrack).not.toHaveBeenCalled();
+
+  await expect(
+    jettonDeployController.createJetton(params, {} as TonConnectUI, "testnet"),
+  ).resolves.toMatchObject({ status: "confirmed" });
+  const request = mockedSendTransactionAndTrack.mock.calls[0][2];
+  expect(request.messages[0].amount).toBe(toNano(0.15).toString());
+});
+
+test("propagates submitted deployment without waiting or inviting a duplicate mint", async () => {
+  const { deterministicMaster } = deployFixture();
+  mockedGetClient.mockResolvedValue({
+    getBalance: jest.fn(async () => toNano(1)),
+    isContractDeployed: jest.fn(async () => false),
+  } as any);
+  mockedSendTransactionAndTrack.mockResolvedValueOnce({ status: "submitted" });
+
+  const result = await jettonDeployController.createJetton(
+    {
+      owner: OWNER,
+      amountToMint: new BN(1),
+      onchainMetaData: { name: "Pending", symbol: "P", decimals: "9" },
+    },
+    {} as TonConnectUI,
+    "testnet",
+  );
+  expect(result.address.equals(deterministicMaster)).toBe(true);
+  expect(result).toMatchObject({ status: "submitted" });
+  expect(mockedMakeGetCall).not.toHaveBeenCalled();
+});
+
+test("rejects a deployed jetton wallet that reports another owner", async () => {
+  const metadata = buildJettonOnchainMetadata({ name: "Test" });
+  mockedMakeGetCall.mockImplementation(
+    async (_address: Address, name: string, _params: unknown[], parser: Function) => {
+      if (name === "get_jetton_data") {
+        return parser([new BN(0), new BN(-1), beginCell().storeAddress(OWNER).endCell(), metadata]);
+      }
+      if (name === "get_wallet_address") {
+        return parser([beginCell().storeAddress(WALLET).endCell()]);
+      }
+      return parser([
+        new BN(1),
+        beginCell().storeAddress(RECIPIENT).endCell(),
+        beginCell().storeAddress(MASTER).endCell(),
+      ]);
+    },
+  );
+  mockedGetClient.mockResolvedValue({
+    isContractDeployed: jest.fn(async () => true),
+  } as any);
+
+  await expect(jettonDeployController.getJettonDetails(MASTER, OWNER, "testnet")).rejects.toThrow(
+    "different owner",
+  );
+});
+
+test("rejects negative token amounts before RPC access or transaction serialization", async () => {
+  const connection = {} as TonConnectUI;
+  const negative = new BN(-100);
+
+  await expect(
+    jettonDeployController.createJetton(
+      {
+        owner: OWNER,
+        amountToMint: negative,
+        onchainMetaData: { name: "Invalid", symbol: "NEG", decimals: "9" },
+      },
+      connection,
+      "testnet",
+    ),
+  ).rejects.toThrow("Initial mint amount must be greater than zero");
+  await expect(
+    jettonDeployController.mint(connection, MASTER, negative, OWNER.toFriendly(), "testnet"),
+  ).rejects.toThrow("Mint amount must be greater than zero");
+  await expect(
+    jettonDeployController.transfer(
+      connection,
+      MASTER,
+      negative,
+      RECIPIENT.toFriendly(),
+      OWNER.toFriendly(),
+      WALLET.toFriendly(),
+      "testnet",
+    ),
+  ).rejects.toThrow("Transfer amount must be greater than zero");
+  await expect(
+    jettonDeployController.burnJettons(
+      connection,
+      MASTER,
+      negative,
+      WALLET.toFriendly(),
+      OWNER.toFriendly(),
+      "testnet",
+    ),
+  ).rejects.toThrow("Burn amount must be greater than zero");
+
+  expect(mockedGetClient).not.toHaveBeenCalled();
+  expect(mockedSendTransactionAndTrack).not.toHaveBeenCalled();
 });

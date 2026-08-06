@@ -1,4 +1,9 @@
-import { buildJettonOnchainMetadata, readJettonMetadata } from "lib/jetton-minter";
+import {
+  buildJettonOnchainMetadata,
+  readJettonMetadata,
+  resolveJettonDecimals,
+  resolveJettonMetadataUri,
+} from "lib/jetton-minter";
 import { beginCell, Cell } from "ton";
 
 const fetchMock = jest.spyOn(global, "fetch");
@@ -61,6 +66,47 @@ test("Faulty serialization", async () => {
     metadata: data,
     isJettonDeployerFaultyOnChainData: true,
   });
+});
+
+test("Unavailable offchain metadata does not hide usable onchain metadata", async () => {
+  const data = { name: "Still visible", uri: "https://dead.example/metadata.json" };
+  fetchMock.mockRejectedValueOnce(new Error("Network Error"));
+
+  expect(await readJettonMetadata(buildJettonOnchainMetadata(data))).toEqual({
+    persistenceType: "offchain_private_domain",
+    metadata: data,
+    isJettonDeployerFaultyOnChainData: false,
+    metadataError: "Network Error",
+  });
+});
+
+test("Unavailable fully-offchain metadata returns a recoverable empty view", async () => {
+  const datacell = beginCell()
+    .storeInt(0x01, 8)
+    .storeBuffer(Buffer.from("ipfs://missing", "ascii"))
+    .endCell();
+  fetchMock.mockRejectedValueOnce(new Error("Timeout"));
+
+  expect(await readJettonMetadata(datacell)).toEqual({
+    persistenceType: "offchain_ipfs",
+    metadata: {},
+    metadataError: "Timeout",
+  });
+});
+
+test("does not guess decimals when external metadata is unavailable", () => {
+  expect(resolveJettonDecimals(undefined, "Timeout")).toBeUndefined();
+  expect(resolveJettonDecimals("6", "Timeout")).toBe("6");
+  expect(resolveJettonDecimals(undefined, undefined)).toBe("9");
+});
+
+test("normalizes IPFS resources", () => {
+  expect(resolveJettonMetadataUri("ipfs://folder/image.png")).toBe(
+    "https://ipfs.io/ipfs/folder/image.png",
+  );
+  expect(resolveJettonMetadataUri("IPFS://folder/image.png")).toBe(
+    "https://ipfs.io/ipfs/folder/image.png",
+  );
 });
 
 [

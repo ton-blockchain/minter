@@ -5,7 +5,6 @@ import walletHex from "./contracts/jetton-wallet.compiled.json";
 import minterHex from "./contracts/jetton-minter.compiled.json";
 // @ts-ignore
 import { Sha256 } from "@aws-crypto/sha256-js";
-import axios from "axios";
 
 const ONCHAIN_CONTENT_PREFIX = 0x00;
 const OFFCHAIN_CONTENT_PREFIX = 0x01;
@@ -96,55 +95,122 @@ export async function readJettonMetadata(contentCell: Cell): Promise<{
   persistenceType: PersistenceType;
   metadata: { [s in JettonMetaDataKeys]?: string };
   isJettonDeployerFaultyOnChainData?: boolean;
+  metadataError?: string;
 }> {
-  const contentSlice = contentCell.beginParse();
+  try {
+    const contentSlice = contentCell.beginParse();
 
-  switch (contentSlice.readUint(8).toNumber()) {
-    case ONCHAIN_CONTENT_PREFIX: {
-      const res = parseJettonOnchainMetadata(contentSlice);
+    switch (contentSlice.readUint(8).toNumber()) {
+      case ONCHAIN_CONTENT_PREFIX: {
+        const res = parseJettonOnchainMetadata(contentSlice);
 
-      let persistenceType: PersistenceType = "onchain";
+        if (!res.metadata.uri) {
+          return { persistenceType: "onchain", ...res };
+        }
 
-      if (res.metadata.uri) {
-        const offchainMetadata = await getJettonMetadataFromExternalUri(res.metadata.uri);
-        persistenceType = offchainMetadata.isIpfs ? "offchain_ipfs" : "offchain_private_domain";
-        res.metadata = {
-          ...res.metadata,
-          ...offchainMetadata.metadata,
-        };
+        const persistenceType = isIpfsUri(res.metadata.uri)
+          ? "offchain_ipfs"
+          : "offchain_private_domain";
+        try {
+          const offchainMetadata = await fetchJettonMetadata(res.metadata.uri);
+          return {
+            persistenceType,
+            ...res,
+            metadata: { ...res.metadata, ...offchainMetadata.metadata },
+          };
+        } catch (error) {
+          return {
+            persistenceType,
+            ...res,
+            metadataError: metadataErrorMessage(error),
+          };
+        }
       }
-
-      return {
-        persistenceType: persistenceType,
-        ...res,
-      };
+      case OFFCHAIN_CONTENT_PREFIX: {
+        const uri = contentSlice.readRemainingBytes().toString("ascii");
+        const persistenceType = isIpfsUri(uri) ? "offchain_ipfs" : "offchain_private_domain";
+        try {
+          const { metadata } = await fetchJettonMetadata(uri);
+          return { persistenceType, metadata };
+        } catch (error) {
+          return {
+            persistenceType,
+            metadata: {},
+            metadataError: metadataErrorMessage(error),
+          };
+        }
+      }
+      default:
+        throw new Error("Unexpected jetton metadata content prefix");
     }
-    case OFFCHAIN_CONTENT_PREFIX: {
-      const { metadata, isIpfs } = await parseJettonOffchainMetadata(contentSlice);
-      return {
-        persistenceType: isIpfs ? "offchain_ipfs" : "offchain_private_domain",
-        metadata,
-      };
-    }
-    default:
-      throw new Error("Unexpected jetton metadata content prefix");
+  } catch (error) {
+    return {
+      persistenceType: "onchain",
+      metadata: {},
+      metadataError: metadataErrorMessage(error),
+    };
   }
 }
 
-async function parseJettonOffchainMetadata(contentSlice: Slice): Promise<{
-  metadata: { [s in JettonMetaDataKeys]?: string };
-  isIpfs: boolean;
-}> {
-  return getJettonMetadataFromExternalUri(contentSlice.readRemainingBytes().toString("ascii"));
+function metadataErrorMessage(error: unknown): string {
+  if (error instanceof Error) return error.message;
+  if (
+    error &&
+    typeof error === "object" &&
+    typeof (error as { message?: unknown }).message === "string"
+  ) {
+    return (error as { message: string }).message;
+  }
+  return "Unable to load jetton metadata";
 }
 
-async function getJettonMetadataFromExternalUri(uri: string) {
-  const jsonURI = uri.replace("ipfs://", "https://ipfs.io/ipfs/");
+function isIpfsUri(uri: string): boolean {
+  return uri.startsWith("ipfs://") || /(^|\/)ipfs[.:/]/i.test(uri);
+}
 
-  return {
-    metadata: (await axios.get(jsonURI)).data,
-    isIpfs: /(^|\/)ipfs[.:]/.test(jsonURI),
-  };
+export function resolveJettonMetadataUri(uri: string): string {
+  return /^ipfs:\/\//i.test(uri) ? `https://ipfs.io/ipfs/${uri.slice("ipfs://".length)}` : uri;
+}
+
+export function resolveJettonDecimals(
+  metadataDecimals: string | undefined,
+  metadataError: string | undefined,
+): string | undefined {
+  if (metadataDecimals !== undefined && metadataDecimals !== "") return metadataDecimals;
+  return metadataError ? undefined : "9";
+}
+
+function sanitizeMetadata(data: unknown): { [s in JettonMetaDataKeys]?: string } {
+  if (!data || typeof data !== "object" || Array.isArray(data)) {
+    throw new Error("Jetton metadata must be a JSON object");
+  }
+  const result: { [s in JettonMetaDataKeys]?: string } = {};
+  for (const key of Object.keys(jettonOnChainMetadataSpec) as JettonMetaDataKeys[]) {
+    const value = (data as Record<string, unknown>)[key];
+    if (typeof value === "string") result[key] = value;
+  }
+  return result;
+}
+
+export async function fetchJettonMetadata(uri: string, fetchImpl: typeof fetch = fetch) {
+  const jsonURI = resolveJettonMetadataUri(uri);
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 8_000);
+  try {
+    const response = await fetchImpl(jsonURI, {
+      signal: controller.signal,
+      headers: { Accept: "application/json" },
+    });
+    if (!response.ok) {
+      throw new Error(`Unable to load jetton metadata (HTTP ${response.status})`);
+    }
+    return {
+      metadata: sanitizeMetadata(await response.json()),
+      isIpfs: isIpfsUri(uri),
+    };
+  } finally {
+    clearTimeout(timeout);
+  }
 }
 
 function parseJettonOnchainMetadata(contentSlice: Slice): {

@@ -44,8 +44,7 @@ export const Wallet = () => {
                 {!!params.get("address") ? (
                   <Link
                     sx={{ cursor: "pointer" }}
-                    onClick={() => setParams(setSearchParam(params, "address"))}
-                  >
+                    onClick={() => setParams(setSearchParam(params, "address"))}>
                     Cancel
                   </Link>
                 ) : (
@@ -60,11 +59,13 @@ export const Wallet = () => {
         <DataRow
           title="Wallet Balance"
           value={
-            balance && (
+            balance && decimals ? (
               <>
                 <BigNumberDisplay value={balance} decimals={decimals} /> {symbol}
               </>
-            )
+            ) : balance ? (
+              "Unavailable (unknown decimals)"
+            ) : undefined
           }
           dataLoading={jettonLoading}
           actions={balanceActions}

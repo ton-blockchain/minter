@@ -1,8 +1,19 @@
 import { buildJettonOnchainMetadata, readJettonMetadata } from "lib/jetton-minter";
 import { beginCell, Cell } from "ton";
-import axios from "axios";
 
-jest.mock("axios");
+const fetchMock = jest.spyOn(global, "fetch");
+
+function metadataResponse(data: unknown, status = 200): Response {
+  return {
+    ok: status >= 200 && status < 300,
+    status,
+    headers: new Headers(),
+    json: async () => data,
+  } as unknown as Response;
+}
+
+beforeEach(() => fetchMock.mockReset());
+afterAll(() => fetchMock.mockRestore());
 
 test("Long serialization", async () => {
   const longUrl =
@@ -64,8 +75,7 @@ test("Faulty serialization", async () => {
       .endCell();
     const data = { image: "nope" };
 
-    // @ts-ignore
-    axios.get.mockResolvedValueOnce({ data: data });
+    fetchMock.mockResolvedValueOnce(metadataResponse(data));
 
     expect(await readJettonMetadata(datacell)).toEqual({
       persistenceType,

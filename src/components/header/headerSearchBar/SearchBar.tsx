@@ -32,22 +32,13 @@ export const SearchBar: React.FC<SearchBarProps> = ({ example, resetExample, clo
 
   useEffect(() => {
     resetExample?.();
-    const listener = (event: any) => {
-      if (event.code === "Enter" || event.code === "NumpadEnter") {
-        event.preventDefault();
-        event.target.blur();
-        onSubmit(addressInput.value);
-        closeMenu?.();
-      }
-    };
-    document.addEventListener("keydown", listener);
-    return () => {
-      document.removeEventListener("keydown", listener);
-    };
-  }, [addressInput.value, onSubmit]);
+    // The example is reset only when the search bar is mounted.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     example && setValue(example);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [example]);
 
   return (
@@ -68,6 +59,13 @@ export const SearchBar: React.FC<SearchBarProps> = ({ example, resetExample, clo
             value={addressInput.value}
             onFocus={() => addresses?.length && setActive(true)}
             spellCheck={false}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                event.preventDefault();
+                onSubmit(addressInput.value);
+                closeMenu?.();
+              }
+            }}
           />
           {!!addressInput.value.length && (
             <>

@@ -2,7 +2,7 @@ import BN from "bn.js";
 import { Address, beginCell, Cell, toNano, TonClient } from "ton";
 import { ContractDeployer } from "./contract-deployer";
 
-import { createDeployParams, waitForContractDeploy, waitForSeqno } from "./utils";
+import { createDeployParams } from "./utils";
 import { zeroAddress } from "./utils";
 import {
   buildJettonOnchainMetadata,
@@ -14,7 +14,7 @@ import {
 import { readJettonMetadata, changeAdminBody, JettonMetaDataKeys } from "./jetton-minter";
 import { getClient } from "./get-ton-client";
 import { cellToAddress, makeGetCall } from "./make-get-call";
-import { SendTransactionRequest, TonConnectUI } from "@tonconnect/ui-react";
+import { TonConnectUI } from "@tonconnect/ui-react";
 import {
   dropJettonV2AdminBody,
   isJettonV2Code,
@@ -27,8 +27,17 @@ import {
   mintJettonV2Body,
   updateJettonV2MetadataBody,
 } from "./jetton-v2";
+import { Network } from "./network";
+import {
+  buildTransactionMessage,
+  buildTransactionRequest,
+  sendTransactionAndTrack,
+  TransactionOutcome,
+} from "./transaction";
+import { assertPositiveAmount } from "./amount";
 
 export const JETTON_DEPLOY_GAS = JETTON_V2_DEPLOY_VALUE;
+export const JETTON_DEPLOY_MIN_BALANCE = toNano(0.2);
 
 export enum JettonDeployState {
   NOT_STARTED,
@@ -55,6 +64,17 @@ export interface JettonDeployParams {
   amountToMint: BN;
 }
 
+export interface JettonCreationResult extends TransactionOutcome {
+  address: Address;
+}
+
+export class JettonAlreadyDeployedError extends Error {
+  constructor(public readonly address: Address) {
+    super("A jetton with the same owner and metadata is already deployed");
+    this.name = "JettonAlreadyDeployedError";
+  }
+}
+
 async function isJettonV2(contractAddress: Address, client: TonClient): Promise<boolean> {
   const state = await client.getContractState(contractAddress);
 
@@ -67,72 +87,52 @@ class JettonDeployController {
   async createJetton(
     params: JettonDeployParams,
     tonConnection: TonConnectUI,
-    walletAddress: string,
-  ): Promise<Address> {
+    network: Network,
+  ): Promise<JettonCreationResult> {
+    assertPositiveAmount(params.amountToMint, "Initial mint");
     const contractDeployer = new ContractDeployer();
-    const tc = await getClient();
+    const tc = await getClient(network);
 
-    // params.onProgress?.(JettonDeployState.BALANCE_CHECK);
-    const balance = await tc.getBalance(params.owner);
-    if (balance.lt(JETTON_DEPLOY_GAS)) throw new Error("Not enough balance in deployer wallet");
     const deployParams = createDeployParams(params, params.offchainUri);
     const contractAddr = contractDeployer.addressForContract(deployParams);
 
-    if (await tc.isContractDeployed(contractAddr)) {
-      // params.onProgress?.(JettonDeployState.ALREADY_DEPLOYED);
-    } else {
-      await contractDeployer.deployContract(deployParams, tonConnection);
-      // params.onProgress?.(JettonDeployState.AWAITING_MINTER_DEPLOY);
-      await waitForContractDeploy(contractAddr, tc);
+    const masterWasDeployed = await tc.isContractDeployed(contractAddr);
+    if (masterWasDeployed) {
+      throw new JettonAlreadyDeployedError(contractAddr);
     }
 
-    const ownerJWalletAddr = await makeGetCall(
-      contractAddr,
-      "get_wallet_address",
-      [beginCell().storeAddress(params.owner).endCell()],
-      ([addr]) => (addr as Cell).beginParse().readAddress()!,
-      tc,
-    );
-
-    // params.onProgress?.(JettonDeployState.AWAITING_JWALLET_DEPLOY);
-    await waitForContractDeploy(ownerJWalletAddr, tc);
-
-    // params.onProgress?.(
-    //   JettonDeployState.VERIFY_MINT,
-    //   undefined,
-    //   contractAddr.toFriendly()
-    // ); // TODO better way of emitting the contract?
-
-    // params.onProgress?.(JettonDeployState.DONE);
-    return contractAddr;
+    // params.onProgress?.(JettonDeployState.BALANCE_CHECK);
+    const balance = await tc.getBalance(params.owner);
+    if (balance.lt(JETTON_DEPLOY_MIN_BALANCE)) {
+      throw new Error("Not enough balance in deployer wallet");
+    }
+    const { outcome } = await contractDeployer.deployContract(deployParams, tonConnection, network);
+    if (!outcome) throw new Error("Deployment transaction was not submitted");
+    return { address: contractAddr, ...outcome };
   }
 
-  async burnAdmin(contractAddress: Address, tonConnection: TonConnectUI, walletAddress: string) {
-    const tc = await getClient();
+  async burnAdmin(
+    contractAddress: Address,
+    tonConnection: TonConnectUI,
+    walletAddress: string,
+    network: Network,
+  ): Promise<TransactionOutcome> {
+    const tc = await getClient(network);
     const useV2 = await isJettonV2(contractAddress, tc);
-    const waiter = await waitForSeqno(
-      tc.openWalletFromAddress({
-        source: Address.parse(walletAddress),
-      }),
-    );
-
-    const tx: SendTransactionRequest = {
-      validUntil: Date.now() + 5 * 60 * 1000,
-      messages: [
+    const tx = buildTransactionRequest(network, walletAddress, [
+      buildTransactionMessage(
+        contractAddress,
+        network,
+        (useV2 ? JETTON_V2_ADMIN_VALUE : toNano(0.01)).toString(),
         {
-          address: contractAddress.toString(),
-          amount: (useV2 ? JETTON_V2_ADMIN_VALUE : toNano(0.01)).toString(),
-          stateInit: undefined,
           payload: (useV2 ? dropJettonV2AdminBody(0) : changeAdminBody(zeroAddress()))
             .toBoc()
             .toString("base64"),
         },
-      ],
-    };
+      ),
+    ]);
 
-    await tonConnection.sendTransaction(tx);
-
-    await waiter();
+    return sendTransactionAndTrack(tonConnection, network, tx, contractAddress);
   }
 
   async mint(
@@ -140,22 +140,17 @@ class JettonDeployController {
     jettonMaster: Address,
     amount: BN,
     walletAddress: string,
-  ) {
-    const tc = await getClient();
+    network: Network,
+  ): Promise<TransactionOutcome> {
+    assertPositiveAmount(amount, "Mint");
+    const tc = await getClient(network);
     const useV2 = await isJettonV2(jettonMaster, tc);
-    const waiter = await waitForSeqno(
-      tc.openWalletFromAddress({
-        source: Address.parse(walletAddress),
-      }),
-    );
-
-    const tx: SendTransactionRequest = {
-      validUntil: Date.now() + 5 * 60 * 1000,
-      messages: [
+    const tx = buildTransactionRequest(network, walletAddress, [
+      buildTransactionMessage(
+        jettonMaster,
+        network,
+        (useV2 ? JETTON_V2_MINT_VALUE : toNano(0.04)).toString(),
         {
-          address: jettonMaster.toString(),
-          amount: (useV2 ? JETTON_V2_MINT_VALUE : toNano(0.04)).toString(),
-          stateInit: undefined,
           payload: (useV2
             ? mintJettonV2Body(
                 Address.parse(walletAddress),
@@ -169,11 +164,10 @@ class JettonDeployController {
             .toBoc()
             .toString("base64"),
         },
-      ],
-    };
+      ),
+    ]);
 
-    await tonConnection.sendTransaction(tx);
-    await waiter();
+    return sendTransactionAndTrack(tonConnection, network, tx, jettonMaster);
   }
 
   async transfer(
@@ -183,33 +177,26 @@ class JettonDeployController {
     toAddress: string,
     fromAddress: string,
     ownerJettonWallet: string,
-  ) {
-    const tc = await getClient();
+    network: Network,
+  ): Promise<TransactionOutcome> {
+    assertPositiveAmount(amount, "Transfer");
+    const tc = await getClient(network);
     const useV2 = await isJettonV2(jettonMaster, tc);
 
-    const waiter = await waitForSeqno(
-      tc.openWalletFromAddress({
-        source: Address.parse(fromAddress),
-      }),
-    );
-
-    const tx: SendTransactionRequest = {
-      validUntil: Date.now() + 5 * 60 * 1000,
-      messages: [
+    const tx = buildTransactionRequest(network, fromAddress, [
+      buildTransactionMessage(
+        ownerJettonWallet,
+        network,
+        (useV2 ? JETTON_V2_TRANSFER_VALUE : toNano(0.05)).toString(),
         {
-          address: ownerJettonWallet,
-          amount: (useV2 ? JETTON_V2_TRANSFER_VALUE : toNano(0.05)).toString(),
-          stateInit: undefined,
           payload: transfer(Address.parse(toAddress), Address.parse(fromAddress), amount)
             .toBoc()
             .toString("base64"),
         },
-      ],
-    };
+      ),
+    ]);
 
-    await tonConnection.sendTransaction(tx);
-
-    await waiter();
+    return sendTransactionAndTrack(tonConnection, network, tx, ownerJettonWallet);
   }
 
   async burnJettons(
@@ -218,46 +205,43 @@ class JettonDeployController {
     amount: BN,
     jettonAddress: string,
     walletAddress: string,
-  ) {
-    const tc = await getClient();
+    network: Network,
+  ): Promise<TransactionOutcome> {
+    assertPositiveAmount(amount, "Burn");
+    const tc = await getClient(network);
     const useV2 = await isJettonV2(jettonMaster, tc);
 
-    const waiter = await waitForSeqno(
-      tc.openWalletFromAddress({
-        source: Address.parse(walletAddress),
-      }),
-    );
-
-    const tx: SendTransactionRequest = {
-      validUntil: Date.now() + 5 * 60 * 1000,
-      messages: [
+    const tx = buildTransactionRequest(network, walletAddress, [
+      buildTransactionMessage(
+        jettonAddress,
+        network,
+        (useV2 ? JETTON_V2_BURN_VALUE : toNano(0.031)).toString(),
         {
-          address: jettonAddress,
-          amount: (useV2 ? JETTON_V2_BURN_VALUE : toNano(0.031)).toString(),
-          stateInit: undefined,
           payload: burn(amount, Address.parse(walletAddress)).toBoc().toString("base64"),
         },
-      ],
-    };
+      ),
+    ]);
 
-    await tonConnection.sendTransaction(tx);
-
-    await waiter();
+    return sendTransactionAndTrack(tonConnection, network, tx, jettonAddress);
   }
 
-  async getJettonDetails(contractAddr: Address, owner: Address) {
-    const tc = await getClient();
-    const minter = await makeGetCall(
+  async getJettonDetails(contractAddr: Address, owner: Address, network: Network) {
+    const tc = await getClient(network);
+    const minterState = await makeGetCall(
       contractAddr,
       "get_jetton_data",
       [],
-      async ([totalSupply, __, adminCell, contentCell]) => ({
-        ...(await readJettonMetadata(contentCell as unknown as Cell)),
+      ([totalSupply, __, adminCell, contentCell]) => ({
         admin: adminCell ? cellToAddress(adminCell) : null,
         totalSupply: totalSupply as BN,
+        contentCell: contentCell as unknown as Cell,
       }),
       tc,
     );
+    const minter = {
+      ...minterState,
+      ...(await readJettonMetadata(minterState.contentCell)),
+    };
 
     const jWalletAddress = await makeGetCall(
       contractAddr,
@@ -275,13 +259,20 @@ class JettonDeployController {
         jWalletAddress,
         "get_wallet_data",
         [],
-        ([amount, _, jettonMasterAddressCell]) => ({
+        ([amount, ownerAddressCell, jettonMasterAddressCell]) => ({
           balance: amount as unknown as BN,
           jWalletAddress,
+          ownerAddress: cellToAddress(ownerAddressCell),
           jettonMasterAddress: cellToAddress(jettonMasterAddressCell),
         }),
         tc,
       );
+      if (!jettonWallet.jettonMasterAddress.equals(contractAddr)) {
+        throw new Error("Jetton wallet reports a different master contract");
+      }
+      if (!jettonWallet.ownerAddress.equals(owner)) {
+        throw new Error("Jetton wallet reports a different owner");
+      }
     } else {
       jettonWallet = null;
     }
@@ -299,31 +290,22 @@ class JettonDeployController {
     },
     connection: TonConnectUI,
     walletAddress: string,
-  ) {
-    const tc = await getClient();
+    network: Network,
+  ): Promise<TransactionOutcome> {
+    const tc = await getClient(network);
     const useV2 = await isJettonV2(contractAddress, tc);
-    const waiter = await waitForSeqno(
-      tc.openWalletFromAddress({
-        source: Address.parse(walletAddress),
-      }),
-    );
     const metadata = buildJettonOnchainMetadata(data);
     const body = useV2 ? updateJettonV2MetadataBody(metadata, 0) : updateMetadataBody(metadata);
-    const tx: SendTransactionRequest = {
-      validUntil: Date.now() + 5 * 60 * 1000,
-      messages: [
-        {
-          address: contractAddress.toString(),
-          amount: (useV2 ? JETTON_V2_ADMIN_VALUE : toNano(0.01)).toString(),
-          stateInit: undefined,
-          payload: body.toBoc().toString("base64"),
-        },
-      ],
-    };
+    const tx = buildTransactionRequest(network, walletAddress, [
+      buildTransactionMessage(
+        contractAddress,
+        network,
+        (useV2 ? JETTON_V2_ADMIN_VALUE : toNano(0.01)).toString(),
+        { payload: body.toBoc().toString("base64") },
+      ),
+    ]);
 
-    await connection.sendTransaction(tx);
-
-    await waiter();
+    return sendTransactionAndTrack(connection, network, tx, contractAddress);
   }
 
   async updateMetadata(
@@ -333,32 +315,23 @@ class JettonDeployController {
     },
     connection: TonConnectUI,
     walletAddress: string,
-  ) {
-    const tc = await getClient();
+    network: Network,
+  ): Promise<TransactionOutcome> {
+    const tc = await getClient(network);
     const useV2 = await isJettonV2(contractAddress, tc);
-    const waiter = await waitForSeqno(
-      tc.openWalletFromAddress({
-        source: Address.parse(walletAddress),
-      }),
-    );
 
     const metadata = buildJettonOnchainMetadata(data);
     const body = useV2 ? updateJettonV2MetadataBody(metadata, 0) : updateMetadataBody(metadata);
-    const tx: SendTransactionRequest = {
-      validUntil: Date.now() + 5 * 60 * 1000,
-      messages: [
-        {
-          address: contractAddress.toString(),
-          amount: (useV2 ? JETTON_V2_ADMIN_VALUE : toNano(0.01)).toString(),
-          stateInit: undefined,
-          payload: body.toBoc().toString("base64"),
-        },
-      ],
-    };
+    const tx = buildTransactionRequest(network, walletAddress, [
+      buildTransactionMessage(
+        contractAddress,
+        network,
+        (useV2 ? JETTON_V2_ADMIN_VALUE : toNano(0.01)).toString(),
+        { payload: body.toBoc().toString("base64") },
+      ),
+    ]);
 
-    await connection.sendTransaction(tx);
-
-    await waiter();
+    return sendTransactionAndTrack(connection, network, tx, contractAddress);
   }
 }
 

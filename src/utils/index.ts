@@ -35,8 +35,23 @@ export const isValidAddress = (address: string, errorText?: string) => {
 
 const ten = new BigNumber(10);
 
-export function toDecimalsBN(num: number | string, decimals: number | string) {
-  return new BN(BigNumber(num).multipliedBy(ten.pow(decimals)).toFixed(0));
+export function toDecimalsBN(num: string, decimals: number | string) {
+  const decimalsNumber = Number(decimals);
+  if (!Number.isInteger(decimalsNumber) || decimalsNumber < 0 || decimalsNumber > 255) {
+    throw new Error("Token decimals must be an integer from 0 to 255");
+  }
+
+  if (typeof num !== "string") {
+    throw new Error("Token amount must be provided as an exact string");
+  }
+
+  const value = new BigNumber(num);
+  if (!value.isFinite() || value.isNaN()) throw new Error("Invalid token amount");
+  const atomic = value.multipliedBy(ten.pow(decimalsNumber));
+  if (!atomic.isInteger()) {
+    throw new Error(`Amount supports at most ${decimalsNumber} decimal places`);
+  }
+  return new BN(atomic.toFixed(0));
 }
 
 export function fromDecimals(num: number | string, decimals: number | string) {

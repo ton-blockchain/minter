@@ -4,6 +4,7 @@ import { atom, useRecoilState } from "recoil";
 import useJettonStore from "store/jetton-store/useJettonStore";
 import brokenImage from "assets/icons/question.png";
 import { useJettonAddress } from "hooks/useJettonAddress";
+import { resolveJettonMetadataUri } from "lib/jetton-minter";
 
 const defaultState = {
   iconHover: false,
@@ -20,7 +21,7 @@ const jettonLogoState = atom({
 
 export const useJettonLogo = () => {
   const [jettonLogo, setJettonLogo] = useRecoilState(jettonLogoState);
-  const { jettonImage } = useJettonStore();
+  const { jettonImage, rawJettonImage } = useJettonStore();
   const { jettonAddress } = useJettonAddress();
 
   const resetJetton = () => setJettonLogo(defaultState);
@@ -66,11 +67,12 @@ export const useJettonLogo = () => {
     });
 
   const fetchImage = (url: string) => {
+    const imageUrl = resolveJettonMetadataUri(url);
     const image = new Image();
-    image.src = url;
+    image.src = imageUrl;
     image.onload = () => {
       setIsLoading(false);
-      setImage(url);
+      setImage(imageUrl);
     };
     image.onerror = () => {
       setHasError(true);
@@ -81,14 +83,25 @@ export const useJettonLogo = () => {
 
   useEffect(() => {
     setHasError(false);
+    if (!jettonLogo.logoUrl) {
+      setIsLoading(false);
+      return;
+    }
     setIsLoading(true);
-    jettonLogo.logoUrl && fetchImage(jettonLogo.logoUrl);
+    fetchImage(jettonLogo.logoUrl);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [jettonLogo.logoUrl]);
 
   useEffect(() => {
-    jettonAddress ? jettonImage && setLogoUrl(jettonImage) : resetJetton();
+    if (jettonAddress) {
+      setLogoUrl(rawJettonImage ?? "");
+      if (!rawJettonImage && jettonImage) setImage(jettonImage);
+    } else {
+      resetJetton();
+    }
     return () => resetJetton();
-  }, [jettonAddress]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [jettonAddress, jettonImage, rawJettonImage]);
 
   return { jettonLogo, setLogoUrl, setIconHover, resetJetton };
 };

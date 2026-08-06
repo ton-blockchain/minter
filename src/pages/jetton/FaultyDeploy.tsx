@@ -3,11 +3,14 @@ import { styled } from "@mui/system";
 import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
 import { Popup } from "components/Popup";
 import useJettonStore from "store/jetton-store/useJettonStore";
-import { useState } from "react";
 import { jettonDeployController } from "lib/deploy-controller";
 import { Address } from "ton";
 import { AppButton } from "components/appButton";
 import { useTonAddress, useTonConnectUI } from "@tonconnect/ui-react";
+import useNotification from "hooks/useNotification";
+import { useNetwork } from "lib/hooks/useNetwork";
+import { useRecoilState } from "recoil";
+import { jettonActionsState } from "./actions/jettonActions";
 
 function FaultyDeploy() {
   const {
@@ -18,34 +21,56 @@ function FaultyDeploy() {
     symbol,
     name,
     description,
-    jettonImage,
+    rawJettonImage,
+    rawJettonImageData,
+    metadataError,
+    decimals,
+    persistenceType,
   } = useJettonStore();
-  const [isLoading, setIsLoading] = useState(false);
+  const [actionInProgress, setActionInProgress] = useRecoilState(jettonActionsState);
   const [tonConnectUI] = useTonConnectUI();
   const address = useTonAddress();
+  const { showNotification } = useNotification();
+  const { network } = useNetwork();
+  const canFixMetadata =
+    !metadataError && !rawJettonImageData && !!decimals && persistenceType === "onchain";
 
   const onSubmit = async () => {
     if (!address || !jettonMaster) {
       return;
     }
     try {
-      setIsLoading(true);
-      await jettonDeployController.fixFaultyJetton(
+      if (!canFixMetadata) {
+        throw new Error("Token metadata cannot be safely rewritten from the currently loaded data");
+      }
+      setActionInProgress(true);
+      const outcome = await jettonDeployController.fixFaultyJetton(
         Address.parse(jettonMaster),
         {
           symbol,
           name,
           description,
-          image: jettonImage,
+          image: rawJettonImage,
+          decimals,
         },
         tonConnectUI,
         address,
+        network,
       );
-      await getJettonDetails();
+      if (!(await getJettonDetails())) return;
+      showNotification(
+        outcome.status === "confirmed"
+          ? "Token metadata fixed successfully"
+          : "Metadata fix was submitted, but final confirmation is still pending. Check the explorer before retrying.",
+        outcome.status === "confirmed" ? "success" : "warning",
+      );
     } catch (error) {
-      console.log(error);
+      showNotification(
+        error instanceof Error ? error.message : "Unable to fix token metadata",
+        "error",
+      );
     } finally {
-      setIsLoading(false);
+      setActionInProgress(false);
     }
   };
 
@@ -53,7 +78,7 @@ function FaultyDeploy() {
     <>
       <Popup
         maxWidth={380}
-        open={!!isJettonDeployerFaultyOnChainData && isAdmin && !isLoading}
+        open={!!isJettonDeployerFaultyOnChainData && isAdmin && canFixMetadata}
         onClose={() => {}}
         hideCloseButton>
         <StyledWarningPopup>
@@ -72,7 +97,9 @@ function FaultyDeploy() {
               fix the format.
             </Typography>
           </Box>
-          <AppButton onClick={onSubmit}>Submit</AppButton>
+          <AppButton loading={actionInProgress} disabled={actionInProgress} onClick={onSubmit}>
+            Submit
+          </AppButton>
         </StyledWarningPopup>
       </Popup>
     </>

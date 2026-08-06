@@ -1,4 +1,4 @@
-import { Address, beginCell, TonClient, Wallet } from "ton";
+import { Address, beginCell } from "ton";
 import { JettonDeployParams, JETTON_DEPLOY_GAS } from "./deploy-controller";
 import {
   initJettonV2Data,
@@ -6,12 +6,6 @@ import {
   JETTON_V2_MINT_TO_WALLET_VALUE,
   mintJettonV2Body,
 } from "./jetton-v2";
-
-export async function sleep(time: number) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, time);
-  });
-}
 
 export function zeroAddress(): Address {
   return beginCell()
@@ -22,31 +16,6 @@ export function zeroAddress(): Address {
     .endCell()
     .beginParse()
     .readAddress() as Address;
-}
-
-export async function waitForSeqno(wallet: Wallet) {
-  const seqnoBefore = await wallet.getSeqNo();
-
-  return async () => {
-    for (let attempt = 0; attempt < 25; attempt++) {
-      await sleep(3000);
-      const seqnoAfter = await wallet.getSeqNo();
-      if (seqnoAfter > seqnoBefore) return;
-    }
-    throw new Error("Timeout");
-  };
-}
-
-export async function waitForContractDeploy(address: Address, client: TonClient) {
-  let isDeployed = false;
-  let maxTries = 25;
-  while (!isDeployed && maxTries > 0) {
-    maxTries--;
-    isDeployed = await client.isContractDeployed(address);
-    if (isDeployed) return;
-    await sleep(3000);
-  }
-  throw new Error("Timeout");
 }
 
 export const createDeployParams = (params: JettonDeployParams, offchainUri?: string) => {

@@ -1,6 +1,6 @@
 import BN from "bn.js";
 import { Address, beginCell, toNano } from "ton";
-import { SendTransactionRequest, TonConnectUI } from "@tonconnect/ui-react";
+import { CHAIN, TonConnectUI } from "@tonconnect/ui-react";
 
 import { getClient } from "./get-ton-client";
 import { jettonDeployController } from "./deploy-controller";
@@ -20,7 +20,10 @@ import {
   mintJettonV2Body,
   updateJettonV2MetadataBody,
 } from "./jetton-v2";
-import { waitForSeqno } from "./utils";
+import { formatAddress } from "./network";
+import { sendTransactionAndTrack } from "./transaction";
+import { createDeployParams } from "./utils";
+import { ContractDeployer } from "./contract-deployer";
 
 jest.mock("./get-ton-client", () => ({
   getClient: jest.fn(),
@@ -28,12 +31,18 @@ jest.mock("./get-ton-client", () => ({
 
 jest.mock("./utils", () => ({
   createDeployParams: jest.fn(),
-  waitForContractDeploy: jest.fn(),
-  waitForSeqno: jest.fn(() => Promise.resolve(jest.fn())),
   zeroAddress: () => {
     const { Address: TonAddress } = jest.requireActual("ton");
     return TonAddress.parse(`0:${"00".repeat(32)}`);
   },
+}));
+
+jest.mock("./transaction", () => ({
+  ...jest.requireActual("./transaction"),
+  sendTransactionAndTrack: jest.fn(async () => ({
+    status: "confirmed",
+    externalMessageHash: "hash",
+  })),
 }));
 
 jest.mock("./make-get-call", () => ({
@@ -48,10 +57,22 @@ const RECIPIENT = Address.parse(`0:${"44".repeat(32)}`);
 
 const mockedGetClient = getClient as jest.MockedFunction<typeof getClient>;
 const mockedMakeGetCall = makeGetCall as jest.Mock;
-const mockedWaitForSeqno = waitForSeqno as jest.MockedFunction<typeof waitForSeqno>;
+const mockedSendTransactionAndTrack = sendTransactionAndTrack as jest.MockedFunction<
+  typeof sendTransactionAndTrack
+>;
+const mockedCreateDeployParams = createDeployParams as jest.MockedFunction<
+  typeof createDeployParams
+>;
 
 beforeEach(() => {
-  mockedWaitForSeqno.mockResolvedValue(jest.fn());
+  mockedSendTransactionAndTrack.mockClear();
+  mockedSendTransactionAndTrack.mockResolvedValue({
+    status: "confirmed",
+    externalMessageHash: "hash",
+  });
+  mockedGetClient.mockReset();
+  mockedMakeGetCall.mockReset();
+  mockedCreateDeployParams.mockReset();
 });
 
 test.each([
@@ -66,29 +87,20 @@ test.each([
     amounts: [0.05, 0.1, 0.05, 0.05, 0.05, 0.05],
   },
 ])("routes every $name write through its matching ABI and TON values", async (version) => {
-  const sendTransaction = jest.fn(async (_request: SendTransactionRequest) => ({}));
-  const connection = { sendTransaction } as unknown as TonConnectUI;
-  const wallet = {};
+  const connection = {} as TonConnectUI;
   const client = {
     getContractState: jest.fn(async (address: Address) => {
       if (!address.equals(MASTER)) throw new Error("Expected Jetton master address");
       return { code: version.code.toBoc() };
     }),
-    openWalletFromAddress: jest.fn(({ source }: { source: Address }) => {
-      if (!source.equals(OWNER)) throw new Error("Expected owner wallet address");
-      return wallet;
-    }),
   } as any;
-  const waiter = jest.fn();
-  mockedWaitForSeqno.mockClear();
-  mockedWaitForSeqno.mockResolvedValue(waiter);
   mockedGetClient.mockResolvedValue(client);
 
   const amount = new BN(10);
   const updatedMetadata = buildJettonOnchainMetadata({ name: "Updated" });
-  const fixedMetadata = buildJettonOnchainMetadata({ name: "Fixed" });
-  await jettonDeployController.burnAdmin(MASTER, connection, OWNER.toFriendly());
-  await jettonDeployController.mint(connection, MASTER, amount, OWNER.toFriendly());
+  const fixedMetadata = buildJettonOnchainMetadata({ name: "Fixed", decimals: "6" });
+  await jettonDeployController.burnAdmin(MASTER, connection, OWNER.toFriendly(), "testnet");
+  await jettonDeployController.mint(connection, MASTER, amount, OWNER.toFriendly(), "testnet");
   await jettonDeployController.transfer(
     connection,
     MASTER,
@@ -96,6 +108,7 @@ test.each([
     RECIPIENT.toFriendly(),
     OWNER.toFriendly(),
     WALLET.toFriendly(),
+    "testnet",
   );
   await jettonDeployController.burnJettons(
     connection,
@@ -103,32 +116,44 @@ test.each([
     amount,
     WALLET.toFriendly(),
     OWNER.toFriendly(),
+    "testnet",
   );
   await jettonDeployController.updateMetadata(
     MASTER,
     { name: "Updated" },
     connection,
     OWNER.toFriendly(),
+    "testnet",
   );
   await jettonDeployController.fixFaultyJetton(
     MASTER,
-    { name: "Fixed" },
+    { name: "Fixed", decimals: "6" },
     connection,
     OWNER.toFriendly(),
+    "testnet",
   );
 
-  const messages = sendTransaction.mock.calls.map(([request]) => request.messages[0]);
+  const requests = mockedSendTransactionAndTrack.mock.calls.map(([, , request]) => request);
+  const messages = requests.map((request) => request.messages[0]);
   expect(messages.map((message) => message.amount)).toEqual(
     version.amounts.map((amount) => toNano(amount).toString()),
   );
   expect(messages.map((message) => message.address)).toEqual([
-    MASTER.toString(),
-    MASTER.toString(),
-    WALLET.toFriendly(),
-    WALLET.toFriendly(),
-    MASTER.toString(),
-    MASTER.toString(),
+    formatAddress(MASTER, "testnet"),
+    formatAddress(MASTER, "testnet"),
+    formatAddress(WALLET, "testnet"),
+    formatAddress(WALLET, "testnet"),
+    formatAddress(MASTER, "testnet"),
+    formatAddress(MASTER, "testnet"),
   ]);
+  expect(requests.every((request) => request.network === CHAIN.TESTNET)).toBe(true);
+  expect(requests.every((request) => request.from === OWNER.toString())).toBe(true);
+  expect(
+    requests.every(
+      (request) =>
+        request.validUntil > Date.now() / 1000 && request.validUntil < Date.now() / 1000 + 301,
+    ),
+  ).toBe(true);
 
   const legacy = version.name === "legacy";
   const zeroAddress = Address.parse(`0:${"00".repeat(32)}`);
@@ -145,13 +170,7 @@ test.each([
   expect(messages.map((message) => message.payload)).toEqual(
     expectedBodies.map((body) => body.toBoc().toString("base64")),
   );
-  expect(mockedWaitForSeqno).toHaveBeenCalledTimes(6);
-  expect(mockedWaitForSeqno).toHaveBeenCalledWith(wallet);
-  expect(waiter).toHaveBeenCalledTimes(6);
-  sendTransaction.mock.invocationCallOrder.forEach((sendOrder, index) => {
-    expect(mockedWaitForSeqno.mock.invocationCallOrder[index]).toBeLessThan(sendOrder);
-    expect(sendOrder).toBeLessThan(waiter.mock.invocationCallOrder[index]);
-  });
+  expect(mockedSendTransactionAndTrack).toHaveBeenCalledTimes(6);
 });
 
 test("reads a revoked v2.1 admin as null", async () => {
@@ -169,7 +188,7 @@ test("reads a revoked v2.1 admin as null", async () => {
     isContractDeployed: jest.fn(async () => false),
   } as any);
 
-  const result = await jettonDeployController.getJettonDetails(MASTER, OWNER);
+  const result = await jettonDeployController.getJettonDetails(MASTER, OWNER, "testnet");
 
   expect(result.minter.admin).toBeNull();
 });

@@ -9,6 +9,9 @@ export interface JettonStoreState {
   decimals?: string;
   name?: string;
   jettonImage?: string;
+  rawJettonImage?: string;
+  rawJettonImageData?: string;
+  metadataError?: string;
   isImageBroken?: boolean;
   description?: string;
   adminAddress?: string;
@@ -31,9 +34,12 @@ const jettonStateAtom = atom<JettonStoreState>({
     isAdmin: false,
     adminRevokedOwnership: true,
     symbol: undefined,
-    decimals: "9",
+    decimals: undefined,
     name: undefined,
     jettonImage: undefined,
+    rawJettonImage: undefined,
+    rawJettonImageData: undefined,
+    metadataError: undefined,
     isImageBroken: false,
     description: undefined,
     adminAddress: undefined,

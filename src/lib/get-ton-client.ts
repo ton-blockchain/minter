@@ -1,5 +1,5 @@
 import { Address, TonClient } from "ton";
-import { getCurrentNetwork, Network, NETWORK_CONFIG, TONCENTER_API_KEY } from "./network";
+import { Network, NETWORK_CONFIG, TONCENTER_API_KEY } from "./network";
 
 const MAX_ATTEMPTS = 3;
 
@@ -85,7 +85,7 @@ export function getToncenterClientParameters(network: Network) {
   };
 }
 
-export async function getClient(network: Network = getCurrentNetwork()): Promise<TonClient> {
+export async function getClient(network: Network): Promise<TonClient> {
   let client = clients.get(network);
   if (!client) {
     client = new ToncenterClient(getToncenterClientParameters(network));
@@ -94,6 +94,6 @@ export async function getClient(network: Network = getCurrentNetwork()): Promise
   return client;
 }
 
-export function getEndpoint(network: Network = getCurrentNetwork()): string {
+export function getEndpoint(network: Network): string {
   return NETWORK_CONFIG[network].toncenterV2;
 }

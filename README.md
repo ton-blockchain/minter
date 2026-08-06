@@ -5,7 +5,7 @@ An open source Jetton deployer webapp, based on the [Acton Jetton contract templ
 ## How to use
 
 Instructions:
-Make sure you have a TON wallet with at least 0.15 TON balance.
+Make sure you have a TON wallet with at least 0.20 TON balance.
 
 Use your web browser to open the site of the deploy form: https://minter.ton.org
 

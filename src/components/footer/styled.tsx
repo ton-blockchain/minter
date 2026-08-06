@@ -24,7 +24,7 @@ const CredentialsWrapper = styled(Box)(({ theme }) => ({
   flexWrap: "wrap",
   justifyContent: "space-between",
   marginTop: theme.spacing(3),
-  marginBottom: theme.spacing(2),
+  marginBottom: theme.spacing(3),
   color: "#728A96",
   fontSize: 14,
   [theme.breakpoints.down("md")]: {

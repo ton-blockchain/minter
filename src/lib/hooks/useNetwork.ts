@@ -1,10 +1,9 @@
 import { useSearchParams } from "react-router-dom";
+import { getNetwork, Network } from "../network";
 
-export function getNetwork(params: URLSearchParams) {
-  return params.has("testnet") ? "testnet" : "mainnet";
-}
+export { getNetwork } from "../network";
 
-export function useNetwork(): { network: "mainnet" | "testnet" } {
+export function useNetwork(): { network: Network } {
   const [params] = useSearchParams();
 
   return {

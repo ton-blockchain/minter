@@ -1,4 +1,5 @@
-import { getNetwork } from "./lib/hooks/useNetwork";
+import { Address } from "ton";
+import { formatAddress, getCurrentNetwork } from "./lib/network";
 const ROUTES = {
   deployer: "/",
   jetton: "/jetton",
@@ -15,8 +16,8 @@ const JETTON_DEPLOYER_CONTRACTS_GITHUB =
   "https://github.com/ton-blockchain/acton/tree/9cf4d1f410267178e943daf32b44353d99ddb6db/src/commands/new/templates/jetton/contracts";
 
 const EXAMPLE_ADDRESS =
-  getNetwork(new URLSearchParams(window.location.search)) === "testnet"
-    ? "EQBP4L9h4272Z0j_w9PE2tjHhi8OwkrRbTmatKszMyseis05"
+  getCurrentNetwork() === "testnet"
+    ? formatAddress(Address.parse("EQBP4L9h4272Z0j_w9PE2tjHhi8OwkrRbTmatKszMyseis05"), "testnet")
     : "EQD-LkpmPTHhPW68cNfc7B83NcfE9JyGegXzAT8LetpQSRSm";
 
 const SEARCH_HISTORY = "searchHistory";

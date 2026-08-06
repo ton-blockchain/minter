@@ -2,17 +2,18 @@ import BigNumber from "bignumber.js";
 import { BN } from "bn.js";
 import { zeroAddress } from "lib/utils";
 import { Address } from "ton";
+import { Network, NETWORK_CONFIG } from "lib/network";
 
-export const scannerUrl = (isSandbox?: boolean, regularAddress?: boolean) => {
+export const scannerUrl = (network: Network, isSandbox?: boolean, regularAddress?: boolean) => {
   if (isSandbox) {
     return `https://sandbox.tonwhales.com/explorer/address`;
   }
 
   if (regularAddress) {
-    return `https://tonscan.org/address`;
+    return `${NETWORK_CONFIG[network].explorer}/address`;
   }
 
-  return `https://tonscan.org/jetton`;
+  return `${NETWORK_CONFIG[network].explorer}/jetton`;
 };
 
 export const getUrlParam = (name: string) => {
@@ -23,7 +24,7 @@ export const getUrlParam = (name: string) => {
 export const isValidAddress = (address: string, errorText?: string) => {
   try {
     const result = Address.parse(address);
-    if (result && result.toFriendly() === zeroAddress().toFriendly()) {
+    if (result && result.equals(zeroAddress())) {
       return false;
     }
     return true;

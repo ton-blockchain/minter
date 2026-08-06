@@ -5,9 +5,11 @@ import useNotification from "hooks/useNotification";
 import { ROUTES } from "consts";
 import { recoilPersist } from "recoil-persist";
 import { Address } from "ton";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useJettonAddress } from "hooks/useJettonAddress";
 import { useNavigatePreserveQuery } from "lib/hooks/useNavigatePreserveQuery";
+import { useNetwork } from "lib/hooks/useNetwork";
+import { formatAddress } from "lib/network";
 
 const { persistAtom } = recoilPersist({
   key: "addressHistory",
@@ -25,9 +27,15 @@ export function useAddressHistory() {
   const navigate = useNavigatePreserveQuery();
   const { showNotification } = useNotification();
   const { jettonAddress } = useJettonAddress();
+  const { network } = useNetwork();
 
-  const addAddress = (address: string) =>
-    setAddresses((prev: string[]) => [address, ...prev.filter((a) => a !== address)].slice(0, 20));
+  const addAddress = useCallback(
+    (address: string) =>
+      setAddresses((prev: string[]) =>
+        [address, ...prev.filter((a) => a !== address)].slice(0, 20),
+      ),
+    [setAddresses],
+  );
 
   const resetAddresses = () => {
     setAddresses([]);
@@ -54,7 +62,7 @@ export function useAddressHistory() {
       return;
     }
 
-    const transformedAddress = Address.parse(address!).toFriendly();
+    const transformedAddress = formatAddress(Address.parse(address!), network);
 
     addAddress(transformedAddress);
     setValue("");
@@ -65,7 +73,7 @@ export function useAddressHistory() {
 
   useEffect(() => {
     jettonAddress && addAddress(jettonAddress);
-  }, []);
+  }, [addAddress, jettonAddress]);
 
   return {
     addresses,

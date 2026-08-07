@@ -64,13 +64,12 @@ function DeployerPage() {
   };
 
   async function deployContract(data: any) {
-    if (!walletAddress || !tonConnectUI) {
-      throw new Error("Wallet not connected");
-    }
-
     let address: string | undefined;
     setIsLoading(true);
     try {
+      if (!walletAddress || !tonConnectUI) {
+        throw new Error("Wallet not connected");
+      }
       let decimals = data.decimals;
       if (data.offchainUri) {
         const { metadata } = await fetchJettonMetadata(data.offchainUri);
@@ -115,8 +114,8 @@ function DeployerPage() {
           undefined,
           10000,
         );
-      } else if (err instanceof Error) {
-        showNotification(<>{err.message}</>, "error");
+      } else {
+        showNotification(err instanceof Error ? err.message : "", "error");
       }
     } finally {
       setIsLoading(false);

@@ -86,7 +86,7 @@ function useJettonStore() {
       if (requestId !== latestRequest) return false;
       if (result.minter.metadataError) {
         showNotification(
-          `On-chain data loaded, but token metadata is unavailable: ${result.minter.metadataError}`,
+          "On-chain data loaded, but token metadata could not be loaded.",
           "warning",
           undefined,
           5000,

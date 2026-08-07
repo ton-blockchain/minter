@@ -59,6 +59,12 @@ const MASTER = Address.parse(`0:${"22".repeat(32)}`);
 const WALLET = Address.parse(`0:${"33".repeat(32)}`);
 const RECIPIENT = Address.parse(`0:${"44".repeat(32)}`);
 
+function connection(chain = CHAIN.TESTNET, address = OWNER) {
+  return {
+    account: { address: address.toString(), chain },
+  } as unknown as TonConnectUI;
+}
+
 const mockedGetClient = getClient as jest.MockedFunction<typeof getClient>;
 const mockedMakeGetCall = makeGetCall as jest.Mock;
 const mockedSendTransactionAndTrack = sendTransactionAndTrack as jest.MockedFunction<
@@ -91,7 +97,7 @@ test.each([
     amounts: [0.05, 0.1, 0.05, 0.05, 0.05, 0.05],
   },
 ])("routes every $name write through its matching ABI and TON values", async (version) => {
-  const connection = {} as TonConnectUI;
+  const tonConnection = connection();
   const client = {
     getContractState: jest.fn(async (address: Address) => {
       if (!address.equals(MASTER)) throw new Error("Expected Jetton master address");
@@ -103,10 +109,10 @@ test.each([
   const amount = new BN(10);
   const updatedMetadata = buildJettonOnchainMetadata({ name: "Updated" });
   const fixedMetadata = buildJettonOnchainMetadata({ name: "Fixed", decimals: "6" });
-  await jettonDeployController.burnAdmin(MASTER, connection, OWNER.toFriendly(), "testnet");
-  await jettonDeployController.mint(connection, MASTER, amount, OWNER.toFriendly(), "testnet");
+  await jettonDeployController.burnAdmin(MASTER, tonConnection, OWNER.toFriendly(), "testnet");
+  await jettonDeployController.mint(tonConnection, MASTER, amount, OWNER.toFriendly(), "testnet");
   await jettonDeployController.transfer(
-    connection,
+    tonConnection,
     MASTER,
     amount,
     RECIPIENT.toFriendly(),
@@ -115,7 +121,7 @@ test.each([
     "testnet",
   );
   await jettonDeployController.burnJettons(
-    connection,
+    tonConnection,
     MASTER,
     amount,
     WALLET.toFriendly(),
@@ -125,14 +131,14 @@ test.each([
   await jettonDeployController.updateMetadata(
     MASTER,
     { name: "Updated" },
-    connection,
+    tonConnection,
     OWNER.toFriendly(),
     "testnet",
   );
   await jettonDeployController.fixFaultyJetton(
     MASTER,
     { name: "Fixed", decimals: "6" },
-    connection,
+    tonConnection,
     OWNER.toFriendly(),
     "testnet",
   );
@@ -226,7 +232,7 @@ test("reports an existing deterministic master without another deploy or initial
       amountToMint: new BN(1),
       onchainMetaData: { name: "Existing", symbol: "EX", decimals: "9" },
     },
-    {} as TonConnectUI,
+    connection(),
     "testnet",
   );
 
@@ -250,7 +256,7 @@ test("returns the authoritative completed-trace outcome for a fresh deploy", asy
       amountToMint: new BN(1),
       onchainMetaData: { name: "Fresh", symbol: "NEW", decimals: "9" },
     },
-    {} as TonConnectUI,
+    connection(),
     "testnet",
   );
 
@@ -278,12 +284,12 @@ test("requires 0.20 native coins while keeping the deploy message at 0.15", asyn
   };
 
   await expect(
-    jettonDeployController.createJetton(params, {} as TonConnectUI, "testnet"),
+    jettonDeployController.createJetton(params, connection(), "testnet"),
   ).rejects.toThrow("Not enough balance");
   expect(mockedSendTransactionAndTrack).not.toHaveBeenCalled();
 
   await expect(
-    jettonDeployController.createJetton(params, {} as TonConnectUI, "testnet"),
+    jettonDeployController.createJetton(params, connection(), "testnet"),
   ).resolves.toMatchObject({ status: "confirmed" });
   const request = mockedSendTransactionAndTrack.mock.calls[0][2];
   expect(request.messages[0].amount).toBe(toNano(0.15).toString());
@@ -303,7 +309,7 @@ test("propagates submitted deployment without waiting or inviting a duplicate mi
       amountToMint: new BN(1),
       onchainMetaData: { name: "Pending", symbol: "P", decimals: "9" },
     },
-    {} as TonConnectUI,
+    connection(),
     "testnet",
   );
   expect(result.address.equals(deterministicMaster)).toBe(true);
@@ -338,7 +344,7 @@ test("rejects a deployed jetton wallet that reports another owner", async () => 
 });
 
 test("rejects negative token amounts before RPC access or transaction serialization", async () => {
-  const connection = {} as TonConnectUI;
+  const tonConnection = connection();
   const negative = new BN(-100);
 
   await expect(
@@ -348,16 +354,16 @@ test("rejects negative token amounts before RPC access or transaction serializat
         amountToMint: negative,
         onchainMetaData: { name: "Invalid", symbol: "NEG", decimals: "9" },
       },
-      connection,
+      tonConnection,
       "testnet",
     ),
   ).rejects.toThrow("Initial mint amount must be greater than zero");
   await expect(
-    jettonDeployController.mint(connection, MASTER, negative, OWNER.toFriendly(), "testnet"),
+    jettonDeployController.mint(tonConnection, MASTER, negative, OWNER.toFriendly(), "testnet"),
   ).rejects.toThrow("Mint amount must be greater than zero");
   await expect(
     jettonDeployController.transfer(
-      connection,
+      tonConnection,
       MASTER,
       negative,
       RECIPIENT.toFriendly(),
@@ -368,7 +374,7 @@ test("rejects negative token amounts before RPC access or transaction serializat
   ).rejects.toThrow("Transfer amount must be greater than zero");
   await expect(
     jettonDeployController.burnJettons(
-      connection,
+      tonConnection,
       MASTER,
       negative,
       WALLET.toFriendly(),
@@ -380,3 +386,27 @@ test("rejects negative token amounts before RPC access or transaction serializat
   expect(mockedGetClient).not.toHaveBeenCalled();
   expect(mockedSendTransactionAndTrack).not.toHaveBeenCalled();
 });
+
+test.each([
+  { network: "testnet" as const, walletChain: CHAIN.MAINNET },
+  { network: "mainnet" as const, walletChain: CHAIN.TESTNET },
+])(
+  "rejects a $walletChain wallet before deployment RPC on $network",
+  async ({ network, walletChain }) => {
+    await expect(
+      jettonDeployController.createJetton(
+        {
+          owner: OWNER,
+          amountToMint: new BN(1),
+          onchainMetaData: { name: "Wrong network", symbol: "NET", decimals: "9" },
+        },
+        connection(walletChain),
+        network,
+      ),
+    ).rejects.toThrow("Wallet network does not match");
+
+    expect(mockedGetClient).not.toHaveBeenCalled();
+    expect(mockedCreateDeployParams).not.toHaveBeenCalled();
+    expect(mockedSendTransactionAndTrack).not.toHaveBeenCalled();
+  },
+);

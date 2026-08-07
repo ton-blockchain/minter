@@ -3,6 +3,7 @@ import { Address, beginCell, Cell, CellMessage, CommonMessageInfo, ExternalMessa
 import {
   buildTransactionMessage,
   buildTransactionRequest,
+  assertWalletConnection,
   getExternalMessageHash,
   sendTransactionAndTrack,
   validateCompletedTrace,
@@ -243,6 +244,19 @@ test("refuses a wallet on the wrong network before opening the signing request",
     "Wallet network does not match",
   );
   expect(sendTransaction).not.toHaveBeenCalled();
+});
+
+test.each([
+  { network: "testnet" as const, walletChain: CHAIN.MAINNET },
+  { network: "mainnet" as const, walletChain: CHAIN.TESTNET },
+])("preflights a $walletChain wallet against $network", ({ network, walletChain }) => {
+  const connection = {
+    account: { address: OWNER.toString(), chain: walletChain },
+  } as unknown as TonConnectUI;
+
+  expect(() => assertWalletConnection(connection, network, OWNER)).toThrow(
+    "Wallet network does not match",
+  );
 });
 
 test("refuses disconnected, changed-wallet, stale-network, and mismatched requests before signing", async () => {

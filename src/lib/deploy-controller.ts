@@ -29,6 +29,7 @@ import {
 } from "./jetton-v2";
 import { Network } from "./network";
 import {
+  assertWalletConnection,
   buildTransactionMessage,
   buildTransactionRequest,
   sendTransactionAndTrack,
@@ -90,6 +91,7 @@ class JettonDeployController {
     network: Network,
   ): Promise<JettonCreationResult> {
     assertPositiveAmount(params.amountToMint, "Initial mint");
+    assertWalletConnection(tonConnection, network, params.owner);
     const contractDeployer = new ContractDeployer();
     const tc = await getClient(network);
 
@@ -117,6 +119,7 @@ class JettonDeployController {
     walletAddress: string,
     network: Network,
   ): Promise<TransactionOutcome> {
+    assertWalletConnection(tonConnection, network, walletAddress);
     const tc = await getClient(network);
     const useV2 = await isJettonV2(contractAddress, tc);
     const tx = buildTransactionRequest(network, walletAddress, [
@@ -143,6 +146,7 @@ class JettonDeployController {
     network: Network,
   ): Promise<TransactionOutcome> {
     assertPositiveAmount(amount, "Mint");
+    assertWalletConnection(tonConnection, network, walletAddress);
     const tc = await getClient(network);
     const useV2 = await isJettonV2(jettonMaster, tc);
     const tx = buildTransactionRequest(network, walletAddress, [
@@ -180,6 +184,7 @@ class JettonDeployController {
     network: Network,
   ): Promise<TransactionOutcome> {
     assertPositiveAmount(amount, "Transfer");
+    assertWalletConnection(tonConnection, network, fromAddress);
     const tc = await getClient(network);
     const useV2 = await isJettonV2(jettonMaster, tc);
 
@@ -208,6 +213,7 @@ class JettonDeployController {
     network: Network,
   ): Promise<TransactionOutcome> {
     assertPositiveAmount(amount, "Burn");
+    assertWalletConnection(tonConnection, network, walletAddress);
     const tc = await getClient(network);
     const useV2 = await isJettonV2(jettonMaster, tc);
 
@@ -292,6 +298,7 @@ class JettonDeployController {
     walletAddress: string,
     network: Network,
   ): Promise<TransactionOutcome> {
+    assertWalletConnection(connection, network, walletAddress);
     const tc = await getClient(network);
     const useV2 = await isJettonV2(contractAddress, tc);
     const metadata = buildJettonOnchainMetadata(data);
@@ -317,6 +324,7 @@ class JettonDeployController {
     walletAddress: string,
     network: Network,
   ): Promise<TransactionOutcome> {
+    assertWalletConnection(connection, network, walletAddress);
     const tc = await getClient(network);
     const useV2 = await isJettonV2(contractAddress, tc);
 

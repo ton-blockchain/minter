@@ -267,13 +267,19 @@ export async function waitForTransactionTrace(
   return "submitted";
 }
 
-function assertConnectedAccount(connection: TonConnectUI, request: SendTransactionRequest): void {
+export function assertWalletConnection(
+  connection: TonConnectUI,
+  network: Network,
+  expectedAddress: Address | string,
+): void {
   const account = connection.account;
   if (!account) throw new Error("Wallet not connected");
-  if (account.chain !== request.network) {
+  if (account.chain !== NETWORK_CONFIG[network].chain) {
     throw new Error("Wallet network does not match the network selected in the app");
   }
-  if (!request.from || !Address.parse(account.address).equals(Address.parse(request.from))) {
+  const expected =
+    typeof expectedAddress === "string" ? Address.parse(expectedAddress) : expectedAddress;
+  if (!Address.parse(account.address).equals(expected)) {
     throw new Error("Connected wallet changed before the transaction was sent");
   }
 }
@@ -295,7 +301,8 @@ export async function sendTransactionAndTrack(
 ): Promise<TransactionOutcome> {
   if (transactionInProgress) throw new Error("Another transaction is already in progress");
   assertCurrentNetwork(network, request);
-  assertConnectedAccount(connection, request);
+  if (!request.from) throw new Error("Transaction sender is missing");
+  assertWalletConnection(connection, network, request.from);
   transactionInProgress = true;
   try {
     const response = (await connection.sendTransaction(request)) as SendTransactionResponse;

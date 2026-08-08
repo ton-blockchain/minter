@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, IconButton, Typography } from "@mui/material";
-import { JETTON_DEPLOYER_CONTRACTS_GITHUB } from "consts";
+import { MINTER_GITHUB_URL } from "consts";
 import { StyledGithubIcon } from "components/header/headerMenu/styled";
 import githubIcon from "assets/icons/github-logo.svg";
 import rightArrow from "assets/icons/right.svg";
@@ -10,7 +10,7 @@ export const GithubButton = () => {
     <IconButton
       className="github-icon"
       sx={{ padding: 0, mt: 2 }}
-      href={JETTON_DEPLOYER_CONTRACTS_GITHUB}
+      href={MINTER_GITHUB_URL}
       target="_blank">
       <StyledGithubIcon width={20} height={20} src={githubIcon} />
       <Typography

@@ -10,6 +10,7 @@ import {
   HeaderTypography,
 } from "./styled";
 import { TonConnectButton } from "@tonconnect/ui-react";
+import { MINTER_GITHUB_URL } from "consts";
 
 interface MenuProps {
   closeMenu?: () => void;
@@ -36,10 +37,7 @@ const HeaderMenu: React.FC<MenuProps> = (props) => {
       <div onClick={props.closeMenu}>
         <StyledTonConnectButton />
       </div>
-      <IconButton
-        sx={{ padding: 0, ml: 1.5 }}
-        href="https://github.com/ton-blockchain/minter"
-        target="_blank">
+      <IconButton sx={{ padding: 0, ml: 1.5 }} href={MINTER_GITHUB_URL} target="_blank">
         <StyledGithubIcon width={20} height={20} src={githubIcon} />
         <HeaderTypography variant="h5">GitHub</HeaderTypography>
       </IconButton>

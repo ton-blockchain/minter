@@ -1,6 +1,6 @@
 # Minter - Webclient
 
-An open source Jetton deployer webapp, based on the [Acton Jetton contract template](https://github.com/ton-blockchain/acton/tree/9cf4d1f410267178e943daf32b44353d99ddb6db/src/commands/new/templates/jetton/contracts).
+An open source Jetton deployer webapp, based on the [Acton Contracts Jetton v2.1 source](https://github.com/ton-blockchain/acton-contracts/tree/92225ba47468edde6c86e0a68218b27f4b721890/jetton-v2.1/contracts).
 
 ## How to use
 
@@ -35,7 +35,7 @@ Open `http://localhost:3000`
 
 ## Is this tool safe?
 
-The deployed Jetton v2.1 contract source is pinned to the [Acton Jetton contract template](https://github.com/ton-blockchain/acton/tree/9cf4d1f410267178e943daf32b44353d99ddb6db/src/commands/new/templates/jetton/contracts).
+The deployed Jetton v2.1 contract source is pinned to the [Acton Contracts Jetton v2.1 source](https://github.com/ton-blockchain/acton-contracts/tree/92225ba47468edde6c86e0a68218b27f4b721890/jetton-v2.1/contracts).
 
 # License
 

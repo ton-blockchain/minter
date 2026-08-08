@@ -8,7 +8,7 @@ import {
   JettonMetaDataKeys,
 } from "./jetton-minter";
 
-// ton-blockchain/acton v1.1.0 Jetton template, commit 9cf4d1f.
+// ton-blockchain/acton-contracts Jetton v2.1, commit 92225ba.
 export const JETTON_V2_MINTER_CODE_HASH =
   "6bf8f48ca97d3fd9c8e553344efe7af030c322459e2ee2197a052162f1961bfb";
 

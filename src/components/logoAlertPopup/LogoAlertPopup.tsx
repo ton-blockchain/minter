@@ -5,6 +5,7 @@ import { CenteringWrapper } from "components/header/headerSearchBar/styled";
 import { AppButton } from "components/appButton";
 import openLink from "assets/icons/link-open.svg";
 import { PopupLink, PopupTitle } from "components/editLogoPopup/styled";
+import { MINTER_CONTRACT_METADATA_BEST_PRACTICES_URL } from "consts";
 
 interface LogoAlertPopupProps {
   showPopup: boolean;
@@ -30,9 +31,7 @@ export const LogoAlertPopup = ({
         still the token admin.
       </Typography>
       <Box sx={{ alignSelf: "baseline" }} mx={2} mt={1}>
-        <PopupLink
-          href="https://github.com/ton-blockchain/minter-contract#jetton-metadata-field-best-practices"
-          target="_blank">
+        <PopupLink href={MINTER_CONTRACT_METADATA_BEST_PRACTICES_URL} target="_blank">
           Best practices for storing logo
           <img alt="Open icon" src={openLink} width={11} height={11} style={{ marginLeft: 4 }} />
         </PopupLink>

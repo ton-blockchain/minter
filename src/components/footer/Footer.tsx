@@ -21,6 +21,7 @@ import githubHovered from "assets/icons/github-hover.svg";
 import heart from "assets/icons/heart.svg";
 import { Outlet } from "react-router-dom";
 import { useNetwork } from "../../lib/hooks/useNetwork";
+import { MINTER_GITHUB_URL } from "consts";
 
 export const Footer = () => {
   const { network } = useNetwork();
@@ -39,17 +40,13 @@ export const Footer = () => {
             hoveredIconUrl={telegramHovered}
             link="https://t.me/+YDnoBue1Dz81ZTMy"
           />
-          <HoverableIcon
-            iconUrl={github}
-            hoveredIconUrl={githubHovered}
-            link="https://github.com/ton-blockchain/minter"
-          />
+          <HoverableIcon iconUrl={github} hoveredIconUrl={githubHovered} link={MINTER_GITHUB_URL} />
         </SocialsContent>
       </SocialsWrapper>
       <Separator />
       <CredentialsWrapper>
         <FooterTextBoxLeft>
-          <Typography variant="body2">© {new Date().getFullYear()} TON Foundation</Typography>
+          <Typography variant="body2">Developed by TON Core</Typography>
         </FooterTextBoxLeft>
         <ContributedWrapper>
           <Typography variant="body2" sx={{ display: "flex", alignItems: "center" }}>

@@ -8,7 +8,12 @@ import {
 } from "lib/deploy-controller";
 import { createDeployParams } from "lib/utils";
 import { ContractDeployer } from "lib/contract-deployer";
-import { ROUTES } from "consts";
+import {
+  JETTON_V2_CONTRACTS_GITHUB_URL,
+  MINTER_CONTRACT_METADATA_BEST_PRACTICES_URL,
+  MINTER_GITHUB_URL,
+  ROUTES,
+} from "consts";
 import useNotification from "hooks/useNotification";
 import { FormWrapper, ScreenHeading, StyledDescription, SubHeadingWrapper } from "./styles";
 import { Screen, ScreenContent } from "components/Screen";
@@ -193,26 +198,22 @@ function Description() {
         fees. <br />
         <Spacer />
         For detailed instructions and in-depth explanations of all fields please see the{" "}
-        <Link
-          target="_blank"
-          href="https://github.com/ton-blockchain/minter-contract#jetton-metadata-field-best-practices">
+        <Link target="_blank" href={MINTER_CONTRACT_METADATA_BEST_PRACTICES_URL}>
           GitHub README
         </Link>
         . It includes several best practice recommendations so please take a look.
         <Spacer />
         Never deploy code that you've never seen before! This deployer is fully open source with all
         smart contract code{" "}
-        <Link
-          target="_blank"
-          href="https://github.com/ton-blockchain/acton/tree/9cf4d1f410267178e943daf32b44353d99ddb6db/src/commands/new/templates/jetton/contracts">
+        <Link target="_blank" href={JETTON_V2_CONTRACTS_GITHUB_URL}>
           available here
         </Link>
         . The HTML form is also{" "}
-        <Link target="_blank" href="https://github.com/ton-blockchain/minter">
+        <Link target="_blank" href={MINTER_GITHUB_URL}>
           open source
         </Link>{" "}
         and served from{" "}
-        <Link target="_blank" href="https://github.com/ton-blockchain/minter">
+        <Link target="_blank" href={MINTER_GITHUB_URL}>
           GitHub Pages
         </Link>
         . <Spacer />

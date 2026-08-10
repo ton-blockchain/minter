@@ -3,7 +3,7 @@ import { Address } from "ton";
 
 export type Network = "mainnet" | "testnet";
 
-export const TONCENTER_API_KEY = "06dbc7b34ce22097c5f22364a55326a65ebf58c5690cbad9f4695209d4633140";
+export const TONCENTER_API_KEY = "1a84bb7285eba5c45f7aadca816efc2771f77a48d92b9ddddba59a0dbcae3fc5";
 
 export const NETWORK_CONFIG: Record<
   Network,

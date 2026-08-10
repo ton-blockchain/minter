@@ -13,6 +13,7 @@ const LOCAL_STORAGE_PROVIDER = "wallet_provider";
 const APP_DISPLAY_NAME = "TON MINTER";
 
 const MINTER_GITHUB_URL = "https://github.com/ton-blockchain/minter";
+const TELEGRAM_URL = "https://t.me/gram";
 const MINTER_CONTRACT_GITHUB_URL = "https://github.com/ton-blockchain/minter-contract";
 const MINTER_CONTRACT_SAFETY_URL = `${MINTER_CONTRACT_GITHUB_URL}#protect-yourself-and-your-users`;
 const MINTER_CONTRACT_METADATA_BEST_PRACTICES_URL = `${MINTER_CONTRACT_GITHUB_URL}#jetton-metadata-field-best-practices`;
@@ -31,6 +32,7 @@ export {
   LOCAL_STORAGE_PROVIDER,
   APP_GRID,
   MINTER_GITHUB_URL,
+  TELEGRAM_URL,
   MINTER_CONTRACT_GITHUB_URL,
   MINTER_CONTRACT_SAFETY_URL,
   MINTER_CONTRACT_METADATA_BEST_PRACTICES_URL,

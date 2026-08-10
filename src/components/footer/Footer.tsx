@@ -21,7 +21,7 @@ import githubHovered from "assets/icons/github-hover.svg";
 import heart from "assets/icons/heart.svg";
 import { Outlet } from "react-router-dom";
 import { useNetwork } from "../../lib/hooks/useNetwork";
-import { MINTER_GITHUB_URL } from "consts";
+import { MINTER_GITHUB_URL, TELEGRAM_URL } from "consts";
 
 export const Footer = () => {
   const { network } = useNetwork();
@@ -35,11 +35,7 @@ export const Footer = () => {
       <SocialsWrapper>
         <Box></Box>
         <SocialsContent>
-          <HoverableIcon
-            iconUrl={telegram}
-            hoveredIconUrl={telegramHovered}
-            link="https://t.me/+YDnoBue1Dz81ZTMy"
-          />
+          <HoverableIcon iconUrl={telegram} hoveredIconUrl={telegramHovered} link={TELEGRAM_URL} />
           <HoverableIcon iconUrl={github} hoveredIconUrl={githubHovered} link={MINTER_GITHUB_URL} />
         </SocialsContent>
       </SocialsWrapper>

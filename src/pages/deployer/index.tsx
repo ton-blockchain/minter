@@ -10,7 +10,7 @@ import { createDeployParams } from "lib/utils";
 import { ContractDeployer } from "lib/contract-deployer";
 import {
   JETTON_V2_CONTRACTS_GITHUB_URL,
-  MINTER_CONTRACT_METADATA_BEST_PRACTICES_URL,
+  MINTER_METADATA_BEST_PRACTICES_URL,
   MINTER_GITHUB_URL,
   ROUTES,
 } from "consts";
@@ -198,7 +198,7 @@ function Description() {
         fees. <br />
         <Spacer />
         For detailed instructions and in-depth explanations of all fields please see the{" "}
-        <Link target="_blank" href={MINTER_CONTRACT_METADATA_BEST_PRACTICES_URL}>
+        <Link target="_blank" href={MINTER_METADATA_BEST_PRACTICES_URL}>
           GitHub README
         </Link>
         . It includes several best practice recommendations so please take a look.

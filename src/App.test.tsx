@@ -100,6 +100,38 @@ test("does not guess decimals when external metadata is unavailable", () => {
   expect(resolveJettonDecimals(undefined, undefined)).toBe("9");
 });
 
+test("accepts numeric decimals from offchain metadata", async () => {
+  const datacell = beginCell()
+    .storeInt(0x01, 8)
+    .storeBuffer(Buffer.from("https://example.com/metadata.json", "ascii"))
+    .endCell();
+  fetchMock.mockResolvedValueOnce(metadataResponse({ name: "Numeric decimals", decimals: 6 }));
+
+  expect(await readJettonMetadata(datacell)).toEqual({
+    persistenceType: "offchain_private_domain",
+    metadata: { name: "Numeric decimals", decimals: "6" },
+  });
+});
+
+test("prefers onchain values when semi-chain metadata fields collide", async () => {
+  const datacell = buildJettonOnchainMetadata({
+    name: "Onchain name",
+    decimals: "9",
+    uri: "https://example.com/metadata.json",
+  });
+  fetchMock.mockResolvedValueOnce(metadataResponse({ name: "Offchain name", decimals: 6 }));
+
+  expect(await readJettonMetadata(datacell)).toEqual({
+    persistenceType: "offchain_private_domain",
+    metadata: {
+      name: "Onchain name",
+      decimals: "9",
+      uri: "https://example.com/metadata.json",
+    },
+    isJettonDeployerFaultyOnChainData: false,
+  });
+});
+
 test("normalizes IPFS resources", () => {
   expect(resolveJettonMetadataUri("ipfs://folder/image.png")).toBe(
     "https://ipfs.io/ipfs/folder/image.png",

@@ -116,7 +116,7 @@ export async function readJettonMetadata(contentCell: Cell): Promise<{
           return {
             persistenceType,
             ...res,
-            metadata: { ...res.metadata, ...offchainMetadata.metadata },
+            metadata: { ...offchainMetadata.metadata, ...res.metadata },
           };
         } catch (error) {
           return {
@@ -188,6 +188,7 @@ function sanitizeMetadata(data: unknown): { [s in JettonMetaDataKeys]?: string }
   for (const key of Object.keys(jettonOnChainMetadataSpec) as JettonMetaDataKeys[]) {
     const value = (data as Record<string, unknown>)[key];
     if (typeof value === "string") result[key] = value;
+    if (key === "decimals" && typeof value === "number") result[key] = String(value);
   }
   return result;
 }

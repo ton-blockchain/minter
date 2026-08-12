@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import SearchImg from "assets/icons/search.svg";
 import { IndentlessIcon, SearchBarInput, SearchBarWrapper } from "./styled";
 import close from "assets/icons/close.svg";
@@ -9,11 +9,9 @@ import { useAddressHistory } from "hooks/useAddressHistory";
 
 interface SearchBarProps {
   closeMenu?: () => void;
-  resetExample?: () => void;
-  example?: string;
 }
 
-export const SearchBar: React.FC<SearchBarProps> = ({ example, resetExample, closeMenu }) => {
+export const SearchBar: React.FC<SearchBarProps> = ({ closeMenu }) => {
   const {
     addresses,
     onAddressClick,
@@ -29,17 +27,6 @@ export const SearchBar: React.FC<SearchBarProps> = ({ example, resetExample, clo
     e.stopPropagation();
     removeAddress(address);
   };
-
-  useEffect(() => {
-    resetExample?.();
-    // The example is reset only when the search bar is mounted.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    example && setValue(example);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [example]);
 
   return (
     <ClickAwayListener onClickAway={() => setActive(false)}>

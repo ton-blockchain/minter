@@ -1,6 +1,6 @@
 import { IconButton, useMediaQuery } from "@mui/material";
 import { Box } from "@mui/system";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import { HeaderMenu, MobileMenu } from "components/header/headerMenu/HeaderMenu";
 import { AppLogo } from "components/appLogo";
@@ -15,18 +15,15 @@ import {
 } from "./styled";
 import { EXAMPLE_ADDRESS } from "consts";
 import { Outlet, useLocation } from "react-router-dom";
+import { useAddressInput } from "hooks/useAddressInput";
 
 export const Header = () => {
   const [mobileMenu, setMobileMenu] = useState(false);
   const matches = useMediaQuery("(min-width:900px)");
-  const [example, setExample] = useState<string | undefined>(undefined);
+  const { setValue } = useAddressInput();
 
   const location = useLocation();
   const topRef = useRef<null | HTMLDivElement>(null);
-
-  const resetExample = useCallback(() => {
-    setExample(undefined);
-  }, []);
 
   useEffect(() => {
     topRef.current?.scrollIntoView();
@@ -46,15 +43,11 @@ export const Header = () => {
             {matches && <HeaderMenu />}
           </HeaderOptionalContent>
           <Box sx={{ width: "100%" }}>
-            <SearchBar
-              example={example}
-              resetExample={resetExample}
-              closeMenu={() => setMobileMenu(false)}
-            />
+            <SearchBar closeMenu={() => setMobileMenu(false)} />
             <HeaderExampleTextWrapper>
               <HeaderExampleText>
                 Enter an existing Jetton contract address.
-                <HeaderExampleLink variant="body2" onClick={() => setExample(EXAMPLE_ADDRESS)}>
+                <HeaderExampleLink variant="body2" onClick={() => setValue(EXAMPLE_ADDRESS)}>
                   {" "}
                   Use example.
                 </HeaderExampleLink>

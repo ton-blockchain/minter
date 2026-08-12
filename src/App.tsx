@@ -7,7 +7,7 @@ import { DeployerPage, Jetton } from "pages";
 import analytics from "services/analytics";
 import { Footer } from "components/footer";
 import { Header } from "components/header";
-import { useJettonLogo } from "hooks/useJettonLogo";
+import { useResetJettonLogoOnPathChange } from "hooks/useJettonLogo";
 import useNotification from "hooks/useNotification";
 import { useNetwork } from "lib/hooks/useNetwork";
 
@@ -79,14 +79,10 @@ const ContentWrapper = ({ children }: ContentWrapperProps) => {
 };
 
 const App = () => {
-  const { resetJetton } = useJettonLogo();
   const location = useLocation();
   const { network } = useNetwork();
 
-  useEffect(() => {
-    resetJetton();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.pathname]);
+  useResetJettonLogoOnPathChange(location.pathname);
 
   const isSandbox = window.location.search.includes("sandbox");
   const isTestnet = network === "testnet";

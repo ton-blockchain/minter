@@ -30,6 +30,7 @@ export const EditLogoPopup = ({
 }: EditLogoPopupProps) => {
   const { jettonLogo, setLogoUrl } = useJettonLogo();
   const [tempUrl, setTempUrl] = useState("");
+  const [tempUrlDirty, setTempUrlDirty] = useState(false);
   const [inputFocus, setInputFocus] = useState(false);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   useAutosizeTextArea(textAreaRef.current, tempUrl);
@@ -38,11 +39,16 @@ export const EditLogoPopup = ({
     const val = evt.target?.value;
 
     setTempUrl(val);
+    setTempUrlDirty(true);
   };
 
   useEffect(() => {
-    setTempUrl(jettonLogo.logoUrl);
-  }, [showPopup]);
+    if (!showPopup) {
+      setTempUrlDirty(false);
+      return;
+    }
+    if (!tempUrlDirty) setTempUrl(jettonLogo.logoUrl);
+  }, [jettonLogo.logoUrl, showPopup, tempUrlDirty]);
 
   return (
     <Popup open={showPopup} onClose={close} maxWidth={644}>
@@ -65,7 +71,10 @@ export const EditLogoPopup = ({
           {tokenImage.description}{" "}
           {showExample && (
             <span
-              onClick={() => setTempUrl("https://bitcoincash-example.github.io/website/logo.png")}
+              onClick={() => {
+                setTempUrl("https://bitcoincash-example.github.io/website/logo.png");
+                setTempUrlDirty(true);
+              }}
               style={{ fontWeight: 700, cursor: "pointer" }}>
               Use example.
             </span>

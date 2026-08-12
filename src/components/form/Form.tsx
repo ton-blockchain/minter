@@ -43,7 +43,7 @@ export function Form({
 }: FormProps) {
   const { showNotification } = useNotification();
   const address = useTonAddress();
-  const { jettonLogo, setIconHover } = useJettonLogo();
+  const { jettonLogo, setIconHover, discardLogoDraft } = useJettonLogo();
   const [logoAlertPopup, setLogoAlertPopup] = useState(false);
   const [editLogoPopup, setEditLogoPopup] = useState(false);
   const { jettonAddress } = useJettonAddress();
@@ -81,7 +81,7 @@ export function Form({
   useEffect(() => {
     //@ts-ignore
     setValue("tokenImage", jettonLogo.logoUrl);
-  }, [jettonLogo.logoUrl]);
+  }, [jettonLogo.logoUrl, setValue]);
 
   return (
     <StyledForm
@@ -200,7 +200,10 @@ export function Form({
                 <AppButton
                   disabled={jettonLogo.isLoading}
                   transparent
-                  onClick={onCancel}
+                  onClick={() => {
+                    discardLogoDraft();
+                    onCancel();
+                  }}
                   type="button">
                   Cancel
                 </AppButton>

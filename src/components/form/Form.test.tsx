@@ -3,6 +3,7 @@ import { Form } from "./Form";
 import { offchainFormSpec, onchainFormSpec } from "pages/deployer/data";
 
 const mockShowNotification = jest.fn();
+const mockDiscardLogoDraft = jest.fn();
 
 jest.mock("@tonconnect/ui-react", () => ({
   useTonAddress: () => "EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c",
@@ -22,6 +23,7 @@ jest.mock("hooks/useJettonLogo", () => ({
       hasError: false,
     },
     setIconHover: jest.fn(),
+    discardLogoDraft: mockDiscardLogoDraft,
   }),
 }));
 
@@ -69,4 +71,14 @@ test("keeps repeated numeric examples as exact strings", async () => {
   await waitFor(() =>
     expect(onSubmit).toHaveBeenCalledWith(expect.objectContaining({ mintAmount: "21000000" })),
   );
+});
+
+test("discards the logo draft when metadata editing is cancelled", () => {
+  const onCancel = jest.fn();
+  render(<Form onSubmit={jest.fn()} inputs={[]} submitText="Save" onCancel={onCancel} />);
+
+  fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
+
+  expect(mockDiscardLogoDraft).toHaveBeenCalledTimes(1);
+  expect(onCancel).toHaveBeenCalledTimes(1);
 });

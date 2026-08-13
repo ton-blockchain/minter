@@ -9,6 +9,7 @@ import { useTonAddress, useTonConnectUI } from "@tonconnect/ui-react";
 import { useNetwork } from "lib/hooks/useNetwork";
 import { useRecoilState } from "recoil";
 import { jettonActionsState } from "./jettonActions";
+import { useDiscardJettonLogoDraft } from "hooks/useJettonLogo";
 
 const inputsName = ["name", "symbol", "decimals", "tokenImage", "description"];
 
@@ -51,6 +52,7 @@ function UpdateMetadata({ setOpen }: UpdateMetadataProps) {
   const [tonConnectUI] = useTonConnectUI();
   const walletAddress = useTonAddress();
   const { network } = useNetwork();
+  const discardLogoDraft = useDiscardJettonLogoDraft();
   if (!isAdmin) {
     return null;
   }
@@ -92,6 +94,7 @@ function UpdateMetadata({ setOpen }: UpdateMetadataProps) {
       );
       setOpen(false);
     } catch (error) {
+      discardLogoDraft();
       if (error instanceof Error) {
         showNotification(error.message, "error");
       }

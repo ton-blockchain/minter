@@ -43,13 +43,15 @@ export function Form({
 }: FormProps) {
   const { showNotification } = useNotification();
   const address = useTonAddress();
-  const { jettonLogo, setIconHover } = useJettonLogo();
+  const { jettonLogo, setIconHover, discardLogoDraft } = useJettonLogo();
   const [logoAlertPopup, setLogoAlertPopup] = useState(false);
   const [editLogoPopup, setEditLogoPopup] = useState(false);
   const { jettonAddress } = useJettonAddress();
   const matches = useMediaQuery("(max-width:599px)");
   const tokenImage = inputs.filter((i) => i.name === "tokenImage")?.[0];
-  const { control, handleSubmit, formState, setValue, clearErrors, watch, getValues } = useForm({
+  const { control, handleSubmit, formState, setValue, clearErrors, watch, getValues } = useForm<
+    Record<string, any>
+  >({
     mode: "onSubmit",
     reValidateMode: "onChange",
     defaultValues,
@@ -63,9 +65,12 @@ export function Form({
     showNotification(<>{firstError.message}</>, "warning", undefined, 3000);
   };
 
-  const onExampleClick = useCallback((name: never, value: never) => {
-    setValue(name, value);
-  }, []);
+  const onExampleClick = useCallback(
+    (name: string, value: unknown, type?: string) => {
+      setValue(name, type === "number" ? String(value) : value);
+    },
+    [setValue],
+  );
 
   const closeEditLogoPopup = useCallback(() => setEditLogoPopup(false), []);
 
@@ -76,7 +81,7 @@ export function Form({
   useEffect(() => {
     //@ts-ignore
     setValue("tokenImage", jettonLogo.logoUrl);
-  }, [jettonLogo.logoUrl]);
+  }, [jettonLogo.logoUrl, setValue]);
 
   return (
     <StyledForm
@@ -168,7 +173,7 @@ export function Form({
                 control={control}
                 label={spec.label}
                 defaultValue={spec.default || ""}
-                onExampleClick={() => onExampleClick(spec.name as never, spec.default as never)}
+                onExampleClick={() => onExampleClick(spec.name, spec.default, spec.type)}
                 disabled={spec.disabled}
                 errorMessage={spec.errorMessage}
                 validate={spec.validate}
@@ -195,7 +200,10 @@ export function Form({
                 <AppButton
                   disabled={jettonLogo.isLoading}
                   transparent
-                  onClick={onCancel}
+                  onClick={() => {
+                    discardLogoDraft();
+                    onCancel();
+                  }}
                   type="button">
                   Cancel
                 </AppButton>

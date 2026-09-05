@@ -11,6 +11,7 @@ import { Box, Link } from "@mui/material";
 import { useSearchParams } from "react-router-dom";
 import { CenteringWrapper } from "components/header/headerSearchBar/styled";
 import { CheckWalletBalancePopup } from "components/checkWalletBalancePopup";
+import { setSearchParam } from "lib/network";
 
 export const Wallet = () => {
   const { balance, symbol, jettonLoading, selectedWalletAddress, decimals } = useJettonStore();
@@ -41,7 +42,9 @@ export const Wallet = () => {
               Wallet Address
               <CenteringWrapper>
                 {!!params.get("address") ? (
-                  <Link sx={{ cursor: "pointer" }} onClick={() => setParams("")}>
+                  <Link
+                    sx={{ cursor: "pointer" }}
+                    onClick={() => setParams(setSearchParam(params, "address"))}>
                     Cancel
                   </Link>
                 ) : (
@@ -56,11 +59,13 @@ export const Wallet = () => {
         <DataRow
           title="Wallet Balance"
           value={
-            balance && (
+            balance && decimals ? (
               <>
                 <BigNumberDisplay value={balance} decimals={decimals} /> {symbol}
               </>
-            )
+            ) : balance ? (
+              "Unavailable (unknown decimals)"
+            ) : undefined
           }
           dataLoading={jettonLoading}
           actions={balanceActions}

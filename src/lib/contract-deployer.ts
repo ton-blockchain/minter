@@ -1,6 +1,13 @@
 import BN from "bn.js";
 import { Address, Cell, contractAddress, StateInit } from "ton";
-import { SendTransactionRequest, TonConnectUI } from "@tonconnect/ui-react";
+import { TonConnectUI } from "@tonconnect/ui-react";
+import { Network } from "./network";
+import {
+  buildTransactionMessage,
+  buildTransactionRequest,
+  sendTransactionAndTrack,
+  TransactionOutcome,
+} from "./transaction";
 
 interface ContractDeployDetails {
   deployer: Address;
@@ -9,6 +16,11 @@ interface ContractDeployDetails {
   data: Cell;
   message?: Cell;
   dryRun?: boolean;
+}
+
+export interface ContractDeployResult {
+  address: Address;
+  outcome?: TransactionOutcome;
 }
 
 export class ContractDeployer {
@@ -23,26 +35,23 @@ export class ContractDeployer {
   async deployContract(
     params: ContractDeployDetails,
     tonConnection: TonConnectUI,
-  ): Promise<Address> {
+    network: Network,
+  ): Promise<ContractDeployResult> {
     const _contractAddress = this.addressForContract(params);
     let cell = new Cell();
     new StateInit({ data: params.data, code: params.code }).writeTo(cell);
+    let outcome: TransactionOutcome | undefined;
     if (!params.dryRun) {
-      const tx: SendTransactionRequest = {
-        validUntil: Date.now() + 5 * 60 * 1000,
-        messages: [
-          {
-            address: _contractAddress.toString(),
-            amount: params.value.toString(),
-            stateInit: cell.toBoc().toString("base64"),
-            payload: params.message?.toBoc().toString("base64"),
-          },
-        ],
-      };
+      const tx = buildTransactionRequest(network, params.deployer, [
+        buildTransactionMessage(_contractAddress, network, params.value.toString(), {
+          stateInit: cell.toBoc().toString("base64"),
+          payload: params.message?.toBoc().toString("base64"),
+        }),
+      ]);
 
-      await tonConnection.sendTransaction(tx);
+      outcome = await sendTransactionAndTrack(tonConnection, network, tx, _contractAddress);
     }
 
-    return _contractAddress;
+    return { address: _contractAddress, outcome };
   }
 }

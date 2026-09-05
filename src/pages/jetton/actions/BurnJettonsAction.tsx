@@ -7,11 +7,16 @@ import { useState } from "react";
 import useJettonStore from "store/jetton-store/useJettonStore";
 import { AppButton } from "components/appButton";
 import { AppNumberInput } from "components/appInput";
-import { toDecimalsBN } from "utils";
 import { useTonAddress, useTonConnectUI } from "@tonconnect/ui-react";
+import { Address } from "ton";
+import BN from "bn.js";
+import { useNetwork } from "lib/hooks/useNetwork";
+import { useRecoilState } from "recoil";
+import { jettonActionsState } from "./jettonActions";
+import { hasSufficientTokenBalance, parsePositiveTokenAmount } from "lib/amount";
 
 function BurnJettonsAction() {
-  const [amount, setAmount] = useState<number | undefined>(undefined);
+  const [amount, setAmount] = useState<string>("");
   const [open, setOpen] = useState(false);
   const {
     jettonMaster,
@@ -23,10 +28,11 @@ function BurnJettonsAction() {
     decimals,
   } = useJettonStore();
   const { showNotification } = useNotification();
-  const [actionInProgress, setActionInProgress] = useState(false);
+  const [actionInProgress, setActionInProgress] = useRecoilState(jettonActionsState);
   const [tonConnectUI] = useTonConnectUI();
   const walletAddress = useTonAddress();
-  if (!balance || !isMyWallet) {
+  const { network } = useNetwork();
+  if (!balance || !isMyWallet || !decimals) {
     return null;
   }
 
@@ -35,18 +41,23 @@ function BurnJettonsAction() {
       return;
     }
 
-    if (!amount || amount === 0) {
+    if (!amount) {
       showNotification(`Minimum amount to burn is 1 ${symbol}`, "warning");
       return;
     }
 
-    const valueDecimals = toDecimalsBN(amount, decimals!);
-    const balanceDecimals = toDecimalsBN(balance!!.toString(), decimals!);
-
-    if (valueDecimals.gt(balanceDecimals)) {
+    let valueDecimals: BN;
+    try {
+      valueDecimals = parsePositiveTokenAmount(amount, decimals, "Burn");
+    } catch (error) {
+      showNotification(error instanceof Error ? error.message : "Invalid burn amount", "warning");
+      return;
+    }
+    if (!hasSufficientTokenBalance(valueDecimals, balance)) {
       const msg = (
         <>
-          Maximum amount to burn is <BigNumberDisplay value={balance} />
+          Maximum amount to burn is <BigNumberDisplay value={balance} decimals={decimals} />{" "}
+          {symbol}
         </>
       );
       showNotification(msg, "warning", undefined, 3000);
@@ -55,15 +66,21 @@ function BurnJettonsAction() {
 
     try {
       setActionInProgress(true);
-      await jettonDeployController.burnJettons(
+      const outcome = await jettonDeployController.burnJettons(
         tonConnectUI,
+        Address.parse(jettonMaster),
         valueDecimals,
         jettonWalletAddress!,
         walletAddress,
+        network,
       );
-      const message = `Successfully burned ${amount.toLocaleString()} ${symbol}`;
-      showNotification(message, "success");
-      getJettonDetails();
+      if (!(await getJettonDetails())) return;
+      showNotification(
+        outcome.status === "confirmed"
+          ? `Successfully burned ${amount} ${symbol}`
+          : "Burn transaction was submitted, but final confirmation is still pending. Check the explorer before retrying.",
+        outcome.status === "confirmed" ? "success" : "warning",
+      );
     } catch (error) {
       if (error instanceof Error) {
         showNotification(error.message, "error");
@@ -75,7 +92,7 @@ function BurnJettonsAction() {
   };
 
   const onClose = () => {
-    setAmount(0);
+    setAmount("");
     setOpen(false);
   };
 
@@ -84,11 +101,7 @@ function BurnJettonsAction() {
       <Popup open={open && !actionInProgress} onClose={onClose} maxWidth={400}>
         <>
           <Typography className="title">Burn {symbol}</Typography>
-          <AppNumberInput
-            label={`Enter ${symbol} amount`}
-            value={amount}
-            onChange={(value: number) => setAmount(value)}
-          />
+          <AppNumberInput label={`Enter ${symbol} amount`} value={amount} onChange={setAmount} />
           <AppButton onClick={onBurn}>Submit</AppButton>
         </>
       </Popup>

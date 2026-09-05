@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import SearchImg from "assets/icons/search.svg";
 import { IndentlessIcon, SearchBarInput, SearchBarWrapper } from "./styled";
 import close from "assets/icons/close.svg";
@@ -9,11 +9,9 @@ import { useAddressHistory } from "hooks/useAddressHistory";
 
 interface SearchBarProps {
   closeMenu?: () => void;
-  resetExample?: () => void;
-  example?: string;
 }
 
-export const SearchBar: React.FC<SearchBarProps> = ({ example, resetExample, closeMenu }) => {
+export const SearchBar: React.FC<SearchBarProps> = ({ closeMenu }) => {
   const {
     addresses,
     onAddressClick,
@@ -29,26 +27,6 @@ export const SearchBar: React.FC<SearchBarProps> = ({ example, resetExample, clo
     e.stopPropagation();
     removeAddress(address);
   };
-
-  useEffect(() => {
-    resetExample?.();
-    const listener = (event: any) => {
-      if (event.code === "Enter" || event.code === "NumpadEnter") {
-        event.preventDefault();
-        event.target.blur();
-        onSubmit(addressInput.value);
-        closeMenu?.();
-      }
-    };
-    document.addEventListener("keydown", listener);
-    return () => {
-      document.removeEventListener("keydown", listener);
-    };
-  }, [addressInput.value, onSubmit]);
-
-  useEffect(() => {
-    example && setValue(example);
-  }, [example]);
 
   return (
     <ClickAwayListener onClickAway={() => setActive(false)}>
@@ -68,6 +46,13 @@ export const SearchBar: React.FC<SearchBarProps> = ({ example, resetExample, clo
             value={addressInput.value}
             onFocus={() => addresses?.length && setActive(true)}
             spellCheck={false}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                event.preventDefault();
+                onSubmit(addressInput.value);
+                closeMenu?.();
+              }
+            }}
           />
           {!!addressInput.value.length && (
             <>

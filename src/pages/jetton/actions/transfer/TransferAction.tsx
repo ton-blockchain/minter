@@ -7,34 +7,48 @@ import { validateTransfer } from "./utils";
 import { ButtonWrapper, TransferContent, TransferWrapper } from "./styled";
 import { AppHeading } from "components/appHeading";
 import { AppNumberInput, AppTextInput } from "components/appInput";
-import { toDecimalsBN } from "utils";
 import { useRecoilState } from "recoil";
 import { jettonActionsState } from "pages/jetton/actions/jettonActions";
 import { useTonAddress, useTonConnectUI } from "@tonconnect/ui-react";
+import { Address } from "ton";
+import { useNetwork } from "lib/hooks/useNetwork";
+import { parsePositiveTokenAmount } from "lib/amount";
 
 export const TransferAction = () => {
-  const { balance, symbol, jettonWalletAddress, getJettonDetails, isMyWallet, decimals } =
-    useJettonStore();
+  const {
+    balance,
+    symbol,
+    jettonMaster,
+    jettonWalletAddress,
+    getJettonDetails,
+    isMyWallet,
+    decimals,
+  } = useJettonStore();
 
   const [toAddress, setToAddress] = useState<string | undefined>(undefined);
-  const [amount, setAmount] = useState<number | undefined>(undefined);
+  const [amount, setAmount] = useState<string>("");
   const { showNotification } = useNotification();
   const connectedWalletAddress = useTonAddress();
   const [tonConnectUI] = useTonConnectUI();
   const [actionInProgress, setActionInProgress] = useRecoilState(jettonActionsState);
+  const { network } = useNetwork();
 
-  if (!balance || !jettonWalletAddress || !isMyWallet) {
+  if (!balance || !jettonMaster || !jettonWalletAddress || !isMyWallet || !decimals) {
     return null;
   }
 
   const onSubmit = async () => {
-    const error = validateTransfer(
-      toAddress,
-      toDecimalsBN(amount!, decimals!),
-      balance,
-      symbol,
-      decimals,
-    );
+    let atomicAmount;
+    try {
+      atomicAmount = parsePositiveTokenAmount(amount, decimals!, "Transfer");
+    } catch (error) {
+      showNotification(
+        error instanceof Error ? error.message : "Invalid transfer amount",
+        "warning",
+      );
+      return;
+    }
+    const error = validateTransfer(toAddress, atomicAmount, balance, symbol, decimals);
     if (error) {
       showNotification(error, "warning", undefined, 3000);
       return;
@@ -42,19 +56,23 @@ export const TransferAction = () => {
 
     setActionInProgress(true);
     try {
-      await jettonDeployController.transfer(
+      const outcome = await jettonDeployController.transfer(
         tonConnectUI,
-        toDecimalsBN(amount!.toString(), decimals!),
+        Address.parse(jettonMaster),
+        atomicAmount,
         toAddress!,
         connectedWalletAddress!,
         jettonWalletAddress,
+        network,
       );
       setToAddress(undefined);
-      setAmount(undefined);
-      getJettonDetails();
+      setAmount("");
+      if (!(await getJettonDetails())) return;
       showNotification(
-        `Successfully transfered ${amount?.toLocaleString()} ${symbol}`,
-        "warning",
+        outcome.status === "confirmed"
+          ? `Successfully transferred ${amount} ${symbol}`
+          : "Transfer transaction was submitted, but final confirmation is still pending. Check the explorer before retrying.",
+        outcome.status === "confirmed" ? "success" : "warning",
         undefined,
         4000,
       );
@@ -84,11 +102,7 @@ export const TransferAction = () => {
           value={toAddress}
           onChange={(e) => setToAddress(e.target.value)}
         />
-        <AppNumberInput
-          label="Amount to transfer"
-          onChange={(value: number) => setAmount(value)}
-          value={amount}
-        />
+        <AppNumberInput label="Amount to transfer" onChange={setAmount} value={amount} />
       </TransferContent>
       <ButtonWrapper>
         <AppButton

@@ -44,6 +44,8 @@ export const Token = () => {
     isJettonDeployerFaultyOnChainData,
     jettonLoading,
     decimals,
+    metadataError,
+    rawJettonImageData,
     isImageBroken,
   } = useJettonStore();
   const [openEdit, setOpenEdit] = useState(false);
@@ -87,22 +89,27 @@ export const Token = () => {
                 </Tooltip>
               </LoadingContainer>
             </StyledTopText>
-            {isAdmin && !adminRevokedOwnership && !jettonLoading && (
-              <Box sx={{ alignSelf: "start" }}>
-                <AppButton width={113} height={32} transparent onClick={() => setOpenEdit(true)}>
-                  <CenteringWrapper>
-                    <img
-                      src={pen}
-                      alt="Pen Icon"
-                      width={15}
-                      height={15}
-                      style={{ marginRight: 4 }}
-                    />
-                    Edit token
-                  </CenteringWrapper>
-                </AppButton>
-              </Box>
-            )}
+            {isAdmin &&
+              !adminRevokedOwnership &&
+              !jettonLoading &&
+              !metadataError &&
+              !rawJettonImageData &&
+              decimals && (
+                <Box sx={{ alignSelf: "start" }}>
+                  <AppButton width={113} height={32} transparent onClick={() => setOpenEdit(true)}>
+                    <CenteringWrapper>
+                      <img
+                        src={pen}
+                        alt="Pen Icon"
+                        width={15}
+                        height={15}
+                        style={{ marginRight: 4 }}
+                      />
+                      Edit token
+                    </CenteringWrapper>
+                  </AppButton>
+                </Box>
+              )}
           </StyledTop>
           {!isAdmin && isJettonDeployerFaultyOnChainData && (
             <Alert variant="filled" severity="error">
@@ -111,7 +118,7 @@ export const Token = () => {
           )}
           <StyledCategoryFields>
             <DataRow
-              description="On-chain smart contract address of the Jetton parent (jetton-minter.fc)"
+              description="On-chain address of the Jetton master contract"
               title="Address"
               value={jettonMaster}
               dataLoading={jettonLoading}
@@ -150,15 +157,17 @@ export const Token = () => {
             <DataRow
               title="Total Supply"
               value={
-                totalSupply && (
+                totalSupply && decimals ? (
                   <>
                     <BigNumberDisplay
                       value={totalSupply.toString()}
-                      decimals={parseInt(decimals!)}
+                      decimals={parseInt(decimals)}
                     />{" "}
                     {symbol}
                   </>
-                )
+                ) : totalSupply ? (
+                  "Unavailable (unknown decimals)"
+                ) : undefined
               }
               dataLoading={jettonLoading}
               message={getTotalSupplyWarning(persistenceType, adminRevokedOwnership)}

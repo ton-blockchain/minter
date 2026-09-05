@@ -3,6 +3,7 @@ import { VariantType, useSnackbar } from "notistack";
 import { IconButton, styled } from "@mui/material";
 import { Box } from "@mui/system";
 import CloseIcon from "@mui/icons-material/Close";
+import { getErrorNotification } from "lib/error-notification";
 const StyledMessage = styled(Box)({
   "& &": {
     color: "white",
@@ -22,8 +23,16 @@ function useNotification() {
       onClose?: () => void,
       autoHideDuration?: number,
     ) => {
-      const key = enqueueSnackbar(<StyledMessage>{message}</StyledMessage>, {
-        variant,
+      const notification =
+        variant === "error" ? getErrorNotification(message) : { message, variant };
+      const notificationKey =
+        typeof notification.message === "string"
+          ? `${notification.variant}:${notification.message}`
+          : undefined;
+      const key = enqueueSnackbar(<StyledMessage>{notification.message}</StyledMessage>, {
+        key: notificationKey,
+        preventDuplicate: true,
+        variant: notification.variant,
         autoHideDuration: autoHideDuration || 5000,
         onClose,
         onClick: () => closeSnackbar(key),

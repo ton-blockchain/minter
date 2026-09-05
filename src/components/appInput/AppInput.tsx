@@ -66,8 +66,8 @@ export const AppTextInput: React.FC<AppInputProps> = ({ fullWidth, value, label,
 //TODO separate text and number inputs into separate files, refactor AppNumberInput
 
 interface AppNumberInputProps {
-  onChange: (val: number) => void;
-  value?: number;
+  onChange: (val: string) => void;
+  value?: string;
   label?: string;
 }
 
@@ -98,7 +98,7 @@ export const AppNumberInput: React.FC<AppNumberInputProps> = ({ value, label, on
         fullWidth
         label={label}
         onValueChange={({ value }) => {
-          onChange(Number(value));
+          onChange(value);
         }}
       />
     </InputWrapper>

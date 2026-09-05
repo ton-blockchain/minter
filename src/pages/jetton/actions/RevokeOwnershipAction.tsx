@@ -11,15 +11,19 @@ import bullet from "assets/icons/bullet.svg";
 import error from "assets/icons/error-notification.svg";
 import { Box } from "@mui/system";
 import { useTonAddress, useTonConnectUI } from "@tonconnect/ui-react";
+import { useNetwork } from "lib/hooks/useNetwork";
+import { useRecoilState } from "recoil";
+import { jettonActionsState } from "./jettonActions";
 
 function RevokeOwnershipAction() {
-  const [actionInProgress, setActionInProgress] = useState(false);
+  const [actionInProgress, setActionInProgress] = useRecoilState(jettonActionsState);
   const [showAlert, setShowAlert] = useState(false);
   const { jettonMaster, isAdmin, getJettonDetails, isMyWallet, symbol, isImageBroken } =
     useJettonStore();
   const walletAddress = useTonAddress();
   const [tonConnectUI] = useTonConnectUI();
   const { showNotification } = useNotification();
+  const { network } = useNetwork();
   if (!isAdmin || !isMyWallet) {
     return null;
   }
@@ -35,13 +39,19 @@ function RevokeOwnershipAction() {
         return;
       }
       setActionInProgress(true);
-      await jettonDeployController.burnAdmin(
+      const outcome = await jettonDeployController.burnAdmin(
         Address.parse(jettonMaster),
         tonConnectUI,
         walletAddress,
+        network,
       );
-      getJettonDetails();
-      showNotification("Ownership revoked successfully", "success");
+      if (!(await getJettonDetails())) return;
+      showNotification(
+        outcome.status === "confirmed"
+          ? "Ownership revoked successfully"
+          : "Revoke transaction was submitted, but final confirmation is still pending. Check the explorer before retrying.",
+        outcome.status === "confirmed" ? "success" : "warning",
+      );
     } catch (error) {
       if (error instanceof Error) {
         showNotification(error.message, "error");

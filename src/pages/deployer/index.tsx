@@ -1,12 +1,19 @@
 import { useState } from "react";
 import { Address } from "ton";
 import { Box, Fade, Link, Typography } from "@mui/material";
-import { jettonDeployController, JettonDeployParams } from "lib/deploy-controller";
-import WalletConnection from "services/wallet-connection";
+import {
+  jettonDeployController,
+  JettonAlreadyDeployedError,
+  JettonDeployParams,
+} from "lib/deploy-controller";
 import { createDeployParams } from "lib/utils";
 import { ContractDeployer } from "lib/contract-deployer";
-import { Link as ReactRouterLink } from "react-router-dom";
-import { ROUTES } from "consts";
+import {
+  JETTON_V2_CONTRACTS_GITHUB_URL,
+  MINTER_METADATA_BEST_PRACTICES_URL,
+  MINTER_GITHUB_URL,
+  ROUTES,
+} from "consts";
 import useNotification from "hooks/useNotification";
 import { FormWrapper, ScreenHeading, StyledDescription, SubHeadingWrapper } from "./styles";
 import { Screen, ScreenContent } from "components/Screen";
@@ -17,6 +24,9 @@ import { Form } from "components/form";
 import { GithubButton } from "pages/deployer/githubButton";
 import { useNavigatePreserveQuery } from "lib/hooks/useNavigatePreserveQuery";
 import { useTonAddress, useTonConnectUI } from "@tonconnect/ui-react";
+import { useNetwork } from "lib/hooks/useNetwork";
+import { formatAddress, NETWORK_CONFIG } from "lib/network";
+import { fetchJettonMetadata } from "lib/jetton-minter";
 
 const DEFAULT_DECIMALS = 9;
 
@@ -24,10 +34,14 @@ const isOffchainInternal = getUrlParam("offchainINTERNAL") !== null;
 
 let formSpec = isOffchainInternal ? offchainFormSpec : onchainFormSpec;
 
-async function fetchDecimalsOffchain(url: string): Promise<{ decimals?: string }> {
-  let res = await fetch(url);
-  let obj = await res.json();
-  return obj;
+function normalizeDecimals(value: unknown): string {
+  const normalized = value === undefined || value === null || value === "" ? "9" : String(value);
+  if (!/^\d+$/.test(normalized)) throw new Error("Jetton decimals must be an integer");
+  const decimals = Number(normalized);
+  if (!Number.isInteger(decimals) || decimals < 0 || decimals > 255) {
+    throw new Error("Jetton decimals must be between 0 and 255");
+  }
+  return normalized;
 }
 
 function DeployerPage() {
@@ -36,64 +50,77 @@ function DeployerPage() {
   const [tonConnectUI] = useTonConnectUI();
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigatePreserveQuery();
+  const { network } = useNetwork();
+
+  const showPendingDeploy = (address: string) => {
+    showNotification(
+      <>
+        Deployment was submitted, but final confirmation is still pending. Do not retry it. Check
+        the deterministic contract address in the{" "}
+        <Link href={`${NETWORK_CONFIG[network].explorer}/address/${address}`} target="_blank">
+          explorer
+        </Link>
+        .
+      </>,
+      "warning",
+      undefined,
+      15000,
+    );
+  };
 
   async function deployContract(data: any) {
-    if (!walletAddress || !tonConnectUI) {
-      throw new Error("Wallet not connected");
-    }
-
-    let decimals = data.decimals;
-    if (data.offchainUri) {
-      let res = await fetchDecimalsOffchain(
-        data.offchainUri.replace("ipfs://", "https://ipfs.io/ipfs/"),
-      );
-      decimals = res.decimals;
-    }
-
-    const params: JettonDeployParams = {
-      owner: Address.parse(walletAddress),
-      onchainMetaData: {
-        name: data.name,
-        symbol: data.symbol,
-        image: data.tokenImage,
-        description: data.description,
-        decimals: parseInt(decimals).toFixed(0),
-      },
-      offchainUri: data.offchainUri,
-      amountToMint: toDecimalsBN(data.mintAmount, decimals ?? DEFAULT_DECIMALS),
-    };
+    let address: string | undefined;
     setIsLoading(true);
-    const deployParams = createDeployParams(params, data.offchainUri);
-    const contractAddress = new ContractDeployer().addressForContract(deployParams);
-
-    const isDeployed = await WalletConnection.isContractDeployed(contractAddress);
-
-    if (isDeployed) {
-      showNotification(
-        <>
-          Contract already deployed,{" "}
-          <ReactRouterLink to={`${ROUTES.jetton}/${Address.normalize(contractAddress)}/`}>
-            View contract
-          </ReactRouterLink>
-        </>,
-        "warning",
-      );
-      setIsLoading(false);
-      return;
-    }
-
     try {
-      const result = await jettonDeployController.createJetton(params, tonConnectUI, walletAddress);
-      analytics.sendEvent(
-        AnalyticsCategory.DEPLOYER_PAGE,
-        AnalyticsAction.DEPLOY,
-        contractAddress.toFriendly(),
-      );
+      if (!walletAddress || !tonConnectUI) {
+        throw new Error("Wallet not connected");
+      }
+      let decimals = data.decimals;
+      if (data.offchainUri) {
+        const { metadata } = await fetchJettonMetadata(data.offchainUri);
+        decimals = metadata.decimals;
+      }
+      const normalizedDecimals = normalizeDecimals(decimals ?? DEFAULT_DECIMALS);
+      const params: JettonDeployParams = {
+        owner: Address.parse(walletAddress),
+        onchainMetaData: {
+          name: data.name,
+          symbol: data.symbol,
+          image: data.tokenImage,
+          description: data.description,
+          decimals: normalizedDecimals,
+        },
+        offchainUri: data.offchainUri,
+        amountToMint: toDecimalsBN(data.mintAmount, normalizedDecimals),
+      };
+      const deployParams = createDeployParams(params, data.offchainUri);
+      const contractAddress = new ContractDeployer().addressForContract(deployParams);
+      address = formatAddress(contractAddress, network);
+      const result = await jettonDeployController.createJetton(params, tonConnectUI, network);
+      if (result.status === "submitted") {
+        showPendingDeploy(address);
+        return;
+      }
 
-      navigate(`${ROUTES.jetton}/${Address.normalize(result)}`);
+      analytics.sendEvent(AnalyticsCategory.DEPLOYER_PAGE, AnalyticsAction.DEPLOY, address);
+      navigate(`${ROUTES.jetton}/${address}`);
     } catch (err) {
-      if (err instanceof Error) {
-        showNotification(<>{err.message}</>, "error");
+      if (err instanceof JettonAlreadyDeployedError) {
+        address = formatAddress(err.address, network);
+        showNotification(
+          <>
+            This jetton already exists. Open the{" "}
+            <Link href={`${ROUTES.jetton}/${address}${window.location.search}`}>
+              existing contract
+            </Link>{" "}
+            instead of deploying or minting it again.
+          </>,
+          "warning",
+          undefined,
+          10000,
+        );
+      } else {
+        showNotification(err instanceof Error ? err.message : "", "error");
       }
     } finally {
       setIsLoading(false);
@@ -167,38 +194,29 @@ function Description() {
           TON Blockchain
         </Link>
         . This free educational tool allows you to deploy your own Jetton to mainnet in one click.
-        You will need at least 0.25 TON for deployment fees. <br />
+        The deployment transaction sends 0.15 GRAM. Keep at least 0.20 GRAM in your wallet to cover
+        fees. <br />
         <Spacer />
         For detailed instructions and in-depth explanations of all fields please see the{" "}
-        <Link
-          target="_blank"
-          href="https://github.com/ton-blockchain/minter-contract#jetton-metadata-field-best-practices">
+        <Link target="_blank" href={MINTER_METADATA_BEST_PRACTICES_URL}>
           GitHub README
         </Link>
         . It includes several best practice recommendations so please take a look.
         <Spacer />
         Never deploy code that you've never seen before! This deployer is fully open source with all
         smart contract code{" "}
-        <Link target="_blank" href="https://github.com/ton-blockchain/minter-contract">
+        <Link target="_blank" href={JETTON_V2_CONTRACTS_GITHUB_URL}>
           available here
         </Link>
         . The HTML form is also{" "}
-        <Link target="_blank" href="https://github.com/ton-blockchain/minter">
+        <Link target="_blank" href={MINTER_GITHUB_URL}>
           open source
         </Link>{" "}
         and served from{" "}
-        <Link target="_blank" href="https://github.com/ton-blockchain/minter">
+        <Link target="_blank" href={MINTER_GITHUB_URL}>
           GitHub Pages
         </Link>
         . <Spacer />
-        Is this deployer safe? Yes! Read{" "}
-        <Link
-          target="_blank"
-          href="https://github.com/ton-blockchain/minter-contract#protect-yourself-and-your-users">
-          this
-        </Link>{" "}
-        to understand why.
-        <Spacer />
         Learn more about other token-minting solutions in our{" "}
         <Link target="_blank" href="https://blog.ton.org/history-of-mass-minting-on-ton">
           article

@@ -1,6 +1,6 @@
 import { styled } from "@mui/material";
 import { Box } from "@mui/system";
-import { createContext, useEffect } from "react";
+import { useEffect } from "react";
 import { APP_GRID, ROUTES } from "consts";
 import { Navigate, Outlet, Route, Routes, useLocation } from "react-router-dom";
 import { DeployerPage, Jetton } from "pages";
@@ -9,7 +9,6 @@ import { Footer } from "components/footer";
 import { Header } from "components/header";
 import { useResetJettonLogoOnPathChange } from "hooks/useJettonLogo";
 import useNotification from "hooks/useNotification";
-import { useNetwork } from "lib/hooks/useNetwork";
 
 analytics.init();
 
@@ -50,11 +49,6 @@ const FlexibleBox = styled(Box)(({ theme }) => ({
   },
 }));
 
-export const EnvContext = createContext({
-  isSandbox: false,
-  isTestnet: false,
-});
-
 const PageNotFound = () => {
   const { showNotification } = useNotification();
 
@@ -80,41 +74,31 @@ const ContentWrapper = ({ children }: ContentWrapperProps) => {
 
 const App = () => {
   const location = useLocation();
-  const { network } = useNetwork();
 
   useResetJettonLogoOnPathChange(location.pathname);
 
-  const isSandbox = window.location.search.includes("sandbox");
-  const isTestnet = network === "testnet";
-
   return (
     <AppWrapper>
-      <EnvContext.Provider
-        value={{
-          isSandbox: isSandbox,
-          isTestnet: isTestnet,
-        }}>
-        <ScreensWrapper>
-          <Routes>
-            <Route
-              path="*"
-              element={
-                <>
-                  <Header />
-                  <Navigate to={{ pathname: "/", search: location.search }} />
-                  <PageNotFound />
-                </>
-              }
-            />
-            <Route path="/" element={<Header />}>
-              <Route path="/" element={<ContentWrapper />}>
-                <Route path={ROUTES.deployer} element={<DeployerPage />} />
-                <Route path={ROUTES.jettonId} element={<Jetton />} />
-              </Route>
+      <ScreensWrapper>
+        <Routes>
+          <Route
+            path="*"
+            element={
+              <>
+                <Header />
+                <Navigate to={{ pathname: "/", search: location.search }} />
+                <PageNotFound />
+              </>
+            }
+          />
+          <Route path="/" element={<Header />}>
+            <Route path="/" element={<ContentWrapper />}>
+              <Route path={ROUTES.deployer} element={<DeployerPage />} />
+              <Route path={ROUTES.jettonId} element={<Jetton />} />
             </Route>
-          </Routes>
-        </ScreensWrapper>
-      </EnvContext.Provider>
+          </Route>
+        </Routes>
+      </ScreensWrapper>
       <FooterBox mt={5}>
         <Footer />
       </FooterBox>

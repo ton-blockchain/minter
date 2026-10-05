@@ -25,8 +25,9 @@ import { GithubButton } from "pages/deployer/githubButton";
 import { useNavigatePreserveQuery } from "lib/hooks/useNavigatePreserveQuery";
 import { useTonAddress, useTonConnectUI } from "@tonconnect/ui-react";
 import { useNetwork } from "lib/hooks/useNetwork";
-import { formatAddress, NETWORK_CONFIG } from "lib/network";
+import { formatAddress } from "lib/network";
 import { fetchJettonMetadata } from "lib/jetton-minter";
+import { PendingDeployLink } from "components/PendingDeployLink";
 
 const DEFAULT_DECIMALS = 9;
 
@@ -57,10 +58,7 @@ function DeployerPage() {
       <>
         Deployment was submitted, but final confirmation is still pending. Do not retry it. Check
         the deterministic contract address in the{" "}
-        <Link href={`${NETWORK_CONFIG[network].explorer}/address/${address}`} target="_blank">
-          explorer
-        </Link>
-        .
+        <PendingDeployLink address={address} network={network} />.
       </>,
       "warning",
       undefined,

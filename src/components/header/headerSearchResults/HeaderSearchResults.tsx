@@ -8,6 +8,8 @@ import recentSearch from "assets/icons/recent-search.svg";
 import { IconButton, Typography } from "@mui/material";
 import close from "assets/icons/close.svg";
 import { AppButton } from "components/appButton";
+import { useDisplayAddresses } from "hooks/useDisplayAddresses";
+import { useNetwork } from "lib/hooks/useNetwork";
 
 interface HeaderSearchResultsProps {
   searchResults: string[];
@@ -22,15 +24,18 @@ export const HeaderSearchResults: React.FC<HeaderSearchResultsProps> = ({
   onItemDelete,
   onHistoryClear,
 }) => {
+  const { network } = useNetwork();
+  const displayAddresses = useDisplayAddresses(searchResults, network);
+
   return (
     <SearchResultsWrapper>
-      {searchResults.map((result) => (
+      {searchResults.map((result, index) => (
         <SearchResultsItem key={result} onClick={() => onItemClick(result)}>
           <CenteringWrapper>
             <CenteringWrapper mr={1.5}>
               <img width={18} height={18} src={recentSearch} alt="Search Icon" />
             </CenteringWrapper>
-            <Typography>{result}</Typography>
+            <Typography>{displayAddresses[index] || "…"}</Typography>
           </CenteringWrapper>
           <IconButton onClick={(e) => onItemDelete(e, result)}>
             <img src={close} alt="Close Icon" width={18} height={18} />

@@ -20,6 +20,7 @@ export interface DataRowProps {
   address?: string | null;
   actions?: FunctionComponent[] | undefined;
   dataLoading: boolean;
+  valueLoading?: boolean;
   description?: string;
   hasButton?: boolean;
   showIcon?: boolean;
@@ -33,6 +34,7 @@ export const DataRow: React.FC<DataRowProps> = ({
   message,
   actions,
   dataLoading,
+  valueLoading = false,
   description,
   address,
   hasButton,
@@ -47,16 +49,18 @@ export const DataRow: React.FC<DataRowProps> = ({
         <RowValueDisplayer>
           <LoadingContainer loading={dataLoading} loaderHeight="50%">
             <RowValueSection hasButton={hasButton}>
-              {address && value ? (
-                <AddressLink
-                  address={address}
-                  value={value}
-                  showIcon={showIcon}
-                  regularAddress={regularAddress}
-                />
-              ) : (
-                <Typography>{value || "-"}</Typography>
-              )}
+              <LoadingContainer loading={valueLoading}>
+                {address && value ? (
+                  <AddressLink
+                    address={address}
+                    value={value}
+                    showIcon={showIcon}
+                    regularAddress={regularAddress}
+                  />
+                ) : (
+                  <Typography>{value || "-"}</Typography>
+                )}
+              </LoadingContainer>
             </RowValueSection>
             {actions && (
               <RowActionsButton>

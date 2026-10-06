@@ -137,7 +137,8 @@ export const Token = () => {
                 isAdmin,
                 jettonMaster,
               )}
-              dataLoading={jettonLoading || adminAddressLoading}
+              dataLoading={jettonLoading}
+              valueLoading={adminAddressLoading && !adminRevokedOwnership}
               actions={adminActions}
               hasButton={isAdmin && !adminRevokedOwnership}
               showIcon={!isAdmin}

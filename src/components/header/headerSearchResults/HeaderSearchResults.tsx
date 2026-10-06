@@ -10,6 +10,7 @@ import close from "assets/icons/close.svg";
 import { AppButton } from "components/appButton";
 import { useDisplayAddresses } from "hooks/useDisplayAddresses";
 import { useNetwork } from "lib/hooks/useNetwork";
+import { formatAddress } from "lib/network";
 
 interface HeaderSearchResultsProps {
   searchResults: string[];
@@ -35,7 +36,7 @@ export const HeaderSearchResults: React.FC<HeaderSearchResultsProps> = ({
             <CenteringWrapper mr={1.5}>
               <img width={18} height={18} src={recentSearch} alt="Search Icon" />
             </CenteringWrapper>
-            <Typography>{displayAddresses[index] || "…"}</Typography>
+            <Typography>{displayAddresses[index] || formatAddress(result, network)}</Typography>
           </CenteringWrapper>
           <IconButton onClick={(e) => onItemDelete(e, result)}>
             <img src={close} alt="Close Icon" width={18} height={18} />

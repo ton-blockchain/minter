@@ -63,7 +63,7 @@ export function useAddressHistory() {
 
     addAddress(address);
 
-    navigate(`${ROUTES.jetton}/${address}`);
+    navigate(`${ROUTES.jetton}/${formatAddress(address, network)}`);
   };
 
   const onSubmit = (address: string) => {

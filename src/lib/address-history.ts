@@ -15,11 +15,12 @@ export function normalizeAddressHistory(value: AddressHistory | string[]): Addre
   };
 
   if (Array.isArray(value)) {
-    // The old shared history stored friendly addresses with their network flag.
+    // Older clients omitted the test-only flag even for testnet searches.
     value.forEach((address) => {
       try {
         const { isTestOnly } = Address.parseFriendly(address);
         add(address, isTestOnly ? "testnet" : "mainnet");
+        if (!isTestOnly) add(address, "testnet");
       } catch {}
     });
   } else {

@@ -4,6 +4,17 @@ import { formatAddress } from "./network";
 
 const account = Address.parseRaw(`0:${"ab".repeat(32)}`);
 
+test("preserves ambiguous legacy addresses in both networks", () => {
+  expect(normalizeAddressHistory([account.toFriendly()])).toEqual({
+    mainnet: [account.toString()],
+    testnet: [account.toString()],
+  });
+  expect(normalizeAddressHistory([formatAddress(account, "testnet")])).toEqual({
+    mainnet: [],
+    testnet: [account.toString()],
+  });
+});
+
 test("migrates legacy history by network and deduplicates bounceable variants", () => {
   expect(
     normalizeAddressHistory([

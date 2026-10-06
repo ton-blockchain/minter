@@ -29,7 +29,6 @@ function checkedFriendly(value: unknown, address: Address, network: Network): st
 export async function getDisplayAddresses(
   values: (Address | string)[],
   network: Network,
-  previousAddresses: (string | undefined)[] = [],
 ): Promise<string[]> {
   const addresses = values.map((value) => {
     try {
@@ -38,12 +37,7 @@ export async function getDisplayAddresses(
       return null;
     }
   });
-  const fallback = addresses.map((address, index) =>
-    address
-      ? checkedFriendly(previousAddresses[index], address, network) ||
-        formatAddress(address, network)
-      : "",
-  );
+  const fallback = addresses.map((address) => (address ? formatAddress(address, network) : ""));
   const rawAddresses = Array.from(
     new Set(addresses.flatMap((address) => (address ? [address.toString()] : []))),
   );
@@ -91,12 +85,4 @@ export async function getDisplayAddresses(
   } finally {
     clearTimeout(timeout);
   }
-}
-
-export async function getDisplayAddress(
-  value: Address | string,
-  network: Network,
-  previousAddress?: string,
-): Promise<string> {
-  return (await getDisplayAddresses([value], network, [previousAddress]))[0];
 }

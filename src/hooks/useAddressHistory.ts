@@ -10,7 +10,11 @@ import { useJettonAddress } from "hooks/useJettonAddress";
 import { useNavigatePreserveQuery } from "lib/hooks/useNavigatePreserveQuery";
 import { useNetwork } from "lib/hooks/useNetwork";
 import { formatAddress } from "lib/network";
-import { AddressHistory, normalizeAddressHistory } from "lib/address-history";
+import {
+  ADDRESS_HISTORY_LIMIT,
+  AddressHistory,
+  normalizeAddressHistory,
+} from "lib/address-history";
 
 const { persistAtom } = recoilPersist({
   key: "addressHistory",
@@ -37,7 +41,10 @@ export function useAddressHistory() {
       setHistory((prev) => {
         const next = normalizeAddressHistory(prev);
         if (next[network][0] === raw && !Array.isArray(prev)) return prev;
-        next[network] = [raw, ...next[network].filter((a) => a !== raw)].slice(0, 20);
+        next[network] = [raw, ...next[network].filter((a) => a !== raw)].slice(
+          0,
+          ADDRESS_HISTORY_LIMIT,
+        );
         return next;
       });
     },

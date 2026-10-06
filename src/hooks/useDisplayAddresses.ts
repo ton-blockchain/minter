@@ -3,6 +3,7 @@ import { getDisplayAddresses } from "lib/display-address";
 import { Network } from "lib/network";
 
 export function useDisplayAddresses(addresses: string[], network: Network): string[] {
+  // Compare by content: callers may recreate the address array on each render.
   const requestKey = JSON.stringify([network, addresses]);
   const [result, setResult] = useState({ requestKey: "", addresses: [] as string[] });
 

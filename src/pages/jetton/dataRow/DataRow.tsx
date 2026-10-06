@@ -46,7 +46,7 @@ export const DataRow: React.FC<DataRowProps> = ({
     <Box>
       <RowTitle variant="h6">{children ? children : title}</RowTitle>
       <RowContent>
-        <RowValueDisplayer>
+        <RowValueDisplayer role="group" aria-label={title} aria-busy={dataLoading || valueLoading}>
           <LoadingContainer loading={dataLoading} loaderHeight="50%">
             <RowValueSection hasButton={hasButton}>
               <LoadingContainer loading={valueLoading}>

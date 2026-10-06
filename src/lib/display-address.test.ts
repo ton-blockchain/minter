@@ -1,5 +1,5 @@
 import { Address } from "ton";
-import { getDisplayAddress, getDisplayAddresses } from "./display-address";
+import { getDisplayAddresses } from "./display-address";
 import { formatAddress, Network, NETWORK_CONFIG } from "./network";
 
 const account = Address.parseRaw(`0:${"ab".repeat(32)}`);
@@ -23,7 +23,7 @@ test.each(["mainnet", "testnet"] as const)(
       for (const bounceable of [false, true]) {
         const address = new Address(workchain, account.hash);
         fetchMock.mockResolvedValueOnce(response(book(address, network, bounceable)));
-        const display = await getDisplayAddress(address, network);
+        const [display] = await getDisplayAddresses([address], network);
         const parsed = Address.parseFriendly(display);
         expect(parsed.address.equals(address)).toBe(true);
         expect(parsed.isBounceable).toBe(bounceable);
@@ -64,30 +64,36 @@ test.each([
   book(account, "testnet", false),
 ])("falls back for missing, malformed or mismatched API data: %j", async (data) => {
   fetchMock.mockResolvedValueOnce(response(data));
-  const previous = formatAddress(account, "mainnet", false);
-  expect(await getDisplayAddress(account, "mainnet", previous)).toBe(previous);
+  expect(await getDisplayAddresses([account], "mainnet")).toEqual([
+    formatAddress(account, "mainnet"),
+  ]);
 });
 
-test("does not reuse a previous address from a different account or network", async () => {
-  fetchMock.mockRejectedValue(new Error("offline"));
-  expect(
-    await getDisplayAddress(account, "testnet", formatAddress(account, "mainnet", false)),
-  ).toBe(formatAddress(account, "testnet"));
-  expect(await getDisplayAddress(account, "mainnet", formatAddress(other, "mainnet", false))).toBe(
-    formatAddress(account, "mainnet"),
-  );
-});
+test.each(["mainnet", "testnet"] as const)(
+  "offline fallback preserves each account on %s",
+  async (network) => {
+    fetchMock.mockRejectedValue(new Error("offline"));
+    expect(await getDisplayAddresses([account, other], network)).toEqual([
+      formatAddress(account, network),
+      formatAddress(other, network),
+    ]);
+  },
+);
 
 test("HTTP and JSON errors do not prevent displaying the account", async () => {
   fetchMock.mockResolvedValueOnce(response(book(account, "mainnet", false), false));
-  expect(await getDisplayAddress(account, "mainnet")).toBe(formatAddress(account, "mainnet"));
+  expect(await getDisplayAddresses([account], "mainnet")).toEqual([
+    formatAddress(account, "mainnet"),
+  ]);
   fetchMock.mockResolvedValueOnce({
     ok: true,
     json: async () => {
       throw new Error("Bad JSON");
     },
   } as unknown as Response);
-  expect(await getDisplayAddress(account, "mainnet")).toBe(formatAddress(account, "mainnet"));
+  expect(await getDisplayAddresses([account], "mainnet")).toEqual([
+    formatAddress(account, "mainnet"),
+  ]);
 });
 
 test("does not cache failure or the state before a contract was deployed", async () => {
@@ -95,20 +101,22 @@ test("does not cache failure or the state before a contract was deployed", async
     .mockRejectedValueOnce(new Error("offline"))
     .mockResolvedValueOnce(response(book(account, "mainnet", false)))
     .mockResolvedValueOnce(response(book(account, "mainnet", true)));
-  await getDisplayAddress(account, "mainnet");
-  expect(await getDisplayAddress(account, "mainnet")).toBe(
+  await getDisplayAddresses([account], "mainnet");
+  expect(await getDisplayAddresses([account], "mainnet")).toEqual([
     formatAddress(account, "mainnet", false),
-  );
-  expect(await getDisplayAddress(account, "mainnet")).toBe(formatAddress(account, "mainnet", true));
+  ]);
+  expect(await getDisplayAddresses([account], "mainnet")).toEqual([
+    formatAddress(account, "mainnet", true),
+  ]);
   expect(fetchMock).toHaveBeenCalledTimes(3);
 });
 
 test("times out even if fetch ignores abort, and aborts the request", async () => {
   jest.useFakeTimers();
   fetchMock.mockReturnValueOnce(new Promise(() => {}));
-  const pending = getDisplayAddress(account, "testnet");
+  const pending = getDisplayAddresses([account], "testnet");
   jest.advanceTimersByTime(10_000);
-  expect(await pending).toBe(formatAddress(account, "testnet"));
+  expect(await pending).toEqual([formatAddress(account, "testnet")]);
   expect(fetchMock.mock.calls[0][1]?.signal?.aborted).toBe(true);
 });
 

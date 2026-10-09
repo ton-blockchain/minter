@@ -32,7 +32,13 @@ export const HeaderSearchResults: React.FC<HeaderSearchResultsProps> = ({
   return (
     <SearchResultsWrapper>
       {searchResults.map((result, index) => (
-        <SearchResultsItem key={result} onClick={() => onItemClick(result)}>
+        <SearchResultsItem
+          key={result}
+          onClick={loading ? undefined : () => onItemClick(result)}
+          aria-disabled={loading}
+          sx={
+            loading ? { "&:hover": { cursor: "default", background: "transparent" } } : undefined
+          }>
           <CenteringWrapper flex={1}>
             <CenteringWrapper mr={1.5}>
               <img width={18} height={18} src={recentSearch} alt="Search Icon" />

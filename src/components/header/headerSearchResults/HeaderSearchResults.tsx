@@ -41,7 +41,9 @@ export const HeaderSearchResults: React.FC<HeaderSearchResultsProps> = ({
               <LoadingContainer loading={loading}>{displayAddresses[index]}</LoadingContainer>
             </Typography>
           </CenteringWrapper>
-          <IconButton onClick={(e) => onItemDelete(e, result)}>
+          <IconButton
+            sx={{ visibility: loading ? "hidden" : "visible" }}
+            onClick={(e) => onItemDelete(e, result)}>
             <img src={close} alt="Close Icon" width={18} height={18} />
           </IconButton>
         </SearchResultsItem>

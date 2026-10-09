@@ -14,7 +14,14 @@ import { CheckWalletBalancePopup } from "components/checkWalletBalancePopup";
 import { setSearchParam } from "lib/network";
 
 export const Wallet = () => {
-  const { balance, symbol, jettonLoading, selectedWalletAddress, decimals } = useJettonStore();
+  const {
+    balance,
+    symbol,
+    jettonLoading,
+    selectedWalletAddress,
+    selectedWalletAddressLoading,
+    decimals,
+  } = useJettonStore();
   const [params, setParams] = useSearchParams();
   const [showPopup, setShowPopup] = useState(false);
 
@@ -32,7 +39,7 @@ export const Wallet = () => {
         <DataRow
           title="Wallet Address"
           value={selectedWalletAddress}
-          dataLoading={jettonLoading}
+          dataLoading={jettonLoading || selectedWalletAddressLoading}
           address={selectedWalletAddress}
           regularAddress
           description="Connected wallet public address, can be shared to receive jetton transfers"
@@ -73,7 +80,7 @@ export const Wallet = () => {
         />
         <TransferAction />
       </StyledCategoryFields>
-      {!selectedWalletAddress && !jettonLoading && (
+      {!selectedWalletAddress && !jettonLoading && !selectedWalletAddressLoading && (
         <Box sx={{ height: 46, marginTop: 3 }}>
           <ConnectAction />
         </Box>

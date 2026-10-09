@@ -32,6 +32,7 @@ export const Token = () => {
   const {
     jettonImage,
     adminAddress,
+    adminAddressLoading,
     isAdmin,
     adminRevokedOwnership,
     symbol,
@@ -137,6 +138,7 @@ export const Token = () => {
                 jettonMaster,
               )}
               dataLoading={jettonLoading}
+              valueLoading={adminAddressLoading && !adminRevokedOwnership}
               actions={adminActions}
               hasButton={isAdmin && !adminRevokedOwnership}
               showIcon={!isAdmin}

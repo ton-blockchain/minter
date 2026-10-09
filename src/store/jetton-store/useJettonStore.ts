@@ -13,6 +13,7 @@ import { jettonStateAtom } from ".";
 import { useNetwork } from "lib/hooks/useNetwork";
 import { formatAddress, setSearchParam } from "lib/network";
 import { useSearchParams } from "react-router-dom";
+import { getDisplayAddresses } from "lib/display-address";
 
 let latestRequest = 0;
 
@@ -166,16 +167,32 @@ function useJettonStore() {
           adminRevokedOwnership: zeroAddress().equals(adminAddress),
           isAdmin: admin,
           decimals: validDecimals ? decimals : undefined,
-          adminAddress: formatAddress(adminAddress, network, false),
+          adminAddress: undefined,
+          adminAddressLoading: true,
           balance: result.jettonWallet ? result.jettonWallet.balance : undefined,
           jettonWalletAddress: result.jettonWallet
             ? formatAddress(result.jettonWallet.jWalletAddress, network)
             : undefined,
           jettonMaster: jettonAddress,
           isMyWallet,
-          selectedWalletAddress: address ? formatAddress(address, network, false) : undefined,
+          selectedWalletAddress: undefined,
+          selectedWalletAddressLoading: !!address,
         };
       });
+
+      // Resolve presentation separately so addressBook cannot hold up on-chain data.
+      void getDisplayAddresses([adminAddress, ...(address ? [address] : [])], network).then(
+        ([displayAdmin, displayOwner]) => {
+          if (requestId !== latestRequest) return;
+          setState((prevState) => ({
+            ...prevState,
+            adminAddress: displayAdmin,
+            adminAddressLoading: false,
+            selectedWalletAddress: address ? displayOwner : undefined,
+            selectedWalletAddressLoading: false,
+          }));
+        },
+      );
       return true;
     } catch (error) {
       if (requestId !== latestRequest) return false;

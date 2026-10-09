@@ -66,10 +66,10 @@ test("uses fixed Toncenter clients and explorers per network", async () => {
     timeout: 12_000,
   });
   expect(getEndpoint("testnet")).toBe("https://testnet.toncenter.com/api/v2/jsonRPC");
-  expect(scannerUrl("testnet", false, true)).toBe("https://testnet.tonscan.org/address");
-  expect(scannerUrl("testnet", false, false)).toBe("https://testnet.tonscan.org/jetton");
-  expect(scannerUrl("mainnet", false, true)).toBe("https://tonscan.org/address");
-  expect(scannerUrl("mainnet", false, false)).toBe("https://tonscan.org/jetton");
+  expect(scannerUrl("testnet", true)).toBe("https://testnet.tonscan.org/address");
+  expect(scannerUrl("testnet", false)).toBe("https://testnet.tonscan.org/jetton");
+  expect(scannerUrl("mainnet", true)).toBe("https://tonscan.org/address");
+  expect(scannerUrl("mainnet", false)).toBe("https://tonscan.org/jetton");
 });
 
 test("retries only transient Toncenter failures", () => {

@@ -15,6 +15,7 @@ export interface JettonStoreState {
   isImageBroken?: boolean;
   description?: string;
   adminAddress?: string;
+  adminAddressLoading: boolean;
   balance?: BN;
   jettonMaster?: string;
   persistenceType?: PersistenceType;
@@ -24,6 +25,7 @@ export interface JettonStoreState {
   jettonLoading: boolean;
   isMyWallet: boolean;
   selectedWalletAddress?: string | null;
+  selectedWalletAddressLoading: boolean;
 }
 
 const jettonStateAtom = atom<JettonStoreState>({
@@ -43,6 +45,7 @@ const jettonStateAtom = atom<JettonStoreState>({
     isImageBroken: false,
     description: undefined,
     adminAddress: undefined,
+    adminAddressLoading: false,
     balance: undefined,
     jettonMaster: undefined,
     totalSupply: undefined,
@@ -50,6 +53,7 @@ const jettonStateAtom = atom<JettonStoreState>({
     isJettonDeployerFaultyOnChainData: false,
     isMyWallet: false,
     selectedWalletAddress: undefined,
+    selectedWalletAddressLoading: false,
   },
 });
 

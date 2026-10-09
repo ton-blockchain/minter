@@ -2,8 +2,6 @@ import { Box, IconButton, Link, styled } from "@mui/material";
 import CopyToClipboard from "react-copy-to-clipboard";
 import useNotification from "hooks/useNotification";
 import CopyImg from "assets/icons/copy.svg";
-import { useContext } from "react";
-import { EnvContext } from "App";
 import { scannerUrl } from "utils";
 import theme from "theme";
 import { useNetwork } from "lib/hooks/useNetwork";
@@ -48,7 +46,6 @@ const AddressLink: React.FC<AddressLinkProps> = ({
   regularAddress,
 }) => {
   const { showNotification } = useNotification();
-  const { isSandbox } = useContext(EnvContext);
   const { network } = useNetwork();
 
   const onCopy = () => {
@@ -58,7 +55,7 @@ const AddressLink: React.FC<AddressLinkProps> = ({
   return (
     <StyledContainer className="address-link">
       <StyledLink>
-        <Link target="_blank" href={`${scannerUrl(network, isSandbox, regularAddress)}/${address}`}>
+        <Link target="_blank" href={`${scannerUrl(network, regularAddress)}/${address}`}>
           {value || "-"}
         </Link>
       </StyledLink>

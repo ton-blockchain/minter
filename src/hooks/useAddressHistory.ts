@@ -5,45 +5,64 @@ import useNotification from "hooks/useNotification";
 import { ROUTES } from "consts";
 import { recoilPersist } from "recoil-persist";
 import { Address } from "ton";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { useJettonAddress } from "hooks/useJettonAddress";
 import { useNavigatePreserveQuery } from "lib/hooks/useNavigatePreserveQuery";
 import { useNetwork } from "lib/hooks/useNetwork";
 import { formatAddress } from "lib/network";
+import {
+  ADDRESS_HISTORY_LIMIT,
+  AddressHistory,
+  normalizeAddressHistory,
+} from "lib/address-history";
 
 const { persistAtom } = recoilPersist({
   key: "addressHistory",
 });
 
-const addressHistoryState = atom({
+const addressHistoryState = atom<AddressHistory | string[]>({
   key: "addressHistory",
-  default: [] as string[],
+  default: { mainnet: [], testnet: [] },
   effects_UNSTABLE: [persistAtom],
 });
 
 export function useAddressHistory() {
-  const [addresses, setAddresses] = useRecoilState(addressHistoryState);
+  const [history, setHistory] = useRecoilState(addressHistoryState);
   const { setActive, setValue, addressInput } = useAddressInput();
   const navigate = useNavigatePreserveQuery();
   const { showNotification } = useNotification();
   const { jettonAddress } = useJettonAddress();
   const { network } = useNetwork();
+  const addresses = useMemo(() => normalizeAddressHistory(history)[network], [history, network]);
 
   const addAddress = useCallback(
-    (address: string) =>
-      setAddresses((prev: string[]) =>
-        [address, ...prev.filter((a) => a !== address)].slice(0, 20),
-      ),
-    [setAddresses],
+    (address: string) => {
+      const raw = Address.parse(address).toString();
+      setHistory((prev) => {
+        const next = normalizeAddressHistory(prev);
+        if (next[network][0] === raw && !Array.isArray(prev)) return prev;
+        next[network] = [raw, ...next[network].filter((a) => a !== raw)].slice(
+          0,
+          ADDRESS_HISTORY_LIMIT,
+        );
+        return next;
+      });
+    },
+    [network, setHistory],
   );
 
   const resetAddresses = () => {
-    setAddresses([]);
+    setHistory((prev) => ({ ...normalizeAddressHistory(prev), [network]: [] }));
     setActive(false);
   };
 
-  const removeAddress = (address: string) =>
-    setAddresses((prev: string[]) => [...prev.filter((a) => a !== address)]);
+  const removeAddress = (address: string) => {
+    const raw = Address.parse(address).toString();
+    setHistory((prev) => {
+      const next = normalizeAddressHistory(prev);
+      return { ...next, [network]: next[network].filter((a) => a !== raw) };
+    });
+  };
 
   const onAddressClick = (address: string) => {
     setActive(false);
@@ -51,7 +70,7 @@ export function useAddressHistory() {
 
     addAddress(address);
 
-    navigate(`${ROUTES.jetton}/${address}`);
+    navigate(`${ROUTES.jetton}/${formatAddress(address, network)}`);
   };
 
   const onSubmit = (address: string) => {

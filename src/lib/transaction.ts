@@ -1,5 +1,5 @@
 import {
-  SendTransactionRequest,
+  SendTransactionRequestWithMessages,
   SendTransactionResponse,
   TonConnectUI,
 } from "@tonconnect/ui-react";
@@ -51,9 +51,9 @@ let transactionInProgress = false;
 export function buildTransactionRequest(
   network: Network,
   sender: Address | string,
-  messages: SendTransactionRequest["messages"],
+  messages: SendTransactionRequestWithMessages["messages"],
   nowSeconds = Math.floor(Date.now() / 1000),
-): SendTransactionRequest {
+): SendTransactionRequestWithMessages {
   return {
     validUntil: nowSeconds + TRANSACTION_TTL_SECONDS,
     network: NETWORK_CONFIG[network].chain,
@@ -67,7 +67,7 @@ export function buildTransactionMessage(
   network: Network,
   amount: string,
   options?: { stateInit?: string; payload?: string },
-): SendTransactionRequest["messages"][number] {
+): SendTransactionRequestWithMessages["messages"][number] {
   return {
     address: formatAddress(address, network),
     amount,
@@ -284,7 +284,7 @@ export function assertWalletConnection(
   }
 }
 
-function assertCurrentNetwork(network: Network, request: SendTransactionRequest): void {
+function assertCurrentNetwork(network: Network, request: SendTransactionRequestWithMessages): void {
   if (request.network !== NETWORK_CONFIG[network].chain) {
     throw new Error("Transaction request network does not match the selected network");
   }
@@ -296,7 +296,7 @@ function assertCurrentNetwork(network: Network, request: SendTransactionRequest)
 export async function sendTransactionAndTrack(
   connection: TonConnectUI,
   network: Network,
-  request: SendTransactionRequest,
+  request: SendTransactionRequestWithMessages,
   target: Address | string,
 ): Promise<TransactionOutcome> {
   if (transactionInProgress) throw new Error("Another transaction is already in progress");

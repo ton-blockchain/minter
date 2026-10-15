@@ -1,8 +1,24 @@
+import { useIsConnectionRestored, useTonAddress, useTonConnectUI } from "@tonconnect/ui-react";
 import { AppButton } from "components/appButton";
-import { onConnect } from "utils";
 
 function ConnectAction() {
-  return <AppButton onClick={onConnect}>Connect Wallet</AppButton>;
+  const address = useTonAddress();
+  const [tonConnectUI] = useTonConnectUI();
+  const connectionRestored = useIsConnectionRestored();
+
+  if (address) return null;
+
+  return (
+    <AppButton
+      disabled={!connectionRestored}
+      onClick={() => {
+        if (connectionRestored && !tonConnectUI.connected) {
+          tonConnectUI.openModal();
+        }
+      }}>
+      Connect Wallet
+    </AppButton>
+  );
 }
 
 export default ConnectAction;

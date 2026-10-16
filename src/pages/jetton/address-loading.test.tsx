@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { ThemeProvider } from "@mui/material/styles";
 import BN from "bn.js";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
@@ -17,6 +17,7 @@ jest.mock("lib/deploy-controller", () => ({
 jest.mock("@tonconnect/ui-react", () => ({
   useTonAddress: () => mockConnectedAddress,
   useTonConnectUI: () => [{}],
+  useIsConnectionRestored: () => true,
   TonConnectButton: () => null,
 }));
 jest.mock("hooks/useNotification", () => () => ({ showNotification: mockShowNotification }));
@@ -48,10 +49,27 @@ const renderJetton = (path: string) =>
 const fetchMock = jest.spyOn(global, "fetch");
 beforeEach(() => {
   fetchMock.mockReset();
+  mockGetDetails.mockReset();
+  mockShowNotification.mockClear();
   mockConnectedAddress = "";
   mockGetDetails.mockResolvedValue(getDetails());
 });
 afterAll(() => fetchMock.mockRestore());
+
+test("does not offer a new connection after a jetton query fails for a connected wallet", async () => {
+  mockConnectedAddress = owner.toFriendly();
+  mockGetDetails.mockRejectedValueOnce(new Error("Jetton query failed"));
+  renderJetton(`/jetton/${formatAddress(master, "mainnet")}`);
+
+  await waitFor(() =>
+    expect(mockShowNotification).toHaveBeenCalledWith("Jetton query failed", "error"),
+  );
+  expect(screen.getByRole("group", { name: "Wallet Address" })).toHaveAttribute(
+    "aria-busy",
+    "false",
+  );
+  expect(screen.queryByRole("button", { name: "Connect Wallet" })).toBeNull();
+});
 
 test.each([true, false])(
   "shows jetton data while only address rows wait (selected owner: %s)",

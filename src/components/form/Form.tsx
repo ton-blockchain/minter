@@ -19,8 +19,7 @@ import { StyledTopImg } from "pages/jetton/styled";
 import LoadingImage from "components/LoadingImage";
 import { AppHeading } from "components/appHeading";
 import { useJettonAddress } from "hooks/useJettonAddress";
-import { useTonAddress } from "@tonconnect/ui-react";
-import { onConnect } from "utils";
+import { useIsConnectionRestored, useTonAddress, useTonConnectUI } from "@tonconnect/ui-react";
 
 interface FormProps {
   onSubmit: (values: any) => Promise<void>;
@@ -43,6 +42,8 @@ export function Form({
 }: FormProps) {
   const { showNotification } = useNotification();
   const address = useTonAddress();
+  const [tonConnectUI] = useTonConnectUI();
+  const connectionRestored = useIsConnectionRestored();
   const { jettonLogo, setIconHover, discardLogoDraft } = useJettonLogo();
   const [logoAlertPopup, setLogoAlertPopup] = useState(false);
   const [editLogoPopup, setEditLogoPopup] = useState(false);
@@ -189,7 +190,12 @@ export function Form({
             width={150}
             fontWeight={700}
             type="button"
-            onClick={onConnect}
+            disabled={!connectionRestored}
+            onClick={() => {
+              if (connectionRestored && !tonConnectUI.connected) {
+                tonConnectUI.openModal();
+              }
+            }}
             background="#0098EA">
             Connect Wallet
           </AppButton>
